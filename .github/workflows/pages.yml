@@ -19,9 +19,12 @@ jobs:
         with:
           node-version: 22
       - run: python3 build.py
-      - run: for t in tests/logic-*.js; do node "$t" > /dev/null || { echo "FAILED $t"; exit 1; }; done
-      - run: python3 build.py --target site
-      - run: node tests/logic-site.js
+      - run: |
+          for t in tests/logic-*.js; do
+            [ "$t" = tests/logic-site.js ] && continue
+            node "$t" || { echo "FAILED $t"; exit 1; }
+          done      - run: python3 build.py --target site
+      - run: node tests/site-check.js
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist

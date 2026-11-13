@@ -20,7 +20,7 @@ node tests/logic-k2-d.js
 node tests/logic-g3.js
 "$PY" tests/clip.py
 "$PY" build.py --target site
-node tests/logic-site.js
+node tests/site-check.js
 CLIP_URL="file://$PWD/dist/index.html" "$PY" tests/clip.py | tail -1
 "$PY" build.py
 echo "ALL CHECKS PASSED"
