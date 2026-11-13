@@ -8,8 +8,8 @@ function defaults() {
     as: { add: true, sub: true, d1: 2, d2: 2, addends: 2, regroup: 'any', format: 'vertical', cap: 0, second: 'digits' },
     md: { mul: true, div: true, mode: 'facts', tables: 10, focus: 0, rem: false, da: 2, db: 1, na: 3, nb: 1, format: 'vertical' },
     fd: { types: { simp: true, equiv: true, cmp: true, fadd: true, fmul: false, decadd: true, decmul: false, conv: true, pct: true }, level: 2 },
-    ns: { types: { place: true, compare: true, order: true, round: true, skip: true, parity: false, line: true, est: true, bond: false, eqn: false, equal: false, prop: false, rel: false, more: false, sub10: false, mul10: false, tens: false, cfwd: false, mcomp: false, f100: false, fact: false, perim: false, wadd: false, wlen: false, wmul: false, wcmp: false, wstep: false, west: false, rnd3: false, kseq: false, cseq: false, numrw: false, bondp: false, substr: false, cmp2: false, par20: false, moreexp: false }, level: 2 },
-    vis: { types: { cnt: true, pat: true, picop: false, coin: false, cmpm: false, ord3: false, munit: false, ruler: true, mtwo: false, mdiff: false, mest: false, nline: false, sort: true, tally: false, pict: false, bar: false, lplot: false, shname: true, shall: true, shdraw: false, solid: false, pos: false, part: false, comp: false, array: false, chart: false, patmake: false, cntn: false, showop: false, mattr: false, pos2: false, shcmp: false, shbuild: false, split: false, partw: false, pdraw: false, mtool: false, mrule2: false, pict4: false, bar4: false, chartwhy: false, mfac: false, dint: false, mchart: false, fmodel: false, fline: false, mvol: false, pictg: false, barg: false, rulq: false, lplotq: false, acon: false, gcat: false, gpart: false, gpoly: false, pera: false }, level: 2 },
+    ns: { types: typeDefaults('ns'), level: 2 },
+    vis: { types: typeDefaults('vis'), level: 2 },
     tm: { types: { coins: true, madd: true, change: true, clock: false, elapsed: true, conv: true, dclock: false, ampm: false, like: false, cpic: false, cstory: false }, level: 2 },
     mix: { mods: { addsub: true, muldiv: true, fdp: false, ns: true, tm: true } },
     combo,
@@ -24,6 +24,16 @@ const $ = s => document.querySelector(s);
 const STORE = 'wwwm2000.v1';
 const form = $('#form'), sheetsEl = $('#sheets'), stageEl = $('#stage');
 const inEnum = (v, list, d) => list.includes(v) ? v : d;
+/* The Number Sense and Shapes, Measures and Data checkboxes are built from the type registry (core/types.js), grouped by family. */
+function buildTypePanels() {
+  for (const mod of ['ns', 'vis']) {
+    const host = document.querySelector(`[data-types="${mod}"]`); if (!host) continue;
+    const groups = [];
+    for (const d of TYPE_DEFS[mod]) { let g = groups.find(h => h.family === d.family); if (!g) groups.push(g = { family: d.family, defs: [] }); g.defs.push(d); }
+    host.innerHTML = groups.map(g => `<div class="tgroup"><div class="tgroup-h">${g.family}</div>${g.defs.map(d => `<label class="chk"><input type="checkbox" name="${mod}_type" value="${d.id}"><b>${d.label}</b><small>${d.blurb}</small></label>`).join('')}</div>`).join('');
+  }
+}
+buildTypePanels();
 
 function normalize(s) {
   const d = defaults();

@@ -1,4 +1,4 @@
-/* K-2 Number Sense additions (src/js/modules/ns-k2.js, drawing space in ns-ext.js word problems). Answers recomputed from each problem's own fields. */
+/* Number Sense types for early counting, bonds and number words: answers recomputed from each problem's own fields. */
 const fs=require('fs'),vm=require('vm'),path=require('path');
 const html=fs.readFileSync(path.join(__dirname,'..','WWWorksheet-maker-2000.html'),'utf8');
 const js=html.split('<script>')[1].split('</script>')[0].split('/*==DOM==*/')[0];

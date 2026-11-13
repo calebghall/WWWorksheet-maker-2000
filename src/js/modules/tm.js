@@ -86,7 +86,7 @@ function tmElapsed(rng, L) {
   return { mod: 'tm', type: 'elapsed', prompt: 'How much time passes?', from: tfmt(s), to: tfmt(e), s, e, hh, mm, sig: `el${s}|${e}`, ew: 17, eh: 1.1 + 1.5 * 2 + 0.2 };
 }
 
-/* ----- 1.MD.B.3, 2.MD.C.7: digital time to analog hands and to words ----- */
+/* ----- digital time to analog hands and to words ----- */
 function tmWords(h, m) {
   const nx = h % 12 + 1;
   return m === 0 ? `${h} o'clock` : m === 15 ? `quarter past ${h}` : m === 30 ? `half past ${h}` : m === 45 ? `quarter to ${nx}` : m < 30 ? `${m} minutes past ${h}` : `${60 - m} minutes to ${nx}`;
@@ -97,7 +97,7 @@ function tmDclock(rng, L) {
     ? { mod: 'tm', type: 'dclock', variant: 'draw', prompt: 'Draw the hands on the clock.', h, m, ans: `${h}:${tpad(m)}`, sig: `dcd${h}:${m}`, win: 2.2, hin: 1.2, ew: 14, eh: 1 }
     : { mod: 'tm', type: 'dclock', variant: 'words', prompt: 'Write the time in words.', h, m, ans: tmWords(h, m), sig: `dcw${h}:${m}`, ew: 14, eh: 1.1 + 1.5 * 2 + 0.2 };
 }
-/* ----- 2.MD.C.7: a.m. and p.m. ----- */
+/* ----- a.m. and p.m. ----- */
 const TM_EVENTS = [   // [event, earliest, latest] in minutes after midnight
   ['wake up', 330, 540], ['eat breakfast', 390, 570], ['get to school', 450, 540], ['eat a morning snack', 570, 660], ['see the sunrise', 330, 420],
   ['eat lunch', 735, 780], ['play after school', 900, 1050], ['eat dinner', 1020, 1170], ['take a bath', 1110, 1230], ['go to bed', 1170, 1320], ['look at the stars', 1200, 1350]
@@ -108,7 +108,7 @@ function tmAmpm(rng, L) {
   const txt = `${ev[0].toUpperCase()}${ev.slice(1)} at ${h24 % 12 || 12}:${tpad(m)}`;
   return { mod: 'tm', type: 'ampm', prompt: 'Circle a.m. or p.m.', txt, ans: pm ? 'p.m.' : 'a.m.', sig: `ap${txt}`, ew: Math.max(13, txt.length * 0.6 + 1), eh: 1.1 + 1.5 * 2 + 0.2 };
 }
-/* ----- 1.MD.B.4, 2.MD.C.8: pictured coins (like coins, mixed coins and bills) and money stories ----- */
+/* ----- pictured coins (like coins, mixed coins and bills) and money stories ----- */
 const TM_COIN = { q: 'quarter', d: 'dime', n: 'nickel', p: 'penny' }, TM_COIN_V = { q: 25, d: 10, n: 5, p: 1 };
 /* Coins laid out left to right, wrapping so that no row is wider than 3.2 in. */
 function tmCoinPic(list, key) {

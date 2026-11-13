@@ -131,7 +131,7 @@ Single-page web app that generates printable elementary math worksheets with mat
 
 ## Extending
 
-Copy `src/js/modules/_template.js`, register the module with `REG.<id> = { name, counts, n0, plan(st, n, seed) }`, add its fieldsets in `src/html/`, and wire it into `MODULES`, `defaults()`, `readForm()` and `generateSet`. `CLAUDE.md` lists every touch point. The combined worksheet picks the module up automatically.
+For a new problem type inside Number Sense or Shapes, Measures and Data, add it to a family file and register it with `defTypes` (`CLAUDE.md`, "Adding a problem type"). For a new module, copy `src/js/modules/_template.js`, register the module with `REG.<id> = { name, counts, n0, plan(st, n, seed) }`, add its fieldsets in `src/html/`, and wire it into `MODULES`, `defaults()`, `readForm()` and `generateSet`. `CLAUDE.md` lists every touch point. The combined worksheet picks the module up automatically.
 
 ## Verification
 

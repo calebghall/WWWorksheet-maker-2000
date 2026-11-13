@@ -71,22 +71,7 @@ function modHtml(p, key) {
     }
   }
   if (p.mod === 'vis') return visHtml(p, key, x);
-  if (NS_EXT_TYPES.includes(p.type)) return nsxHtml(p, key, x);
-  switch (p.type) {
-    case 'place':
-      if (p.variant === 'expand') return `${p.shown} =<span class="wl">${key ? esc(p.expd) : '&nbsp;'}</span>`;
-      if (p.variant === 'standard') return `${p.expd} = ${x(p.std, 3.4)}`;
-      return `${p.shown} ${p.variant === 'digit' ? '=' : '→'} ${x(p.ans, 3.2)}`;
-    case 'compare': return `${p.a}<span class="cb">${key ? esc(p.ans) : '&nbsp;'}</span>${p.b}`;
-    case 'order': return `<div>${p.shown.join(',&ensp;')}</div><div class="ol">${p.ans.map(a => `<span class="blank" style="min-width:${(a.length * 0.62 + 1.4).toFixed(1)}em">${key ? esc(a) : '&nbsp;'}</span>`).join(' ')}</div>`;
-    case 'round': return `${p.shown} ≈ ${x(p.ans, 3.2)}`;
-    case 'skip': return p.terms.map((t, i) => p.idx.includes(i) ? `<span class="blank" style="min-width:${(t.length * 0.62 + 1).toFixed(1)}em">${key ? esc(t) : '&nbsp;'}</span>` : esc(t)).join(',&ensp;');
-    case 'parity':
-      if (p.single) return `${p.n}&emsp;<span class="opt${key && p.ans === 'even' ? ' on' : ''}">even</span><span class="opt${key && p.ans === 'odd' ? ' on' : ''}">odd</span>`;
-      return p.list.map((n, i) => `<span class="cn${key && p.on[i] ? ' on' : ''}">${n}</span>`).join(' ');
-    case 'line': return p.svg;
-    default: return `${esc(p.expr)} ≈ ${x(p.ans, 3.4)}`;
-  }
+  return NHTML[p.type](p, key, x);
 }
 function renderModCell(p, n, key) {
   const head = esc(p.prompt) + (p.type === 'line' ? ` ${ablank(p.ans, key, 3.2)}` : '');

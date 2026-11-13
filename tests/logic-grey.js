@@ -21,7 +21,7 @@ for(const k of cats)if(255-L(k)<15)bad.push(`${k} indistinguishable from white p
 const root=html.match(/:root\s*\{[^}]*--c0:[^}]*\}/);
 for(const k of Object.keys(vars))if(!new RegExp('--'+k+':').test(root?root[0]:''))bad.push(`--${k} overridden for grey but not defined in :root`);
 /* ---- no categorical hex left in the drawing code ---- */
-for(const f of ['vis-a.js','vis-b.js']){const s=fs.readFileSync(path.join(__dirname,'..','src','js','modules',f),'utf8');
+for(const f of fs.readdirSync(path.join(__dirname,'..','src','js','modules')).filter(n=>/^vis.*\.js$/.test(n))){const s=fs.readFileSync(path.join(__dirname,'..','src','js','modules',f),'utf8');
   for(const bad1 of ['#f4b6bf','#b9d5f2','#c6e5b8','#fbe3a1','#8fb4de','#cfd3d9'])if(s.includes(bad1))bad.push(`${f} still has hard-coded ${bad1}`);}
 /* ---- coins: embedded Mint images, color and greyscale copies, real size order ---- */
 const V_COIN=E('V_COIN'),IMG=E('COIN_IMG'),names=Object.keys(V_COIN);

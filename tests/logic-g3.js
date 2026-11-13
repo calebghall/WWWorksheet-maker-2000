@@ -1,9 +1,9 @@
-/* Grade 3 additions (src/js/modules/vis-g3a.js, vis-g3b.js): answers recomputed from each problem's own fields. */
+/* Shapes, Measures and Data types with drawn graphs, models and area concepts (the id list below): answers recomputed from each problem's own fields. */
 const fs=require('fs'),vm=require('vm'),path=require('path');
 const html=fs.readFileSync(path.join(__dirname,'..','WWWorksheet-maker-2000.html'),'utf8');
 const js=html.split('<script>')[1].split('</script>')[0].split('/*==DOM==*/')[0];
 const ctx={Math,console,globalThis:null};ctx.globalThis=ctx;vm.createContext(ctx);vm.runInContext(js,ctx);
-const SP=ctx.__SP,E=x=>vm.runInContext(x,ctx),bad=[];let n=0;const G3=E('VIS_G3'),sum=a=>a.reduce((x,y)=>x+y,0);
+const SP=ctx.__SP,E=x=>vm.runInContext(x,ctx),bad=[];let n=0;const G3=['mfac', 'dint', 'mchart', 'fmodel', 'fline', 'mvol'].concat(['pictg', 'barg', 'rulq', 'lplotq', 'acon', 'gcat', 'gpart', 'gpoly', 'pera']),sum=a=>a.reduce((x,y)=>x+y,0);
 function chk(p,id,L){n++;const e=m=>bad.push(`${id} L${L}: ${m} ${JSON.stringify(p).slice(0,140)}`);
  if(!p.sig||!p.prompt||p.prompt.length>42||!((p.win>0&&p.hin>0)||(p.ew>0&&p.eh>0)))e('shape');if(p.win>3.4)e('wide');
  switch(id){

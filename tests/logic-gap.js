@@ -1,4 +1,4 @@
-/* Independent verification of the Number Sense extension types (src/js/modules/ns-ext.js): every answer is recomputed from the problem's own fields. */
+/* Independent verification of the Number Sense types in the EXT list below: every answer is recomputed from the problem's own fields. */
 const fs=require('fs'),vm=require('vm'),path=require('path');
 const html=fs.readFileSync(path.join(__dirname,'..','WWWorksheet-maker-2000.html'),'utf8');
 const js=html.split('<script>')[1].split('</script>')[0].split('/*==DOM==*/')[0];

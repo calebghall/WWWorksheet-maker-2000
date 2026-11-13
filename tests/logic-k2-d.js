@@ -1,10 +1,10 @@
-/* K-2 Shapes, Measures and Data additions (src/js/modules/vis-k2.js). Answers recomputed from each problem's own fields. */
+/* Shapes, Measures and Data types for patterns, shapes, partitions and simple graphs (the id list below): answers recomputed from each problem's own fields. */
 const fs=require('fs'),vm=require('vm'),path=require('path');
 const html=fs.readFileSync(path.join(__dirname,'..','WWWorksheet-maker-2000.html'),'utf8');
 const js=html.split('<script>')[1].split('</script>')[0].split('/*==DOM==*/')[0];
 const ctx={Math,console,globalThis:null};ctx.globalThis=ctx;vm.createContext(ctx);vm.runInContext(js,ctx);
 const SP=ctx.__SP,E=x=>vm.runInContext(x,ctx),bad=[];let n=0;
-const K2=E('VIS_K2'),V_SIDES=E('V_SIDES'),V_EQ=E('V_EQSIDES'),V_ATTR=E('V_ATTR'),V_ATTRW=E('V_ATTRW'),V_MT=E('V_MT'),V_SPLITS=E('V_SPLITS'),V_PM=E('V_PM');
+const K2=['patmake', 'cntn', 'showop', 'mattr', 'pos2', 'shcmp', 'shbuild', 'split', 'partw', 'pdraw', 'mtool', 'mrule2', 'pict4', 'bar4', 'chartwhy'],V_SIDES=E('V_SIDES'),V_EQ=E('V_EQSIDES'),V_ATTR=E('V_ATTR'),V_ATTRW=E('V_ATTRW'),V_MT=E('V_MT'),V_SPLITS=E('V_SPLITS'),V_PM=E('V_PM');
 const sum=a=>a.reduce((x,y)=>x+y,0);
 function chk(p,id,L){n++;const e=m=>bad.push(`${id} L${L}: ${m} ${JSON.stringify(p).slice(0,150)}`);
   if(!p.sig||!p.prompt||p.prompt.length>42||!((p.win>0&&p.hin>0)||(p.ew>0&&p.eh>0)))e('shape');if(p.win>3.4)e('wide '+p.win);

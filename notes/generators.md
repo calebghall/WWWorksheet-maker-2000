@@ -39,36 +39,64 @@ One or two lines per generator. For where code lives and how to add one, see `CL
 - **Convert fractions, decimals, percents** (`conv`): Six conversions between the three forms. **Small pool:** 44 / 114 / 611.
 - **Percent of a number** (`pct`): Such as 25% of 80.
 
-## Number Sense (`ns`, `ns.js` and `ns-ext.js`)
+## Number Sense (`ns`, `ns.js`)
+
+Types are registered in the `ns-*.js` family files (`defTypes`, `core/types.js`); the list below is generated from the registry.
+
+### Place value, comparing and rounding (`ns-place.js`)
 
 - **Place value** (`place`): Underlined digit, digit in a place, expanded and standard form.
+- **Compare numbers** (`compare`): Write <, > or = between two numbers.
+- **Compare two-digit numbers** (`cmp2`): Write <, > or = between numbers 10 to 99.
 - **Order numbers** (`order`): Least to greatest or greatest to least.
 - **Rounding** (`round`): Whole numbers and decimals.
-- **Skip counting and patterns** (`skip`): Fill in the missing numbers.
-- **Even and odd** (`parity`): Circle even or odd, or pick out numbers in a list.
-- **Number lines** (`line`): Read the number the arrow shows. **Small pool:** 9 / 36 / 36.
+- **Round to 10 or 100** (`rnd3`): Plain problems and number lines.
 - **Estimation** (`est`): Round each number, then add, subtract or multiply.
+- **Read and write numbers** (`numrw`): Number words, tens and ones, and base-ten blocks, to 120.
+- **Mentally add or subtract 10 or 100** (`more`): 10 more or less, 100 more or less.
+- **10 more or less, explained** (`moreexp`): Write the number and say how you know.
+- **Tens and ones** (`tens`): Write a number as tens and ones.
+- **Tenths and hundredths** (`f100`): Rename tenths as hundredths and add. **Small pool:** 9 / 296 / 305.
+
+### Counting and number lines (`ns-counting.js`)
+
+- **Skip counting and patterns** (`skip`): Fill in the missing numbers.
+- **Count on or back** (`cfwd`): Count from any number, back from 20, or by 1, 2, 5 to 120.
+- **Count to 100** (`kseq`): Count by ones and tens, or back from 10.
+- **Count to 1000** (`cseq`): Count by 5s, 10s and 100s.
+- **Even and odd** (`parity`): Circle even or odd, or pick out numbers in a list.
+- **Odd and even to 20** (`par20`): Pair the objects, or write an even number as two equal addends.
+- **Number lines** (`line`): Read the number the arrow shows. **Small pool:** 9 / 36 / 36.
+
+### Equations, properties and facts (`ns-equations.js`)
+
 - **Number bonds** (`bond`): Decompose to 10, make ten, teen numbers as ten and ones. **Small pool:** 88 / 18 / 18.
+- **Number bonds with pictures** (`bondp`): Two-color counters and ten-frames.
 - **Unknown in an equation** (`eqn`): Find the missing number in any position.
 - **Equal sign** (`equal`): True or false equations and balancing both sides.
 - **Properties of operations** (`prop`): Commutative, associative and distributive.
 - **Related facts** (`rel`): Subtraction as unknown addend, division as unknown factor.
-- **Mentally add or subtract 10 or 100** (`more`): 10 more or less, 100 more or less.
+- **Subtraction strategies** (`substr`): Think addition, make a ten, count back.
 - **Subtract tens** (`sub10`): Subtract a multiple of 10 from a two-digit number.
 - **Multiply by multiples of 10** (`mul10`): One digit times 10 to 90.
-- **Tens and ones** (`tens`): Write a number as tens and ones.
-- **Count on or back** (`cfwd`): Count from any number, back from 20, or by 1, 2, 5 to 120.
 - **Multiplicative comparison** (`mcomp`): "__ times as many as" statements.
-- **Tenths and hundredths** (`f100`): Rename tenths as hundredths and add. **Small pool:** 9 / 296 / 305.
+
+### Factors and multiples (`ns-factors.js`)
+
 - **Factors and multiples** (`fact`): Factor pairs, multiples, prime or composite.
+
+### Perimeter (`ns-measure.js`)
+
 - **Perimeter** (`perim`): From side lengths, an unknown side, or same perimeter and same area.
+
+### Word problems (`ns-words.js`)
+
 - **Add and subtract word problems** (`wadd`): Add to, take from, put together, compare; unknown in any position.
 - **Length word problems** (`wlen`): Add and subtract lengths within 100.
-- **Multiply and divide word problems** (`wmul`): Equal groups, arrays, area, comparison, multi-step.
+- **Multiply and divide word problems** (`wmul`): Equal groups, arrays, comparison, multi-step.
 - **Comparison word problems** (`wcmp`): "Times as many" stories.
 - **Multi-step word problems** (`wstep`): Remainders and more than one operation.
 - **Estimate and solve** (`west`): Two-step stories: round to the nearest ten, then solve.
-- **Round to 10 or 100** (`rnd3`): Plain problems and number lines.
 
 ## Time and Money (`tm`, `tm.js`)
 
@@ -79,12 +107,34 @@ One or two lines per generator. For where code lives and how to add one, see `CL
 - **Elapsed time** (`elapsed`): Start and end time, find the time that passes.
 - **Time conversions** (`conv`): Seconds, minutes, hours, days and weeks. **Small pool:** 24 / 117 / 997.
 
-## Shapes, Measures and Data (`vis`, `vis-a.js` and `vis-b.js`)
+## Shapes, Measures and Data (`vis`, `vis.js`)
+
+Types are registered in the `vis-*.js` family files (`defTypes`, `core/types.js`); the list below is generated from the registry.
+
+### Counting and arrays (`vis-counting.js`)
 
 - **Counting pictures** (`cnt`): Count objects, draw a number of objects, write number words.
-- **Repeating patterns** (`pat`): What comes next, and how long is the core. **Small pool:** 36 / 144 / 168.
+- **Count and label** (`cntn`): Write a number under each object as you count.
 - **Picture equations** (`picop`): Addition and subtraction shown with objects. **Small pool:** 20 / 90 / 90.
+- **Draw to show** (`showop`): Draw and write an addition or subtraction.
+- **Arrays** (`array`): Rows and columns as repeated addition. **Small pool:** 6 / 16 / 16.
+- **Factors and products** (`mfac`): Groups of objects as multiplication; what each number tells.
+- **Dividend, divisor, quotient** (`dint`): Name the parts of a division; sharing and grouping.
+
+### Patterns and charts (`vis-patterns.js`)
+
+- **Repeating patterns** (`pat`): What comes next, and how long is the core. **Small pool:** 36 / 144 / 168.
+- **Make a pattern** (`patmake`): Draw your own AB, AAB, ABB or ABC pattern.
+- **Number charts** (`chart`): Hundreds chart and addition chart patterns.
+- **Why the chart pattern works** (`chartwhy`): Choose the property that explains it.
+- **Multiplication chart patterns** (`mchart`): Fill the chart, even and odd products, one more group.
+
+### Coins (`vis-money.js`)
+
 - **Coins** (`coin`): Identify a penny, nickel, dime or quarter and its value. **Small pool:** 96 / 96 / 4.
+
+### Measuring (`vis-measure.js`)
+
 - **Compare objects** (`cmpm`): Longer, taller, heavier.
 - **Order three objects** (`ord3`): Order by length, and compare through a third object.
 - **Measure with unit tiles** (`munit`): Cubes and paper clips.
@@ -92,27 +142,61 @@ One or two lines per generator. For where code lives and how to add one, see `CL
 - **Two units** (`mtwo`): Measure with small and big tiles. **Small pool:** 10 / 10 / 10.
 - **How much longer** (`mdiff`): Two bars on a ruler.
 - **Estimate length** (`mest`): Pick the sensible unit. **Small pool:** 36 / 36 / 36.
+- **Measurable attributes** (`mattr`): Length, height or weight: name the attribute.
+- **Choose a measuring tool** (`mtool`): Ruler, yardstick, meter stick or measuring tape.
+- **Inches and centimeters** (`mrule2`): Measure one object with two units.
+- **Ruler: halves and fourths** (`rulq`): Measure or draw to the quarter inch.
+- **Mass and liquid volume** (`mvol`): Dial scales, beakers, units, benchmarks, word problems.
+
+### Number lines (`vis-numberline.js`)
+
 - **Number line jumps** (`nline`): Add and subtract on a number line.
+- **Fractions on a number line** (`fline`): Read and mark fractions; length of one part.
+
+### Data displays (`vis-data.js`)
+
 - **Sort and compare** (`sort`): Count two groups and say which has more.
 - **Tally chart** (`tally`): Read a tally chart.
 - **Pictograph** (`pict`): Read, or draw from a table.
 - **Bar graph** (`bar`): Read, or draw from a table.
 - **Line plot** (`lplot`): Read, or make from measurements.
+- **Pictograph, four categories** (`pict4`): Symbols worth 1, 2, 5 or 10.
+- **Bar graph, four categories** (`bar4`): Scale of one; read or draw.
+- **Scaled pictograph** (`pictg`): Symbols worth 2, 5 or 10, with half symbols.
+- **Scaled bar graph** (`barg`): Scales of 2, 5 or 10; one- and two-step questions.
+- **Line plot: halves and fourths** (`lplotq`): Read or make a line plot of measurements.
+
+### Shapes and solids (`vis-shapes.js`)
+
 - **Name shapes** (`shname`): Names, sides and corners.
 - **Circle all of a shape** (`shall`): Shapes of different sizes and turns.
 - **Draw a shape** (`shdraw`): Draw a named shape or one with given sides. **Small pool:** 5 / 8 / 8.
 - **Flat and solid** (`solid`): Flat shapes versus solids. **Small pool:** 9 / 45 / 45.
 - **Positions** (`pos`): Above, below, between. **Small pool:** 26 / 26 / 26.
-- **Equal shares** (`part`): Halves, thirds, fourths.
+- **Position words, more** (`pos2`): In front of, behind, beside, next to.
+- **Compare shapes** (`shcmp`): Sides and corners, equal sides, solids that cannot roll.
+- **Shapes from sticks** (`shbuild`): Count the sticks and name the shape.
 - **Composite figures** (`comp`): Count squares and triangles in a figure.
-- **Arrays** (`array`): Rows and columns as repeated addition. **Small pool:** 6 / 16 / 16.
-- **Number charts** (`chart`): Hundreds chart and addition chart patterns.
+- **Cut a figure into shapes** (`split`): Draw lines to make triangles, squares or trapezoids.
+- **Quadrilateral categories** (`gcat`): Rectangles, rhombuses, squares and larger groups.
+- **Is it a polygon?** (`gpoly`): Choose the polygons among closed, open and curved figures.
 
-## Kindergarten to Grade 2 additions
+### Equal parts and fractions (`vis-fractions.js`)
 
-- **Time and Money** (`tm.js`): `dclock` draws hands for a digital time or writes it in words; `ampm` picks a.m./p.m. for an event with a fixed time window; `like` counts pictured like coins (under 100¢); `cpic` counts pictured mixed coins (plus bills at Medium and Hard); `cstory` one-step money stories in ¢ or $ (small pool of wordings).
-- **Number Sense** (`ns-k2.js`): `kseq` count by 1s, 5s, 10s to 100; `cseq` by 5s, 10s, 100s to 1000; `numrw` number words, tens and ones, base-ten blocks to 120; `bondp` bonds with counters and ten-frames; `substr` subtraction strategies; `cmp2` two-digit comparison; `par20` odd/even with pairs; `moreexp` 10 more or less with an explanation line. Addition and subtraction have caps (`as.cap`), a fourth addend and tens-only second numbers. Word problems for add/subtract and length carry a drawing box and a box for the unknown.
-- **Shapes, Measures and Data** (`vis-k2.js`): `patmake`, `cntn`, `showop`, `mattr`, `pos2`, `shcmp`, `shbuild`, `split` (small pool), `partw`, `pdraw`, `mtool`, `mrule2`, `pict4`, `bar4`, `chartwhy`. Tests: `logic-k2-a` to `logic-k2-d`.
+- **Equal shares** (`part`): Halves, thirds, fourths.
+- **Halves and quarters** (`partw`): Name one share, whole as shares, shade quarters.
+- **Draw equal shares** (`pdraw`): Draw lines to make halves, thirds or fourths.
+- **Equal areas and unit fractions** (`gpart`): Draw equal parts, name the unit fraction.
+- **Fraction models** (`fmodel`): Name, shade and count equal parts of a whole.
+
+### Area and perimeter (`vis-area.js`)
+
+- **Area concepts** (`acon`): Compare areas, tiling without gaps, unit squares.
+- **Compare rectangles** (`pera`): Same perimeter or same area, which is greater.
+
+## Time and Money additions
+
+- `dclock` draws hands for a digital time or writes it in words; `ampm` picks a.m./p.m. for an event with a fixed time window; `like` counts pictured like coins (under 100¢); `cpic` counts pictured mixed coins (plus bills at Medium and Hard); `cstory` one-step money stories in ¢ or $ (small pool of wordings).
 
 ## Other modules
 
