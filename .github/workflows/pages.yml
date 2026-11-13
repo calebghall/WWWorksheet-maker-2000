@@ -14,10 +14,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
-          node-version: 20
+          node-version: 22
       - run: python3 build.py
       - run: for t in tests/logic-*.js; do node "$t" > /dev/null || { echo "FAILED $t"; exit 1; }; done
       - run: python3 build.py --target site
