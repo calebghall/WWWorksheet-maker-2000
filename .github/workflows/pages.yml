@@ -23,7 +23,8 @@ jobs:
           for t in tests/logic-*.js; do
             [ "$t" = tests/logic-site.js ] && continue
             node "$t" || { echo "FAILED $t"; exit 1; }
-          done      - run: python3 build.py --target site
+          done      
+      - run: python3 build.py --target site
       - run: node tests/site-check.js
       - uses: actions/upload-pages-artifact@v3
         with:
