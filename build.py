@@ -28,5 +28,5 @@ if site:
     open(out + '.nojekyll', 'w').close()
     print('built site', len(page))
 else:
-    open(root + 'WWWorksheet-maker-2000-.html', 'w', encoding='utf-8').write(page)
+    open(root + 'WWWorksheet-maker-2000.html', 'w', encoding='utf-8').write(page)
     print('built', len(page))
