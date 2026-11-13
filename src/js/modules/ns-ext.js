@@ -151,7 +151,22 @@ function nsxFact(rng, L) {
   return { mod: 'ns', type: 'fact', prompt: kind === 'isf' ? `Is ${d} a factor of ${n}?` : `Is ${n} a multiple of ${d}?`, kind, n, d, ans: yes ? 'yes' : 'no', sig: `f${kind}${n}.${d}`, ew: 15, eh: 1.1 + 1.8 };
 }
 
-/* 3.MD.D.8 perimeter, L1 from side lengths, L2 unknown side, L3 polygons. */
+/* 3.MD.D.8: rectangles with the same perimeter and different areas (samep), or the same area and different perimeters (samea). */
+function nsxPerimSame(rng, u) {
+  const unit = u;
+  if (rng() < 0.5) {
+    const l = ri(rng, 4, 12), w = ri(rng, 2, l - 1), w2 = ri(rng, 1, l + w - 1), l2 = l + w - w2;
+    if (w2 === w || w2 === l) return nsxPerimSame(rng, unit);
+    return { mod: 'ns', type: 'perim', prompt: 'Same perimeter, different area.', kind: 'samep', l, w, w2, unit, eq: `${l} + ${w} − ${w2}`, ans: String(l2),
+      text: `Rectangle A is ${l} ${unit} long and ${w} ${unit} wide. Rectangle B has the same perimeter as A and is ${w2} ${unit} wide. How long is Rectangle B?`, wide: true, sig: `ps2${l}.${w}.${w2}${unit}`, ew: 21, eh: 1.1 + 4 * 1.45 + 1.7 + 0.6 };
+  }
+  const area = pick(rng, [12, 16, 18, 20, 24, 30, 36, 48]), f = [];
+  for (let i = 1; i * i <= area; i++) if (area % i === 0) f.push([area / i, i]);
+  const sh = shuffle(rng, f), [l1, w1] = sh[0], [l2, w2] = sh[1], P1 = 2 * (l1 + w1), P2 = 2 * (l2 + w2);
+  return { mod: 'ns', type: 'perim', prompt: 'Same area, different perimeter.', kind: 'samea', l1, w1, l2, w2, unit: '', eq: `A: 2 × (${l1} + ${w1}) = ${P1}; B: 2 × (${l2} + ${w2}) = ${P2}`, ans: P1 > P2 ? 'A' : 'B',
+    text: `Rectangle A is ${l1} ${unit} by ${w1} ${unit}. Rectangle B is ${l2} ${unit} by ${w2} ${unit}. Both have an area of ${area} square ${u}. Which rectangle has the greater perimeter? Write A or B.`, wide: true, sig: `pa2${l1}.${w1}.${l2}.${w2}${unit}`, ew: 21, eh: 1.1 + 5 * 1.45 + 1.7 + 0.6 };
+}
+/* 3.MD.D.8 perimeter, L1 from side lengths, L2 unknown side, L3 polygons and same-perimeter or same-area comparisons. */
 function nsxPerim(rng, L) {
   if (L === 3 && rng() < 0.4) L = pick(rng, [1, 2]);
   const unit = pick(rng, ['cm', 'm', 'in', 'ft']);
@@ -163,6 +178,7 @@ function nsxPerim(rng, L) {
     const l = ri(rng, 4, 15), w = ri(rng, 2, l - 1), P = 2 * (l + w);
     return { mod: 'ns', type: 'perim', prompt: 'Find the unknown side.', kind: 'rectu', P, l, w, unit, eq: `(${P} − 2 × ${l}) ÷ 2`, ans: String(w), text: `A rectangle has a perimeter of ${P} ${unit} and a length of ${l} ${unit}. What is its width?`, wide: true, sig: `pu${P}.${l}${unit}`, ew: 21, eh: 1.1 + 3 * 1.45 + 1.7 + 0.6 };
   }
+  if (rng() < 0.4) return nsxPerimSame(rng, unit);
   const n = pick(rng, [3, 5, 6]), name = { 3: 'triangle', 5: 'pentagon', 6: 'hexagon' }[n], sides = Array.from({ length: n - 1 }, () => ri(rng, 3, 12)), x = ri(rng, 3, 12), P = sides.reduce((a, b) => a + b, x);
   if (rng() < 0.5) { const all = sides.concat(x); return { mod: 'ns', type: 'perim', prompt: 'Find the perimeter.', kind: 'poly', sides: all, unit, eq: all.join(' + '), ans: String(P), text: `The sides of a ${name} are ${all.join(', ')} ${unit}. What is its perimeter?`, wide: true, sig: `pp${all}${unit}`, ew: 21, eh: 1.1 + 3 * 1.45 + 1.7 + 0.6 }; }
   return { mod: 'ns', type: 'perim', prompt: 'Find the unknown side.', kind: 'polyu', sides, P, unit, eq: `${P} − (${sides.join(' + ')})`, ans: String(x), text: `A ${name} has a perimeter of ${P} ${unit}. Its known sides are ${sides.join(', ')} ${unit}. What is the length of the last side?`, wide: true, sig: `pq${sides}.${P}${unit}`, ew: 21, eh: 1.1 + 4 * 1.45 + 1.7 + 0.6 };
@@ -208,17 +224,19 @@ function nsxWlen(rng) {
     default: return wordProb('wlen', kind, [a, b, c], `${nm} cut ${b} ${unit} off a string. The string that is left is ${a} ${unit} long. How long was the string at first?`, `? − ${b} = ${a}`, c, unit);
   }
 }
-/* 3.OA.A.3 (L1, L2 one-step), 3.OA.D.8 (L3 two-step): equal groups, arrays, measurement. */
+/* 3.OA.A.3 (L1, L2 one-step), 3.OA.D.8 (L3 two-step): equal groups, arrays, measurement, area. */
 function nsxWmul(rng, L) {
   const sym = L === 1 ? '?' : 'n', nm = pick(rng, NS_NAMES), th = pick(rng, NS_THINGS), nm2 = pick(rng, NS_NAMES.filter(x => x !== nm));
   const g = ri(rng, 2, 9), k = ri(rng, 2, Math.min(9, Math.floor(99 / g))), t = g * k;
-  const kind = pick(rng, L === 3 ? ['two1', 'two2', 'two3'] : ['prod', 'size', 'count', 'array', 'meas']);
+  const kind = pick(rng, L === 3 ? ['two1', 'two2', 'two3'] : ['prod', 'size', 'count', 'array', 'meas', 'areaP', 'areaW']);
   switch (kind) {
     case 'prod': return wordProb('wmul', kind, [g, k, t], `${nm} has ${g} bags. Each bag has ${k} ${th}. How many ${th} does ${nm} have in all?`, `${g} × ${k} = ${sym}`, t, th);
     case 'size': return wordProb('wmul', kind, [t, g, k], `${nm} shares ${t} ${th} equally among ${g} friends. How many ${th} does each friend get?`, `${t} ÷ ${g} = ${sym}`, k, th);
     case 'count': return wordProb('wmul', kind, [t, k, g], `${nm} has ${t} ${th}. ${nm} puts ${k} ${th} in each box. How many boxes does ${nm} fill?`, `${sym} × ${k} = ${t}`, g, 'boxes');
     case 'array': return wordProb('wmul', kind, [g, k, t], `A garden has ${g} rows of plants with ${k} plants in each row. How many plants are in the garden?`, `${g} × ${k} = ${sym}`, t, 'plants');
     case 'meas': return wordProb('wmul', kind, [t, k, g], `A rope is ${t} feet long. ${nm} cuts it into pieces that are ${k} feet long. How many pieces are there?`, `${t} ÷ ${k} = ${sym}`, g, 'pieces');
+    case 'areaP': { const u = pick(rng, ['feet', 'meters', 'inches', 'centimeters']); return wordProb('wmul', kind, [g, k, t], `A rectangle is ${g} ${u} long and ${k} ${u} wide. What is its area in square ${u}?`, `${g} × ${k} = ${sym}`, t, `square ${u}`); }
+    case 'areaW': { const u = pick(rng, ['feet', 'meters', 'inches', 'centimeters']); return wordProb('wmul', kind, [g, k, t], `A rectangle has an area of ${t} square ${u}. It is ${g} ${u} long. How wide is it?`, `${g} × ${sym} = ${t}`, k, u); }
     case 'two1': { const x = ri(rng, 2, Math.floor(80 / g)); return wordProb('wmul', kind, [g, k, x], `${nm} buys ${g} packs of ${th} with ${k} in each pack, and ${x} more ${th} alone. How many ${th} does ${nm} buy in all?`, `(${g} × ${k}) + ${x} = ${sym}`, g * k + x, th); }
     case 'two2': { const take = ri(rng, 1, t - 1); return wordProb('wmul', kind, [g, k, take], `${nm} has ${g} boxes with ${k} ${th} in each box. ${nm} gives away ${take} ${th}. How many ${th} are left?`, `(${g} × ${k}) − ${take} = ${sym}`, t - take, th); }
     default: { const s2 = ri(rng, 2, 5), x = s2 * ri(rng, 2, 9), y = s2 * ri(rng, 1, 9); return wordProb('wmul', 'two3', [x, y, s2], `${nm} has ${x} ${th} and ${nm2} has ${y} ${th}. They put all of them into ${s2} equal groups. How many ${th} are in each group?`, `(${x} + ${y}) ÷ ${s2} = ${sym}`, (x + y) / s2, th); }
@@ -246,11 +264,39 @@ function nsxWstep(rng) {
   }
 }
 
-const NS_EXT_TYPES = ['bond', 'eqn', 'equal', 'prop', 'rel', 'more', 'sub10', 'mul10', 'tens', 'cfwd', 'mcomp', 'f100', 'fact', 'perim', 'wadd', 'wlen', 'wmul', 'wcmp', 'wstep'];
-const NGEN_EXT = { bond: nsxBond, eqn: nsxEqn, equal: nsxEqual, prop: nsxProp, rel: nsxRel, more: nsxMore, sub10: nsxSub10, mul10: nsxMul10, tens: nsxTens, cfwd: nsxCount, mcomp: nsxMcomp, f100: nsxF100, fact: nsxFact, perim: nsxPerim, wadd: nsxWadd, wlen: nsxWlen, wmul: nsxWmul, wcmp: nsxWcmp, wstep: nsxWstep };
+/* 3.OA.D.8: estimate by rounding to the nearest ten, then solve a two-step problem and compare. */
+const rnd10 = v => Math.round(v / 10) * 10;
+function nsxWest(rng) {
+  const nm = pick(rng, NS_NAMES), nm2 = pick(rng, NS_NAMES.filter(x => x !== nm)), th = pick(rng, NS_THINGS);
+  let p;
+  if (rng() < 0.5) {
+    const a = ri(rng, 21, 99), b = ri(rng, 21, 99), c = ri(rng, 11, a + b - 20), est = rnd10(a) + rnd10(b) - rnd10(c);
+    p = wordProb('west', 'eadd', [a, b, c], `${nm} had ${a} ${th}. ${nm} got ${b} more. Then ${nm} gave ${c} to ${nm2}. How many ${th} does ${nm} have now?`, `${a} + ${b} − ${c} = n`, a + b - c, th, { est: String(est) });
+  } else {
+    const g = ri(rng, 2, 9), k = ri(rng, 12, 49), x = ri(rng, 11, 99), est = g * rnd10(k) + rnd10(x);
+    p = wordProb('west', 'emul', [g, k, x], `${nm} buys ${g} boxes with ${k} ${th} in each box. ${nm} also has ${x} ${th} already. How many ${th} does ${nm} have in all?`, `(${g} × ${k}) + ${x} = n`, g * k + x, th, { est: String(est) });
+  }
+  p.prompt = 'Estimate, then solve. Is your answer reasonable?'; p.eh += 1.7; p.sig += 'E';
+  return p;
+}
+
+/* 3.NBT.A.1: round to the nearest 10 (L1) or 100 (L2) with a number line; L3 mixes both and plain problems. */
+function nsxRnd3(rng, L) {
+  const unit = L === 1 ? 10 : L === 2 ? 100 : pick(rng, [10, 100]), name = unit === 10 ? 'ten' : 'hundred';
+  if (L === 3 && rng() < 0.5) {
+    let n = unit === 10 ? ri(rng, 11, 999) : ri(rng, 101, 999); if (n % unit === 0) n++;
+    return { mod: 'ns', type: 'rnd3', prompt: `Round to the nearest ${name}:`, kind: 'plain', unit, n, shown: cnum(n), ans: cnum(rndTo(n, unit)), sig: `r3p${n}${unit}`, ew: 13, eh: 1.1 + 1.6 };
+  }
+  const lo = unit * (unit === 10 ? ri(rng, 1, 99) : ri(rng, 1, 9)), k = ri(rng, 1, 9), n = lo + k * unit / 10;
+  return { mod: 'ns', type: 'rnd3', prompt: `Use the number line to round ${cnum(n)} to the nearest ${name}:`, kind: 'line', unit, n, lo, k, svg: lineSvg(lo * 100, (lo + unit) * 100, 10, k), shown: cnum(n), ans: cnum(rndTo(n, unit)),
+    sig: `r3l${n}${unit}`, win: 2.75, hin: 0.72 + 0.45, hfs: 3.2, ew: 14, eh: 1 };
+}
+
+const NS_EXT_TYPES = ['bond', 'eqn', 'equal', 'prop', 'rel', 'more', 'sub10', 'mul10', 'tens', 'cfwd', 'mcomp', 'f100', 'fact', 'perim', 'wadd', 'wlen', 'wmul', 'wcmp', 'wstep', 'west', 'rnd3'];
+const NGEN_EXT = { bond: nsxBond, eqn: nsxEqn, equal: nsxEqual, prop: nsxProp, rel: nsxRel, more: nsxMore, sub10: nsxSub10, mul10: nsxMul10, tens: nsxTens, cfwd: nsxCount, mcomp: nsxMcomp, f100: nsxF100, fact: nsxFact, perim: nsxPerim, wadd: nsxWadd, wlen: nsxWlen, wmul: nsxWmul, wcmp: nsxWcmp, wstep: nsxWstep, west: nsxWest, rnd3: nsxRnd3 };
 
 /* Cell bodies for the new types (called from modHtml). */
-const wordCell = (p, key, x) => `<div class="wt">${esc(p.text)}</div>${p.draw ? '<div class="dbox"></div>' : ''}<div>Equation: <span class="blank" style="min-width:9em">${key ? esc(p.eq) : '&nbsp;'}</span></div><div>Answer: ${x(p.ans, 3.6)}${p.unit ? ' ' + esc(p.unit) : ''}</div>`;
+const wordCell = (p, key, x) => `<div class="wt">${esc(p.text)}</div>${p.draw ? '<div class="dbox"></div>' : ''}${p.est !== undefined ? `<div>Estimate (nearest ten): ${x(p.est, 3.6)}</div>` : ''}<div>Equation: <span class="blank" style="min-width:9em">${key ? esc(p.eq) : '&nbsp;'}</span></div><div>Answer: ${x(p.ans, 3.6)}${p.unit ? ' ' + esc(p.unit) : ''}</div>`;
 const opts = (a, ans, key) => a.map(o => `<span class="opt${key && ans === o ? ' on' : ''}">${o}</span>`).join('');
 function nsxHtml(p, key, x) {
   if (NSK_HTML[p.type]) return NSK_HTML[p.type](p, key, x);
@@ -262,6 +308,7 @@ function nsxHtml(p, key, x) {
     case 'cfwd': case 'kseq': case 'cseq': return p.terms.map((t, i) => p.idx.includes(i) ? `<span class="blank" style="min-width:${(t.length * 0.62 + 1).toFixed(1)}em">${key ? esc(t) : '&nbsp;'}</span>` : esc(t)).join(',&ensp;');
     case 'f100': return p.kind === 1 ? `${frH(p.a, 10)} = ${frBox(p.ans, 100, 'n', key)}` : `${frH(p.a, 10)} + ${frH(p.b, 100)} = ${frBox(p.ans, 100, 'n', key)}`;
     case 'fact': return p.kind === 'pairs' ? tokHtml(p.tok, key, x) : p.kind === 'prime' ? `${p.n}&emsp;${opts(['prime', 'composite'], p.ans, key)}` : opts(['yes', 'no'], p.ans, key);
+    case 'rnd3': return p.kind === 'line' ? `${p.svg}<div>${p.shown} ≈ ${x(p.ans, 3.2)}</div>` : `${p.shown} ≈ ${x(p.ans, 3.2)}`;
     default: return wordCell(p, key, x);
   }
 }

@@ -4,7 +4,7 @@ const html=fs.readFileSync(path.join(__dirname,'..','WWWorksheet-maker-2000.html
 const js=html.split('<script>')[1].split('</script>')[0].split('/*==DOM==*/')[0];
 const ctx={Math,console,globalThis:null};ctx.globalThis=ctx;vm.createContext(ctx);vm.runInContext(js,ctx);
 const SP=ctx.__SP,bad=[];let n=0;
-const EXT=['bond','eqn','equal','prop','rel','more','sub10','mul10','tens','cfwd','mcomp','f100','fact','perim','wadd','wlen','wmul','wcmp','wstep'];
+const EXT=['bond','eqn','equal','prop','rel','more','sub10','mul10','tens','cfwd','mcomp','f100','fact','perim','wadd','wlen','wmul','wcmp','wstep','west','rnd3'];
 const num=s=>Number(String(s).replace(/,/g,''));
 const val=t=>t.map(s=>typeof s==='object'?s.u:s).join('');
 /* evaluate one "lhs = rhs" string (also "a + b = c, " forms); every "=" chain must hold */
@@ -49,23 +49,28 @@ function check(p,tag,L){
     if(p.kind==='rect'&&num(p.ans)!==2*(p.l+p.w))e('rect');
     if(p.kind==='square'&&num(p.ans)!==4*p.s)e('square');
     if(p.kind==='rectu'&&(2*(p.l+num(p.ans))!==p.P||num(p.ans)<=0))e('rectu');
+    if(p.kind==='samep'&&(2*(num(p.ans)+p.w2)!==2*(p.l+p.w)||num(p.ans)<=0||p.l*p.w===num(p.ans)*p.w2))e("samep");
+    if(p.kind==='samea'){const P1=2*(p.l1+p.w1),P2=2*(p.l2+p.w2);if(p.l1*p.w1!==p.l2*p.w2||P1===P2||p.ans!==(P1>P2?'A':'B'))e('samea');}
     if(p.kind==='poly'&&num(p.ans)!==sum(p.sides))e('poly');
     if(p.kind==='polyu'&&(sum(p.sides)+num(p.ans)!==p.P||num(p.ans)<=0))e('polyu');
-    const nums=(p.text.match(/\d+/g)||[]).map(Number);if(!nums.length)e('text');break;}
-  case 'wadd':case 'wlen':case 'wmul':case 'wcmp':case 'wstep':{
+    const nums=(p.text.match(/\d+/g)||[]).map(Number);if(!nums.length)e('text');if(L<3&&/^same/.test(p.kind))e('same kinds are level 3');break;}
+  case 'rnd3':{const r=(v,u)=>Math.round(v/u)*u;if(![10,100].includes(p.unit))e('unit');if(num(p.ans)!==r(p.n,p.unit)||p.n%p.unit===0&&p.kind==='plain')e('round '+p.n);
+    if(L===1&&p.unit!==10)e('L1 tens');if(L===2&&p.unit!==100)e('L2 hundreds');if(p.kind==='line'){if(p.n!==p.lo+p.k*p.unit/10||p.k<1||p.k>9||p.lo%p.unit)e('line');if(!p.svg.includes('<svg'))e('svg');}break;}
+  case 'wadd':case 'wlen':case 'wmul':case 'wcmp':case 'wstep':case 'west':{
     const [a,b,c,d]=p.nums,A=num(p.ans),eq=p.eq,sym=eq.includes('□')?'□':eq.includes('?')?'?':'n';
     if(!p.noeval&&!/R /.test(eq)){const filled=eq.replace(sym,String(A));if(!holds(filled))e('eq does not hold '+eq+' ans '+A);}
-    const txt=p.text;for(const q of p.nums.slice(0,3))if(!new RegExp('(^|[^\\d])'+q+'([^\\d]|$)').test(txt)&&!(p.kind==='two'&&0)){ if(!['cmpD','subR','subC','subS','diff','left','size','count','meas','two3','mcmpK','mcmpU','mcmp','addvm','rem','ceil','multi','multi2','two1','two2','prod','array','apart','addC','addS','tot','grew','start','cmpB','put','addR'].includes(p.kind))e('number not in text '+q); }
+    const txt=p.text;for(const q of p.nums.slice(0,3))if(!new RegExp('(^|[^\\d])'+q+'([^\\d]|$)').test(txt)&&!(p.kind==='two'&&0)){ if(!['cmpD','subR','subC','subS','diff','left','size','count','meas','two3','mcmpK','mcmpU','mcmp','addvm','rem','ceil','multi','multi2','two1','two2','prod','array','apart','addC','addS','tot','grew','start','cmpB','put','addR','areaP','areaW','eadd','emul'].includes(p.kind))e('number not in text '+q); }
     // answers recomputed from story numbers by kind
     const K={addR:()=>a+b,addC:()=>b,addS:()=>a,subR:()=>a-b,subC:()=>b,subS:()=>a+0&&p.nums[0],put:()=>c,apart:()=>b,cmpD:()=>p.nums[2],cmpB:()=>c,
       two:()=>a-b+c,tot:()=>c,diff:()=>a-b,left:()=>a-b,grew:()=>b,start:()=>c,
       prod:()=>a*b,size:()=>a/b,count:()=>a/b,array:()=>a*b,meas:()=>a/b,two1:()=>a*b+c,two2:()=>a*b-c,two3:()=>(a+b)/c,
-      mcmp:()=>a*b,mcmpU:()=>a,mcmpK:()=>b,addvm:()=>a*b-a,rem:()=>Math.floor(a/b),ceil:()=>Math.ceil(a/b),multi:()=>a+b*c-d,multi2:()=>a*b+c};
+      mcmp:()=>a*b,mcmpU:()=>a,mcmpK:()=>b,addvm:()=>a*b-a,rem:()=>Math.floor(a/b),ceil:()=>Math.ceil(a/b),multi:()=>a+b*c-d,multi2:()=>a*b+c,areaP:()=>a*b,areaW:()=>b,eadd:()=>a+b-c,emul:()=>a*b+c};
     if(!K[p.kind])e('unknown kind '+p.kind);else{const exp=p.kind==='subS'?p.nums[0]:K[p.kind]();if(exp!==A)e(`kind ${p.kind} expected ${exp} got ${A}`);}
     if(!Number.isInteger(A)||A<=0)e('answer not a positive integer');
     const lim=p.type==='wadd'?(L===1?20:L===2?99:999):p.type==='wlen'?99:p.type==='wmul'?(L===3?400:99):100000;
     if(p.type==='wadd'||p.type==='wlen'||(p.type==='wmul'&&L<3)){if(Math.max(A,...p.nums.slice(0,3))>lim)e('range '+lim);}
     if(p.kind==='rem'&&(a%b===0))e('rem zero');if(p.kind==='ceil'&&a%b===0)e('ceil exact');
+    if(p.type==='west'){const r=v=>Math.round(v/10)*10,E=p.kind==='eadd'?r(a)+r(b)-r(c):a*r(b)+r(c);if(num(p.est)!==E||E<=0)e('estimate');if(Math.abs(E-A)>60)e('estimate far from answer');}
     if(L===1&&p.type==='wadd'&&/two/.test(p.kind))e('two-step at L1');
     if(p.type==='wmul'&&L===3&&!/^two/.test(p.kind))e('L3 must be two-step');
     break;}

@@ -61,12 +61,14 @@ One or two lines per generator. For where code lives and how to add one, see `CL
 - **Multiplicative comparison** (`mcomp`): "__ times as many as" statements.
 - **Tenths and hundredths** (`f100`): Rename tenths as hundredths and add. **Small pool:** 9 / 296 / 305.
 - **Factors and multiples** (`fact`): Factor pairs, multiples, prime or composite.
-- **Perimeter** (`perim`): From side lengths, or find an unknown side.
+- **Perimeter** (`perim`): From side lengths, an unknown side, or same perimeter and same area.
 - **Add and subtract word problems** (`wadd`): Add to, take from, put together, compare; unknown in any position.
 - **Length word problems** (`wlen`): Add and subtract lengths within 100.
-- **Multiply and divide word problems** (`wmul`): Equal groups, arrays, comparison, multi-step.
+- **Multiply and divide word problems** (`wmul`): Equal groups, arrays, area, comparison, multi-step.
 - **Comparison word problems** (`wcmp`): "Times as many" stories.
 - **Multi-step word problems** (`wstep`): Remainders and more than one operation.
+- **Estimate and solve** (`west`): Two-step stories: round to the nearest ten, then solve.
+- **Round to 10 or 100** (`rnd3`): Plain problems and number lines.
 
 ## Time and Money (`tm`, `tm.js`)
 

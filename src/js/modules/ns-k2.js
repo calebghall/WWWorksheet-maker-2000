@@ -75,8 +75,8 @@ function nsxSubstr(rng, L) {
   let tok, sx;
   if (kind === 'add') { const a = ri(rng, 6, 18), b = ri(rng, 2, Math.min(9, a - 1)); tok = [`Think addition: ${b} + `, U(a - b), ` = ${a}, so ${a} − ${b} = `, U(a - b)]; sx = `${a}-${b}`; }
   else if (kind === 'ten') { const a = ri(rng, 11, 18), t = a - 10, b = ri(rng, t + 1, 9); tok = [`${a} − ${b}:  ${a} − ${t} = `, U(10), `, then 10 − ${b - t} = `, U(a - b)]; sx = `${a}-${b}`; }
-  else { const a = ri(rng, 6, 20), b = ri(rng, 2, 4); tok = [`${a} − ${b}: ${a}, `]; for (let i = 1; i <= b; i++) tok.push(U(a - i), i < b ? ', ' : ''); tok.push(`. So ${a} − ${b} = `, U(a - b)); sx = `${a}-${b}`; }
-  return { mod: 'ns', type: 'substr', prompt: kind === 'add' ? 'Use addition to subtract.' : kind === 'ten' ? 'Make a ten to subtract.' : 'Count back to subtract.', kind, tok, sig: `ss${kind}${sx}`, ew: tokW(tok) * (kind === 'back' ? 1.3 : 1.1) + 1, eh: 1.1 + 1.6 };
+  else { const a = ri(rng, 6, 20), b = ri(rng, 2, 3); tok = [`${a} − ${b}: ${a}, `]; for (let i = 1; i <= b; i++) tok.push(U(a - i), i < b ? ', ' : ''); tok.push(`. So ${a} − ${b} = `, U(a - b)); sx = `${a}-${b}`; }
+  return { mod: 'ns', type: 'substr', prompt: kind === 'add' ? 'Use addition to subtract.' : kind === 'ten' ? 'Make a ten to subtract.' : 'Count back to subtract.', kind, tok, sig: `ss${kind}${sx}`, ew: tokW(tok) * (kind === 'back' ? 0.9 : 1.1) + 1, eh: 1.1 + 1.6 };
 }
 NSK_HTML.substr = (p, key, x) => tokHtml(p.tok, key, x);
 /* 1.NBT.B.4: compare two-digit numbers (L1 different tens, L2 any, L3 with equal numbers). */

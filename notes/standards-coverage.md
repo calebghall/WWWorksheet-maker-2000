@@ -2,8 +2,8 @@
 
 Source: Tennessee Instructional Focus Documents, Kindergarten to Grade 5 (July 2025 binders). 150 standards.
 
-- Supported: 103
-- Partial: 14
+- Supported: 107
+- Partial: 10
 - Gap: 33
 
 Supported and Partial standards have a preset in the Tennessee standard panel of the worksheet maker. Partial presets list what differs from the standard. Kindergarten to Grade 3 have no gaps. Grade 5 is listed in full and has no presets yet. The remaining gaps are in Grade 4 and need new problem types: measurement with tools, scaled data displays, fraction models and number-line fractions, angles, and geometry classification and symmetry.
@@ -99,14 +99,14 @@ Supported and Partial standards have a preset in the Tennessee standard panel of
 |---|---|---|---|
 | 3.OA.A.1 | Interpret the factors and products in whole number multiplication equations (e.g., 4 x 7 is 4 groups of 7... | Supported | undefined: Interpret factors and products. |
 | 3.OA.A.2 | Interpret the dividend, divisor, and quotient in whole number division equations (e.g., 28 ÷ 7 can be... | Supported | undefined: Interpret dividend, divisor and quotient. |
-| 3.OA.A.3 | Multiply and divide within 100 to solve contextual problems, with the unknown in any positions, in... | Partial | Number Sense: Multiply and divide word problems. Equal groups, arrays and measurement; area contexts are not generated. |
+| 3.OA.A.3 | Multiply and divide within 100 to solve contextual problems, with the unknown in any positions, in... | Supported | Number Sense: Multiply and divide word problems. |
 | 3.OA.A.4 | Determine the unknown whole number in a multiplication or division equation relating three whole numbers... | Supported | Number Sense: Unknown number in a multiplication or division equation. |
 | 3.OA.B.5 | Apply properties of operations as strategies to multiply and divide. (Students do not need to use formal... | Supported | Number Sense: Properties of multiplication. |
 | 3.OA.B.6 | Understand division as an unknown-factor problem. For example, find 32 ÷ 8 by finding the number that... | Supported | Number Sense: Division as an unknown factor. |
 | 3.OA.C.7 | Fluently multiply and divide within 100, using strategies such as the properties of operations or the... | Supported | Multiplication and Division: Multiply and divide within 100. |
-| 3.OA.D.8 | Solve two-step contextual problems using the four operations. Represent these problems using equations... | Partial | Number Sense: Two-step word problems. Reasonableness and estimation are not generated. |
+| 3.OA.D.8 | Solve two-step contextual problems using the four operations. Represent these problems using equations... | Supported | Number Sense: Two-step word problems. |
 | 3.OA.D.9 | Identify patterns in a multiplication chart and explain them using properties of operations. For example,... | Supported | undefined: Patterns in the multiplication chart. |
-| 3.NBT.A.1 | Round whole numbers to the nearest 10 or 100 using understanding of place value and use a number line to... | Partial | Number Sense: Round to the nearest 10 or 100. Level 2 also rounds to thousands. |
+| 3.NBT.A.1 | Round whole numbers to the nearest 10 or 100 using understanding of place value and use a number line to... | Supported | Number Sense: Round to the nearest 10 or 100. |
 | 3.NBT.A.2 | Fluently add and subtract within 1000 using strategies and algorithms based on place value, properties of... | Supported | Addition and Subtraction: Add and subtract within 1000. |
 | 3.NBT.A.3 | Multiply one-digit whole numbers by multiples of 10 in the range 10–90 (e.g., 9 x 80, 5 x 60) using... | Supported | Number Sense: Multiply by multiples of 10. |
 | 3.NBT.A.4 | Read and write multi-digit whole numbers (less than or equal to 100,000) using standard form, word form,... | Supported | Number Sense: Read and write numbers. |
@@ -120,7 +120,7 @@ Supported and Partial standards have a preset in the Tennessee standard panel of
 | 3.MD.C.5 | to addition. Recognize that plane figures have an area and understand concepts of area measurement.... | Supported | undefined: Area concepts. |
 | 3.MD.C.6 | to addition. Measure areas by counting unit squares (square centimeters, square meters, square inches,... | Supported | Area Squares: Measure area by counting unit squares. |
 | 3.MD.C.7 | to addition. Relate area of rectangles to the operations of multiplication and addition. 3.MD.C.7.a Find... | Supported | Area Squares: Area of rectangles. |
-| 3.MD.D.8 | between linear and area measures. Solve real-world and mathematical problems involving perimeters of... | Partial | Number Sense: Perimeter. Same-perimeter and same-area comparisons are in Shapes, Measures and Data (Compare rectangles). |
+| 3.MD.D.8 | between linear and area measures. Solve real-world and mathematical problems involving perimeters of... | Supported | Number Sense: Perimeter. |
 | 3.G.A.1 | Understand that shapes in different categories may share attributes and that the shared attributes can... | Supported | undefined: Quadrilateral categories. |
 | 3.G.A.2 | Partition shapes into parts with equal areas. Recognize that equal shares of identical wholes need not... | Supported | undefined: Equal areas and unit fractions. |
 | 3.G.A.3 | Determine if a figure is a polygon. | Supported | undefined: Is it a polygon?. |

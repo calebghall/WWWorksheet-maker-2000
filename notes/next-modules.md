@@ -1,5 +1,7 @@
 # Proposed next modules
 
+Grade 3 has no Gap or Partial standards in standards-coverage.md. Items below that name only 3.x codes are covered; the remaining work is Grade 4 and 5.
+
 Ranked by standards gaps closed (45 gaps in standards-coverage.md) and reuse of existing drawing code.
 
 1. Fractions (3.NF.A.1, 3.NF.A.2, 4.NF, 5.NF): shaded bar, circle and set models; fractions on a number line; equivalent and comparing; unlike-denominator add and subtract. Largest gap cluster; reuses the `vis` SVG kit and the `--c0` to `--c3` greyscale palette.

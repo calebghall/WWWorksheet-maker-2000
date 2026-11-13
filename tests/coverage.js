@@ -19,7 +19,7 @@ for(const g of ['K','1','2','3','4','5']){
     else{st='Supported';note=`${MN[p.m]}: ${p.t}.`;full++;}
     out+=`| ${c} | ${short(std[c].text).replace(/\|/g,'/')} | ${st} | ${note} |\n`;}
 }
-const head=`# Standards coverage\n\nSource: Tennessee Instructional Focus Documents, Kindergarten to Grade 5 (July 2025 binders). ${codes.length} standards.\n\n- Supported: ${full}\n- Partial: ${part}\n- Gap: ${gap}\n\nSupported and Partial standards have a preset in the Tennessee standard panel of the worksheet maker. Partial presets list what differs from the standard. Kindergarten to Grade 2 have no gaps. Grade 5 is listed in full and has no presets yet. The other gaps are in Grades 3 and 4 and need new problem types: measurement with tools, scaled data displays, fraction models and number-line fractions, angles, and geometry classification and symmetry.\n`;
+const head=`# Standards coverage\n\nSource: Tennessee Instructional Focus Documents, Kindergarten to Grade 5 (July 2025 binders). ${codes.length} standards.\n\n- Supported: ${full}\n- Partial: ${part}\n- Gap: ${gap}\n\nSupported and Partial standards have a preset in the Tennessee standard panel of the worksheet maker. Partial presets list what differs from the standard. Kindergarten to Grade 3 have no gaps. Grade 5 is listed in full and has no presets yet. The remaining gaps are in Grade 4 and need new problem types: measurement with tools, scaled data displays, fraction models and number-line fractions, angles, and geometry classification and symmetry.\n`;
 fs.writeFileSync(path.join(root,'notes','standards-coverage.md'),head+out);
 console.log({full,part,gap,total:codes.length});
 

@@ -72,7 +72,7 @@ Single-page web app that generates printable elementary math worksheets with mat
 ## Number Sense
 
 - Problem types, each switchable: place value, compare numbers, order numbers, rounding, skip counting and patterns, odd and even (off by default), number lines, estimation.
-- Standards-driven types, all off by default (the Tennessee standard panel switches on the right one): number bonds, unknown number in an equation, equal sign (true/false), properties of operations, related facts, mentally add or subtract 10 or 100, subtract tens, multiply by multiples of 10, tens and ones, count on or back, multiplicative comparison, tenths and hundredths, factors and multiples, perimeter, and word problems (add/subtract, lengths, multiply/divide, multiplicative comparison, multi-step). Word problems have an equation line and an answer line, and use wide cells (about two per row).
+- Standards-driven types, all off by default (the Tennessee standard panel switches on the right one): number bonds, unknown number in an equation, equal sign (true/false), properties of operations, related facts, mentally add or subtract 10 or 100, subtract tens, multiply by multiples of 10, tens and ones, count on or back, multiplicative comparison, tenths and hundredths, factors and multiples, perimeter (including same-perimeter and same-area rectangles), rounding to 10 or 100 with number lines, estimate-and-solve stories, and word problems (add/subtract, lengths, multiply/divide with area contexts, multiplicative comparison, multi-step). Word problems have an equation line and an answer line, and use wide cells (about two per row).
 - Levels: 1 to 3, scaling number size and difficulty.
 - Format: cell-based, 12, 20 or 30 per page.
 
