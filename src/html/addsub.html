@@ -1,0 +1,57 @@
+      <!-- ===== Addition and Subtraction ===== -->
+      <fieldset data-mod="addsub">
+        <legend>Operations</legend>
+        <label class="chk"><input type="checkbox" name="as_ops" value="add"><b>Addition</b></label>
+        <label class="chk"><input type="checkbox" name="as_ops" value="sub"><b>Subtraction</b></label>
+      </fieldset>
+
+      <fieldset data-mod="addsub">
+        <legend>Numbers</legend>
+        <div class="row"><span class="lbl">Digits in the first number</span><div class="seg" role="radiogroup" aria-label="Digits in the first number"><label><input type="radio" name="as_d1" value="1"><span>1</span></label><label><input type="radio" name="as_d1" value="2"><span>2</span></label><label><input type="radio" name="as_d1" value="3"><span>3</span></label><label><input type="radio" name="as_d1" value="4"><span>4</span></label></div></div>
+        <div class="row"><span class="lbl">Digits in the second number</span><div class="seg" role="radiogroup" aria-label="Digits in the second number"><label><input type="radio" name="as_d2" value="1"><span>1</span></label><label><input type="radio" name="as_d2" value="2"><span>2</span></label><label><input type="radio" name="as_d2" value="3"><span>3</span></label><label><input type="radio" name="as_d2" value="4"><span>4</span></label></div></div>
+        <div class="row">
+          <span class="lbl">Numbers to add</span>
+          <div class="seg" id="asAddends" role="radiogroup" aria-label="Numbers to add">
+            <label><input type="radio" name="as_addends" value="2"><span>2</span></label>
+            <label><input type="radio" name="as_addends" value="3"><span>3</span></label>
+            <label><input type="radio" name="as_addends" value="4"><span>4</span></label>
+          </div>
+        </div>
+        <div class="row">
+          <span class="lbl">Carrying and borrowing</span>
+          <div class="seg" role="radiogroup" aria-label="Carrying and borrowing">
+            <label><input type="radio" name="as_regroup" value="any"><span>Any</span></label>
+            <label><input type="radio" name="as_regroup" value="required"><span>Always</span></label>
+            <label><input type="radio" name="as_regroup" value="none"><span>Never</span></label>
+          </div>
+        </div>
+        <div class="row">
+          <span class="lbl">Sums and starting numbers within</span>
+          <div class="seg" role="radiogroup" aria-label="Sums and starting numbers within">
+            <label><input type="radio" name="as_cap" value="0"><span>Any</span></label>
+            <label><input type="radio" name="as_cap" value="10"><span>10</span></label>
+            <label><input type="radio" name="as_cap" value="20"><span>20</span></label>
+            <label><input type="radio" name="as_cap" value="30"><span>30</span></label>
+            <label><input type="radio" name="as_cap" value="100"><span>100</span></label>
+            <label><input type="radio" name="as_cap" value="1000"><span>1000</span></label>
+          </div>
+        </div>
+        <div class="row">
+          <span class="lbl">Second number</span>
+          <div class="seg" role="radiogroup" aria-label="Second number">
+            <label><input type="radio" name="as_second" value="digits"><span>Any</span></label>
+            <label><input type="radio" name="as_second" value="tens"><span>Multiple of 10</span></label>
+            <label><input type="radio" name="as_second" value="mix"><span>1-digit or multiple of 10</span></label>
+          </div>
+        </div>
+        <p class="note" id="asNote"></p>
+      </fieldset>
+
+      <fieldset data-mod="addsub">
+        <legend>Format</legend>
+        <div class="seg" role="radiogroup" aria-label="Format">
+          <label><input type="radio" name="as_format" value="vertical"><span>Vertical</span></label>
+          <label><input type="radio" name="as_format" value="horizontal"><span>Horizontal</span></label>
+        </div>
+      </fieldset>
+

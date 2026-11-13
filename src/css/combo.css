@@ -1,0 +1,17 @@
+/* ---------- combined worksheet ---------- */
+.secs { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: .16in; }
+.sec { flex: none; min-width: 0; }
+.sec-h { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 .12in; height: .3in; margin-bottom: .06in; overflow: hidden; border-bottom: 1.5px solid var(--rule); }
+.sec-h b { font-size: 12pt; }
+.sec-l { font: 700 8.5pt var(--font-sheet); letter-spacing: .08em; text-transform: uppercase; color: var(--soft); }
+.sec-i { font-size: 9.5pt; color: var(--soft); }
+.sh-grid.sec-grid { flex: none; grid-template-rows: none; grid-auto-rows: var(--rh); gap: var(--gap) .15in; }
+.sh-grid.sec-grid.area { grid-template-columns: 1fr 1fr; gap: var(--gap) .18in; }
+.empty { margin: 1in 0; text-align: center; color: var(--soft); }
+.crow { display: grid; grid-template-columns: auto auto 1fr; gap: 4px 8px; align-items: center; padding: 6px 0; }
+.crow .chk { grid-column: 1 / -1; padding: 0; }
+.crow .chk b { white-space: normal; }
+[data-md] { margin-top: 12px; }
+.crow select { width: auto; padding: 6px 8px; }
+.btn.sm { padding: 5px 10px; font-size: 13px; }
+

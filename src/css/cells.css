@@ -1,0 +1,44 @@
+/* ---------- fractions, decimals, percents, number sense ---------- */
+.ac.q { display: flex; flex-direction: column; gap: .2em; padding: .24in .08in .04in .14in; border-bottom: 1px dashed var(--rule); }
+.qp { flex: none; font-size: .78em; color: var(--soft); white-space: nowrap; }
+.qb { white-space: nowrap; line-height: 1.45; }
+.fr { display: inline-flex; flex-direction: column; align-items: center; vertical-align: middle; line-height: 1.15; margin: 0 .1em; }
+.fr > i { display: block; min-width: 1.1em; padding: 0 .22em; font-style: normal; text-align: center; }
+.fr > i:first-child { border-bottom: .08em solid var(--ink); }
+.fr.tp > i { min-width: 2em; height: 1.2em; }
+.fr .bx { min-width: 1.3em; height: 1.2em; padding: 0 .1em; border: 1.5px solid var(--ink); border-radius: .15em; }
+.mw { display: inline-block; vertical-align: middle; margin: 0 .05em; }
+.mw.bl { min-width: 1.3em; height: 1.3em; border: 1.5px solid var(--ink); border-radius: .15em; }
+.ak { color: var(--key); font-weight: 700; }
+.cb { display: inline-block; vertical-align: middle; min-width: 1.5em; height: 1.5em; margin: 0 .35em; border: 1.5px solid var(--ink); border-radius: .2em; text-align: center; line-height: 1.4; color: var(--key); font-weight: 700; }
+.cn { display: inline-block; padding: 0 .4em; border: 2px solid transparent; border-radius: 999px; }
+.cn.on { border-color: var(--key); color: var(--key); font-weight: 700; }
+.wl { display: block; min-height: 1.5em; margin-top: .2em; border-bottom: 1.5px solid var(--ink); white-space: normal; color: var(--key); font-weight: 700; }
+.ol { margin-top: .35em; }
+.qa { margin-top: .1em; }
+.sm { font-size: .72em; color: var(--soft); }
+.qb u { text-decoration-thickness: .1em; text-underline-offset: .14em; }
+.dg.pt { width: .38em; }
+.vr.a .dg.k0 { color: var(--ink); font-weight: 400; }
+
+@media (max-width: 900px) {
+  .app { grid-template-columns: minmax(0, 1fr); }
+  .panel { position: static; max-height: none; }
+}
+
+@media print {
+  :root { padding: 0 !important; }
+  html, body { background: #fff !important; }
+  body { padding: 0 !important; }
+  .panel, .toolbar { display: none !important; }
+  .app { display: block; max-width: none; }
+  .sheets { display: block; }
+  .sheet { zoom: 1; height: calc(var(--ph) - .02in); margin: 0; box-shadow: none; break-after: page; page-break-after: always; }
+  .sheet:last-child { break-after: auto; page-break-after: auto; }
+}
+
+/* wrapped word-problem cells */
+.qb.wq { white-space: normal; width: 21em; max-width: 100%; }
+.wq .wt { white-space: normal; margin-bottom: .25em; }
+.wq div { margin-top: .15em; }
+.dbox { height: 3em; border: 1.5px dashed var(--grid2); border-radius: .06in; margin: .25em 0 .35em; }

@@ -1,0 +1,26 @@
+      <!-- ===== Time and Money ===== -->
+      <fieldset data-mod="tm">
+        <legend>Problem types</legend>
+        <label class="chk"><input type="checkbox" name="tm_type" value="coins"><b>Count the money</b><small>Add up coins and bills.</small></label>
+        <label class="chk"><input type="checkbox" name="tm_type" value="madd"><b>Add and subtract money</b><small>Cents or dollars and cents.</small></label>
+        <label class="chk"><input type="checkbox" name="tm_type" value="change"><b>Making change</b><small>Cost and amount paid, find the change.</small></label>
+        <label class="chk"><input type="checkbox" name="tm_type" value="clock"><b>Read the clock</b><small>Analog clock face, write the time. Off by default because clocks are tall and reduce problems per page.</small></label>
+        <label class="chk"><input type="checkbox" name="tm_type" value="dclock"><b>Digital time</b><small>Draw the hands for a digital time, or write it in words. Tall cells.</small></label>
+        <label class="chk"><input type="checkbox" name="tm_type" value="ampm"><b>a.m. and p.m.</b><small>Choose a.m. or p.m. for an everyday event.</small></label>
+        <label class="chk"><input type="checkbox" name="tm_type" value="like"><b>Count like coins</b><small>Pictured pennies, nickels, dimes or quarters.</small></label>
+        <label class="chk"><input type="checkbox" name="tm_type" value="cpic"><b>Count pictured money</b><small>Pictured coins, plus bills at Medium and Hard.</small></label>
+        <label class="chk"><input type="checkbox" name="tm_type" value="cstory"><b>Money word problems</b><small>Money left, how much more, together, enough? Uses the $ and ¢ symbols.</small></label>
+        <label class="chk"><input type="checkbox" name="tm_type" value="elapsed"><b>Elapsed time</b><small>Start and end time, find the time that passes.</small></label>
+        <label class="chk"><input type="checkbox" name="tm_type" value="conv"><b>Time conversions</b><small>Seconds, minutes, hours, days and weeks.</small></label>
+      </fieldset>
+
+      <fieldset data-mod="tm">
+        <legend>Difficulty</legend>
+        <div class="seg" role="radiogroup" aria-label="Difficulty">
+          <label><input type="radio" name="tm_level" value="1"><span>Easy</span></label>
+          <label><input type="radio" name="tm_level" value="2"><span>Medium</span></label>
+          <label><input type="radio" name="tm_level" value="3"><span>Hard</span></label>
+        </div>
+        <p class="note" id="tmNote"></p>
+      </fieldset>
+

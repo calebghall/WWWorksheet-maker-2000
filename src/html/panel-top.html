@@ -1,0 +1,26 @@
+<div class="app">
+  <aside class="panel" aria-label="Worksheet settings">
+    <div class="brand">
+      <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true">
+        <path d="M2 2h22v22H2z" fill="none" stroke="var(--accent)" stroke-width="1.6"/>
+        <path d="M2 9.33h22M2 16.67h22M9.33 2v22M16.67 2v22" stroke="var(--accent)" stroke-width="1" opacity=".45" fill="none"/>
+        <path d="M2 2h14.67v14.67H2z" fill="var(--accent)" fill-opacity=".25" stroke="var(--accent)" stroke-width="2.4"/>
+      </svg>
+      <span>World Wide Worksheet Maker 2000</span>
+    </div>
+
+    <form id="form" autocomplete="off">
+      <details class="stdbox" id="stdBox">
+        <summary>Browse Tennessee Standards<span class="cur" id="stdCur"></span></summary>
+        <div class="seg" id="stdGrades" role="radiogroup" aria-label="Grade"></div>
+        <input type="search" id="stdQ" name="stdQ" class="stdq" placeholder="Search standards (code or words)" aria-label="Search standards">
+        <div class="stdlist" id="stdList"></div>
+        <p class="note" id="stdNote"></p>
+      </details>
+
+      <fieldset>
+        <legend>Worksheet</legend>
+        <div class="mods" id="mods" role="radiogroup" aria-label="Worksheet module"></div>
+      </fieldset>
+
+

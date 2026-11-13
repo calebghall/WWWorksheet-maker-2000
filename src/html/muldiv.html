@@ -1,0 +1,49 @@
+      <!-- ===== Multiplication and Division ===== -->
+      <fieldset data-mod="muldiv">
+        <legend>Operations</legend>
+        <label class="chk"><input type="checkbox" name="md_ops" value="mul"><b>Multiplication</b></label>
+        <label class="chk"><input type="checkbox" name="md_ops" value="div"><b>Division</b></label>
+        <label class="chk" id="remRow"><input type="checkbox" name="md_rem"><b>Allow remainders</b><small>Division answers are written as a quotient and a remainder.</small></label>
+      </fieldset>
+
+      <fieldset data-mod="muldiv">
+        <legend>Problem type</legend>
+        <div class="seg" role="radiogroup" aria-label="Problem type">
+          <label><input type="radio" name="md_mode" value="facts"><span>Facts</span></label>
+          <label><input type="radio" name="md_mode" value="digits"><span>Multi-digit</span></label>
+        </div>
+        <p class="note" id="mdNote"></p>
+        <div data-md="facts">
+          <div class="row">
+            <label class="lbl" for="md_tables">Times tables</label>
+            <select id="md_tables" name="md_tables">
+              <option value="5">2 to 5</option>
+              <option value="9">2 to 9</option>
+              <option value="10">2 to 10</option>
+              <option value="12">2 to 12</option>
+            </select>
+          </div>
+          <div class="row">
+            <label class="lbl" for="md_focus">Focus on one table</label>
+            <select id="md_focus" name="md_focus"></select>
+          </div>
+        </div>
+        <div data-md="mul">
+          <div class="row"><span class="lbl">Multiplication: first factor digits</span><div class="seg" role="radiogroup" aria-label="Multiplication: first factor digits"><label><input type="radio" name="md_da" value="1"><span>1</span></label><label><input type="radio" name="md_da" value="2"><span>2</span></label><label><input type="radio" name="md_da" value="3"><span>3</span></label><label><input type="radio" name="md_da" value="4"><span>4</span></label></div></div>
+          <div class="row"><span class="lbl">Multiplication: second factor digits</span><div class="seg" role="radiogroup" aria-label="Multiplication: second factor digits"><label><input type="radio" name="md_db" value="1"><span>1</span></label><label><input type="radio" name="md_db" value="2"><span>2</span></label><label><input type="radio" name="md_db" value="3"><span>3</span></label></div></div>
+        </div>
+        <div data-md="div">
+          <div class="row"><span class="lbl">Division: dividend digits</span><div class="seg" role="radiogroup" aria-label="Division: dividend digits"><label><input type="radio" name="md_na" value="2"><span>2</span></label><label><input type="radio" name="md_na" value="3"><span>3</span></label><label><input type="radio" name="md_na" value="4"><span>4</span></label><label><input type="radio" name="md_na" value="5"><span>5</span></label></div></div>
+          <div class="row"><span class="lbl">Division: divisor digits</span><div class="seg" role="radiogroup" aria-label="Division: divisor digits"><label><input type="radio" name="md_nb" value="1"><span>1</span></label><label><input type="radio" name="md_nb" value="2"><span>2</span></label></div></div>
+        </div>
+      </fieldset>
+
+      <fieldset data-mod="muldiv">
+        <legend>Format</legend>
+        <div class="seg" role="radiogroup" aria-label="Format">
+          <label><input type="radio" name="md_format" value="vertical"><span>Vertical</span></label>
+          <label><input type="radio" name="md_format" value="horizontal"><span>Horizontal</span></label>
+        </div>
+        <p class="note">Vertical division uses a long division bracket.</p>
+      </fieldset>
+

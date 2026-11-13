@@ -1,0 +1,25 @@
+      <!-- ===== Area Squares ===== -->
+      <fieldset data-mod="area">
+        <legend>Exercise types</legend>
+        <label class="chk"><input type="checkbox" name="type" value="count"><b>Count the squares</b><small>Find the area of a shape by counting unit squares.</small></label>
+        <label class="chk"><input type="checkbox" name="type" value="mult"><b>Side lengths</b><small>Multiply length by width to find the area.</small></label>
+        <label class="chk"><input type="checkbox" name="type" value="draw"><b>Draw a rectangle</b><small>Draw a rectangle that has a given area.</small></label>
+        <label class="chk"><input type="checkbox" name="type" value="cmp"><b>Compare two shapes</b><small>Decide which shape covers more squares.</small></label>
+        <label class="chk"><input type="checkbox" name="type" value="lsh"><b>L-shaped figures</b><small>Split an L-shape into two rectangles.</small></label>
+      </fieldset>
+
+      <fieldset data-mod="area">
+        <legend>Difficulty</legend>
+        <div class="seg" role="radiogroup" aria-label="Difficulty">
+          <label><input type="radio" name="level" value="1"><span>Easy</span></label>
+          <label><input type="radio" name="level" value="2"><span>Medium</span></label>
+          <label><input type="radio" name="level" value="3"><span>Hard</span></label>
+        </div>
+        <p class="note" id="levelNote"></p>
+      </fieldset>
+
+      <fieldset data-mod="area">
+        <legend>Units</legend>
+        <select id="unit" name="unit" aria-label="Units"></select>
+      </fieldset>
+

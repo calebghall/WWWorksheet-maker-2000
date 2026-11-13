@@ -1,0 +1,4 @@
+/* time and money */
+.clk { display: flex; align-items: center; gap: .12in; }
+.clk svg { flex: none; }
+.dgt { display: inline-block; border: 2px solid var(--ink); border-radius: .08in; padding: .02in .1in; font-weight: 700; letter-spacing: .04em; font-variant-numeric: tabular-nums; }

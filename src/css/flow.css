@@ -1,0 +1,5 @@
+/* ---------- flow layout (mixed practice) ---------- */
+.flow { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: .1in; font-size: var(--fs); }
+.fl-row { flex: none; box-sizing: border-box; display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: .15in; border-bottom: 1px dashed var(--rule); }
+.fl-c { min-width: 0; height: 100%; }
+.fl-c > .ac { height: 100%; border-bottom: 0; }
