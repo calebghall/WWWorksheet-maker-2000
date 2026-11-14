@@ -95,7 +95,7 @@ function fDecAdd(rng, L) {
   const sa = dpa ? dstr(ia, dpa) : String(ia), sb = dpb ? dstr(ib, dpb) : String(ib), ans = dstr(r, S);
   const iw = Math.max(sa.split('.')[0].length, sb.split('.')[0].length, ans.split('.')[0].length) + (op === 'add' ? 0 : 0);
   return { mod: 'fdp', type: 'decadd', prompt: op === 'add' ? 'Add.' : 'Subtract.', op, sa, sb, ans, iw, fw: S, sig: `da${op}${sa}|${sb}`,
-    ew: (iw + S + 1) * DGW + OPW + 1, eh: 1.1 + 3.2 * ROWH };
+    ew: (iw + S + 1) * DGW + Math.floor((iw - 1) / 3) * 0.3 + OPW + 1, eh: 1.1 + 3.2 * ROWH };
 }
 function fDecMul(rng, L) {
   let expr, ans, prompt = 'Multiply.';

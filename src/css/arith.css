@@ -10,6 +10,7 @@
 .vo, .dg { flex: none; display: inline-block; text-align: center; }
 .vo { width: 1em; }
 .dg { width: .72em; }
+.dg.cm { width: .3em; }
 .vl { margin: .04em 0; border-top: .09em solid var(--ink); }
 .vr.a .dg { color: var(--key); font-weight: 700; }
 .ld { display: inline-grid; grid-template-columns: auto auto; align-items: end; justify-items: end; }

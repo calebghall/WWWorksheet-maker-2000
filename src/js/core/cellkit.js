@@ -38,8 +38,12 @@ const ablank = (v, key, w) => `<span class="blank" style="min-width:${(w || 2.8)
 function dcells(s, iw, fw, dot) {
   const parts = s.split('.'), i = parts[0], f = parts[1] || '', hasDot = s.indexOf('.') >= 0 || dot;
   let h = '';
-  for (let k = i.length; k < iw; k++) h += '<span class="dg"></span>';
-  for (const ch of i) h += `<span class="dg">${ch}</span>`;
+  const pad = iw - i.length;
+  for (let p = 0; p < iw; p++) {
+    const r = iw - 1 - p, shown = p >= pad;
+    h += `<span class="dg">${shown ? i[p - pad] : ''}</span>`;
+    if (r > 0 && r % 3 === 0) h += `<span class="dg cm">${shown ? ',' : ''}</span>`;
+  }
   if (fw > 0) h += `<span class="dg pt${s === '' && dot ? ' k0' : ''}">${hasDot ? '.' : ''}</span>`;
   for (const ch of f) h += `<span class="dg">${ch}</span>`;
   for (let k = f.length; k < fw; k++) h += '<span class="dg"></span>';

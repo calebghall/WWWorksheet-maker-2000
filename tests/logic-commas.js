@@ -1,6 +1,6 @@
 /* Thousands commas: every worksheet renders each whole number of 1,000 or more with commas (1,234, 12,345, 123,456, 1,000,000).
    Renders every module, type and level, strips the markup, and reports any run of 4 or more digits without commas.
-   One digit per box (vertical layouts) is not a number written out, so those never form a run. Years are not generated. */
+   Vertical layouts put one digit per box with a narrow comma box between groups; those rows are joined and checked too. Years are not generated. */
 const fs=require('fs'),vm=require('vm'),path=require('path');
 const html=fs.readFileSync(path.join(__dirname,'..','WWWorksheet-maker-2000.html'),'utf8');
 const js=html.split('<script>')[1].split('</script>')[0].split('/*==DOM==*/')[0];
@@ -8,10 +8,12 @@ const ctx={Math,console,globalThis:null};ctx.globalThis=ctx;vm.createContext(ctx
 const SP=ctx.__SP,bad=new Map();let sheets=0;
 /* markup removed: inline underline tags join (the digits stay one number); every other tag separates; the footer (title, set name, page numbers) is not worksheet content */
 const text=h=>h.replace(/<style[\s\S]*?<\/style>/g,' ').replace(/<\/?u>/g,'').replace(/<[^>]+>/g,' ').replace(/&nbsp;|&emsp;|&ensp;|&thinsp;/g,' ').replace(/&[a-z]+;/g,' ').replace(/World Wide Worksheet Maker 2000\s*·\s*Set\s+\S+(\s*Page\s+\d+\s+of\s+\d+)?/g,' ').replace(/Name\s+Date/g,' ');
+/* vertical rows: the digit cells of one row are joined so a number written one digit per box is read as one number (it must carry its commas too) */
+const rows=h=>[...h.matchAll(/<div class="vr[^"]*">([\s\S]*?)<\/div>/g)].map(m=>' '+m[1].replace(/<[^>]+>/g,'')+' ').join(' ');
 /* a run of 4+ digits that is not part of a comma-grouped number and not the fraction digits of a decimal */
 const RAW=/(?<![\d,.])\d{4,}(?![\d])/g, BADGROUP=/(?<![\d,])\d{1,3}(?:,\d{3})*,\d{1,2}(?!\d)|(?<![\d,])\d{4,},\d{3}/g;
 function scan(label,s){
-  for(const key of [false,true]){s.key=key;s.pages=2;const out=SP.renderAll(s);sheets++;const t=text(out);
+  for(const key of [false,true]){s.key=key;s.pages=2;const out=SP.renderAll(s);sheets++;const t=text(out)+' '+rows(out);
     for(const m of t.matchAll(RAW)){const k=label+' raw';if(!bad.has(k))bad.set(k,[]);if(bad.get(k).length<3)bad.get(k).push(t.slice(Math.max(0,m.index-30),m.index+m[0].length+10).replace(/\s+/g,' '));}
     for(const m of t.matchAll(BADGROUP)){const k=label+' group';if(!bad.has(k))bad.set(k,[]);if(bad.get(k).length<3)bad.get(k).push(t.slice(Math.max(0,m.index-30),m.index+m[0].length+10).replace(/\s+/g,' '));}}}
 const base=(mod,seed)=>{const s=SP.defaults();s.module=mod;s.seed=seed;s.arPerPage=24;s.perPage=24;return s;};

@@ -158,10 +158,15 @@ function genArithN(rng, st, mod, n, chunk) {
 /* ---------- arithmetic: rendering ---------- */
 const DGW = 0.72, OPW = 1, ROWH = 1.45;   // em units used by the vertical layouts
 
+/* One cell per digit plus a narrow separator cell after every digit that ends a group of three, so columns stay aligned and thousands commas show. */
 function numCells(s, w) {
   let h = '';
-  for (let i = 0; i < w - s.length; i++) h += '<span class="dg"></span>';
-  for (const ch of s) h += `<span class="dg">${ch}</span>`;
+  const pad = w - s.length;
+  for (let p = 0; p < w; p++) {
+    const r = w - 1 - p, ch = p >= pad ? s[p - pad] : '';
+    h += `<span class="dg">${ch}</span>`;
+    if (r > 0 && r % 3 === 0) h += `<span class="dg cm">${p >= pad ? ',' : ''}</span>`;
+  }
   return h;
 }
 const vrow = (s, w, op, cls) => `<div class="vr${cls ? ' ' + cls : ''}"><span class="vo">${op || ''}</span>${numCells(s, w)}</div>`;

@@ -16,7 +16,7 @@ function needSize(p, fs, horiz) {
     if (p.type === 'add') { cells = Math.max(String(p.ans).length, ...p.nums.map(x => String(x).length)); rowsEm = p.nums.length + 1.6; }
     else if (p.type === 'sub') { cells = String(p.a).length; rowsEm = 3.6; }
     else { cells = String(p.ans).length; rowsEm = p.pp ? String(p.b).length + 4 : 3.6; }
-    w = (cells * DGW + OPW) * f + 0.2;
+    w = (cells * DGW + Math.floor((cells - 1) / 3) * 0.3 + OPW) * f + 0.2;
   }
   return [w, rowsEm * ROWH * f + 0.3];
 }
