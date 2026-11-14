@@ -643,6 +643,7 @@ details.stdbox { margin: 20px 0 0; border: 1px solid var(--line); border-radius:
         <legend>Set code</legend>
         <input type="text" id="seed" name="seed" maxlength="12" spellcheck="false" aria-label="Set code">
         <p class="note">The same code always makes the same problems. It prints in the footer so a key can be matched to its worksheet later.</p>
+        <button type="button" class="btn ghost" id="reportBug" style="margin-top:10px">Report a problem with this worksheet</button>
       </fieldset>
     </form>
   </aside>
@@ -4528,7 +4529,18 @@ function defaults() {
     pages: 1, paper: 'letter', nameLine: true, key: true, grey: false, seed: newSeed()
   };
 }
-globalThis.__SP = { FGEN, NGEN, generateSet, renderAll, defaults, rngFrom, LEVELS, UNITS, TYPE_IDS, geom, svg, carries, borrows, arLayout, needSize, REG, META, comboSections, comboPages, genArithN, genAreaN, TGEN, flowPack, mixLayout, mixItems, STANDARDS, applyStandard, stdList, VGEN, VIS_TYPES, genVisN };
+/* Pre-filled GitHub issue for the current worksheet: set code, module and every setting needed to rebuild the same problems.
+   Opens the issue form (.github/ISSUE_TEMPLATE/bug.yml); the person reviews and submits it. Falls back to the basics if the URL would be too long. */
+const ISSUES_URL = 'https://github.com/calebghall/WWWorksheet-maker-2000/issues/new';
+function bugReportUrl(st, agent) {
+  const mod = (typeof MODULES !== 'undefined' && MODULES[st.module]) ? MODULES[st.module].name : st.module;
+  const full = Object.assign({}, st); delete full.titles;
+  const q = settings => ISSUES_URL + '?' + [['template', 'bug.yml'], ['title', `Problem with ${mod} worksheet (set ${st.seed})`], ['set_code', st.seed], ['settings', settings], ['browser', agent || '']]
+    .map(([k, v]) => k + '=' + encodeURIComponent(v)).join('&');
+  const url = q(JSON.stringify(full));
+  return url.length <= 6000 ? url : q(JSON.stringify({ module: st.module, seed: st.seed, level: st.level, std: st.std }));
+}
+globalThis.__SP = { bugReportUrl, FGEN, NGEN, generateSet, renderAll, defaults, rngFrom, LEVELS, UNITS, TYPE_IDS, geom, svg, carries, borrows, arLayout, needSize, REG, META, comboSections, comboPages, genArithN, genAreaN, TGEN, flowPack, mixLayout, mixItems, STANDARDS, applyStandard, stdList, VGEN, VIS_TYPES, genVisN };
 
 /*==DOM==*/
 const $ = s => document.querySelector(s);
@@ -4775,6 +4787,8 @@ form.addEventListener('click', e => {
   state.module = b.dataset.goto; save(); writeForm(); render();
 });
 form.elements.seed.addEventListener('blur', () => { form.elements.seed.value = state.seed; });
+const reportBtn = $('#reportBug');
+if (reportBtn) reportBtn.addEventListener('click', () => window.open(bugReportUrl(state, navigator.userAgent), '_blank', 'noopener'));
 $('#newSet').addEventListener('click', () => { state.seed = newSeed(); form.elements.seed.value = state.seed; save(); render(); });
 const printBtn = document.getElementById('printBtn');
 /* Coins loaded from files (site build) must be in the browser cache before printing; embedded coins resolve at once. */

@@ -1,0 +1,31 @@
+name: Problem with a worksheet
+description: Report a wrong answer, a layout problem or anything else that looks off
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What went wrong
+      description: Which problem number, and what it shows. Paste the text of the problem if you can.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What it should be
+  - type: input
+    id: set_code
+    attributes:
+      label: Set code
+      description: Filled in by the app. The same code and settings make the same problems.
+  - type: textarea
+    id: settings
+    attributes:
+      label: Worksheet settings
+      description: Filled in by the app. Leave as is.
+      render: json
+  - type: input
+    id: browser
+    attributes:
+      label: Browser
+      description: Filled in by the app.
