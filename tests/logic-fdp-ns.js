@@ -19,7 +19,7 @@ function check(p,tag){n++;const e=m=>bad.push(tag+' '+p.type+': '+m);
   case 'fmulw':if(!eq(p.n/p.d*p.W,p.ans)||!Number.isInteger(p.ans))e('fmulw');break;
   case 'fmul':{const a=p.a[0]/p.a[1],b=p.b[0]/p.b[1],r=p.dv?a/b:a*b;if(!eq(val(p.ans.w,p.ans.n,p.ans.d),r))e('fmul');if(p.ans.n&&gcd(p.ans.n,p.ans.d)!==1)e('unreduced');break;}
   case 'decadd':{const a=parseFloat(p.sa),b=parseFloat(p.sb),r=parseFloat(p.ans);if(!eq(r,p.op==='add'?a+b:a-b)||r<0)e('decadd '+p.sa+p.op+p.sb+'='+p.ans);if(p.fw<(p.sa.split('.')[1]||'').length)e('fw');break;}
-  case 'decmul':{const m=p.expr.match(/^([\d.]+) ([×÷]) (\d+)$/)||p.expr.match(/^([\d.]+) ([×÷]) ([\d.]+)$/);const a=parseFloat(m[1]),b=parseFloat(m[3]),r=m[2]==='×'?a*b:a/b;if(!eq(r,parseFloat(p.ans)))e('decmul '+p.expr+'='+p.ans);if(/\.\d*0$/.test(p.ans))e('trailing zero '+p.ans);break;}
+  case 'decmul':{const m=p.expr.replace(/,/g,'').match(/^([\d.]+) ([×÷]) (\d+)$/)||p.expr.replace(/,/g,'').match(/^([\d.]+) ([×÷]) ([\d.]+)$/);const a=parseFloat(m[1]),b=parseFloat(m[3]),r=m[2]==='×'?a*b:a/b;if(!eq(r,parseFloat(p.ans.replace(/,/g,''))))e('decmul '+p.expr+'='+p.ans);if(/\.\d*0$/.test(p.ans))e('trailing zero '+p.ans);break;}
   case 'conv':{const pc=parseFloat(p.pct);if(!eq(parseFloat(p.dec),pc/100)||!eq(p.fn/p.fd,pc/100)||gcd(p.fn,p.fd)!==1)e('conv');break;}
   case 'pct':if(!eq(p.P*p.N/100,p.ans)||!Number.isInteger(p.ans))e('pct');break;
   case 'place':{

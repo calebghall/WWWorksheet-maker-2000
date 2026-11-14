@@ -169,10 +169,10 @@ const vans = (s, w, key) => `<div class="vr a"><span class="vo"></span>${key ? n
 
 function hText(p) {
   switch (p.type) {
-    case 'add': return p.nums.join(' + ');
-    case 'sub': return `${p.a} − ${p.b}`;
-    case 'mul': return `${p.a} × ${p.b}`;
-    default: return `${p.n} ÷ ${p.d}`;
+    case 'add': return p.nums.map(cnum).join(' + ');
+    case 'sub': return `${cnum(p.a)} − ${cnum(p.b)}`;
+    case 'mul': return `${cnum(p.a)} × ${cnum(p.b)}`;
+    default: return `${cnum(p.n)} ÷ ${cnum(p.d)}`;
   }
 }
 function renderVertical(p, key) {
@@ -197,14 +197,14 @@ function renderVertical(p, key) {
     const w = Math.max(ansS.length, String(p.a).length, String(p.b).length);
     return `<div class="vp">${vrow(String(p.a), w)}${vrow(String(p.b), w, '×')}<div class="vl"></div>${vans(ansS, w, key)}</div>`;
   }
-  const qs = key ? String(p.q) + (p.rem ? ` R ${p.r}` : '') : '&nbsp;';
-  return `<div class="ld"><span class="ldq">${qs}</span><span class="ldd">${p.d}</span><span class="ldn">${p.n}</span></div>`;
+  const qs = key ? cnum(p.q) + (p.rem ? ` R ${cnum(p.r)}` : '') : '&nbsp;';
+  return `<div class="ld"><span class="ldq">${qs}</span><span class="ldd">${cnum(p.d)}</span><span class="ldn">${cnum(p.n)}</span></div>`;
 }
 function renderHorizontal(p, key) {
   const t = hText(p);
-  if (p.type === 'div' && p.rem) return `<div class="hp"><span>${t} =</span>${blank(key ? p.q : '', 'q')}<span>R</span>${blank(key ? p.r : '', 'q')}</div>`;
+  if (p.type === 'div' && p.rem) return `<div class="hp"><span>${t} =</span>${blank(key ? cnum(p.q) : '', 'q')}<span>R</span>${blank(key ? cnum(p.r) : '', 'q')}</div>`;
   const a = p.type === 'div' ? p.q : p.ans;
-  return `<div class="hp"><span>${t} =</span>${blank(key ? a : '')}</div>`;
+  return `<div class="hp"><span>${t} =</span>${blank(key ? cnum(a) : '')}</div>`;
 }
 function renderArithCell(p, n, horiz, key) {
   if (p.mod) return renderModCell(p, n, key);

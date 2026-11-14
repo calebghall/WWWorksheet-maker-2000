@@ -13,7 +13,7 @@ function nsxCount(rng, L) {
 }
 
 const seqProb = (type, prompt, vals, rng) => {
-  const terms = vals.map(String), idx = shuffle(rng, [1, 2, 3, 4, 5]).slice(0, 2).sort((a, b) => a - b);
+  const terms = vals.map(cnum), idx = shuffle(rng, [1, 2, 3, 4, 5]).slice(0, 2).sort((a, b) => a - b);
   return { mod: 'ns', type, prompt, terms, idx, sig: `${type}${terms}${idx}`, ew: terms.reduce((a, s, i) => a + Math.max(s.length * 0.62 + 0.9, idx.includes(i) ? 3.0 : 0), 0) + 1, eh: 1.1 + 1.6 };
 };
 

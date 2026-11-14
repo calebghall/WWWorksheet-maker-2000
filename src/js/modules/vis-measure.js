@@ -189,7 +189,7 @@ function g3Mvol(rng, L) {
   if (v === 'unit') { const it = pick(rng, G3_UNITS), opts = it[0] === 'mass' ? ['g', 'kg'] : ['mL', 'L'], text = it[0] === 'mass' ? `Find the mass of ${it[2]}.` : `How much liquid does ${it[2]} hold?`;
     return vtext('mvol', 'Circle the best unit.', { variant: v, kind: it[0], thing: it[2], text, opts, ans: it[1], sig: `mvu${it[2]}` }, 21, g3eh([text.length], g3optLen(opts)), true); }
   if (v === 'bench') { const it = pick(rng, G3_BENCH), n = it[2] === 1 ? pick(rng, [20, 50, 100]) : ri(rng, 2, 10), text = `${it[0]} ${it[4] === 'mass' ? `About what is the mass of ${n} ${it[1]}?` : `About how much do ${n} ${it[1]} hold?`}`;
-    return vtext('mvol', 'Estimate with a benchmark.', { variant: v, bench: it[0], per: it[2], unit: it[3], noun: it[1], n, text, ans: String(n * it[2]), sig: `mvk${it[1]}${n}` }, 21, g3eh([text.length], 0, 1.7), true); }
+    return vtext('mvol', 'Estimate with a benchmark.', { variant: v, bench: it[0], per: it[2], unit: it[3], noun: it[1], n, text, ans: cnum(n * it[2]), sig: `mvk${it[1]}${n}` }, 21, g3eh([text.length], 0, 1.7), true); }
   const op = pick(rng, L === 2 ? ['add', 'sub'] : ['add', 'sub', 'mul', 'div']), kind = pick(rng, ['mass', 'liquid']), unit = kind === 'mass' ? pick(rng, L === 1 ? ['kg'] : ['kg', 'g']) : pick(rng, ['L', 'mL']), small = unit === 'kg' || unit === 'L';
   let a, b, ans;
   if (op === 'add') { a = small ? ri(rng, 5, 60) : ri(rng, 2, 9) * 50 + ri(rng, 0, 4) * 10; b = small ? ri(rng, 5, 60) : ri(rng, 2, 9) * 50; ans = a + b; }
@@ -197,20 +197,20 @@ function g3Mvol(rng, L) {
   else if (op === 'mul') { a = small ? ri(rng, 2, 12) : ri(rng, 2, 9) * 10; b = ri(rng, 2, 9); ans = a * b; }
   else { b = ri(rng, 2, 9); ans = small ? ri(rng, 2, 12) : ri(rng, 2, 9) * 10; a = b * ans; }
   const text = G3_WORD[op][kind](a, b, unit);
-  return vtext('mvol', 'Solve the problem.', { variant: v, op, kind, unit, a, b, text, ans: String(ans), sig: `mvw${op}${kind}${unit}${a}${b}` }, 21, g3eh([text.length], 0, 1.7), true);
+  return vtext('mvol', 'Solve the problem.', { variant: v, op, kind, unit, a, b, text, ans: cnum(ans), sig: `mvw${op}${kind}${unit}${a}${b}` }, 21, g3eh([text.length], 0, 1.7), true);
 }
 
 function g3MvolHtml(p, key, x) {
   if (p.variant === 'dial') {
     const cx = 62, cy = 62; let o = `<circle cx="${cx}" cy="${cy}" r="54" fill="#fff" stroke="${VINK}" stroke-width="2.5"/>`;
     for (let i = 0; i <= p.N; i++) { const a = g3Pt(p.N, i, 54, cx, cy), b = g3Pt(p.N, i, i % 2 ? 47 : 43, cx, cy); o += vline(a[0].toFixed(1), a[1].toFixed(1), b[0].toFixed(1), b[1].toFixed(1), VINK, i % 2 ? 1.2 : 2);
-      if (i % 2 === 0) { const t = g3Pt(p.N, i, 32, cx, cy); o += vtxt(t[0].toFixed(1), (t[1] + 3.5).toFixed(1), String(i * p.step), { s: 9.5 }); } }
+      if (i % 2 === 0) { const t = g3Pt(p.N, i, 32, cx, cy); o += vtxt(t[0].toFixed(1), (t[1] + 3.5).toFixed(1), cnum(i * p.step), { s: 9.5 }); } }
     const n = g3Pt(p.N, p.i, 40, cx, cy); o += vline(cx, cy, n[0].toFixed(1), n[1].toFixed(1), VINK, 2.5) + `<circle cx="${cx}" cy="${cy}" r="4" fill="${VINK}"/>` + vtxt(cx, cy + 22, p.unit, { s: 10 });
     return vsvg(1.25, 1.25, o, 'A dial scale') + `<div>${x(p.ans, 2.6)} ${p.unit}</div>`;
   }
   if (p.variant === 'beaker') {
     const x0 = 16, x1 = 66, yb = 112, h = 100, lvl = h * p.i / p.N; let o = `<rect x="${x0}" y="${yb - lvl}" width="${x1 - x0}" height="${lvl}" fill="${VFILL[3]}"/>` + vline(x0, yb - h - 6, x0, yb, VINK, 2.5) + vline(x1, yb - h - 6, x1, yb, VINK, 2.5) + vline(x0, yb, x1, yb, VINK, 2.5);
-    for (let i = 0; i <= p.N; i++) { const y = (yb - h * i / p.N).toFixed(1), lab = p.N === 5 || i % 2 === 0; o += vline(x1, y, x1 + (lab ? 9 : 5), y, VINK, lab ? 1.8 : 1.2); if (lab) o += vtxt(x1 + 12, (yb - h * i / p.N + 3.5).toFixed(1), String(i * p.step), { a: 'start', s: 10 }); }
+    for (let i = 0; i <= p.N; i++) { const y = (yb - h * i / p.N).toFixed(1), lab = p.N === 5 || i % 2 === 0; o += vline(x1, y, x1 + (lab ? 9 : 5), y, VINK, lab ? 1.8 : 1.2); if (lab) o += vtxt(x1 + 12, (yb - h * i / p.N + 3.5).toFixed(1), cnum(i * p.step), { a: 'start', s: 10 }); }
     return vsvg(1.25, 1.25, o, 'A measuring beaker') + `<div>${x(p.ans, 2.6)} ${p.unit}</div>`;
   }
   if (p.variant === 'unit') return `<div class="wt">${esc(p.text)}</div><div>${vopts(p.opts, p.ans, key)}</div>`;

@@ -752,7 +752,7 @@ const lcm = (a, b) => a / gcd(a, b) * b;
 const red = (n, d) => { const g = gcd(n, d) || 1; return [n / g, d / g]; };
 /* Improper fraction to a whole part plus a reduced proper fraction. */
 const mixedOf = (n, d) => { const [a, b] = red(n, d), w = Math.floor(a / b), r = a - w * b; return { w, n: r, d: r ? b : 1 }; };
-const cnum = n => n >= 10000 ? String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ',') : String(n);
+const cnum = n => n >= 1000 ? String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ',') : String(n);
 /* Decimal string from an integer mantissa m with dp decimal places. */
 const dstr = (m, dp) => {
   let s = String(Math.abs(m));
@@ -832,12 +832,12 @@ function needSize(p, fs, horiz) {
   if (p.mod) return modNeed(p, fs);
   const f = fs / 72;
   if (horiz) {
-    const bw = (p.type === 'div' && p.rem) ? 1.9 : 1.0;
+    const ansLen = cnum(p.type === 'div' ? p.q : p.ans).length, bw = (p.type === 'div' && p.rem) ? 1.9 + 0.1 * Math.max(0, ansLen - 4) : Math.max(1.0, (ansLen + 1) * 0.6 * f);
     return [(hText(p).length + 3) * 0.6 * f + bw + 0.45, f * 1.7 + 0.2];
   }
   let w, rowsEm;
   if (p.type === 'div') {
-    const dl = String(p.d).length, nl = String(p.n).length, qs = String(p.q).length + (p.rem ? 4 : 0);
+    const dl = cnum(p.d).length, nl = cnum(p.n).length, qs = cnum(p.q).length + (p.rem ? 4 + cnum(p.r).length - 1 : 0);
     w = Math.max(dl + nl + 1.6, qs + 1) * DGW * f + 0.2;
     rowsEm = 3.5 + nl * 0.9;
   } else {
@@ -1368,10 +1368,10 @@ const vans = (s, w, key) => `<div class="vr a"><span class="vo"></span>${key ? n
 
 function hText(p) {
   switch (p.type) {
-    case 'add': return p.nums.join(' + ');
-    case 'sub': return `${p.a} − ${p.b}`;
-    case 'mul': return `${p.a} × ${p.b}`;
-    default: return `${p.n} ÷ ${p.d}`;
+    case 'add': return p.nums.map(cnum).join(' + ');
+    case 'sub': return `${cnum(p.a)} − ${cnum(p.b)}`;
+    case 'mul': return `${cnum(p.a)} × ${cnum(p.b)}`;
+    default: return `${cnum(p.n)} ÷ ${cnum(p.d)}`;
   }
 }
 function renderVertical(p, key) {
@@ -1396,14 +1396,14 @@ function renderVertical(p, key) {
     const w = Math.max(ansS.length, String(p.a).length, String(p.b).length);
     return `<div class="vp">${vrow(String(p.a), w)}${vrow(String(p.b), w, '×')}<div class="vl"></div>${vans(ansS, w, key)}</div>`;
   }
-  const qs = key ? String(p.q) + (p.rem ? ` R ${p.r}` : '') : '&nbsp;';
-  return `<div class="ld"><span class="ldq">${qs}</span><span class="ldd">${p.d}</span><span class="ldn">${p.n}</span></div>`;
+  const qs = key ? cnum(p.q) + (p.rem ? ` R ${cnum(p.r)}` : '') : '&nbsp;';
+  return `<div class="ld"><span class="ldq">${qs}</span><span class="ldd">${cnum(p.d)}</span><span class="ldn">${cnum(p.n)}</span></div>`;
 }
 function renderHorizontal(p, key) {
   const t = hText(p);
-  if (p.type === 'div' && p.rem) return `<div class="hp"><span>${t} =</span>${blank(key ? p.q : '', 'q')}<span>R</span>${blank(key ? p.r : '', 'q')}</div>`;
+  if (p.type === 'div' && p.rem) return `<div class="hp"><span>${t} =</span>${blank(key ? cnum(p.q) : '', 'q')}<span>R</span>${blank(key ? cnum(p.r) : '', 'q')}</div>`;
   const a = p.type === 'div' ? p.q : p.ans;
-  return `<div class="hp"><span>${t} =</span>${blank(key ? a : '')}</div>`;
+  return `<div class="hp"><span>${t} =</span>${blank(key ? cnum(a) : '')}</div>`;
 }
 function renderArithCell(p, n, horiz, key) {
   if (p.mod) return renderModCell(p, n, key);
@@ -1532,8 +1532,8 @@ function fDecMul(rng, L) {
   } else {
     const dp = pick(rng, L === 2 ? [0, 1] : [0, 1, 2]), im = dp === 0 ? ri(rng, 2, 99) : dp === 1 ? ri(rng, 11, 999) : ri(rng, 101, 999);
     const k = ri(rng, 1, L === 2 ? 2 : 3), mul = rng() < 0.5, base = dp ? dstr(im, dp) : String(im);
-    if (mul) { const dq = dp - k; ans = dq <= 0 ? String(im * P10(-dq)) : trimZ(dstr(im, dq)); expr = `${base} × ${P10(k)}`; }
-    else { prompt = 'Divide.'; ans = trimZ(dstr(im, dp + k)); expr = `${base} ÷ ${P10(k)}`; }
+    if (mul) { const dq = dp - k; ans = dq <= 0 ? cnum(im * P10(-dq)) : trimZ(dstr(im, dq)); expr = `${base} × ${cnum(P10(k))}`; }
+    else { prompt = 'Divide.'; ans = trimZ(dstr(im, dp + k)); expr = `${base} ÷ ${cnum(P10(k))}`; }
   }
   return { mod: 'fdp', type: 'decmul', prompt, expr, ans, sig: `dm${expr}`, ew: expr.length * 0.62 + 3.4 + BW, eh: 1.1 + 1.6 };
 }
@@ -1593,7 +1593,7 @@ const rdigits = (rng, n, zeros) => {
 };
 
 function lineSvg(lo, hi, div, k) {
-  const W = 270, x0 = 20, x1 = 250, y = 32, xs = i => x0 + (x1 - x0) * i / div, f = v => trimZ(dstr(v, 2));
+  const W = 270, x0 = 20, x1 = 250, y = 32, xs = i => x0 + (x1 - x0) * i / div, f = v => trimZ(dstr(v, 2)).replace(/^\d+/, m => cnum(Number(m)));
   let s = `<svg xmlns="http://www.w3.org/2000/svg" width="2.7in" height="0.72in" viewBox="0 0 ${W} 72" role="img" aria-label="Number line from ${f(lo)} to ${f(hi)} with an arrow">`
     + `<path d="M${x0 - 10} ${y}H${x1 + 10}" stroke="var(--ink)" stroke-width="2" fill="none"/>`;
   let t = '';
@@ -1701,7 +1701,7 @@ function nsxMoreExp(rng, L) {
   return { mod: 'ns', type: 'moreexp', prompt: 'Write the number. Then explain.', base, more, ans: String(ans), sig: `me${base}${more}`, ew: 22, eh: 1.1 + 1.6 * 3 };
 }
 
-const nsMoreexpHtml = (p, key, x) => `<div>10 ${p.more ? 'more' : 'less'} than ${p.base} = ${x(p.ans, BW)}</div><div>How do you know?</div><div><span class="blank" style="min-width:20em">${key ? `The tens digit ${p.more ? 'goes up' : 'goes down'} by 1.` : '&nbsp;'}</span></div>`;
+const nsMoreexpHtml = (p, key, x) => `<div>10 ${p.more ? 'more' : 'less'} than ${cnum(p.base)} = ${x(p.ans, BW)}</div><div>How do you know?</div><div><span class="blank" style="min-width:20em">${key ? `The tens digit ${p.more ? 'goes up' : 'goes down'} by 1.` : '&nbsp;'}</span></div>`;
 
 const INT_PLACES = ['ones', 'tens', 'hundreds', 'thousands', 'ten thousands', 'hundred thousands'];
 
@@ -1713,7 +1713,7 @@ function digitsHtml(ints, decs, ul) {
   const n = ints.length;
   ints.forEach((ch, i) => {
     const c = ul && ul.part === 'i' && ul.i === i ? `<u>${ch}</u>` : ch;
-    h += c; if (n >= 5 && i < n - 1 && (n - 1 - i) % 3 === 0) h += ',';
+    h += c; if (n >= 4 && i < n - 1 && (n - 1 - i) % 3 === 0) h += ',';
   });
   if (decs.length) { h += '.'; decs.forEach((ch, i) => { h += ul && ul.part === 'd' && ul.i === i ? `<u>${ch}</u>` : ch; }); }
   return h;
@@ -1825,7 +1825,7 @@ const nsRnd3Html = (p, key, x) => p.kind === 'line' ? `${p.svg}<div>${p.shown} �
 
 const nsEstHtml = (p, key, x) => `${esc(p.expr)} ≈ ${x(p.ans, 3.4)}`;
 
-const nsMoreHtml = (p, key, x) => `${p.amt} ${p.more ? 'more' : 'less'} than ${cnum(p.base)} = ${x(p.ans, BW)}`;
+const nsMoreHtml = (p, key, x) => `${cnum(p.amt)} ${p.more ? 'more' : 'less'} than ${cnum(p.base)} = ${x(p.ans, BW)}`;
 
 const nsTensHtml = (p, key, x) => tokHtml(p.tok, key, x);
 
@@ -1869,7 +1869,7 @@ function nsxTenx(rng, L) {
   if (kind === 'dig') {
     const len = L === 2 ? ri(rng, 3, 5) : ri(rng, 4, 6), i = ri(rng, 0, len - 2), d = ri(rng, 1, 9);
     const dg = Array.from({ length: len }, () => ri(rng, 0, 9)); dg[0] = Math.max(1, dg[0]); dg[i] = d; dg[i + 1] = d;
-    const shown = dg.map((c, j) => (j === i || j === i + 1 ? `<u>${c}</u>` : String(c)) + (len >= 5 && j < len - 1 && (len - 1 - j) % 3 === 0 ? ',' : '')).join('');
+    const shown = dg.map((c, j) => (j === i || j === i + 1 ? `<u>${c}</u>` : String(c)) + (len >= 4 && j < len - 1 && (len - 1 - j) % 3 === 0 ? ',' : '')).join('');
     return { mod: 'ns', type: 'tenx', prompt: 'Compare the underlined digits:', kind, shown, ans: '10', sig: `txd${dg.join('')}${i}`, ew: (len + 16) * 0.62 + 4, eh: 1.1 + 1.6 };
   }
   if (kind === 'x10') {
@@ -1915,7 +1915,7 @@ function nsxCount(rng, L) {
 }
 
 const seqProb = (type, prompt, vals, rng) => {
-  const terms = vals.map(String), idx = shuffle(rng, [1, 2, 3, 4, 5]).slice(0, 2).sort((a, b) => a - b);
+  const terms = vals.map(cnum), idx = shuffle(rng, [1, 2, 3, 4, 5]).slice(0, 2).sort((a, b) => a - b);
   return { mod: 'ns', type, prompt, terms, idx, sig: `${type}${terms}${idx}`, ew: terms.reduce((a, s, i) => a + Math.max(s.length * 0.62 + 0.9, idx.includes(i) ? 3.0 : 0), 0) + 1, eh: 1.1 + 1.6 };
 };
 
@@ -2532,7 +2532,7 @@ function nsxMword(rng, L) {
   else if (kind === 'sub') { const b = ri(rng, 12, top), a = b + ri(rng, 12, top); text = `${nm} has ${a} ${u} of ${stuff} and uses ${b} ${u}. How many ${u} are left?`; eq = `${a} − ${b}`; ans = a - b; sg = `${a}-${b}${u}`; }
   else if (kind === 'mul') { const a = ri(rng, 6, L === 1 ? 25 : 90), n = ri(rng, 3, 9); text = `Each ${cont} holds ${a} ${u} of ${stuff}. How many ${u} of ${stuff} are in ${n} ${cont}s?`; eq = `${n} × ${a}`; ans = n * a; sg = `${n}x${a}${u}`; }
   else if (kind === 'two') { const a = ri(rng, 8, 60), n = ri(rng, 3, 8), b = ri(rng, 5, a * n - 5); text = `Each ${cont} holds ${a} ${u} of ${stuff}. ${nm} fills ${n} ${cont}s and then uses ${b} ${u}. How many ${u} are left?`; eq = `${n} × ${a} − ${b}`; ans = n * a - b; sg = `${n}x${a}-${b}${u}`; }
-  else if (kind === 'conv') { const [big, small, f, st2] = pick(rng, NS_MW_CONV), a = ri(rng, 2, 9), b = f === 1000 ? 50 * ri(rng, 1, 19) : ri(rng, 1, Math.min(f - 1, 60)); text = `${nm} has ${a} ${big} of ${st2} and uses ${b} ${small}. How many ${small} are left?`; eq = `${a} × ${f} − ${b}`; ans = a * f - b; sg = `${a}${big}-${b}${small}`; }
+  else if (kind === 'conv') { const [big, small, f, st2] = pick(rng, NS_MW_CONV), a = ri(rng, 2, 9), b = f === 1000 ? 50 * ri(rng, 1, 19) : ri(rng, 1, Math.min(f - 1, 60)); text = `${nm} has ${a} ${big} of ${st2} and uses ${b} ${small}. How many ${small} are left?`; eq = `${a} × ${cnum(f)} − ${b}`; ans = a * f - b; sg = `${a}${big}-${b}${small}`; }
   else if (kind === 'money') { const a = ri(rng, 2, 9), b = ri(rng, 3, 15), n = ri(rng, 2, 6), m = ri(rng, 2, 5); text = `A pen costs $${a} and a notebook costs $${b}. ${nm} buys ${n} pens and ${m} notebooks. How many dollars is the total?`; eq = `${n} × ${a} + ${m} × ${b}`; ans = n * a + m * b; sg = `$${n}x${a}+${m}x${b}`; }
   else {
     /* start 1:00 to 8:55 plus up to 2 h 30 min ends by 11:25, so the clock never wraps past 12 */
@@ -2540,7 +2540,7 @@ function nsxMword(rng, L) {
     text = `A movie starts at ${f2(h, mm)} and ends at ${f2(h2, m2)}. How many minutes long is the movie?`; ans = dur; sg = `t${h}${mm}${dur}`;
     eq = `${f2(h2, m2)} − ${f2(h, mm)}`;
   }
-  return { mod: 'ns', type: 'mword', prompt: 'Solve. Write an equation.', kind, eq, ans: String(ans), text, wide: true, sig: `mw${kind}${sg}${kind === 'add' || kind === 'sub' || kind === 'mul' || kind === 'two' ? stuff : ''}`, ew: 21, eh: nsWordEh(text) };
+  return { mod: 'ns', type: 'mword', prompt: 'Solve. Write an equation.', kind, eq, ans: cnum(ans), text, wide: true, sig: `mw${kind}${sg}${kind === 'add' || kind === 'sub' || kind === 'mul' || kind === 'two' ? stuff : ''}`, ew: 21, eh: nsWordEh(text) };
 }
 
 const nsMwordHtml = (p, key, x) => wordCell(p, key, x);
@@ -3371,7 +3371,7 @@ function g3Mvol(rng, L) {
   if (v === 'unit') { const it = pick(rng, G3_UNITS), opts = it[0] === 'mass' ? ['g', 'kg'] : ['mL', 'L'], text = it[0] === 'mass' ? `Find the mass of ${it[2]}.` : `How much liquid does ${it[2]} hold?`;
     return vtext('mvol', 'Circle the best unit.', { variant: v, kind: it[0], thing: it[2], text, opts, ans: it[1], sig: `mvu${it[2]}` }, 21, g3eh([text.length], g3optLen(opts)), true); }
   if (v === 'bench') { const it = pick(rng, G3_BENCH), n = it[2] === 1 ? pick(rng, [20, 50, 100]) : ri(rng, 2, 10), text = `${it[0]} ${it[4] === 'mass' ? `About what is the mass of ${n} ${it[1]}?` : `About how much do ${n} ${it[1]} hold?`}`;
-    return vtext('mvol', 'Estimate with a benchmark.', { variant: v, bench: it[0], per: it[2], unit: it[3], noun: it[1], n, text, ans: String(n * it[2]), sig: `mvk${it[1]}${n}` }, 21, g3eh([text.length], 0, 1.7), true); }
+    return vtext('mvol', 'Estimate with a benchmark.', { variant: v, bench: it[0], per: it[2], unit: it[3], noun: it[1], n, text, ans: cnum(n * it[2]), sig: `mvk${it[1]}${n}` }, 21, g3eh([text.length], 0, 1.7), true); }
   const op = pick(rng, L === 2 ? ['add', 'sub'] : ['add', 'sub', 'mul', 'div']), kind = pick(rng, ['mass', 'liquid']), unit = kind === 'mass' ? pick(rng, L === 1 ? ['kg'] : ['kg', 'g']) : pick(rng, ['L', 'mL']), small = unit === 'kg' || unit === 'L';
   let a, b, ans;
   if (op === 'add') { a = small ? ri(rng, 5, 60) : ri(rng, 2, 9) * 50 + ri(rng, 0, 4) * 10; b = small ? ri(rng, 5, 60) : ri(rng, 2, 9) * 50; ans = a + b; }
@@ -3379,20 +3379,20 @@ function g3Mvol(rng, L) {
   else if (op === 'mul') { a = small ? ri(rng, 2, 12) : ri(rng, 2, 9) * 10; b = ri(rng, 2, 9); ans = a * b; }
   else { b = ri(rng, 2, 9); ans = small ? ri(rng, 2, 12) : ri(rng, 2, 9) * 10; a = b * ans; }
   const text = G3_WORD[op][kind](a, b, unit);
-  return vtext('mvol', 'Solve the problem.', { variant: v, op, kind, unit, a, b, text, ans: String(ans), sig: `mvw${op}${kind}${unit}${a}${b}` }, 21, g3eh([text.length], 0, 1.7), true);
+  return vtext('mvol', 'Solve the problem.', { variant: v, op, kind, unit, a, b, text, ans: cnum(ans), sig: `mvw${op}${kind}${unit}${a}${b}` }, 21, g3eh([text.length], 0, 1.7), true);
 }
 
 function g3MvolHtml(p, key, x) {
   if (p.variant === 'dial') {
     const cx = 62, cy = 62; let o = `<circle cx="${cx}" cy="${cy}" r="54" fill="#fff" stroke="${VINK}" stroke-width="2.5"/>`;
     for (let i = 0; i <= p.N; i++) { const a = g3Pt(p.N, i, 54, cx, cy), b = g3Pt(p.N, i, i % 2 ? 47 : 43, cx, cy); o += vline(a[0].toFixed(1), a[1].toFixed(1), b[0].toFixed(1), b[1].toFixed(1), VINK, i % 2 ? 1.2 : 2);
-      if (i % 2 === 0) { const t = g3Pt(p.N, i, 32, cx, cy); o += vtxt(t[0].toFixed(1), (t[1] + 3.5).toFixed(1), String(i * p.step), { s: 9.5 }); } }
+      if (i % 2 === 0) { const t = g3Pt(p.N, i, 32, cx, cy); o += vtxt(t[0].toFixed(1), (t[1] + 3.5).toFixed(1), cnum(i * p.step), { s: 9.5 }); } }
     const n = g3Pt(p.N, p.i, 40, cx, cy); o += vline(cx, cy, n[0].toFixed(1), n[1].toFixed(1), VINK, 2.5) + `<circle cx="${cx}" cy="${cy}" r="4" fill="${VINK}"/>` + vtxt(cx, cy + 22, p.unit, { s: 10 });
     return vsvg(1.25, 1.25, o, 'A dial scale') + `<div>${x(p.ans, 2.6)} ${p.unit}</div>`;
   }
   if (p.variant === 'beaker') {
     const x0 = 16, x1 = 66, yb = 112, h = 100, lvl = h * p.i / p.N; let o = `<rect x="${x0}" y="${yb - lvl}" width="${x1 - x0}" height="${lvl}" fill="${VFILL[3]}"/>` + vline(x0, yb - h - 6, x0, yb, VINK, 2.5) + vline(x1, yb - h - 6, x1, yb, VINK, 2.5) + vline(x0, yb, x1, yb, VINK, 2.5);
-    for (let i = 0; i <= p.N; i++) { const y = (yb - h * i / p.N).toFixed(1), lab = p.N === 5 || i % 2 === 0; o += vline(x1, y, x1 + (lab ? 9 : 5), y, VINK, lab ? 1.8 : 1.2); if (lab) o += vtxt(x1 + 12, (yb - h * i / p.N + 3.5).toFixed(1), String(i * p.step), { a: 'start', s: 10 }); }
+    for (let i = 0; i <= p.N; i++) { const y = (yb - h * i / p.N).toFixed(1), lab = p.N === 5 || i % 2 === 0; o += vline(x1, y, x1 + (lab ? 9 : 5), y, VINK, lab ? 1.8 : 1.2); if (lab) o += vtxt(x1 + 12, (yb - h * i / p.N + 3.5).toFixed(1), cnum(i * p.step), { a: 'start', s: 10 }); }
     return vsvg(1.25, 1.25, o, 'A measuring beaker') + `<div>${x(p.ans, 2.6)} ${p.unit}</div>`;
   }
   if (p.variant === 'unit') return `<div class="wt">${esc(p.text)}</div><div>${vopts(p.opts, p.ans, key)}</div>`;

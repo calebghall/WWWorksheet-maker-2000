@@ -7,7 +7,7 @@ const lcm = (a, b) => a / gcd(a, b) * b;
 const red = (n, d) => { const g = gcd(n, d) || 1; return [n / g, d / g]; };
 /* Improper fraction to a whole part plus a reduced proper fraction. */
 const mixedOf = (n, d) => { const [a, b] = red(n, d), w = Math.floor(a / b), r = a - w * b; return { w, n: r, d: r ? b : 1 }; };
-const cnum = n => n >= 10000 ? String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ',') : String(n);
+const cnum = n => n >= 1000 ? String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ',') : String(n);
 /* Decimal string from an integer mantissa m with dp decimal places. */
 const dstr = (m, dp) => {
   let s = String(Math.abs(m));

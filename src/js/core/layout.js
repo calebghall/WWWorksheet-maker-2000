@@ -3,12 +3,12 @@ function needSize(p, fs, horiz) {
   if (p.mod) return modNeed(p, fs);
   const f = fs / 72;
   if (horiz) {
-    const bw = (p.type === 'div' && p.rem) ? 1.9 : 1.0;
+    const ansLen = cnum(p.type === 'div' ? p.q : p.ans).length, bw = (p.type === 'div' && p.rem) ? 1.9 + 0.1 * Math.max(0, ansLen - 4) : Math.max(1.0, (ansLen + 1) * 0.6 * f);
     return [(hText(p).length + 3) * 0.6 * f + bw + 0.45, f * 1.7 + 0.2];
   }
   let w, rowsEm;
   if (p.type === 'div') {
-    const dl = String(p.d).length, nl = String(p.n).length, qs = String(p.q).length + (p.rem ? 4 : 0);
+    const dl = cnum(p.d).length, nl = cnum(p.n).length, qs = cnum(p.q).length + (p.rem ? 4 + cnum(p.r).length - 1 : 0);
     w = Math.max(dl + nl + 1.6, qs + 1) * DGW * f + 0.2;
     rowsEm = 3.5 + nl * 0.9;
   } else {

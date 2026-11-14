@@ -26,7 +26,7 @@ const rdigits = (rng, n, zeros) => {
 };
 
 function lineSvg(lo, hi, div, k) {
-  const W = 270, x0 = 20, x1 = 250, y = 32, xs = i => x0 + (x1 - x0) * i / div, f = v => trimZ(dstr(v, 2));
+  const W = 270, x0 = 20, x1 = 250, y = 32, xs = i => x0 + (x1 - x0) * i / div, f = v => trimZ(dstr(v, 2)).replace(/^\d+/, m => cnum(Number(m)));
   let s = `<svg xmlns="http://www.w3.org/2000/svg" width="2.7in" height="0.72in" viewBox="0 0 ${W} 72" role="img" aria-label="Number line from ${f(lo)} to ${f(hi)} with an arrow">`
     + `<path d="M${x0 - 10} ${y}H${x1 + 10}" stroke="var(--ink)" stroke-width="2" fill="none"/>`;
   let t = '';

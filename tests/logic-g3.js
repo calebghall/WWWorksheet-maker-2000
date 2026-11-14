@@ -16,8 +16,8 @@ function chk(p,id,L){n++;const e=m=>bad.push(`${id} L${L}: ${m} ${JSON.stringify
   else{const[a,b]=p.cells;if(b[0]!==a[0]+1||b[1]!==a[1]||p.ans!==String(p.c0+a[1])||(p.r0+b[0])*p.c-(p.r0+a[0])*p.c!==p.c)e('plus');}break;}
  case 'fmodel':case 'fline':{const[nu,de]=p.ans.split('/').map(Number);if(id==='fmodel'){if(de!==p.n||nu!==p.k||nu<1||nu>=de)e('fmodel');}else if(de!==p.b||nu!==p.k||nu>=p.top*de||(p.top===2&&nu===de))e('fline');break;}
  case 'mvol':if(p.variant==='dial'||p.variant==='beaker'){if(p.ans!==String(p.i*p.step)||p.i<1||p.i>=p.N)e('read');}
-  else if(p.variant==='word'){const f={add:p.a+p.b,sub:p.a-p.b,mul:p.a*p.b,div:p.a/p.b}[p.op];if(String(f)!==p.ans||!Number.isInteger(f)||f<=0||!p.text.includes(String(p.a)))e('word');}
-  else if(p.variant==='bench'){if(p.ans!==String(p.n*p.per))e('bench');}else{const u=E('G3_UNITS').find(r=>r[2]===p.thing);if(!u||u[1]!==p.ans||!p.opts.includes(p.ans))e('unit');}break;
+  else if(p.variant==='word'){const f={add:p.a+p.b,sub:p.a-p.b,mul:p.a*p.b,div:p.a/p.b}[p.op];if(String(f)!==p.ans.replace(/,/g,'')||!Number.isInteger(f)||f<=0||!p.text.includes(String(p.a)))e('word');}
+  else if(p.variant==='bench'){if(p.ans.replace(/,/g,'')!==String(p.n*p.per))e('bench');}else{const u=E('G3_UNITS').find(r=>r[2]===p.thing);if(!u||u[1]!==p.ans||!p.opts.includes(p.ans))e('unit');}break;
  case 'pictg':case 'barg':{const t=sum(p.cnt),hi=Math.max(...p.cnt),lo=Math.min(...p.cnt);if(new Set(p.cnt).size!==p.cnt.length||p.tot!==t||p.diff!==hi-lo||p.cnt[p.hi]!==hi||p.cnt[p.lo]!==lo)e('data');
   if(p.cnt.some(v=>v%p.g))e('granularity');if(id==='pictg'&&Math.max(...p.cnt)/p.step>6)e('too many');if(id==='barg'&&Math.max(...p.cnt)>7*p.step)e('bar max');
   if(p.two&&(p.two.ans!==p.cnt[p.two.a]+p.cnt[p.two.b]-p.cnt[p.two.c]||p.two.ans<=0))e('two');if(p.ans!==(p.make?p.cnt.join(' '):`${t} ${hi-lo}`))e('ans');break;}

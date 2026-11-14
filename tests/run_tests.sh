@@ -19,6 +19,7 @@ node tests/logic-k2-c.js
 node tests/logic-k2-d.js
 node tests/logic-g3.js
 node tests/logic-ns-extra.js
+node tests/logic-commas.js
 "$PY" tests/clip.py
 "$PY" build.py --target site
 node tests/site-check.js

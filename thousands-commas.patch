@@ -1,0 +1,499 @@
+diff --git a/WWWorksheet-maker-2000.html b/WWWorksheet-maker-2000.html
+index 6555588..04509fb 100644
+--- a/WWWorksheet-maker-2000.html
++++ b/WWWorksheet-maker-2000.html
+@@ -752,7 +752,7 @@ const lcm = (a, b) => a / gcd(a, b) * b;
+ const red = (n, d) => { const g = gcd(n, d) || 1; return [n / g, d / g]; };
+ /* Improper fraction to a whole part plus a reduced proper fraction. */
+ const mixedOf = (n, d) => { const [a, b] = red(n, d), w = Math.floor(a / b), r = a - w * b; return { w, n: r, d: r ? b : 1 }; };
+-const cnum = n => n >= 10000 ? String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ',') : String(n);
++const cnum = n => n >= 1000 ? String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ',') : String(n);
+ /* Decimal string from an integer mantissa m with dp decimal places. */
+ const dstr = (m, dp) => {
+   let s = String(Math.abs(m));
+@@ -832,12 +832,12 @@ function needSize(p, fs, horiz) {
+   if (p.mod) return modNeed(p, fs);
+   const f = fs / 72;
+   if (horiz) {
+-    const bw = (p.type === 'div' && p.rem) ? 1.9 : 1.0;
++    const ansLen = cnum(p.type === 'div' ? p.q : p.ans).length, bw = (p.type === 'div' && p.rem) ? 1.9 + 0.1 * Math.max(0, ansLen - 4) : Math.max(1.0, (ansLen + 1) * 0.6 * f);
+     return [(hText(p).length + 3) * 0.6 * f + bw + 0.45, f * 1.7 + 0.2];
+   }
+   let w, rowsEm;
+   if (p.type === 'div') {
+-    const dl = String(p.d).length, nl = String(p.n).length, qs = String(p.q).length + (p.rem ? 4 : 0);
++    const dl = cnum(p.d).length, nl = cnum(p.n).length, qs = cnum(p.q).length + (p.rem ? 4 + cnum(p.r).length - 1 : 0);
+     w = Math.max(dl + nl + 1.6, qs + 1) * DGW * f + 0.2;
+     rowsEm = 3.5 + nl * 0.9;
+   } else {
+@@ -1368,10 +1368,10 @@ const vans = (s, w, key) => `<div class="vr a"><span class="vo"></span>${key ? n
+ 
+ function hText(p) {
+   switch (p.type) {
+-    case 'add': return p.nums.join(' + ');
+-    case 'sub': return `${p.a} − ${p.b}`;
+-    case 'mul': return `${p.a} × ${p.b}`;
+-    default: return `${p.n} ÷ ${p.d}`;
++    case 'add': return p.nums.map(cnum).join(' + ');
++    case 'sub': return `${cnum(p.a)} − ${cnum(p.b)}`;
++    case 'mul': return `${cnum(p.a)} × ${cnum(p.b)}`;
++    default: return `${cnum(p.n)} ÷ ${cnum(p.d)}`;
+   }
+ }
+ function renderVertical(p, key) {
+@@ -1396,14 +1396,14 @@ function renderVertical(p, key) {
+     const w = Math.max(ansS.length, String(p.a).length, String(p.b).length);
+     return `<div class="vp">${vrow(String(p.a), w)}${vrow(String(p.b), w, '×')}<div class="vl"></div>${vans(ansS, w, key)}</div>`;
+   }
+-  const qs = key ? String(p.q) + (p.rem ? ` R ${p.r}` : '') : '&nbsp;';
+-  return `<div class="ld"><span class="ldq">${qs}</span><span class="ldd">${p.d}</span><span class="ldn">${p.n}</span></div>`;
++  const qs = key ? cnum(p.q) + (p.rem ? ` R ${cnum(p.r)}` : '') : '&nbsp;';
++  return `<div class="ld"><span class="ldq">${qs}</span><span class="ldd">${cnum(p.d)}</span><span class="ldn">${cnum(p.n)}</span></div>`;
+ }
+ function renderHorizontal(p, key) {
+   const t = hText(p);
+-  if (p.type === 'div' && p.rem) return `<div class="hp"><span>${t} =</span>${blank(key ? p.q : '', 'q')}<span>R</span>${blank(key ? p.r : '', 'q')}</div>`;
++  if (p.type === 'div' && p.rem) return `<div class="hp"><span>${t} =</span>${blank(key ? cnum(p.q) : '', 'q')}<span>R</span>${blank(key ? cnum(p.r) : '', 'q')}</div>`;
+   const a = p.type === 'div' ? p.q : p.ans;
+-  return `<div class="hp"><span>${t} =</span>${blank(key ? a : '')}</div>`;
++  return `<div class="hp"><span>${t} =</span>${blank(key ? cnum(a) : '')}</div>`;
+ }
+ function renderArithCell(p, n, horiz, key) {
+   if (p.mod) return renderModCell(p, n, key);
+@@ -1532,8 +1532,8 @@ function fDecMul(rng, L) {
+   } else {
+     const dp = pick(rng, L === 2 ? [0, 1] : [0, 1, 2]), im = dp === 0 ? ri(rng, 2, 99) : dp === 1 ? ri(rng, 11, 999) : ri(rng, 101, 999);
+     const k = ri(rng, 1, L === 2 ? 2 : 3), mul = rng() < 0.5, base = dp ? dstr(im, dp) : String(im);
+-    if (mul) { const dq = dp - k; ans = dq <= 0 ? String(im * P10(-dq)) : trimZ(dstr(im, dq)); expr = `${base} × ${P10(k)}`; }
+-    else { prompt = 'Divide.'; ans = trimZ(dstr(im, dp + k)); expr = `${base} ÷ ${P10(k)}`; }
++    if (mul) { const dq = dp - k; ans = dq <= 0 ? cnum(im * P10(-dq)) : trimZ(dstr(im, dq)); expr = `${base} × ${cnum(P10(k))}`; }
++    else { prompt = 'Divide.'; ans = trimZ(dstr(im, dp + k)); expr = `${base} ÷ ${cnum(P10(k))}`; }
+   }
+   return { mod: 'fdp', type: 'decmul', prompt, expr, ans, sig: `dm${expr}`, ew: expr.length * 0.62 + 3.4 + BW, eh: 1.1 + 1.6 };
+ }
+@@ -1593,7 +1593,7 @@ const rdigits = (rng, n, zeros) => {
+ };
+ 
+ function lineSvg(lo, hi, div, k) {
+-  const W = 270, x0 = 20, x1 = 250, y = 32, xs = i => x0 + (x1 - x0) * i / div, f = v => trimZ(dstr(v, 2));
++  const W = 270, x0 = 20, x1 = 250, y = 32, xs = i => x0 + (x1 - x0) * i / div, f = v => trimZ(dstr(v, 2)).replace(/^\d+/, m => cnum(Number(m)));
+   let s = `<svg xmlns="http://www.w3.org/2000/svg" width="2.7in" height="0.72in" viewBox="0 0 ${W} 72" role="img" aria-label="Number line from ${f(lo)} to ${f(hi)} with an arrow">`
+     + `<path d="M${x0 - 10} ${y}H${x1 + 10}" stroke="var(--ink)" stroke-width="2" fill="none"/>`;
+   let t = '';
+@@ -1701,7 +1701,7 @@ function nsxMoreExp(rng, L) {
+   return { mod: 'ns', type: 'moreexp', prompt: 'Write the number. Then explain.', base, more, ans: String(ans), sig: `me${base}${more}`, ew: 22, eh: 1.1 + 1.6 * 3 };
+ }
+ 
+-const nsMoreexpHtml = (p, key, x) => `<div>10 ${p.more ? 'more' : 'less'} than ${p.base} = ${x(p.ans, BW)}</div><div>How do you know?</div><div><span class="blank" style="min-width:20em">${key ? `The tens digit ${p.more ? 'goes up' : 'goes down'} by 1.` : '&nbsp;'}</span></div>`;
++const nsMoreexpHtml = (p, key, x) => `<div>10 ${p.more ? 'more' : 'less'} than ${cnum(p.base)} = ${x(p.ans, BW)}</div><div>How do you know?</div><div><span class="blank" style="min-width:20em">${key ? `The tens digit ${p.more ? 'goes up' : 'goes down'} by 1.` : '&nbsp;'}</span></div>`;
+ 
+ const INT_PLACES = ['ones', 'tens', 'hundreds', 'thousands', 'ten thousands', 'hundred thousands'];
+ 
+@@ -1713,7 +1713,7 @@ function digitsHtml(ints, decs, ul) {
+   const n = ints.length;
+   ints.forEach((ch, i) => {
+     const c = ul && ul.part === 'i' && ul.i === i ? `<u>${ch}</u>` : ch;
+-    h += c; if (n >= 5 && i < n - 1 && (n - 1 - i) % 3 === 0) h += ',';
++    h += c; if (n >= 4 && i < n - 1 && (n - 1 - i) % 3 === 0) h += ',';
+   });
+   if (decs.length) { h += '.'; decs.forEach((ch, i) => { h += ul && ul.part === 'd' && ul.i === i ? `<u>${ch}</u>` : ch; }); }
+   return h;
+@@ -1825,7 +1825,7 @@ const nsRnd3Html = (p, key, x) => p.kind === 'line' ? `${p.svg}<div>${p.shown} 
+ 
+ const nsEstHtml = (p, key, x) => `${esc(p.expr)} ≈ ${x(p.ans, 3.4)}`;
+ 
+-const nsMoreHtml = (p, key, x) => `${p.amt} ${p.more ? 'more' : 'less'} than ${cnum(p.base)} = ${x(p.ans, BW)}`;
++const nsMoreHtml = (p, key, x) => `${cnum(p.amt)} ${p.more ? 'more' : 'less'} than ${cnum(p.base)} = ${x(p.ans, BW)}`;
+ 
+ const nsTensHtml = (p, key, x) => tokHtml(p.tok, key, x);
+ 
+@@ -1869,7 +1869,7 @@ function nsxTenx(rng, L) {
+   if (kind === 'dig') {
+     const len = L === 2 ? ri(rng, 3, 5) : ri(rng, 4, 6), i = ri(rng, 0, len - 2), d = ri(rng, 1, 9);
+     const dg = Array.from({ length: len }, () => ri(rng, 0, 9)); dg[0] = Math.max(1, dg[0]); dg[i] = d; dg[i + 1] = d;
+-    const shown = dg.map((c, j) => (j === i || j === i + 1 ? `<u>${c}</u>` : String(c)) + (len >= 5 && j < len - 1 && (len - 1 - j) % 3 === 0 ? ',' : '')).join('');
++    const shown = dg.map((c, j) => (j === i || j === i + 1 ? `<u>${c}</u>` : String(c)) + (len >= 4 && j < len - 1 && (len - 1 - j) % 3 === 0 ? ',' : '')).join('');
+     return { mod: 'ns', type: 'tenx', prompt: 'Compare the underlined digits:', kind, shown, ans: '10', sig: `txd${dg.join('')}${i}`, ew: (len + 16) * 0.62 + 4, eh: 1.1 + 1.6 };
+   }
+   if (kind === 'x10') {
+@@ -1915,7 +1915,7 @@ function nsxCount(rng, L) {
+ }
+ 
+ const seqProb = (type, prompt, vals, rng) => {
+-  const terms = vals.map(String), idx = shuffle(rng, [1, 2, 3, 4, 5]).slice(0, 2).sort((a, b) => a - b);
++  const terms = vals.map(cnum), idx = shuffle(rng, [1, 2, 3, 4, 5]).slice(0, 2).sort((a, b) => a - b);
+   return { mod: 'ns', type, prompt, terms, idx, sig: `${type}${terms}${idx}`, ew: terms.reduce((a, s, i) => a + Math.max(s.length * 0.62 + 0.9, idx.includes(i) ? 3.0 : 0), 0) + 1, eh: 1.1 + 1.6 };
+ };
+ 
+@@ -2532,7 +2532,7 @@ function nsxMword(rng, L) {
+   else if (kind === 'sub') { const b = ri(rng, 12, top), a = b + ri(rng, 12, top); text = `${nm} has ${a} ${u} of ${stuff} and uses ${b} ${u}. How many ${u} are left?`; eq = `${a} − ${b}`; ans = a - b; sg = `${a}-${b}${u}`; }
+   else if (kind === 'mul') { const a = ri(rng, 6, L === 1 ? 25 : 90), n = ri(rng, 3, 9); text = `Each ${cont} holds ${a} ${u} of ${stuff}. How many ${u} of ${stuff} are in ${n} ${cont}s?`; eq = `${n} × ${a}`; ans = n * a; sg = `${n}x${a}${u}`; }
+   else if (kind === 'two') { const a = ri(rng, 8, 60), n = ri(rng, 3, 8), b = ri(rng, 5, a * n - 5); text = `Each ${cont} holds ${a} ${u} of ${stuff}. ${nm} fills ${n} ${cont}s and then uses ${b} ${u}. How many ${u} are left?`; eq = `${n} × ${a} − ${b}`; ans = n * a - b; sg = `${n}x${a}-${b}${u}`; }
+-  else if (kind === 'conv') { const [big, small, f, st2] = pick(rng, NS_MW_CONV), a = ri(rng, 2, 9), b = f === 1000 ? 50 * ri(rng, 1, 19) : ri(rng, 1, Math.min(f - 1, 60)); text = `${nm} has ${a} ${big} of ${st2} and uses ${b} ${small}. How many ${small} are left?`; eq = `${a} × ${f} − ${b}`; ans = a * f - b; sg = `${a}${big}-${b}${small}`; }
++  else if (kind === 'conv') { const [big, small, f, st2] = pick(rng, NS_MW_CONV), a = ri(rng, 2, 9), b = f === 1000 ? 50 * ri(rng, 1, 19) : ri(rng, 1, Math.min(f - 1, 60)); text = `${nm} has ${a} ${big} of ${st2} and uses ${b} ${small}. How many ${small} are left?`; eq = `${a} × ${cnum(f)} − ${b}`; ans = a * f - b; sg = `${a}${big}-${b}${small}`; }
+   else if (kind === 'money') { const a = ri(rng, 2, 9), b = ri(rng, 3, 15), n = ri(rng, 2, 6), m = ri(rng, 2, 5); text = `A pen costs $${a} and a notebook costs $${b}. ${nm} buys ${n} pens and ${m} notebooks. How many dollars is the total?`; eq = `${n} × ${a} + ${m} × ${b}`; ans = n * a + m * b; sg = `$${n}x${a}+${m}x${b}`; }
+   else {
+     /* start 1:00 to 8:55 plus up to 2 h 30 min ends by 11:25, so the clock never wraps past 12 */
+@@ -2540,7 +2540,7 @@ function nsxMword(rng, L) {
+     text = `A movie starts at ${f2(h, mm)} and ends at ${f2(h2, m2)}. How many minutes long is the movie?`; ans = dur; sg = `t${h}${mm}${dur}`;
+     eq = `${f2(h2, m2)} − ${f2(h, mm)}`;
+   }
+-  return { mod: 'ns', type: 'mword', prompt: 'Solve. Write an equation.', kind, eq, ans: String(ans), text, wide: true, sig: `mw${kind}${sg}${kind === 'add' || kind === 'sub' || kind === 'mul' || kind === 'two' ? stuff : ''}`, ew: 21, eh: nsWordEh(text) };
++  return { mod: 'ns', type: 'mword', prompt: 'Solve. Write an equation.', kind, eq, ans: cnum(ans), text, wide: true, sig: `mw${kind}${sg}${kind === 'add' || kind === 'sub' || kind === 'mul' || kind === 'two' ? stuff : ''}`, ew: 21, eh: nsWordEh(text) };
+ }
+ 
+ const nsMwordHtml = (p, key, x) => wordCell(p, key, x);
+@@ -3371,7 +3371,7 @@ function g3Mvol(rng, L) {
+   if (v === 'unit') { const it = pick(rng, G3_UNITS), opts = it[0] === 'mass' ? ['g', 'kg'] : ['mL', 'L'], text = it[0] === 'mass' ? `Find the mass of ${it[2]}.` : `How much liquid does ${it[2]} hold?`;
+     return vtext('mvol', 'Circle the best unit.', { variant: v, kind: it[0], thing: it[2], text, opts, ans: it[1], sig: `mvu${it[2]}` }, 21, g3eh([text.length], g3optLen(opts)), true); }
+   if (v === 'bench') { const it = pick(rng, G3_BENCH), n = it[2] === 1 ? pick(rng, [20, 50, 100]) : ri(rng, 2, 10), text = `${it[0]} ${it[4] === 'mass' ? `About what is the mass of ${n} ${it[1]}?` : `About how much do ${n} ${it[1]} hold?`}`;
+-    return vtext('mvol', 'Estimate with a benchmark.', { variant: v, bench: it[0], per: it[2], unit: it[3], noun: it[1], n, text, ans: String(n * it[2]), sig: `mvk${it[1]}${n}` }, 21, g3eh([text.length], 0, 1.7), true); }
++    return vtext('mvol', 'Estimate with a benchmark.', { variant: v, bench: it[0], per: it[2], unit: it[3], noun: it[1], n, text, ans: cnum(n * it[2]), sig: `mvk${it[1]}${n}` }, 21, g3eh([text.length], 0, 1.7), true); }
+   const op = pick(rng, L === 2 ? ['add', 'sub'] : ['add', 'sub', 'mul', 'div']), kind = pick(rng, ['mass', 'liquid']), unit = kind === 'mass' ? pick(rng, L === 1 ? ['kg'] : ['kg', 'g']) : pick(rng, ['L', 'mL']), small = unit === 'kg' || unit === 'L';
+   let a, b, ans;
+   if (op === 'add') { a = small ? ri(rng, 5, 60) : ri(rng, 2, 9) * 50 + ri(rng, 0, 4) * 10; b = small ? ri(rng, 5, 60) : ri(rng, 2, 9) * 50; ans = a + b; }
+@@ -3379,20 +3379,20 @@ function g3Mvol(rng, L) {
+   else if (op === 'mul') { a = small ? ri(rng, 2, 12) : ri(rng, 2, 9) * 10; b = ri(rng, 2, 9); ans = a * b; }
+   else { b = ri(rng, 2, 9); ans = small ? ri(rng, 2, 12) : ri(rng, 2, 9) * 10; a = b * ans; }
+   const text = G3_WORD[op][kind](a, b, unit);
+-  return vtext('mvol', 'Solve the problem.', { variant: v, op, kind, unit, a, b, text, ans: String(ans), sig: `mvw${op}${kind}${unit}${a}${b}` }, 21, g3eh([text.length], 0, 1.7), true);
++  return vtext('mvol', 'Solve the problem.', { variant: v, op, kind, unit, a, b, text, ans: cnum(ans), sig: `mvw${op}${kind}${unit}${a}${b}` }, 21, g3eh([text.length], 0, 1.7), true);
+ }
+ 
+ function g3MvolHtml(p, key, x) {
+   if (p.variant === 'dial') {
+     const cx = 62, cy = 62; let o = `<circle cx="${cx}" cy="${cy}" r="54" fill="#fff" stroke="${VINK}" stroke-width="2.5"/>`;
+     for (let i = 0; i <= p.N; i++) { const a = g3Pt(p.N, i, 54, cx, cy), b = g3Pt(p.N, i, i % 2 ? 47 : 43, cx, cy); o += vline(a[0].toFixed(1), a[1].toFixed(1), b[0].toFixed(1), b[1].toFixed(1), VINK, i % 2 ? 1.2 : 2);
+-      if (i % 2 === 0) { const t = g3Pt(p.N, i, 32, cx, cy); o += vtxt(t[0].toFixed(1), (t[1] + 3.5).toFixed(1), String(i * p.step), { s: 9.5 }); } }
++      if (i % 2 === 0) { const t = g3Pt(p.N, i, 32, cx, cy); o += vtxt(t[0].toFixed(1), (t[1] + 3.5).toFixed(1), cnum(i * p.step), { s: 9.5 }); } }
+     const n = g3Pt(p.N, p.i, 40, cx, cy); o += vline(cx, cy, n[0].toFixed(1), n[1].toFixed(1), VINK, 2.5) + `<circle cx="${cx}" cy="${cy}" r="4" fill="${VINK}"/>` + vtxt(cx, cy + 22, p.unit, { s: 10 });
+     return vsvg(1.25, 1.25, o, 'A dial scale') + `<div>${x(p.ans, 2.6)} ${p.unit}</div>`;
+   }
+   if (p.variant === 'beaker') {
+     const x0 = 16, x1 = 66, yb = 112, h = 100, lvl = h * p.i / p.N; let o = `<rect x="${x0}" y="${yb - lvl}" width="${x1 - x0}" height="${lvl}" fill="${VFILL[3]}"/>` + vline(x0, yb - h - 6, x0, yb, VINK, 2.5) + vline(x1, yb - h - 6, x1, yb, VINK, 2.5) + vline(x0, yb, x1, yb, VINK, 2.5);
+-    for (let i = 0; i <= p.N; i++) { const y = (yb - h * i / p.N).toFixed(1), lab = p.N === 5 || i % 2 === 0; o += vline(x1, y, x1 + (lab ? 9 : 5), y, VINK, lab ? 1.8 : 1.2); if (lab) o += vtxt(x1 + 12, (yb - h * i / p.N + 3.5).toFixed(1), String(i * p.step), { a: 'start', s: 10 }); }
++    for (let i = 0; i <= p.N; i++) { const y = (yb - h * i / p.N).toFixed(1), lab = p.N === 5 || i % 2 === 0; o += vline(x1, y, x1 + (lab ? 9 : 5), y, VINK, lab ? 1.8 : 1.2); if (lab) o += vtxt(x1 + 12, (yb - h * i / p.N + 3.5).toFixed(1), cnum(i * p.step), { a: 'start', s: 10 }); }
+     return vsvg(1.25, 1.25, o, 'A measuring beaker') + `<div>${x(p.ans, 2.6)} ${p.unit}</div>`;
+   }
+   if (p.variant === 'unit') return `<div class="wt">${esc(p.text)}</div><div>${vopts(p.opts, p.ans, key)}</div>`;
+diff --git a/src/js/core/cellkit.js b/src/js/core/cellkit.js
+index 2e4a911..2d77434 100644
+--- a/src/js/core/cellkit.js
++++ b/src/js/core/cellkit.js
+@@ -7,7 +7,7 @@ const lcm = (a, b) => a / gcd(a, b) * b;
+ const red = (n, d) => { const g = gcd(n, d) || 1; return [n / g, d / g]; };
+ /* Improper fraction to a whole part plus a reduced proper fraction. */
+ const mixedOf = (n, d) => { const [a, b] = red(n, d), w = Math.floor(a / b), r = a - w * b; return { w, n: r, d: r ? b : 1 }; };
+-const cnum = n => n >= 10000 ? String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ',') : String(n);
++const cnum = n => n >= 1000 ? String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ',') : String(n);
+ /* Decimal string from an integer mantissa m with dp decimal places. */
+ const dstr = (m, dp) => {
+   let s = String(Math.abs(m));
+diff --git a/src/js/core/layout.js b/src/js/core/layout.js
+index 3688963..907d816 100644
+--- a/src/js/core/layout.js
++++ b/src/js/core/layout.js
+@@ -3,12 +3,12 @@ function needSize(p, fs, horiz) {
+   if (p.mod) return modNeed(p, fs);
+   const f = fs / 72;
+   if (horiz) {
+-    const bw = (p.type === 'div' && p.rem) ? 1.9 : 1.0;
++    const ansLen = cnum(p.type === 'div' ? p.q : p.ans).length, bw = (p.type === 'div' && p.rem) ? 1.9 + 0.1 * Math.max(0, ansLen - 4) : Math.max(1.0, (ansLen + 1) * 0.6 * f);
+     return [(hText(p).length + 3) * 0.6 * f + bw + 0.45, f * 1.7 + 0.2];
+   }
+   let w, rowsEm;
+   if (p.type === 'div') {
+-    const dl = String(p.d).length, nl = String(p.n).length, qs = String(p.q).length + (p.rem ? 4 : 0);
++    const dl = cnum(p.d).length, nl = cnum(p.n).length, qs = cnum(p.q).length + (p.rem ? 4 + cnum(p.r).length - 1 : 0);
+     w = Math.max(dl + nl + 1.6, qs + 1) * DGW * f + 0.2;
+     rowsEm = 3.5 + nl * 0.9;
+   } else {
+diff --git a/src/js/modules/arith.js b/src/js/modules/arith.js
+index 3b2e1fa..ff2f453 100644
+--- a/src/js/modules/arith.js
++++ b/src/js/modules/arith.js
+@@ -169,10 +169,10 @@ const vans = (s, w, key) => `<div class="vr a"><span class="vo"></span>${key ? n
+ 
+ function hText(p) {
+   switch (p.type) {
+-    case 'add': return p.nums.join(' + ');
+-    case 'sub': return `${p.a} − ${p.b}`;
+-    case 'mul': return `${p.a} × ${p.b}`;
+-    default: return `${p.n} ÷ ${p.d}`;
++    case 'add': return p.nums.map(cnum).join(' + ');
++    case 'sub': return `${cnum(p.a)} − ${cnum(p.b)}`;
++    case 'mul': return `${cnum(p.a)} × ${cnum(p.b)}`;
++    default: return `${cnum(p.n)} ÷ ${cnum(p.d)}`;
+   }
+ }
+ function renderVertical(p, key) {
+@@ -197,14 +197,14 @@ function renderVertical(p, key) {
+     const w = Math.max(ansS.length, String(p.a).length, String(p.b).length);
+     return `<div class="vp">${vrow(String(p.a), w)}${vrow(String(p.b), w, '×')}<div class="vl"></div>${vans(ansS, w, key)}</div>`;
+   }
+-  const qs = key ? String(p.q) + (p.rem ? ` R ${p.r}` : '') : '&nbsp;';
+-  return `<div class="ld"><span class="ldq">${qs}</span><span class="ldd">${p.d}</span><span class="ldn">${p.n}</span></div>`;
++  const qs = key ? cnum(p.q) + (p.rem ? ` R ${cnum(p.r)}` : '') : '&nbsp;';
++  return `<div class="ld"><span class="ldq">${qs}</span><span class="ldd">${cnum(p.d)}</span><span class="ldn">${cnum(p.n)}</span></div>`;
+ }
+ function renderHorizontal(p, key) {
+   const t = hText(p);
+-  if (p.type === 'div' && p.rem) return `<div class="hp"><span>${t} =</span>${blank(key ? p.q : '', 'q')}<span>R</span>${blank(key ? p.r : '', 'q')}</div>`;
++  if (p.type === 'div' && p.rem) return `<div class="hp"><span>${t} =</span>${blank(key ? cnum(p.q) : '', 'q')}<span>R</span>${blank(key ? cnum(p.r) : '', 'q')}</div>`;
+   const a = p.type === 'div' ? p.q : p.ans;
+-  return `<div class="hp"><span>${t} =</span>${blank(key ? a : '')}</div>`;
++  return `<div class="hp"><span>${t} =</span>${blank(key ? cnum(a) : '')}</div>`;
+ }
+ function renderArithCell(p, n, horiz, key) {
+   if (p.mod) return renderModCell(p, n, key);
+diff --git a/src/js/modules/fdp.js b/src/js/modules/fdp.js
+index d762ce9..8f71270 100644
+--- a/src/js/modules/fdp.js
++++ b/src/js/modules/fdp.js
+@@ -111,8 +111,8 @@ function fDecMul(rng, L) {
+   } else {
+     const dp = pick(rng, L === 2 ? [0, 1] : [0, 1, 2]), im = dp === 0 ? ri(rng, 2, 99) : dp === 1 ? ri(rng, 11, 999) : ri(rng, 101, 999);
+     const k = ri(rng, 1, L === 2 ? 2 : 3), mul = rng() < 0.5, base = dp ? dstr(im, dp) : String(im);
+-    if (mul) { const dq = dp - k; ans = dq <= 0 ? String(im * P10(-dq)) : trimZ(dstr(im, dq)); expr = `${base} × ${P10(k)}`; }
+-    else { prompt = 'Divide.'; ans = trimZ(dstr(im, dp + k)); expr = `${base} ÷ ${P10(k)}`; }
++    if (mul) { const dq = dp - k; ans = dq <= 0 ? cnum(im * P10(-dq)) : trimZ(dstr(im, dq)); expr = `${base} × ${cnum(P10(k))}`; }
++    else { prompt = 'Divide.'; ans = trimZ(dstr(im, dp + k)); expr = `${base} ÷ ${cnum(P10(k))}`; }
+   }
+   return { mod: 'fdp', type: 'decmul', prompt, expr, ans, sig: `dm${expr}`, ew: expr.length * 0.62 + 3.4 + BW, eh: 1.1 + 1.6 };
+ }
+diff --git a/src/js/modules/ns-common.js b/src/js/modules/ns-common.js
+index 23d666a..cc51fd9 100644
+--- a/src/js/modules/ns-common.js
++++ b/src/js/modules/ns-common.js
+@@ -26,7 +26,7 @@ const rdigits = (rng, n, zeros) => {
+ };
+ 
+ function lineSvg(lo, hi, div, k) {
+-  const W = 270, x0 = 20, x1 = 250, y = 32, xs = i => x0 + (x1 - x0) * i / div, f = v => trimZ(dstr(v, 2));
++  const W = 270, x0 = 20, x1 = 250, y = 32, xs = i => x0 + (x1 - x0) * i / div, f = v => trimZ(dstr(v, 2)).replace(/^\d+/, m => cnum(Number(m)));
+   let s = `<svg xmlns="http://www.w3.org/2000/svg" width="2.7in" height="0.72in" viewBox="0 0 ${W} 72" role="img" aria-label="Number line from ${f(lo)} to ${f(hi)} with an arrow">`
+     + `<path d="M${x0 - 10} ${y}H${x1 + 10}" stroke="var(--ink)" stroke-width="2" fill="none"/>`;
+   let t = '';
+diff --git a/src/js/modules/ns-counting.js b/src/js/modules/ns-counting.js
+index 8bf5b86..2a5ae68 100644
+--- a/src/js/modules/ns-counting.js
++++ b/src/js/modules/ns-counting.js
+@@ -13,7 +13,7 @@ function nsxCount(rng, L) {
+ }
+ 
+ const seqProb = (type, prompt, vals, rng) => {
+-  const terms = vals.map(String), idx = shuffle(rng, [1, 2, 3, 4, 5]).slice(0, 2).sort((a, b) => a - b);
++  const terms = vals.map(cnum), idx = shuffle(rng, [1, 2, 3, 4, 5]).slice(0, 2).sort((a, b) => a - b);
+   return { mod: 'ns', type, prompt, terms, idx, sig: `${type}${terms}${idx}`, ew: terms.reduce((a, s, i) => a + Math.max(s.length * 0.62 + 0.9, idx.includes(i) ? 3.0 : 0), 0) + 1, eh: 1.1 + 1.6 };
+ };
+ 
+diff --git a/src/js/modules/ns-place.js b/src/js/modules/ns-place.js
+index 4f1bd0a..55728e1 100644
+--- a/src/js/modules/ns-place.js
++++ b/src/js/modules/ns-place.js
+@@ -92,7 +92,7 @@ function nsxMoreExp(rng, L) {
+   return { mod: 'ns', type: 'moreexp', prompt: 'Write the number. Then explain.', base, more, ans: String(ans), sig: `me${base}${more}`, ew: 22, eh: 1.1 + 1.6 * 3 };
+ }
+ 
+-const nsMoreexpHtml = (p, key, x) => `<div>10 ${p.more ? 'more' : 'less'} than ${p.base} = ${x(p.ans, BW)}</div><div>How do you know?</div><div><span class="blank" style="min-width:20em">${key ? `The tens digit ${p.more ? 'goes up' : 'goes down'} by 1.` : '&nbsp;'}</span></div>`;
++const nsMoreexpHtml = (p, key, x) => `<div>10 ${p.more ? 'more' : 'less'} than ${cnum(p.base)} = ${x(p.ans, BW)}</div><div>How do you know?</div><div><span class="blank" style="min-width:20em">${key ? `The tens digit ${p.more ? 'goes up' : 'goes down'} by 1.` : '&nbsp;'}</span></div>`;
+ 
+ const INT_PLACES = ['ones', 'tens', 'hundreds', 'thousands', 'ten thousands', 'hundred thousands'];
+ 
+@@ -104,7 +104,7 @@ function digitsHtml(ints, decs, ul) {
+   const n = ints.length;
+   ints.forEach((ch, i) => {
+     const c = ul && ul.part === 'i' && ul.i === i ? `<u>${ch}</u>` : ch;
+-    h += c; if (n >= 5 && i < n - 1 && (n - 1 - i) % 3 === 0) h += ',';
++    h += c; if (n >= 4 && i < n - 1 && (n - 1 - i) % 3 === 0) h += ',';
+   });
+   if (decs.length) { h += '.'; decs.forEach((ch, i) => { h += ul && ul.part === 'd' && ul.i === i ? `<u>${ch}</u>` : ch; }); }
+   return h;
+@@ -216,7 +216,7 @@ const nsRnd3Html = (p, key, x) => p.kind === 'line' ? `${p.svg}<div>${p.shown} 
+ 
+ const nsEstHtml = (p, key, x) => `${esc(p.expr)} ≈ ${x(p.ans, 3.4)}`;
+ 
+-const nsMoreHtml = (p, key, x) => `${p.amt} ${p.more ? 'more' : 'less'} than ${cnum(p.base)} = ${x(p.ans, BW)}`;
++const nsMoreHtml = (p, key, x) => `${cnum(p.amt)} ${p.more ? 'more' : 'less'} than ${cnum(p.base)} = ${x(p.ans, BW)}`;
+ 
+ const nsTensHtml = (p, key, x) => tokHtml(p.tok, key, x);
+ 
+@@ -260,7 +260,7 @@ function nsxTenx(rng, L) {
+   if (kind === 'dig') {
+     const len = L === 2 ? ri(rng, 3, 5) : ri(rng, 4, 6), i = ri(rng, 0, len - 2), d = ri(rng, 1, 9);
+     const dg = Array.from({ length: len }, () => ri(rng, 0, 9)); dg[0] = Math.max(1, dg[0]); dg[i] = d; dg[i + 1] = d;
+-    const shown = dg.map((c, j) => (j === i || j === i + 1 ? `<u>${c}</u>` : String(c)) + (len >= 5 && j < len - 1 && (len - 1 - j) % 3 === 0 ? ',' : '')).join('');
++    const shown = dg.map((c, j) => (j === i || j === i + 1 ? `<u>${c}</u>` : String(c)) + (len >= 4 && j < len - 1 && (len - 1 - j) % 3 === 0 ? ',' : '')).join('');
+     return { mod: 'ns', type: 'tenx', prompt: 'Compare the underlined digits:', kind, shown, ans: '10', sig: `txd${dg.join('')}${i}`, ew: (len + 16) * 0.62 + 4, eh: 1.1 + 1.6 };
+   }
+   if (kind === 'x10') {
+diff --git a/src/js/modules/ns-words.js b/src/js/modules/ns-words.js
+index 456389c..c7a68a9 100644
+--- a/src/js/modules/ns-words.js
++++ b/src/js/modules/ns-words.js
+@@ -133,7 +133,7 @@ function nsxMword(rng, L) {
+   else if (kind === 'sub') { const b = ri(rng, 12, top), a = b + ri(rng, 12, top); text = `${nm} has ${a} ${u} of ${stuff} and uses ${b} ${u}. How many ${u} are left?`; eq = `${a} − ${b}`; ans = a - b; sg = `${a}-${b}${u}`; }
+   else if (kind === 'mul') { const a = ri(rng, 6, L === 1 ? 25 : 90), n = ri(rng, 3, 9); text = `Each ${cont} holds ${a} ${u} of ${stuff}. How many ${u} of ${stuff} are in ${n} ${cont}s?`; eq = `${n} × ${a}`; ans = n * a; sg = `${n}x${a}${u}`; }
+   else if (kind === 'two') { const a = ri(rng, 8, 60), n = ri(rng, 3, 8), b = ri(rng, 5, a * n - 5); text = `Each ${cont} holds ${a} ${u} of ${stuff}. ${nm} fills ${n} ${cont}s and then uses ${b} ${u}. How many ${u} are left?`; eq = `${n} × ${a} − ${b}`; ans = n * a - b; sg = `${n}x${a}-${b}${u}`; }
+-  else if (kind === 'conv') { const [big, small, f, st2] = pick(rng, NS_MW_CONV), a = ri(rng, 2, 9), b = f === 1000 ? 50 * ri(rng, 1, 19) : ri(rng, 1, Math.min(f - 1, 60)); text = `${nm} has ${a} ${big} of ${st2} and uses ${b} ${small}. How many ${small} are left?`; eq = `${a} × ${f} − ${b}`; ans = a * f - b; sg = `${a}${big}-${b}${small}`; }
++  else if (kind === 'conv') { const [big, small, f, st2] = pick(rng, NS_MW_CONV), a = ri(rng, 2, 9), b = f === 1000 ? 50 * ri(rng, 1, 19) : ri(rng, 1, Math.min(f - 1, 60)); text = `${nm} has ${a} ${big} of ${st2} and uses ${b} ${small}. How many ${small} are left?`; eq = `${a} × ${cnum(f)} − ${b}`; ans = a * f - b; sg = `${a}${big}-${b}${small}`; }
+   else if (kind === 'money') { const a = ri(rng, 2, 9), b = ri(rng, 3, 15), n = ri(rng, 2, 6), m = ri(rng, 2, 5); text = `A pen costs $${a} and a notebook costs $${b}. ${nm} buys ${n} pens and ${m} notebooks. How many dollars is the total?`; eq = `${n} × ${a} + ${m} × ${b}`; ans = n * a + m * b; sg = `$${n}x${a}+${m}x${b}`; }
+   else {
+     /* start 1:00 to 8:55 plus up to 2 h 30 min ends by 11:25, so the clock never wraps past 12 */
+@@ -141,7 +141,7 @@ function nsxMword(rng, L) {
+     text = `A movie starts at ${f2(h, mm)} and ends at ${f2(h2, m2)}. How many minutes long is the movie?`; ans = dur; sg = `t${h}${mm}${dur}`;
+     eq = `${f2(h2, m2)} − ${f2(h, mm)}`;
+   }
+-  return { mod: 'ns', type: 'mword', prompt: 'Solve. Write an equation.', kind, eq, ans: String(ans), text, wide: true, sig: `mw${kind}${sg}${kind === 'add' || kind === 'sub' || kind === 'mul' || kind === 'two' ? stuff : ''}`, ew: 21, eh: nsWordEh(text) };
++  return { mod: 'ns', type: 'mword', prompt: 'Solve. Write an equation.', kind, eq, ans: cnum(ans), text, wide: true, sig: `mw${kind}${sg}${kind === 'add' || kind === 'sub' || kind === 'mul' || kind === 'two' ? stuff : ''}`, ew: 21, eh: nsWordEh(text) };
+ }
+ 
+ const nsMwordHtml = (p, key, x) => wordCell(p, key, x);
+diff --git a/src/js/modules/vis-measure.js b/src/js/modules/vis-measure.js
+index 09c6f6c..19e4cff 100644
+--- a/src/js/modules/vis-measure.js
++++ b/src/js/modules/vis-measure.js
+@@ -189,7 +189,7 @@ function g3Mvol(rng, L) {
+   if (v === 'unit') { const it = pick(rng, G3_UNITS), opts = it[0] === 'mass' ? ['g', 'kg'] : ['mL', 'L'], text = it[0] === 'mass' ? `Find the mass of ${it[2]}.` : `How much liquid does ${it[2]} hold?`;
+     return vtext('mvol', 'Circle the best unit.', { variant: v, kind: it[0], thing: it[2], text, opts, ans: it[1], sig: `mvu${it[2]}` }, 21, g3eh([text.length], g3optLen(opts)), true); }
+   if (v === 'bench') { const it = pick(rng, G3_BENCH), n = it[2] === 1 ? pick(rng, [20, 50, 100]) : ri(rng, 2, 10), text = `${it[0]} ${it[4] === 'mass' ? `About what is the mass of ${n} ${it[1]}?` : `About how much do ${n} ${it[1]} hold?`}`;
+-    return vtext('mvol', 'Estimate with a benchmark.', { variant: v, bench: it[0], per: it[2], unit: it[3], noun: it[1], n, text, ans: String(n * it[2]), sig: `mvk${it[1]}${n}` }, 21, g3eh([text.length], 0, 1.7), true); }
++    return vtext('mvol', 'Estimate with a benchmark.', { variant: v, bench: it[0], per: it[2], unit: it[3], noun: it[1], n, text, ans: cnum(n * it[2]), sig: `mvk${it[1]}${n}` }, 21, g3eh([text.length], 0, 1.7), true); }
+   const op = pick(rng, L === 2 ? ['add', 'sub'] : ['add', 'sub', 'mul', 'div']), kind = pick(rng, ['mass', 'liquid']), unit = kind === 'mass' ? pick(rng, L === 1 ? ['kg'] : ['kg', 'g']) : pick(rng, ['L', 'mL']), small = unit === 'kg' || unit === 'L';
+   let a, b, ans;
+   if (op === 'add') { a = small ? ri(rng, 5, 60) : ri(rng, 2, 9) * 50 + ri(rng, 0, 4) * 10; b = small ? ri(rng, 5, 60) : ri(rng, 2, 9) * 50; ans = a + b; }
+@@ -197,20 +197,20 @@ function g3Mvol(rng, L) {
+   else if (op === 'mul') { a = small ? ri(rng, 2, 12) : ri(rng, 2, 9) * 10; b = ri(rng, 2, 9); ans = a * b; }
+   else { b = ri(rng, 2, 9); ans = small ? ri(rng, 2, 12) : ri(rng, 2, 9) * 10; a = b * ans; }
+   const text = G3_WORD[op][kind](a, b, unit);
+-  return vtext('mvol', 'Solve the problem.', { variant: v, op, kind, unit, a, b, text, ans: String(ans), sig: `mvw${op}${kind}${unit}${a}${b}` }, 21, g3eh([text.length], 0, 1.7), true);
++  return vtext('mvol', 'Solve the problem.', { variant: v, op, kind, unit, a, b, text, ans: cnum(ans), sig: `mvw${op}${kind}${unit}${a}${b}` }, 21, g3eh([text.length], 0, 1.7), true);
+ }
+ 
+ function g3MvolHtml(p, key, x) {
+   if (p.variant === 'dial') {
+     const cx = 62, cy = 62; let o = `<circle cx="${cx}" cy="${cy}" r="54" fill="#fff" stroke="${VINK}" stroke-width="2.5"/>`;
+     for (let i = 0; i <= p.N; i++) { const a = g3Pt(p.N, i, 54, cx, cy), b = g3Pt(p.N, i, i % 2 ? 47 : 43, cx, cy); o += vline(a[0].toFixed(1), a[1].toFixed(1), b[0].toFixed(1), b[1].toFixed(1), VINK, i % 2 ? 1.2 : 2);
+-      if (i % 2 === 0) { const t = g3Pt(p.N, i, 32, cx, cy); o += vtxt(t[0].toFixed(1), (t[1] + 3.5).toFixed(1), String(i * p.step), { s: 9.5 }); } }
++      if (i % 2 === 0) { const t = g3Pt(p.N, i, 32, cx, cy); o += vtxt(t[0].toFixed(1), (t[1] + 3.5).toFixed(1), cnum(i * p.step), { s: 9.5 }); } }
+     const n = g3Pt(p.N, p.i, 40, cx, cy); o += vline(cx, cy, n[0].toFixed(1), n[1].toFixed(1), VINK, 2.5) + `<circle cx="${cx}" cy="${cy}" r="4" fill="${VINK}"/>` + vtxt(cx, cy + 22, p.unit, { s: 10 });
+     return vsvg(1.25, 1.25, o, 'A dial scale') + `<div>${x(p.ans, 2.6)} ${p.unit}</div>`;
+   }
+   if (p.variant === 'beaker') {
+     const x0 = 16, x1 = 66, yb = 112, h = 100, lvl = h * p.i / p.N; let o = `<rect x="${x0}" y="${yb - lvl}" width="${x1 - x0}" height="${lvl}" fill="${VFILL[3]}"/>` + vline(x0, yb - h - 6, x0, yb, VINK, 2.5) + vline(x1, yb - h - 6, x1, yb, VINK, 2.5) + vline(x0, yb, x1, yb, VINK, 2.5);
+-    for (let i = 0; i <= p.N; i++) { const y = (yb - h * i / p.N).toFixed(1), lab = p.N === 5 || i % 2 === 0; o += vline(x1, y, x1 + (lab ? 9 : 5), y, VINK, lab ? 1.8 : 1.2); if (lab) o += vtxt(x1 + 12, (yb - h * i / p.N + 3.5).toFixed(1), String(i * p.step), { a: 'start', s: 10 }); }
++    for (let i = 0; i <= p.N; i++) { const y = (yb - h * i / p.N).toFixed(1), lab = p.N === 5 || i % 2 === 0; o += vline(x1, y, x1 + (lab ? 9 : 5), y, VINK, lab ? 1.8 : 1.2); if (lab) o += vtxt(x1 + 12, (yb - h * i / p.N + 3.5).toFixed(1), cnum(i * p.step), { a: 'start', s: 10 }); }
+     return vsvg(1.25, 1.25, o, 'A measuring beaker') + `<div>${x(p.ans, 2.6)} ${p.unit}</div>`;
+   }
+   if (p.variant === 'unit') return `<div class="wt">${esc(p.text)}</div><div>${vopts(p.opts, p.ans, key)}</div>`;
+diff --git a/tests/logic-commas.js b/tests/logic-commas.js
+new file mode 100644
+index 0000000..dc95c70
+--- /dev/null
++++ b/tests/logic-commas.js
+@@ -0,0 +1,28 @@
++/* Thousands commas: every worksheet renders each whole number of 1,000 or more with commas (1,234, 12,345, 123,456, 1,000,000).
++   Renders every module, type and level, strips the markup, and reports any run of 4 or more digits without commas.
++   One digit per box (vertical layouts) is not a number written out, so those never form a run. Years are not generated. */
++const fs=require('fs'),vm=require('vm'),path=require('path');
++const html=fs.readFileSync(path.join(__dirname,'..','WWWorksheet-maker-2000.html'),'utf8');
++const js=html.split('<script>')[1].split('</script>')[0].split('/*==DOM==*/')[0];
++const ctx={Math,console,globalThis:null};ctx.globalThis=ctx;vm.createContext(ctx);vm.runInContext(js,ctx);
++const SP=ctx.__SP,bad=new Map();let sheets=0;
++/* markup removed: inline underline tags join (the digits stay one number); every other tag separates; the footer (title, set name, page numbers) is not worksheet content */
++const text=h=>h.replace(/<style[\s\S]*?<\/style>/g,' ').replace(/<\/?u>/g,'').replace(/<[^>]+>/g,' ').replace(/&nbsp;|&emsp;|&ensp;|&thinsp;/g,' ').replace(/&[a-z]+;/g,' ').replace(/World Wide Worksheet Maker 2000\s*·\s*Set\s+\S+(\s*Page\s+\d+\s+of\s+\d+)?/g,' ').replace(/Name\s+Date/g,' ');
++/* a run of 4+ digits that is not part of a comma-grouped number and not the fraction digits of a decimal */
++const RAW=/(?<![\d,.])\d{4,}(?![\d])/g, BADGROUP=/(?<![\d,])\d{1,3}(?:,\d{3})*,\d{1,2}(?!\d)|(?<![\d,])\d{4,},\d{3}/g;
++function scan(label,s){
++  for(const key of [false,true]){s.key=key;s.pages=2;const out=SP.renderAll(s);sheets++;const t=text(out);
++    for(const m of t.matchAll(RAW)){const k=label+' raw';if(!bad.has(k))bad.set(k,[]);if(bad.get(k).length<3)bad.get(k).push(t.slice(Math.max(0,m.index-30),m.index+m[0].length+10).replace(/\s+/g,' '));}
++    for(const m of t.matchAll(BADGROUP)){const k=label+' group';if(!bad.has(k))bad.set(k,[]);if(bad.get(k).length<3)bad.get(k).push(t.slice(Math.max(0,m.index-30),m.index+m[0].length+10).replace(/\s+/g,' '));}}}
++const base=(mod,seed)=>{const s=SP.defaults();s.module=mod;s.seed=seed;s.arPerPage=24;s.perPage=24;return s;};
++/* addition and subtraction up to six digits, horizontal and vertical, with and without the 1,000,000 limit */
++for(const fmt of ['horizontal','vertical'])for(const [d1,d2] of [[4,4],[5,3],[6,6]])for(const cap of [0,1000000]){const s=base('addsub','cm'+fmt+d1+d2+cap);Object.assign(s.as,{d1,d2,cap,format:fmt});scan(`addsub ${fmt} ${d1}/${d2} cap${cap}`,s);}
++/* multiplication and division: digit mode with large factors, long division with big dividends, remainders */
++for(const fmt of ['horizontal','vertical'])for(const [da,db,na,nb,rem] of [[4,1,4,1,false],[3,2,3,2,false],[3,3,4,2,true],[2,2,4,1,true]]){const s=base('muldiv','cmm'+fmt+da+db+na+nb);Object.assign(s.md,{mode:'digits',da,db,na,nb,rem,format:fmt});scan(`muldiv ${fmt} ${da}x${db} div${na}/${nb} rem${rem}`,s);}
++/* every type of the other modules at every level */
++for(const [mod,reg,lv]of [['ns','ns','level'],['fdp','fd','level'],['vis','vis','level'],['tm','tm','level']]){const ids=Object.keys(SP.defaults()[reg].types);
++  for(const id of ids)for(const L of [1,2,3]){const s=base(mod,'cm'+mod+id+L);s[reg].level=L;for(const k of ids)s[reg].types[k]=k===id;scan(`${mod}:${id} L${L}`,s);}}
++const issues=[...bad.entries()].map(([k,v])=>k+' :: '+v.join(' | '));
++console.log('comma scan',sheets,'sheets;',issues.length,'findings');
++for(const i of issues.slice(0,60))console.log(i);
++process.exit(issues.length?1:0);
+diff --git a/tests/logic-fdp-ns.js b/tests/logic-fdp-ns.js
+index e6414b9..7393a30 100644
+--- a/tests/logic-fdp-ns.js
++++ b/tests/logic-fdp-ns.js
+@@ -19,7 +19,7 @@ function check(p,tag){n++;const e=m=>bad.push(tag+' '+p.type+': '+m);
+   case 'fmulw':if(!eq(p.n/p.d*p.W,p.ans)||!Number.isInteger(p.ans))e('fmulw');break;
+   case 'fmul':{const a=p.a[0]/p.a[1],b=p.b[0]/p.b[1],r=p.dv?a/b:a*b;if(!eq(val(p.ans.w,p.ans.n,p.ans.d),r))e('fmul');if(p.ans.n&&gcd(p.ans.n,p.ans.d)!==1)e('unreduced');break;}
+   case 'decadd':{const a=parseFloat(p.sa),b=parseFloat(p.sb),r=parseFloat(p.ans);if(!eq(r,p.op==='add'?a+b:a-b)||r<0)e('decadd '+p.sa+p.op+p.sb+'='+p.ans);if(p.fw<(p.sa.split('.')[1]||'').length)e('fw');break;}
+-  case 'decmul':{const m=p.expr.match(/^([\d.]+) ([×÷]) (\d+)$/)||p.expr.match(/^([\d.]+) ([×÷]) ([\d.]+)$/);const a=parseFloat(m[1]),b=parseFloat(m[3]),r=m[2]==='×'?a*b:a/b;if(!eq(r,parseFloat(p.ans)))e('decmul '+p.expr+'='+p.ans);if(/\.\d*0$/.test(p.ans))e('trailing zero '+p.ans);break;}
++  case 'decmul':{const m=p.expr.replace(/,/g,'').match(/^([\d.]+) ([×÷]) (\d+)$/)||p.expr.replace(/,/g,'').match(/^([\d.]+) ([×÷]) ([\d.]+)$/);const a=parseFloat(m[1]),b=parseFloat(m[3]),r=m[2]==='×'?a*b:a/b;if(!eq(r,parseFloat(p.ans.replace(/,/g,''))))e('decmul '+p.expr+'='+p.ans);if(/\.\d*0$/.test(p.ans))e('trailing zero '+p.ans);break;}
+   case 'conv':{const pc=parseFloat(p.pct);if(!eq(parseFloat(p.dec),pc/100)||!eq(p.fn/p.fd,pc/100)||gcd(p.fn,p.fd)!==1)e('conv');break;}
+   case 'pct':if(!eq(p.P*p.N/100,p.ans)||!Number.isInteger(p.ans))e('pct');break;
+   case 'place':{
+diff --git a/tests/logic-g3.js b/tests/logic-g3.js
+index d8e2b2e..4a660bf 100644
+--- a/tests/logic-g3.js
++++ b/tests/logic-g3.js
+@@ -16,8 +16,8 @@ function chk(p,id,L){n++;const e=m=>bad.push(`${id} L${L}: ${m} ${JSON.stringify
+   else{const[a,b]=p.cells;if(b[0]!==a[0]+1||b[1]!==a[1]||p.ans!==String(p.c0+a[1])||(p.r0+b[0])*p.c-(p.r0+a[0])*p.c!==p.c)e('plus');}break;}
+  case 'fmodel':case 'fline':{const[nu,de]=p.ans.split('/').map(Number);if(id==='fmodel'){if(de!==p.n||nu!==p.k||nu<1||nu>=de)e('fmodel');}else if(de!==p.b||nu!==p.k||nu>=p.top*de||(p.top===2&&nu===de))e('fline');break;}
+  case 'mvol':if(p.variant==='dial'||p.variant==='beaker'){if(p.ans!==String(p.i*p.step)||p.i<1||p.i>=p.N)e('read');}
+-  else if(p.variant==='word'){const f={add:p.a+p.b,sub:p.a-p.b,mul:p.a*p.b,div:p.a/p.b}[p.op];if(String(f)!==p.ans||!Number.isInteger(f)||f<=0||!p.text.includes(String(p.a)))e('word');}
+-  else if(p.variant==='bench'){if(p.ans!==String(p.n*p.per))e('bench');}else{const u=E('G3_UNITS').find(r=>r[2]===p.thing);if(!u||u[1]!==p.ans||!p.opts.includes(p.ans))e('unit');}break;
++  else if(p.variant==='word'){const f={add:p.a+p.b,sub:p.a-p.b,mul:p.a*p.b,div:p.a/p.b}[p.op];if(String(f)!==p.ans.replace(/,/g,'')||!Number.isInteger(f)||f<=0||!p.text.includes(String(p.a)))e('word');}
++  else if(p.variant==='bench'){if(p.ans.replace(/,/g,'')!==String(p.n*p.per))e('bench');}else{const u=E('G3_UNITS').find(r=>r[2]===p.thing);if(!u||u[1]!==p.ans||!p.opts.includes(p.ans))e('unit');}break;
+  case 'pictg':case 'barg':{const t=sum(p.cnt),hi=Math.max(...p.cnt),lo=Math.min(...p.cnt);if(new Set(p.cnt).size!==p.cnt.length||p.tot!==t||p.diff!==hi-lo||p.cnt[p.hi]!==hi||p.cnt[p.lo]!==lo)e('data');
+   if(p.cnt.some(v=>v%p.g))e('granularity');if(id==='pictg'&&Math.max(...p.cnt)/p.step>6)e('too many');if(id==='barg'&&Math.max(...p.cnt)>7*p.step)e('bar max');
+   if(p.two&&(p.two.ans!==p.cnt[p.two.a]+p.cnt[p.two.b]-p.cnt[p.two.c]||p.two.ans<=0))e('two');if(p.ans!==(p.make?p.cnt.join(' '):`${t} ${hi-lo}`))e('ans');break;}
+diff --git a/tests/logic-k2-b.js b/tests/logic-k2-b.js
+index b63c5c2..b8aedb4 100644
+--- a/tests/logic-k2-b.js
++++ b/tests/logic-k2-b.js
+@@ -10,7 +10,7 @@ const unk=t=>t.filter(s=>typeof s==='object').map(s=>+s.u);
+ function chk(p,id,L){n++;const e=m=>bad.push(`${id} L${L}: ${m} ${JSON.stringify(p).slice(0,140)}`);
+   if(!p.sig||!p.prompt||p.prompt.length>42||!(p.win>0&&p.hin>0||p.ew>0&&p.eh>0))e('shape');if(p.win>3.4)e('wide '+p.win);
+   switch(id){
+-  case 'kseq':case 'cseq':{const v=p.terms.map(Number),d=v[1]-v[0];if(v.some((x,i)=>i&&x-v[i-1]!==d))e('step');if(v.some(x=>x<0||x>(id==='kseq'?100:1000)))e('range');
++  case 'kseq':case 'cseq':{const v=p.terms.map(t=>Number(t.replace(/,/g,''))),d=v[1]-v[0];if(v.some((x,i)=>i&&x-v[i-1]!==d))e('step');if(v.some(x=>x<0||x>(id==='kseq'?100:1000)))e('range');
+     if(id==='kseq'&&![1,5,10,-1].includes(d))e('kseq step');if(id==='cseq'&&![5,10,100,-5,-10,-100].includes(d))e('cseq step');if(id==='kseq'&&d===-1&&v[0]>10)e('back>10');if(id==='cseq'&&d<0&&L===1)e('back at L1');
+     if(p.idx.length!==2||p.idx.some(i=>i<1||i>5))e('idx');break;}
+   case 'numrw':{if(p.n<1||p.n>(L===1?20:L===2?99:120))e('range');if(p.variant==='w2n'){if(numWord(+p.ans)!==p.word||+p.ans!==p.n)e('w2n');}
+diff --git a/tests/logic-ns-extra.js b/tests/logic-ns-extra.js
+index ee77b29..f7ed5a8 100644
+--- a/tests/logic-ns-extra.js
++++ b/tests/logic-ns-extra.js
+@@ -5,8 +5,8 @@ const js=html.split('<script>')[1].split('</script>')[0].split('/*==DOM==*/')[0]
+ const ctx={Math,console,globalThis:null};ctx.globalThis=ctx;vm.createContext(ctx);vm.runInContext(js,ctx);
+ const SP=ctx.__SP,E=x=>vm.runInContext(x,ctx),bad=[];let n=0;
+ const TYPES=['placew','roundw','fdec','tenx','rulepat','facmodel','convm','rectf','mword','lineplot'];
+-const num=s=>Number(String(s).replace(/,/g,'')),cn=v=>v>=10000?String(v).replace(/\B(?=(\d{3})+(?!\d))/g,','):String(v);
+-const ev=e=>Function('"use strict";return ('+e.replace(/×/g,'*').replace(/÷/g,'/').replace(/−/g,'-')+')')();
++const num=s=>Number(String(s).replace(/,/g,'')),cn=v=>v>=1000?String(v).replace(/\B(?=(\d{3})+(?!\d))/g,','):String(v);
++const ev=e=>Function('"use strict";return ('+e.replace(/,/g,'').replace(/×/g,'*').replace(/÷/g,'/').replace(/−/g,'-')+')')();
+ const PL=['ones','tens','hundreds','thousands','ten thousands','hundred thousands'],UN={ten:10,hundred:100,thousand:1000,'ten thousand':10000,'hundred thousand':100000};
+ const RULE=(op,d)=>({add:(v)=>v+d,sub:(v)=>v-d,mul:(v)=>v*d}[op]);
+ const parseRule=t=>{const m=t.match(/^(add|subtract|multiply by) (\d+)$/);return m?[m[1]==='add'?'add':m[1]==='subtract'?'sub':'mul',+m[2]]:null;};
+@@ -61,7 +61,7 @@ function chk(p,id,L){n++;const e=m=>bad.push(`${id} L${L}: ${m} ${JSON.stringify
+   else if(p.kind==='diff'){if(L===1||p.ans!==String(nz[nz.length-1]-nz[0]))e('diff');}
+   else{if(L!==3||c[p.k]<2||p.num!==c[p.k]*p.k||p.ans!==p.num+'/'+den)e('total');}
+   if(!/<span class="fr">|exactly|than|units|end to end/.test(p.q))e('question');break;}
+- case 'mword':{const a=+p.ans;if(!Number.isInteger(a)||a<=0)e('ans');
++ case 'mword':{const a=num(p.ans);if(!Number.isInteger(a)||a<=0)e('ans');
+   if(p.kind==='time'){const m=p.text.match(/starts at (\d+):(\d\d) and ends at (\d+):(\d\d)/);if(!m||(+m[3]*60+ +m[4])-(+m[1]*60+ +m[2])!==a)e('time');}
+   else if(ev(p.eq)!==a)e('eq');
+   if(p.kind==='two'&&!/ are left\?$/.test(p.text))e('two text');
+diff --git a/tests/run_tests.sh b/tests/run_tests.sh
+index 01e1179..78feaa1 100644
+--- a/tests/run_tests.sh
++++ b/tests/run_tests.sh
+@@ -19,6 +19,7 @@ node tests/logic-k2-c.js
+ node tests/logic-k2-d.js
+ node tests/logic-g3.js
+ node tests/logic-ns-extra.js
++node tests/logic-commas.js
+ "$PY" tests/clip.py
+ "$PY" build.py --target site
+ node tests/site-check.js

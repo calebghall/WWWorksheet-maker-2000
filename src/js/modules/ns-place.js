@@ -92,7 +92,7 @@ function nsxMoreExp(rng, L) {
   return { mod: 'ns', type: 'moreexp', prompt: 'Write the number. Then explain.', base, more, ans: String(ans), sig: `me${base}${more}`, ew: 22, eh: 1.1 + 1.6 * 3 };
 }
 
-const nsMoreexpHtml = (p, key, x) => `<div>10 ${p.more ? 'more' : 'less'} than ${p.base} = ${x(p.ans, BW)}</div><div>How do you know?</div><div><span class="blank" style="min-width:20em">${key ? `The tens digit ${p.more ? 'goes up' : 'goes down'} by 1.` : '&nbsp;'}</span></div>`;
+const nsMoreexpHtml = (p, key, x) => `<div>10 ${p.more ? 'more' : 'less'} than ${cnum(p.base)} = ${x(p.ans, BW)}</div><div>How do you know?</div><div><span class="blank" style="min-width:20em">${key ? `The tens digit ${p.more ? 'goes up' : 'goes down'} by 1.` : '&nbsp;'}</span></div>`;
 
 const INT_PLACES = ['ones', 'tens', 'hundreds', 'thousands', 'ten thousands', 'hundred thousands'];
 
@@ -104,7 +104,7 @@ function digitsHtml(ints, decs, ul) {
   const n = ints.length;
   ints.forEach((ch, i) => {
     const c = ul && ul.part === 'i' && ul.i === i ? `<u>${ch}</u>` : ch;
-    h += c; if (n >= 5 && i < n - 1 && (n - 1 - i) % 3 === 0) h += ',';
+    h += c; if (n >= 4 && i < n - 1 && (n - 1 - i) % 3 === 0) h += ',';
   });
   if (decs.length) { h += '.'; decs.forEach((ch, i) => { h += ul && ul.part === 'd' && ul.i === i ? `<u>${ch}</u>` : ch; }); }
   return h;
@@ -216,7 +216,7 @@ const nsRnd3Html = (p, key, x) => p.kind === 'line' ? `${p.svg}<div>${p.shown} â
 
 const nsEstHtml = (p, key, x) => `${esc(p.expr)} â‰ˆ ${x(p.ans, 3.4)}`;
 
-const nsMoreHtml = (p, key, x) => `${p.amt} ${p.more ? 'more' : 'less'} than ${cnum(p.base)} = ${x(p.ans, BW)}`;
+const nsMoreHtml = (p, key, x) => `${cnum(p.amt)} ${p.more ? 'more' : 'less'} than ${cnum(p.base)} = ${x(p.ans, BW)}`;
 
 const nsTensHtml = (p, key, x) => tokHtml(p.tok, key, x);
 
@@ -260,7 +260,7 @@ function nsxTenx(rng, L) {
   if (kind === 'dig') {
     const len = L === 2 ? ri(rng, 3, 5) : ri(rng, 4, 6), i = ri(rng, 0, len - 2), d = ri(rng, 1, 9);
     const dg = Array.from({ length: len }, () => ri(rng, 0, 9)); dg[0] = Math.max(1, dg[0]); dg[i] = d; dg[i + 1] = d;
-    const shown = dg.map((c, j) => (j === i || j === i + 1 ? `<u>${c}</u>` : String(c)) + (len >= 5 && j < len - 1 && (len - 1 - j) % 3 === 0 ? ',' : '')).join('');
+    const shown = dg.map((c, j) => (j === i || j === i + 1 ? `<u>${c}</u>` : String(c)) + (len >= 4 && j < len - 1 && (len - 1 - j) % 3 === 0 ? ',' : '')).join('');
     return { mod: 'ns', type: 'tenx', prompt: 'Compare the underlined digits:', kind, shown, ans: '10', sig: `txd${dg.join('')}${i}`, ew: (len + 16) * 0.62 + 4, eh: 1.1 + 1.6 };
   }
   if (kind === 'x10') {

@@ -5,8 +5,8 @@ const js=html.split('<script>')[1].split('</script>')[0].split('/*==DOM==*/')[0]
 const ctx={Math,console,globalThis:null};ctx.globalThis=ctx;vm.createContext(ctx);vm.runInContext(js,ctx);
 const SP=ctx.__SP,E=x=>vm.runInContext(x,ctx),bad=[];let n=0;
 const TYPES=['placew','roundw','fdec','tenx','rulepat','facmodel','convm','rectf','mword','lineplot'];
-const num=s=>Number(String(s).replace(/,/g,'')),cn=v=>v>=10000?String(v).replace(/\B(?=(\d{3})+(?!\d))/g,','):String(v);
-const ev=e=>Function('"use strict";return ('+e.replace(/×/g,'*').replace(/÷/g,'/').replace(/−/g,'-')+')')();
+const num=s=>Number(String(s).replace(/,/g,'')),cn=v=>v>=1000?String(v).replace(/\B(?=(\d{3})+(?!\d))/g,','):String(v);
+const ev=e=>Function('"use strict";return ('+e.replace(/,/g,'').replace(/×/g,'*').replace(/÷/g,'/').replace(/−/g,'-')+')')();
 const PL=['ones','tens','hundreds','thousands','ten thousands','hundred thousands'],UN={ten:10,hundred:100,thousand:1000,'ten thousand':10000,'hundred thousand':100000};
 const RULE=(op,d)=>({add:(v)=>v+d,sub:(v)=>v-d,mul:(v)=>v*d}[op]);
 const parseRule=t=>{const m=t.match(/^(add|subtract|multiply by) (\d+)$/);return m?[m[1]==='add'?'add':m[1]==='subtract'?'sub':'mul',+m[2]]:null;};
@@ -61,7 +61,7 @@ function chk(p,id,L){n++;const e=m=>bad.push(`${id} L${L}: ${m} ${JSON.stringify
   else if(p.kind==='diff'){if(L===1||p.ans!==String(nz[nz.length-1]-nz[0]))e('diff');}
   else{if(L!==3||c[p.k]<2||p.num!==c[p.k]*p.k||p.ans!==p.num+'/'+den)e('total');}
   if(!/<span class="fr">|exactly|than|units|end to end/.test(p.q))e('question');break;}
- case 'mword':{const a=+p.ans;if(!Number.isInteger(a)||a<=0)e('ans');
+ case 'mword':{const a=num(p.ans);if(!Number.isInteger(a)||a<=0)e('ans');
   if(p.kind==='time'){const m=p.text.match(/starts at (\d+):(\d\d) and ends at (\d+):(\d\d)/);if(!m||(+m[3]*60+ +m[4])-(+m[1]*60+ +m[2])!==a)e('time');}
   else if(ev(p.eq)!==a)e('eq');
   if(p.kind==='two'&&!/ are left\?$/.test(p.text))e('two text');

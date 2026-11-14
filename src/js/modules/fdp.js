@@ -111,8 +111,8 @@ function fDecMul(rng, L) {
   } else {
     const dp = pick(rng, L === 2 ? [0, 1] : [0, 1, 2]), im = dp === 0 ? ri(rng, 2, 99) : dp === 1 ? ri(rng, 11, 999) : ri(rng, 101, 999);
     const k = ri(rng, 1, L === 2 ? 2 : 3), mul = rng() < 0.5, base = dp ? dstr(im, dp) : String(im);
-    if (mul) { const dq = dp - k; ans = dq <= 0 ? String(im * P10(-dq)) : trimZ(dstr(im, dq)); expr = `${base} × ${P10(k)}`; }
-    else { prompt = 'Divide.'; ans = trimZ(dstr(im, dp + k)); expr = `${base} ÷ ${P10(k)}`; }
+    if (mul) { const dq = dp - k; ans = dq <= 0 ? cnum(im * P10(-dq)) : trimZ(dstr(im, dq)); expr = `${base} × ${cnum(P10(k))}`; }
+    else { prompt = 'Divide.'; ans = trimZ(dstr(im, dp + k)); expr = `${base} ÷ ${cnum(P10(k))}`; }
   }
   return { mod: 'fdp', type: 'decmul', prompt, expr, ans, sig: `dm${expr}`, ew: expr.length * 0.62 + 3.4 + BW, eh: 1.1 + 1.6 };
 }

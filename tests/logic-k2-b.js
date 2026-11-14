@@ -10,7 +10,7 @@ const unk=t=>t.filter(s=>typeof s==='object').map(s=>+s.u);
 function chk(p,id,L){n++;const e=m=>bad.push(`${id} L${L}: ${m} ${JSON.stringify(p).slice(0,140)}`);
   if(!p.sig||!p.prompt||p.prompt.length>42||!(p.win>0&&p.hin>0||p.ew>0&&p.eh>0))e('shape');if(p.win>3.4)e('wide '+p.win);
   switch(id){
-  case 'kseq':case 'cseq':{const v=p.terms.map(Number),d=v[1]-v[0];if(v.some((x,i)=>i&&x-v[i-1]!==d))e('step');if(v.some(x=>x<0||x>(id==='kseq'?100:1000)))e('range');
+  case 'kseq':case 'cseq':{const v=p.terms.map(t=>Number(t.replace(/,/g,''))),d=v[1]-v[0];if(v.some((x,i)=>i&&x-v[i-1]!==d))e('step');if(v.some(x=>x<0||x>(id==='kseq'?100:1000)))e('range');
     if(id==='kseq'&&![1,5,10,-1].includes(d))e('kseq step');if(id==='cseq'&&![5,10,100,-5,-10,-100].includes(d))e('cseq step');if(id==='kseq'&&d===-1&&v[0]>10)e('back>10');if(id==='cseq'&&d<0&&L===1)e('back at L1');
     if(p.idx.length!==2||p.idx.some(i=>i<1||i>5))e('idx');break;}
   case 'numrw':{if(p.n<1||p.n>(L===1?20:L===2?99:120))e('range');if(p.variant==='w2n'){if(numWord(+p.ans)!==p.word||+p.ans!==p.n)e('w2n');}

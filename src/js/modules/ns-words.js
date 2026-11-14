@@ -133,7 +133,7 @@ function nsxMword(rng, L) {
   else if (kind === 'sub') { const b = ri(rng, 12, top), a = b + ri(rng, 12, top); text = `${nm} has ${a} ${u} of ${stuff} and uses ${b} ${u}. How many ${u} are left?`; eq = `${a} − ${b}`; ans = a - b; sg = `${a}-${b}${u}`; }
   else if (kind === 'mul') { const a = ri(rng, 6, L === 1 ? 25 : 90), n = ri(rng, 3, 9); text = `Each ${cont} holds ${a} ${u} of ${stuff}. How many ${u} of ${stuff} are in ${n} ${cont}s?`; eq = `${n} × ${a}`; ans = n * a; sg = `${n}x${a}${u}`; }
   else if (kind === 'two') { const a = ri(rng, 8, 60), n = ri(rng, 3, 8), b = ri(rng, 5, a * n - 5); text = `Each ${cont} holds ${a} ${u} of ${stuff}. ${nm} fills ${n} ${cont}s and then uses ${b} ${u}. How many ${u} are left?`; eq = `${n} × ${a} − ${b}`; ans = n * a - b; sg = `${n}x${a}-${b}${u}`; }
-  else if (kind === 'conv') { const [big, small, f, st2] = pick(rng, NS_MW_CONV), a = ri(rng, 2, 9), b = f === 1000 ? 50 * ri(rng, 1, 19) : ri(rng, 1, Math.min(f - 1, 60)); text = `${nm} has ${a} ${big} of ${st2} and uses ${b} ${small}. How many ${small} are left?`; eq = `${a} × ${f} − ${b}`; ans = a * f - b; sg = `${a}${big}-${b}${small}`; }
+  else if (kind === 'conv') { const [big, small, f, st2] = pick(rng, NS_MW_CONV), a = ri(rng, 2, 9), b = f === 1000 ? 50 * ri(rng, 1, 19) : ri(rng, 1, Math.min(f - 1, 60)); text = `${nm} has ${a} ${big} of ${st2} and uses ${b} ${small}. How many ${small} are left?`; eq = `${a} × ${cnum(f)} − ${b}`; ans = a * f - b; sg = `${a}${big}-${b}${small}`; }
   else if (kind === 'money') { const a = ri(rng, 2, 9), b = ri(rng, 3, 15), n = ri(rng, 2, 6), m = ri(rng, 2, 5); text = `A pen costs $${a} and a notebook costs $${b}. ${nm} buys ${n} pens and ${m} notebooks. How many dollars is the total?`; eq = `${n} × ${a} + ${m} × ${b}`; ans = n * a + m * b; sg = `$${n}x${a}+${m}x${b}`; }
   else {
     /* start 1:00 to 8:55 plus up to 2 h 30 min ends by 11:25, so the clock never wraps past 12 */
@@ -141,7 +141,7 @@ function nsxMword(rng, L) {
     text = `A movie starts at ${f2(h, mm)} and ends at ${f2(h2, m2)}. How many minutes long is the movie?`; ans = dur; sg = `t${h}${mm}${dur}`;
     eq = `${f2(h2, m2)} − ${f2(h, mm)}`;
   }
-  return { mod: 'ns', type: 'mword', prompt: 'Solve. Write an equation.', kind, eq, ans: String(ans), text, wide: true, sig: `mw${kind}${sg}${kind === 'add' || kind === 'sub' || kind === 'mul' || kind === 'two' ? stuff : ''}`, ew: 21, eh: nsWordEh(text) };
+  return { mod: 'ns', type: 'mword', prompt: 'Solve. Write an equation.', kind, eq, ans: cnum(ans), text, wide: true, sig: `mw${kind}${sg}${kind === 'add' || kind === 'sub' || kind === 'mul' || kind === 'two' ? stuff : ''}`, ew: 21, eh: nsWordEh(text) };
 }
 
 const nsMwordHtml = (p, key, x) => wordCell(p, key, x);
