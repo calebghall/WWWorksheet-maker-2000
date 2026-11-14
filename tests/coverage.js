@@ -5,6 +5,7 @@ const html=fs.readFileSync(path.join(root,'WWWorksheet-maker-2000.html'),'utf8')
 const js=html.split('<script>')[1].split('</script>')[0].split('/*==DOM==*/')[0];
 const ctx={Math,console,globalThis:null};ctx.globalThis=ctx;vm.createContext(ctx);vm.runInContext(js,ctx);
 const P={};ctx.__SP.STANDARDS.forEach(s=>{P[s.c]=s;});
+const FW=ctx.FRAMEWORK||vm.runInContext('FRAMEWORK',ctx);
 const std=JSON.parse(fs.readFileSync(path.join(__dirname,'standards.json'),'utf8'));
 const G={K:'Kindergarten',1:'Grade 1',2:'Grade 2',3:'Grade 3',4:'Grade 4',5:'Grade 5'},MN={addsub:'Addition and Subtraction',muldiv:'Multiplication and Division',fdp:'Fractions, Decimals and Percents',ns:'Number Sense',tm:'Time and Money',area:'Area Squares',vis:'Shapes, Measures and Data'};
 const short=t=>{t=t.replace(/\s+/g,' ').replace(/[^\x00-\x7F‘-”×÷–]/g,'').trim();return t.length>110?t.slice(0,107).replace(/\s+\S*$/,'')+'...':t;};
@@ -21,7 +22,7 @@ for(const g of ['K','1','2','3','4','5']){
 }
 const gapBy={};for(const c of codes)if(!P[c])gapBy[std[c].grade]=(gapBy[std[c].grade]||0)+1;
 const gapGrades=Object.keys(gapBy).map(g=>`${G[g]} (${gapBy[g]})`).join(', '),noGap=['K','1','2','3','4','5'].filter(g=>!gapBy[g]).map(g=>G[g]);
-const head=`# Standards coverage\n\nSource: Tennessee Instructional Focus Documents, Kindergarten to Grade 5 (July 2025 binders). ${codes.length} standards.\n\n- Supported: ${full}\n- Partial: ${part}\n- Gap: ${gap}\n\nSupported and Partial standards have a preset in the Tennessee standard panel of the worksheet maker. Partial presets list what differs from the standard. Gaps by grade: ${gapGrades || 'none'}. ${noGap.length ? noGap.join(', ') + (noGap.length > 1 ? ' have' : ' has') + ' no gaps. ' : ''}Grade 4 gaps need new problem types for angles and for geometry classification and symmetry. Grade 5 has no presets yet.\n`;
+const head=`# Standards coverage\n\nSource: ${FW.source}. ${codes.length} standards.\n\n- Supported: ${full}\n- Partial: ${part}\n- Gap: ${gap}\n\nSupported and Partial standards have a preset in the ${FW.name} standard panel of the worksheet maker. Partial presets list what differs from the standard. Gaps by grade: ${gapGrades || 'none'}. ${noGap.length ? noGap.join(', ') + (noGap.length > 1 ? ' have' : ' has') + ' no gaps. ' : ''}Grade 4 gaps need new problem types for angles and for geometry classification and symmetry. Grade 5 has no presets yet.\n`;
 fs.writeFileSync(path.join(root,'notes','standards-coverage.md'),head+out);
 console.log({full,part,gap,total:codes.length});
 

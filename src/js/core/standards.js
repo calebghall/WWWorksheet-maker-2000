@@ -1,4 +1,4 @@
-/* ---------- Tennessee standards presets (from the Instructional Focus Documents, K-4) ----------
+/* ---------- Standards presets for the framework named in framework.js (currently Tennessee, from the Instructional Focus Documents) ----------
    Each preset configures one module. Fields:
      c  standard code            t  short worksheet title
      m  module id                n  note when the generator only partly matches the standard

@@ -161,6 +161,7 @@ function writeStdList() {
 }
 function writeStd() {
   $('#stdGrades').innerHTML = STD_GRADE_IDS.map(id => `<label><input type="radio" name="stdGrade" value="${id}"${state.std.g === id ? ' checked' : ''}><span title="${STD_GRADES[id]}">${id}</span></label>`).join('');
+  $('#stdFw').textContent = FRAMEWORK.name;
   writeStdList();
   const s = STD_BY_CODE[state.std.c];
   $('#stdCur').textContent = s ? s.c : '';
