@@ -361,7 +361,7 @@ details.stdbox { margin: 20px 0 0; border: 1px solid var(--line); border-radius:
 
     <form id="form" autocomplete="off">
       <details class="stdbox" id="stdBox">
-        <summary>Browse Tennessee Standards<span class="cur" id="stdCur"></span></summary>
+        <summary>Browse <span id="stdFw">Tennessee</span> Standards<span class="cur" id="stdCur"></span></summary>
         <div class="seg" id="stdGrades" role="radiogroup" aria-label="Grade"></div>
         <input type="search" id="stdQ" name="stdQ" class="stdq" placeholder="Search standards (code or words)" aria-label="Search standards">
         <div class="stdlist" id="stdList"></div>
@@ -4344,7 +4344,14 @@ function renderCombo(st) {
   META.problems = secs.reduce((a, s) => a + s.plan.probs.length, 0); META.pages = pages.length; META.note = '';
   return make(false) + (st.key ? make(true) : '');
 }
-/* ---------- Tennessee standards presets (from the Instructional Focus Documents, K-4) ----------
+/* The standards framework the picker shows. One constant; the UI, the coverage note and the standards
+   header read it, so adding a state changes data, not markup. */
+const FRAMEWORK = {
+  id: 'tn',
+  name: 'Tennessee',
+  source: 'Tennessee Instructional Focus Documents, Kindergarten to Grade 5 (July 2025 binders)'
+};
+/* ---------- Standards presets for the framework named in framework.js (currently Tennessee, from the Instructional Focus Documents) ----------
    Each preset configures one module. Fields:
      c  standard code            t  short worksheet title
      m  module id                n  note when the generator only partly matches the standard
@@ -4682,6 +4689,7 @@ function writeStdList() {
 }
 function writeStd() {
   $('#stdGrades').innerHTML = STD_GRADE_IDS.map(id => `<label><input type="radio" name="stdGrade" value="${id}"${state.std.g === id ? ' checked' : ''}><span title="${STD_GRADES[id]}">${id}</span></label>`).join('');
+  $('#stdFw').textContent = FRAMEWORK.name;
   writeStdList();
   const s = STD_BY_CODE[state.std.c];
   $('#stdCur').textContent = s ? s.c : '';
