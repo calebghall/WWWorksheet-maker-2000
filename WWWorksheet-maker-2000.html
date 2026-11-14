@@ -486,6 +486,11 @@ details.stdbox { margin: 20px 0 0; border: 1px solid var(--line); border-radius:
         <div data-md="mul">
           <div class="row"><span class="lbl">Multiplication: first factor digits</span><div class="seg" role="radiogroup" aria-label="Multiplication: first factor digits"><label><input type="radio" name="md_da" value="1"><span>1</span></label><label><input type="radio" name="md_da" value="2"><span>2</span></label><label><input type="radio" name="md_da" value="3"><span>3</span></label><label><input type="radio" name="md_da" value="4"><span>4</span></label></div></div>
           <div class="row"><span class="lbl">Multiplication: second factor digits</span><div class="seg" role="radiogroup" aria-label="Multiplication: second factor digits"><label><input type="radio" name="md_db" value="1"><span>1</span></label><label><input type="radio" name="md_db" value="2"><span>2</span></label><label><input type="radio" name="md_db" value="3"><span>3</span></label></div></div>
+          <label class="chk"><input type="checkbox" name="md_alt"><b>Also mix in a second size</b><small>Each multiplication problem uses one of the two sizes, chosen at random.</small></label>
+          <div data-md="alt">
+          <div class="row"><span class="lbl">Also: first factor digits</span><div class="seg" role="radiogroup" aria-label="Also: first factor digits"><label><input type="radio" name="md_da2" value="1"><span>1</span></label><label><input type="radio" name="md_da2" value="2"><span>2</span></label><label><input type="radio" name="md_da2" value="3"><span>3</span></label><label><input type="radio" name="md_da2" value="4"><span>4</span></label></div></div>
+          <div class="row"><span class="lbl">Also: second factor digits</span><div class="seg" role="radiogroup" aria-label="Also: second factor digits"><label><input type="radio" name="md_db2" value="1"><span>1</span></label><label><input type="radio" name="md_db2" value="2"><span>2</span></label><label><input type="radio" name="md_db2" value="3"><span>3</span></label></div></div>
+          </div>
         </div>
         <div data-md="div">
           <div class="row"><span class="lbl">Division: dividend digits</span><div class="seg" role="radiogroup" aria-label="Division: dividend digits"><label><input type="radio" name="md_na" value="2"><span>2</span></label><label><input type="radio" name="md_na" value="3"><span>3</span></label><label><input type="radio" name="md_na" value="4"><span>4</span></label><label><input type="radio" name="md_na" value="5"><span>5</span></label></div></div>
@@ -1305,7 +1310,11 @@ function genMul(rng, st) {
   if (M.mode === 'facts') {
     if (M.focus) { a = M.focus; b = ri(rng, 2, 12); } else { a = ri(rng, 2, M.tables); b = ri(rng, 2, M.tables); }
     if (rng() < 0.5) { const t = a; a = b; b = t; }
-  } else { a = rdig(rng, M.da, true); b = rdig(rng, M.db, true); }
+  } else {
+    /* optional second size: one extra draw per problem, and only when it is switched on, so existing sets are unchanged */
+    const two = M.alt && rng() < 0.5;
+    a = rdig(rng, two ? M.da2 : M.da, true); b = rdig(rng, two ? M.db2 : M.db, true);
+  }
   return { type: 'mul', a, b, ans: a * b, pp: M.mode === 'digits' && String(b).length > 1 };
 }
 function genDiv(rng, st) {
@@ -4344,7 +4353,7 @@ function renderCombo(st) {
 const STD_GRADES = { K: 'Kindergarten', 1: 'Grade 1', 2: 'Grade 2', 3: 'Grade 3', 4: 'Grade 4', 5: 'Grade 5' };
 const STD_GRADE_IDS = ['K', '1', '2', '3', '4', '5'];
 const AS = (d1, d2, extra) => Object.assign({ add: true, sub: true, d1, d2, addends: 2, regroup: 'any', format: 'vertical', cap: 0, second: 'digits' }, extra || {});
-const MD = o => Object.assign({ mul: true, div: true, mode: 'facts', tables: 10, focus: 0, rem: false, da: 2, db: 1, na: 3, nb: 1, format: 'vertical' }, o);
+const MD = o => Object.assign({ mul: true, div: true, mode: 'facts', tables: 10, focus: 0, rem: false, da: 2, db: 1, alt: false, da2: 2, db2: 2, na: 3, nb: 1, format: 'vertical' }, o);
 const STANDARDS = [
   { c: 'K.CC.A.1', t: 'Count by fives and tens', m: 'ns', ns: { types: ['kseq'], level: 1 } },
   { c: 'K.CC.A.2', t: 'Count on from any number', m: 'ns', ns: { types: ['cfwd'], level: 1 } },
@@ -4452,7 +4461,7 @@ const STANDARDS = [
   { c: '4.NBT.A.2', t: 'Read and write multi-digit numbers', m: 'ns', ns: { types: ['placew'], level: 3 } },
   { c: '4.NBT.A.3', t: 'Round multi-digit numbers', m: 'ns', ns: { types: ['roundw'], level: 3 } },
   { c: '4.NBT.B.4', t: 'Add and subtract within 1,000,000', m: 'addsub', as: AS(6, 6, { cap: 1000000 }) },
-  { c: '4.NBT.B.5', t: 'Multiply up to four digits by one digit', m: 'muldiv', md: MD({ div: false, mode: 'digits', da: 4, db: 1 }), n: 'Two-digit by two-digit problems: set both factors to 2 digits.' },
+  { c: '4.NBT.B.5', t: 'Multiply four digits by one digit and two digits by two digits', m: 'muldiv', md: MD({ div: false, mode: 'digits', da: 4, db: 1, alt: true, da2: 2, db2: 2 }) },
   { c: '4.NBT.B.6', t: 'Divide with remainders', m: 'muldiv', md: MD({ mul: false, mode: 'digits', na: 4, nb: 1, rem: true }) },
   { c: '4.NF.A.1', t: 'Equivalent fractions', m: 'fdp', fd: { types: ['equiv'], level: 2 } },
   { c: '4.NF.A.2', t: 'Compare fractions', m: 'fdp', fd: { types: ['cmp'], level: 3 } },
@@ -4518,7 +4527,7 @@ function defaults() {
     types: { count: true, mult: true, draw: true, cmp: true, lsh: false }, level: 2, perPage: 6, unit: 'units', shade: true,
     arPerPage: 20,
     as: { add: true, sub: true, d1: 2, d2: 2, addends: 2, regroup: 'any', format: 'vertical', cap: 0, second: 'digits' },
-    md: { mul: true, div: true, mode: 'facts', tables: 10, focus: 0, rem: false, da: 2, db: 1, na: 3, nb: 1, format: 'vertical' },
+    md: { mul: true, div: true, mode: 'facts', tables: 10, focus: 0, rem: false, da: 2, db: 1, alt: false, da2: 2, db2: 2, na: 3, nb: 1, format: 'vertical' },
     fd: { types: { simp: true, equiv: true, cmp: true, fadd: true, fmul: false, decadd: true, decmul: false, conv: true, pct: true }, level: 2 },
     ns: { types: typeDefaults('ns'), level: 2 },
     vis: { types: typeDefaults('vis'), level: 2 },
@@ -4593,6 +4602,9 @@ function normalize(s) {
   out.md.mode = inEnum(out.md.mode, ['facts', 'digits'], 'facts');
   out.md.da = inEnum(+out.md.da, [1, 2, 3, 4], 2);
   out.md.db = inEnum(+out.md.db, [1, 2, 3], 1);
+  out.md.alt = !!out.md.alt;
+  out.md.da2 = inEnum(+out.md.da2, [1, 2, 3, 4], 2);
+  out.md.db2 = inEnum(+out.md.db2, [1, 2, 3], 2);
   out.md.na = inEnum(+out.md.na, [2, 3, 4, 5], 3);
   out.md.nb = inEnum(+out.md.nb, [1, 2], 1);
   out.md.tables = inEnum(+out.md.tables, [5, 9, 10, 12], 10);
@@ -4683,7 +4695,7 @@ function writeForm() {
   setRadio('as_d1', state.as.d1); setRadio('as_d2', state.as.d2); setRadio('as_addends', state.as.addends); setRadio('as_regroup', state.as.regroup); setRadio('as_format', state.as.format); setRadio('as_cap', state.as.cap); setRadio('as_second', state.as.second);
   setChecks('md_ops', { mul: state.md.mul, div: state.md.div });
   form.elements.md_rem.checked = !!state.md.rem;
-  setRadio('md_mode', state.md.mode); setRadio('md_da', state.md.da); setRadio('md_db', state.md.db); setRadio('md_na', state.md.na); setRadio('md_nb', state.md.nb);
+  setRadio('md_mode', state.md.mode); setRadio('md_da', state.md.da); setRadio('md_db', state.md.db); form.elements.md_alt.checked = !!state.md.alt; setRadio('md_da2', state.md.da2); setRadio('md_db2', state.md.db2); setRadio('md_na', state.md.na); setRadio('md_nb', state.md.nb);
   $('#md_tables').value = String(state.md.tables); $('#md_focus').value = String(state.md.focus); setRadio('md_format', state.md.format);
   setChecks('fd_type', state.fd.types); setRadio('fd_level', state.fd.level);
   setChecks('ns_type', state.ns.types); setRadio('ns_level', state.ns.level);
@@ -4705,7 +4717,7 @@ function syncModuleUI() {
   const M = state.md, A = state.as, digits = M.mode === 'digits';
   form.querySelectorAll('[data-md]').forEach(el => {
     const k = el.dataset.md;
-    el.hidden = !(k === 'facts' ? !digits : k === 'mul' ? digits && M.mul : digits && M.div);
+    el.hidden = !(k === 'facts' ? !digits : k === 'mul' ? digits && M.mul : k === 'alt' ? digits && M.mul && M.alt : digits && M.div);
   });
   const adds = A.add;
   $('#asAddends').classList.toggle('dis', !adds);
@@ -4724,7 +4736,7 @@ function syncModuleUI() {
     : (A.d1 === 1 && A.sub ? 'One-digit subtraction stays within 18.' : 'Always and never refer to carrying in addition and borrowing in subtraction.');
   const parts = [];
   if (digits) {
-    if (M.mul) parts.push(`Multiplication: ${dWord(M.da)} by ${dWord(M.db)}.`);
+    if (M.mul) parts.push(M.alt ? `Multiplication: ${dWord(M.da)} by ${dWord(M.db)}, or ${dWord(M.da2)} by ${dWord(M.db2)}.` : `Multiplication: ${dWord(M.da)} by ${dWord(M.db)}.`);
     if (M.div) parts.push(`Division: ${dWord(Math.max(M.na, M.nb + 1))} by ${dWord(M.nb)}.`);
     if (M.div) parts.push('The dividend needs at least one more digit than the divisor.');
   } else parts.push('Facts from the times tables. Division answers are whole numbers.');
@@ -4739,7 +4751,7 @@ function readForm(changed) {
   state.as = { add: !!ao.add, sub: !!ao.sub, d1: +val('as_d1') || state.as.d1, d2: +val('as_d2') || state.as.d2, addends: +val('as_addends') || state.as.addends, regroup: val('as_regroup') || state.as.regroup, format: val('as_format') || state.as.format, cap: +val('as_cap') || 0, second: val('as_second') || state.as.second };
   const mo = ensureOne(checksOf('md_ops'), changed, 'md_ops', 'mul');
   state.md = { mul: !!mo.mul, div: !!mo.div, rem: form.elements.md_rem.checked, mode: val('md_mode') || state.md.mode,
-    da: +val('md_da') || state.md.da, db: +val('md_db') || state.md.db, na: +val('md_na') || state.md.na, nb: +val('md_nb') || state.md.nb,
+    da: +val('md_da') || state.md.da, db: +val('md_db') || state.md.db, alt: form.elements.md_alt.checked, da2: +val('md_da2') || state.md.da2, db2: +val('md_db2') || state.md.db2, na: +val('md_na') || state.md.na, nb: +val('md_nb') || state.md.nb,
     tables: +$('#md_tables').value, focus: +$('#md_focus').value, format: val('md_format') || state.md.format };
   state.fd = { types: ensureOne(checksOf('fd_type'), changed, 'fd_type', 'simp'), level: +val('fd_level') || state.fd.level };
   state.ns = { types: ensureOne(checksOf('ns_type'), changed, 'ns_type', 'place'), level: +val('ns_level') || state.ns.level };

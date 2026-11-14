@@ -6,7 +6,7 @@ function defaults() {
     types: { count: true, mult: true, draw: true, cmp: true, lsh: false }, level: 2, perPage: 6, unit: 'units', shade: true,
     arPerPage: 20,
     as: { add: true, sub: true, d1: 2, d2: 2, addends: 2, regroup: 'any', format: 'vertical', cap: 0, second: 'digits' },
-    md: { mul: true, div: true, mode: 'facts', tables: 10, focus: 0, rem: false, da: 2, db: 1, na: 3, nb: 1, format: 'vertical' },
+    md: { mul: true, div: true, mode: 'facts', tables: 10, focus: 0, rem: false, da: 2, db: 1, alt: false, da2: 2, db2: 2, na: 3, nb: 1, format: 'vertical' },
     fd: { types: { simp: true, equiv: true, cmp: true, fadd: true, fmul: false, decadd: true, decmul: false, conv: true, pct: true }, level: 2 },
     ns: { types: typeDefaults('ns'), level: 2 },
     vis: { types: typeDefaults('vis'), level: 2 },
@@ -81,6 +81,9 @@ function normalize(s) {
   out.md.mode = inEnum(out.md.mode, ['facts', 'digits'], 'facts');
   out.md.da = inEnum(+out.md.da, [1, 2, 3, 4], 2);
   out.md.db = inEnum(+out.md.db, [1, 2, 3], 1);
+  out.md.alt = !!out.md.alt;
+  out.md.da2 = inEnum(+out.md.da2, [1, 2, 3, 4], 2);
+  out.md.db2 = inEnum(+out.md.db2, [1, 2, 3], 2);
   out.md.na = inEnum(+out.md.na, [2, 3, 4, 5], 3);
   out.md.nb = inEnum(+out.md.nb, [1, 2], 1);
   out.md.tables = inEnum(+out.md.tables, [5, 9, 10, 12], 10);
@@ -171,7 +174,7 @@ function writeForm() {
   setRadio('as_d1', state.as.d1); setRadio('as_d2', state.as.d2); setRadio('as_addends', state.as.addends); setRadio('as_regroup', state.as.regroup); setRadio('as_format', state.as.format); setRadio('as_cap', state.as.cap); setRadio('as_second', state.as.second);
   setChecks('md_ops', { mul: state.md.mul, div: state.md.div });
   form.elements.md_rem.checked = !!state.md.rem;
-  setRadio('md_mode', state.md.mode); setRadio('md_da', state.md.da); setRadio('md_db', state.md.db); setRadio('md_na', state.md.na); setRadio('md_nb', state.md.nb);
+  setRadio('md_mode', state.md.mode); setRadio('md_da', state.md.da); setRadio('md_db', state.md.db); form.elements.md_alt.checked = !!state.md.alt; setRadio('md_da2', state.md.da2); setRadio('md_db2', state.md.db2); setRadio('md_na', state.md.na); setRadio('md_nb', state.md.nb);
   $('#md_tables').value = String(state.md.tables); $('#md_focus').value = String(state.md.focus); setRadio('md_format', state.md.format);
   setChecks('fd_type', state.fd.types); setRadio('fd_level', state.fd.level);
   setChecks('ns_type', state.ns.types); setRadio('ns_level', state.ns.level);
@@ -193,7 +196,7 @@ function syncModuleUI() {
   const M = state.md, A = state.as, digits = M.mode === 'digits';
   form.querySelectorAll('[data-md]').forEach(el => {
     const k = el.dataset.md;
-    el.hidden = !(k === 'facts' ? !digits : k === 'mul' ? digits && M.mul : digits && M.div);
+    el.hidden = !(k === 'facts' ? !digits : k === 'mul' ? digits && M.mul : k === 'alt' ? digits && M.mul && M.alt : digits && M.div);
   });
   const adds = A.add;
   $('#asAddends').classList.toggle('dis', !adds);
@@ -212,7 +215,7 @@ function syncModuleUI() {
     : (A.d1 === 1 && A.sub ? 'One-digit subtraction stays within 18.' : 'Always and never refer to carrying in addition and borrowing in subtraction.');
   const parts = [];
   if (digits) {
-    if (M.mul) parts.push(`Multiplication: ${dWord(M.da)} by ${dWord(M.db)}.`);
+    if (M.mul) parts.push(M.alt ? `Multiplication: ${dWord(M.da)} by ${dWord(M.db)}, or ${dWord(M.da2)} by ${dWord(M.db2)}.` : `Multiplication: ${dWord(M.da)} by ${dWord(M.db)}.`);
     if (M.div) parts.push(`Division: ${dWord(Math.max(M.na, M.nb + 1))} by ${dWord(M.nb)}.`);
     if (M.div) parts.push('The dividend needs at least one more digit than the divisor.');
   } else parts.push('Facts from the times tables. Division answers are whole numbers.');
@@ -227,7 +230,7 @@ function readForm(changed) {
   state.as = { add: !!ao.add, sub: !!ao.sub, d1: +val('as_d1') || state.as.d1, d2: +val('as_d2') || state.as.d2, addends: +val('as_addends') || state.as.addends, regroup: val('as_regroup') || state.as.regroup, format: val('as_format') || state.as.format, cap: +val('as_cap') || 0, second: val('as_second') || state.as.second };
   const mo = ensureOne(checksOf('md_ops'), changed, 'md_ops', 'mul');
   state.md = { mul: !!mo.mul, div: !!mo.div, rem: form.elements.md_rem.checked, mode: val('md_mode') || state.md.mode,
-    da: +val('md_da') || state.md.da, db: +val('md_db') || state.md.db, na: +val('md_na') || state.md.na, nb: +val('md_nb') || state.md.nb,
+    da: +val('md_da') || state.md.da, db: +val('md_db') || state.md.db, alt: form.elements.md_alt.checked, da2: +val('md_da2') || state.md.da2, db2: +val('md_db2') || state.md.db2, na: +val('md_na') || state.md.na, nb: +val('md_nb') || state.md.nb,
     tables: +$('#md_tables').value, focus: +$('#md_focus').value, format: val('md_format') || state.md.format };
   state.fd = { types: ensureOne(checksOf('fd_type'), changed, 'fd_type', 'simp'), level: +val('fd_level') || state.fd.level };
   state.ns = { types: ensureOne(checksOf('ns_type'), changed, 'ns_type', 'place'), level: +val('ns_level') || state.ns.level };

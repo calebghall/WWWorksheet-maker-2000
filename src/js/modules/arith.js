@@ -100,7 +100,11 @@ function genMul(rng, st) {
   if (M.mode === 'facts') {
     if (M.focus) { a = M.focus; b = ri(rng, 2, 12); } else { a = ri(rng, 2, M.tables); b = ri(rng, 2, M.tables); }
     if (rng() < 0.5) { const t = a; a = b; b = t; }
-  } else { a = rdig(rng, M.da, true); b = rdig(rng, M.db, true); }
+  } else {
+    /* optional second size: one extra draw per problem, and only when it is switched on, so existing sets are unchanged */
+    const two = M.alt && rng() < 0.5;
+    a = rdig(rng, two ? M.da2 : M.da, true); b = rdig(rng, two ? M.db2 : M.db, true);
+  }
   return { type: 'mul', a, b, ans: a * b, pp: M.mode === 'digits' && String(b).length > 1 };
 }
 function genDiv(rng, st) {

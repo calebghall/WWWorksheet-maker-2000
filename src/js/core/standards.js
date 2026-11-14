@@ -7,7 +7,7 @@
 const STD_GRADES = { K: 'Kindergarten', 1: 'Grade 1', 2: 'Grade 2', 3: 'Grade 3', 4: 'Grade 4', 5: 'Grade 5' };
 const STD_GRADE_IDS = ['K', '1', '2', '3', '4', '5'];
 const AS = (d1, d2, extra) => Object.assign({ add: true, sub: true, d1, d2, addends: 2, regroup: 'any', format: 'vertical', cap: 0, second: 'digits' }, extra || {});
-const MD = o => Object.assign({ mul: true, div: true, mode: 'facts', tables: 10, focus: 0, rem: false, da: 2, db: 1, na: 3, nb: 1, format: 'vertical' }, o);
+const MD = o => Object.assign({ mul: true, div: true, mode: 'facts', tables: 10, focus: 0, rem: false, da: 2, db: 1, alt: false, da2: 2, db2: 2, na: 3, nb: 1, format: 'vertical' }, o);
 const STANDARDS = [
   { c: 'K.CC.A.1', t: 'Count by fives and tens', m: 'ns', ns: { types: ['kseq'], level: 1 } },
   { c: 'K.CC.A.2', t: 'Count on from any number', m: 'ns', ns: { types: ['cfwd'], level: 1 } },
@@ -115,7 +115,7 @@ const STANDARDS = [
   { c: '4.NBT.A.2', t: 'Read and write multi-digit numbers', m: 'ns', ns: { types: ['placew'], level: 3 } },
   { c: '4.NBT.A.3', t: 'Round multi-digit numbers', m: 'ns', ns: { types: ['roundw'], level: 3 } },
   { c: '4.NBT.B.4', t: 'Add and subtract within 1,000,000', m: 'addsub', as: AS(6, 6, { cap: 1000000 }) },
-  { c: '4.NBT.B.5', t: 'Multiply up to four digits by one digit', m: 'muldiv', md: MD({ div: false, mode: 'digits', da: 4, db: 1 }), n: 'Two-digit by two-digit problems: set both factors to 2 digits.' },
+  { c: '4.NBT.B.5', t: 'Multiply four digits by one digit and two digits by two digits', m: 'muldiv', md: MD({ div: false, mode: 'digits', da: 4, db: 1, alt: true, da2: 2, db2: 2 }) },
   { c: '4.NBT.B.6', t: 'Divide with remainders', m: 'muldiv', md: MD({ mul: false, mode: 'digits', na: 4, nb: 1, rem: true }) },
   { c: '4.NF.A.1', t: 'Equivalent fractions', m: 'fdp', fd: { types: ['equiv'], level: 2 } },
   { c: '4.NF.A.2', t: 'Compare fractions', m: 'fdp', fd: { types: ['cmp'], level: 3 } },

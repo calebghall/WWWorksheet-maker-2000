@@ -2,8 +2,8 @@
 
 Source: Tennessee Instructional Focus Documents, Kindergarten to Grade 5 (July 2025 binders). 150 standards.
 
-- Supported: 118
-- Partial: 1
+- Supported: 119
+- Partial: 0
 - Gap: 31
 
 Supported and Partial standards have a preset in the Tennessee standard panel of the worksheet maker. Partial presets list what differs from the standard. Gaps by grade: Grade 4 (6), Grade 5 (25). Kindergarten, Grade 1, Grade 2, Grade 3 have no gaps. Grade 4 gaps need new problem types for angles and for geometry classification and symmetry. Grade 5 has no presets yet.
@@ -138,7 +138,7 @@ Supported and Partial standards have a preset in the Tennessee standard panel of
 | 4.NBT.A.2 | Read and write multi-digit whole numbers (less than or equal to 1,000,000) using standard form, word form,... | Supported | Number Sense: Read and write multi-digit numbers. |
 | 4.NBT.A.3 | Round multi-digit whole numbers to any place (up to and including the hundred-thousand place) using... | Supported | Number Sense: Round multi-digit numbers. |
 | 4.NBT.B.4 | Fluently add and subtract within 1,000,000 using efficient strategies and algorithms. | Supported | Addition and Subtraction: Add and subtract within 1,000,000. |
-| 4.NBT.B.5 | Multiply a whole number of up to four digits by a one-digit whole number and multiply two two-digit... | Partial | Multiplication and Division: Multiply up to four digits by one digit. Two-digit by two-digit problems: set both factors to 2 digits. |
+| 4.NBT.B.5 | Multiply a whole number of up to four digits by a one-digit whole number and multiply two two-digit... | Supported | Multiplication and Division: Multiply four digits by one digit and two digits by two digits. |
 | 4.NBT.B.6 | Find whole-number quotients and remainders with up to four-digit dividends and one-digit divisors, using... | Supported | Multiplication and Division: Divide with remainders. |
 | 4.NF.A.1 | ÷ Explain why a fraction  is equivalent to a fraction or by using visual fraction models, with attention... | Supported | Fractions, Decimals and Percents: Equivalent fractions. |
 | 4.NF.A.2 | Compare two fractions with different numerators and different denominators by creating common denominators... | Supported | Fractions, Decimals and Percents: Compare fractions. |

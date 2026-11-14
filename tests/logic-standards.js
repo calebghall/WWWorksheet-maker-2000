@@ -20,7 +20,7 @@ for(const s of SP.STANDARDS){
             ?((small?(q.a<=cap&&q.b>=1):(A.d1===1&&!cap?q.a<=18:L(q.a)<=dl(A.d1)))&&(small||L(q.b)<=A.d2)&&q.a-q.b===q.ans&&q.ans>=0&&(!cap||q.a<=cap))
             :(q.nums.length<=A.addends&&sum(q)===q.ans&&(!cap||q.ans<=cap)&&(small||(L(q.nums[0])<=dl(A.d1)&&q.nums.slice(1).every(n=>L(n)<=Math.max(A.d2,A.second==='digits'?0:2))))));
           if(!ok)bad.push(s.c+' digit range or cap');}
-        if(s.m==='muldiv'&&st.md.mode==='digits'){const ok=p.every(q=>q.type==='div'?(q.d<10**st.md.nb&&q.n<10**st.md.na&&q.q*q.d+q.r===q.n):(q.a<10**st.md.da&&q.b<10**st.md.db&&q.a*q.b===q.ans));if(!ok)bad.push(s.c+' digit range');}
+        if(s.m==='muldiv'&&st.md.mode==='digits'){const ok=p.every(q=>q.type==='div'?(q.d<10**st.md.nb&&q.n<10**st.md.na&&q.q*q.d+q.r===q.n):((q.a<10**st.md.da&&q.b<10**st.md.db||st.md.alt&&q.a<10**st.md.da2&&q.b<10**st.md.db2)&&q.a*q.b===q.ans));if(!ok)bad.push(s.c+' digit range');}
         const types=s[s.m==='addsub'||s.m==='muldiv'?null:s.m];
         if(types&&types.types){const allowed=new Set(types.types);if(allowed.has('cmp2'))allowed.add('compare');if(allowed.has('par20'))allowed.add('parity');if(allowed.has('placew'))allowed.add('place');if(allowed.has('roundw'))allowed.add('round');const got=new Set(p.map(q=>q.type));
           for(const t of got)if(!allowed.has(t)&&!(s.c==='4.NF.B.4'&&t==='fmulw'))bad.push(s.c+' unexpected type '+t);}
