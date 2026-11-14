@@ -120,11 +120,38 @@ const nsWstepHtml = (p, key, x) => wordCell(p, key, x);
 
 const nsWestHtml = (p, key, x) => wordCell(p, key, x);
 
+/* Measurement word problems with whole numbers: length, mass, liquid volume, time and money.
+   L1 one step, L2 two steps in one unit, L3 conversions, elapsed time and money. */
+const NS_MW = [['cm', 'ribbon', 'spool'], ['m', 'rope', 'coil'], ['g', 'flour', 'bag'], ['kg', 'rice', 'sack'], ['mL', 'juice', 'jar'], ['L', 'water', 'tank']];
+const NS_MW_CONV = [['m', 'cm', 100, 'rope'], ['km', 'm', 1000, 'trail'], ['kg', 'g', 1000, 'flour'], ['L', 'mL', 1000, 'juice'], ['ft', 'in', 12, 'string'], ['yd', 'ft', 3, 'fabric'], ['lb', 'oz', 16, 'cheese'], ['gal', 'qt', 4, 'milk']];
+
+function nsxMword(rng, L) {
+  const kind = pick(rng, L === 1 ? ['add', 'sub', 'mul'] : L === 2 ? ['two', 'two', 'sub', 'mul'] : ['conv', 'conv', 'money', 'time']), nm = pick(rng, NS_NAMES);
+  const [u, stuff, cont] = pick(rng, NS_MW), top = L === 1 ? 90 : 400;
+  let text, eq, ans, sg;
+  if (kind === 'add') { const a = ri(rng, 12, top), b = ri(rng, 12, top); text = `${nm} measures ${a} ${u} of ${stuff}. Later ${nm} measures ${b} ${u} more. How many ${u} in all?`; eq = `${a} + ${b}`; ans = a + b; sg = `${a}+${b}${u}`; }
+  else if (kind === 'sub') { const b = ri(rng, 12, top), a = b + ri(rng, 12, top); text = `${nm} has ${a} ${u} of ${stuff} and uses ${b} ${u}. How many ${u} are left?`; eq = `${a} − ${b}`; ans = a - b; sg = `${a}-${b}${u}`; }
+  else if (kind === 'mul') { const a = ri(rng, 6, L === 1 ? 25 : 90), n = ri(rng, 3, 9); text = `Each ${cont} holds ${a} ${u} of ${stuff}. How many ${u} of ${stuff} are in ${n} ${cont}s?`; eq = `${n} × ${a}`; ans = n * a; sg = `${n}x${a}${u}`; }
+  else if (kind === 'two') { const a = ri(rng, 8, 60), n = ri(rng, 3, 8), b = ri(rng, 5, a * n - 5); text = `Each ${cont} holds ${a} ${u} of ${stuff}. ${nm} fills ${n} ${cont}s and then uses ${b} ${u}. How many ${u} are left?`; eq = `${n} × ${a} − ${b}`; ans = n * a - b; sg = `${n}x${a}-${b}${u}`; }
+  else if (kind === 'conv') { const [big, small, f, st2] = pick(rng, NS_MW_CONV), a = ri(rng, 2, 9), b = f === 1000 ? 50 * ri(rng, 1, 19) : ri(rng, 1, Math.min(f - 1, 60)); text = `${nm} has ${a} ${big} of ${st2} and uses ${b} ${small}. How many ${small} are left?`; eq = `${a} × ${f} − ${b}`; ans = a * f - b; sg = `${a}${big}-${b}${small}`; }
+  else if (kind === 'money') { const a = ri(rng, 2, 9), b = ri(rng, 3, 15), n = ri(rng, 2, 6), m = ri(rng, 2, 5); text = `A pen costs $${a} and a notebook costs $${b}. ${nm} buys ${n} pens and ${m} notebooks. How many dollars is the total?`; eq = `${n} × ${a} + ${m} × ${b}`; ans = n * a + m * b; sg = `$${n}x${a}+${m}x${b}`; }
+  else {
+    /* start 1:00 to 8:55 plus up to 2 h 30 min ends by 11:25, so the clock never wraps past 12 */
+    const h = ri(rng, 1, 8), mm = 5 * ri(rng, 0, 11), dur = 5 * ri(rng, 6, 30), tot = h * 60 + mm + dur, h2 = Math.floor(tot / 60), m2 = tot % 60, f2 = (hh, m3) => `${hh}:${String(m3).padStart(2, '0')}`;
+    text = `A movie starts at ${f2(h, mm)} and ends at ${f2(h2, m2)}. How many minutes long is the movie?`; ans = dur; sg = `t${h}${mm}${dur}`;
+    eq = `${f2(h2, m2)} − ${f2(h, mm)}`;
+  }
+  return { mod: 'ns', type: 'mword', prompt: 'Solve. Write an equation.', kind, eq, ans: String(ans), text, wide: true, sig: `mw${kind}${sg}${kind === 'add' || kind === 'sub' || kind === 'mul' || kind === 'two' ? stuff : ''}`, ew: 21, eh: nsWordEh(text) };
+}
+
+const nsMwordHtml = (p, key, x) => wordCell(p, key, x);
+
 defTypes("ns", "Word problems", [
   { id: "wadd", label: "Add and subtract word problems", blurb: "Add to, take from, put together, compare; unknown in any position.", on: false, gen: nsxWadd, html: nsWaddHtml },
   { id: "wlen", label: "Length word problems", blurb: "Add and subtract lengths within 100.", on: false, gen: nsxWlen, html: nsWlenHtml },
   { id: "wmul", label: "Multiply and divide word problems", blurb: "Equal groups, arrays, comparison, multi-step.", on: false, gen: nsxWmul, html: nsWmulHtml },
   { id: "wcmp", label: "Comparison word problems", blurb: "\"Times as many\" stories.", on: false, gen: nsxWcmp, html: nsWcmpHtml },
   { id: "wstep", label: "Multi-step word problems", blurb: "Remainders and more than one operation.", on: false, gen: nsxWstep, html: nsWstepHtml },
-  { id: "west", label: "Estimate and solve", blurb: "Two-step stories: round to the nearest ten, then solve.", on: false, gen: nsxWest, html: nsWestHtml }
+  { id: "west", label: "Estimate and solve", blurb: "Two-step stories: round to the nearest ten, then solve.", on: false, gen: nsxWest, html: nsWestHtml },
+{ id: "mword", label: "Measurement word problems", blurb: "One- and two-step problems with length, mass, volume, time and money.", on: false, gen: nsxMword, html: nsMwordHtml }
 ]);

@@ -22,7 +22,7 @@ for(const s of SP.STANDARDS){
           if(!ok)bad.push(s.c+' digit range or cap');}
         if(s.m==='muldiv'&&st.md.mode==='digits'){const ok=p.every(q=>q.type==='div'?(q.d<10**st.md.nb&&q.n<10**st.md.na&&q.q*q.d+q.r===q.n):(q.a<10**st.md.da&&q.b<10**st.md.db&&q.a*q.b===q.ans));if(!ok)bad.push(s.c+' digit range');}
         const types=s[s.m==='addsub'||s.m==='muldiv'?null:s.m];
-        if(types&&types.types){const allowed=new Set(types.types);if(allowed.has('cmp2'))allowed.add('compare');if(allowed.has('par20'))allowed.add('parity');const got=new Set(p.map(q=>q.type));
+        if(types&&types.types){const allowed=new Set(types.types);if(allowed.has('cmp2'))allowed.add('compare');if(allowed.has('par20'))allowed.add('parity');if(allowed.has('placew'))allowed.add('place');if(allowed.has('roundw'))allowed.add('round');const got=new Set(p.map(q=>q.type));
           for(const t of got)if(!allowed.has(t)&&!(s.c==='4.NF.B.4'&&t==='fmulw'))bad.push(s.c+' unexpected type '+t);}
       }
     }catch(e){bad.push(s.c+' threw '+e.message);}

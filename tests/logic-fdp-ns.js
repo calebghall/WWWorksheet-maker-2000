@@ -34,7 +34,7 @@ function check(p,tag){n++;const e=m=>bad.push(tag+' '+p.type+': '+m);
     break;}
   case 'compare':if(p.ans!==sgn(num(p.a),num(p.b)))e('compare');break;
   case 'order':{const v=p.ans.map(num),asc=/least to greatest/.test(p.prompt);for(let i=1;i<v.length;i++)if(asc?v[i]<=v[i-1]:v[i]>=v[i-1])e('order');if(p.shown.map(num).slice().sort((a,b)=>a-b).join()!==v.slice().sort((a,b)=>a-b).join())e('order set');break;}
-  case 'round':{const m=p.prompt.match(/nearest (.+):/)[1];const u={ten:10,hundred:100,thousand:1000,'ten thousand':10000,'whole number':1,tenth:.1,hundredth:.01}[m];const x=num(p.shown);const r=Math.floor(x/u+0.5+1e-9)*u;if(!eq(r,num(p.ans)))e('round '+p.shown+' '+m+' '+p.ans);break;}
+  case 'round':{const m=p.prompt.match(/nearest (.+):/)[1];const u={ten:10,hundred:100,thousand:1000,'ten thousand':10000,'hundred thousand':100000,'whole number':1,tenth:.1,hundredth:.01}[m];const x=num(p.shown);const r=Math.floor(x/u+0.5+1e-9)*u;if(!eq(r,num(p.ans)))e('round '+p.shown+' '+m+' '+p.ans);break;}
   case 'skip':{const v=p.terms.map(num);const st=v[1]-v[0];for(let i=1;i<v.length;i++)if(!eq(v[i]-v[i-1],st))e('skip');if(new Set(p.idx).size!==2||p.idx.includes(0))e('skip idx');if(v.some(x=>x<0))e('neg');break;}
   case 'parity':if(p.single){if(p.ans!==(num(p.n)%2?'odd':'even'))e('par');}else{const want=/odd/.test(p.prompt)?1:0;p.list.forEach((x,i)=>{if(p.on[i]!==(num(x)%2===want))e('par set')});if(!p.on.some(Boolean))e('par none');}break;
   case 'line':{const lab=p.svg.match(/from ([\d.]+) to ([\d.]+)/);const lo=+lab[1],hi=+lab[2];const ax=+p.svg.match(/<path d="M([\d.]+) 4V19"/)[1];const k=Math.round((ax-20)*10/230);const v=lo+k*(hi-lo)/10;if(!eq(v,num(p.ans))||k<1||k>9)e('line '+lo+'-'+hi+' k'+k+' '+p.ans);break;}

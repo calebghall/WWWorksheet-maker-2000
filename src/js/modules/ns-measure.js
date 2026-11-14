@@ -38,6 +38,96 @@ function nsxPerim(rng, L) {
 
 const nsPerimHtml = (p, key, x) => wordCell(p, key, x);
 
-defTypes("ns", "Perimeter", [
-  { id: "perim", label: "Perimeter", blurb: "From side lengths, an unknown side, or same perimeter and same area.", on: false, gen: nsxPerim, html: nsPerimHtml }
+/* Convert a larger unit to a smaller one in the same system: length, mass, liquid volume and time.
+   L1 small tables, L2 every pair, L3 also mixed units such as 3 m 25 cm. */
+const NS_CONV = [['km', 'm', 1000], ['m', 'cm', 100], ['kg', 'g', 1000], ['L', 'mL', 1000], ['yd', 'ft', 3], ['ft', 'in', 12], ['lb', 'oz', 16],
+  ['gal', 'qt', 4], ['qt', 'pt', 2], ['pt', 'c', 2], ['hr', 'min', 60], ['min', 's', 60]];
+
+function nsxConvM(rng, L) {
+  const pool = L === 1 ? NS_CONV.filter(r => ['m', 'yd', 'ft', 'lb', 'gal', 'qt', 'pt'].includes(r[0])) : NS_CONV, [big, small, f] = pick(rng, pool);
+  if (L === 3 && rng() < 0.5 && f >= 10) {
+    const a = ri(rng, 2, 9), b = f === 1000 ? 50 * ri(rng, 1, 19) : ri(rng, 1, f - 1), ans = a * f + b;
+    return { mod: 'ns', type: 'convm', prompt: 'Write the total in the smaller unit:', kind: 'mix', a, b, big, small, ans: cnum(ans), sig: `cvm${a}${big}${b}${small}`, ew: (`${a} ${big} ${b} ${small} = `.length + 6) * 0.62 + BW + 1, eh: 1.1 + 1.6 };
+  }
+  const n = ri(rng, 2, f >= 1000 ? 9 : 12), ans = n * f;
+  return { mod: 'ns', type: 'convm', prompt: 'Write in the smaller unit:', kind: 'one', n, big, small, ans: cnum(ans), sig: `cv${n}${big}${small}`, ew: (`${n} ${big} = `.length + 5) * 0.62 + BW + 1, eh: 1.1 + 1.6 };
+}
+
+const nsConvMHtml = (p, key, x) => p.kind === 'mix' ? `${p.a} ${p.big} ${p.b} ${p.small} = ${x(p.ans, 4)} ${p.small}` : `${p.n} ${p.big} = ${x(p.ans, 4)} ${p.small}`;
+
+/* Area and perimeter of rectangles, including an unknown side. L1 area or perimeter, L2 adds unknown sides, L3 larger numbers. */
+function nsxRectF(rng, L) {
+  const unit = pick(rng, ['cm', 'in', 'ft', 'm', 'yd']), thing = pick(rng, ['garden', 'rug', 'poster', 'playground', 'patio', 'banner']), mx = L === 1 ? 12 : L === 2 ? 20 : 50;
+  const kind = pick(rng, L === 1 ? ['area', 'perim'] : L === 2 ? ['area', 'perim', 'unkA', 'unkP'] : ['area', 'perim', 'unkA', 'unkA', 'unkP', 'unkP']);
+  const l = ri(rng, 4, mx), w = ri(rng, 2, l - 1), A = l * w, P = 2 * (l + w), isW = rng() < 0.5, known = isW ? 'length' : 'width', ask = isW ? 'width' : 'length', kv = isW ? l : w, ansv = isW ? w : l;
+  let prompt, text, eq, ans;
+  if (kind === 'area') { prompt = 'Find the area.'; text = `A rectangular ${thing} is ${l} ${unit} long and ${w} ${unit} wide. What is its area in square ${unit}?`; eq = `${l} × ${w}`; ans = A; }
+  else if (kind === 'perim') { prompt = 'Find the perimeter.'; text = `A rectangular ${thing} is ${l} ${unit} long and ${w} ${unit} wide. What is its perimeter in ${unit}?`; eq = `2 × (${l} + ${w})`; ans = P; }
+  else if (kind === 'unkA') { prompt = 'Find the unknown side.'; text = `A rectangular ${thing} has an area of ${A} square ${unit} and a ${known} of ${kv} ${unit}. What is its ${ask}?`; eq = `${A} ÷ ${kv}`; ans = ansv; }
+  else { prompt = 'Find the unknown side.'; text = `A rectangular ${thing} has a perimeter of ${P} ${unit} and a ${known} of ${kv} ${unit}. What is its ${ask}?`; eq = `(${P} − 2 × ${kv}) ÷ 2`; ans = ansv; }
+  return { mod: 'ns', type: 'rectf', prompt, kind, l, w, unit, eq, ans: String(ans), text, wide: true, sig: `rf${kind}${l}.${w}${unit}${thing}${kind[0] === 'u' ? ask : ''}`, ew: 21, eh: nsWordEh(text) };
+}
+
+const nsRectFHtml = (p, key, x) => wordCell(p, key, x);
+
+/* Line plots with fractional units (halves, fourths, eighths) from 0 to 1.
+   Questions: how many at one length, how many are longer than a length, the spread in units of 1/n, and the total of the pieces at one length (answer over the unit denominator).
+   L1 halves and fourths, counts and "longer than"; L2 fourths and eighths, adds the spread; L3 adds totals. */
+const NS_LP_ITEMS = [['pieces of ribbon', 'long', 'inch', 'inches'], ['pencils', 'long', 'inch', 'inches'], ['leaves', 'long', 'inch', 'inches'], ['seedlings', 'tall', 'foot', 'feet']];
+const nsLpGcd = (a, b) => b ? nsLpGcd(b, a % b) : a;
+const nsLpTxt = (k, den) => k === 0 ? '0' : k === den ? '1' : `${k / nsLpGcd(k, den)}/${den / nsLpGcd(k, den)}`;
+const nsLpHtml = (k, den) => k === 0 ? '0' : k === den ? '1' : frH(k / nsLpGcd(k, den), den / nsLpGcd(k, den));
+
+function nsLinePlotSvg(counts, den, thing) {
+  const W = 270, H = 104, x0 = 20, x1 = 250, y = 80, xs = i => x0 + (x1 - x0) * i / den, fs = den === 8 ? ' style="font-size:10.5px"' : '';
+  let s = `<svg xmlns="http://www.w3.org/2000/svg" width="2.7in" height="${(H * 2.7 / W).toFixed(2)}in" viewBox="0 0 ${W} ${H}" role="img" aria-label="Line plot of ${thing}: ${counts.map((c, i) => `${c} at ${nsLpTxt(i, den)}`).join(', ')}">`
+    + `<path d="M10 ${y}H260" stroke="var(--ink)" stroke-width="2" fill="none"/>`;
+  let t = '';
+  for (let i = 0; i <= den; i++) t += `M${xs(i)} ${y - 6}V${y + 6}`;
+  s += `<path d="${t}" stroke="var(--ink)" stroke-width="1.6" fill="none"/>`;
+  for (let i = 0; i <= den; i++) s += `<text class="lab"${fs} x="${xs(i)}" y="${y + 22}" text-anchor="middle">${nsLpTxt(i, den)}</text>`;
+  counts.forEach((c, i) => { for (let j = 0; j < c; j++) { const cx = xs(i), cy = y - 12 - j * 12; s += `<path class="px" d="M${cx - 4} ${cy - 4}L${cx + 4} ${cy + 4}M${cx + 4} ${cy - 4}L${cx - 4} ${cy + 4}" stroke="var(--ink)" stroke-width="1.8" fill="none"/>`; } });
+  return s + '</svg>';
+}
+
+function nsxLinePlot(rng, L) {
+  const p = nsxLinePlot0(rng, L), len = p.q.replace(/<[^>]*>/g, '').length;   // question lines at the narrowest layout (about 22 characters per line), plus the answer line and the fraction's extra height
+  p.hfs = 1.5 * Math.ceil(len / 22) + 1.7 + 0.5 + (p.kind === 'total' ? 1.4 : 0);   // the answer fraction box is two lines tall
+  return p;
+}
+
+function nsxLinePlot0(rng, L) {
+  const den = L === 1 ? pick(rng, [2, 4]) : pick(rng, [4, 8]), kind = pick(rng, L === 1 ? ['count', 'more'] : L === 2 ? ['count', 'more', 'diff'] : ['count', 'more', 'diff', 'total', 'total']);
+  const [thing, adj, u1, u2] = pick(rng, NS_LP_ITEMS), need = Math.min(3, den + 1);
+  let counts;
+  for (;;) {
+    counts = Array.from({ length: den + 1 }, () => ri(rng, 0, 4));
+    const tot = counts.reduce((a, b) => a + b, 0);
+    if (tot >= 6 && tot <= 14 && counts.filter(c => c > 0).length >= need && (kind !== 'total' || counts.slice(1, den).some(c => c >= 2))) break;
+  }
+  const svg = nsLinePlotSvg(counts, den, thing), base = { mod: 'ns', type: 'lineplot', prompt: `Use the line plot of ${thing}.`, kind, counts, den, thing, svg, wide: true, win: 2.7, hin: 1.04, ew: 22, eh: 1 };
+  if (kind === 'count') {
+    const ks = counts.map((c, i) => i).filter(i => i > 0 && i < den && counts[i] > 0), k = pick(rng, ks.length ? ks : [counts.findIndex(c => c > 0)]);
+    return { ...base, k, q: `How many ${thing} are exactly ${nsLpHtml(k, den)} ${u1} ${adj}?`, ans: String(counts[k]), sig: `lp${den}c${counts.join('')}k${k}` };
+  }
+  if (kind === 'more') {
+    const ks = counts.map((c, i) => i).filter(i => i > 0 && i < den && counts.slice(i + 1).some(c => c > 0)), k = pick(rng, ks.length ? ks : [0]);
+    return { ...base, k, q: `How many ${thing} are ${adj === 'long' ? 'longer' : 'taller'} than ${nsLpHtml(k, den)} ${u1}?`, ans: String(counts.slice(k + 1).reduce((a, b) => a + b, 0)), sig: `lp${den}m${counts.join('')}k${k}` };
+  }
+  if (kind === 'diff') {
+    const nz = counts.map((c, i) => c > 0 ? i : -1).filter(i => i >= 0), lo = nz[0], hi = nz[nz.length - 1];
+    return { ...base, q: `The ${adj === 'long' ? 'longest' : 'tallest'} is how many ${frH(1, den)}-${u1} units ${adj === 'long' ? 'longer' : 'taller'} than the shortest?`, ans: String(hi - lo), sig: `lp${den}d${counts.join('')}` };
+  }
+  const ks = counts.map((c, i) => i).filter(i => i > 0 && i < den && counts[i] >= 2), k = pick(rng, ks.length ? ks : [counts.findIndex((c, i) => i > 0 && c > 0)]);
+  const c = counts[k];
+  return { ...base, k, q: `The ${c} ${thing} at ${nsLpHtml(k, den)} ${u1} are put end to end. How many ${u2} in all?`, ans: `${c * k}/${den}`, num: c * k, sig: `lp${den}t${counts.join('')}k${k}` };
+}
+
+const nsLinePlotHtml = (p, key, x) => `${p.svg}<div class="wt">${p.q}</div><div>Answer: ${p.kind === 'total' ? frBox(p.num, p.den, 'n', key) : x(p.ans, 2.4)}</div>`;
+
+defTypes("ns", "Measurement and perimeter", [
+  { id: "perim", label: "Perimeter", blurb: "From side lengths, an unknown side, or same perimeter and same area.", on: false, gen: nsxPerim, html: nsPerimHtml },
+{ id: "convm", label: "Convert measurement units", blurb: "Length, mass, liquid volume and time, larger unit to smaller.", on: false, gen: nsxConvM, html: nsConvMHtml },
+{ id: "rectf", label: "Rectangle area and perimeter", blurb: "Area, perimeter and unknown sides in real-world problems.", on: false, gen: nsxRectF, html: nsRectFHtml },
+{ id: "lineplot", label: "Line plots with fractions", blurb: "Read line plots marked in halves, fourths and eighths: counts, comparisons, spread and totals.", on: false, gen: nsxLinePlot, html: nsLinePlotHtml }
 ]);

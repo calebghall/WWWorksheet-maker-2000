@@ -106,6 +106,51 @@ const nsLineHtml = (p, key, x) => p.svg;
 
 const nsSeqHtml = (p, key, x) => p.terms.map((t, i) => p.idx.includes(i) ? `<span class="blank" style="min-width:${(t.length * 0.62 + 1).toFixed(1)}em">${key ? esc(t) : '&nbsp;'}</span>` : esc(t)).join(',&ensp;');
 
+/* Patterns that follow a rule: write the next terms, find the rule, spot a feature (even or odd), and shape patterns made of squares. */
+const NS_RULE_FN = { add: (v, d) => v + d, sub: (v, d) => v - d, mul: (v, d) => v * d };
+const nsRuleText = (op, d) => op === 'add' ? `add ${d}` : op === 'sub' ? `subtract ${d}` : `multiply by ${d}`;
+const nsRuleSeq = (op, d, a0, n) => { const s = [a0]; for (let i = 1; i < n; i++) s.push(NS_RULE_FN[op](s[i - 1], d)); return s; };
+
+function nsRuleSquares(counts) {
+  const cell = 15, W = 300, H = counts.length * 22 + 8;
+  let s = `<svg xmlns="http://www.w3.org/2000/svg" width="2.6in" height="${(H * 2.6 / 300 ).toFixed(2)}in" viewBox="0 0 ${W} ${H}" role="img" aria-label="Figures ${counts.map((c, i) => `${i + 1} has ${c} squares`).join(', ')}">`;
+  counts.forEach((c, r) => {
+    const y = 4 + r * 22;
+    s += `<text class="lab" x="2" y="${y + 13}">Figure ${r + 1}</text>`;
+    for (let j = 0; j < c; j++) s += `<rect x="${62 + j * cell}" y="${y}" width="${cell - 2}" height="${cell - 2}" fill="var(--c1)" stroke="var(--ink)" stroke-width="1.4"/>`;
+  });
+  return { svg: s + '</svg>', H };
+}
+
+function nsxRulePat(rng, L) {
+  const kind = pick(rng, L === 1 ? ['next', 'rule'] : ['next', 'rule', 'feat', 'shape']);
+  const ruleOps = L === 1 ? [['add', pick(rng, [2, 3, 4, 5, 10])]]
+    : L === 2 ? [pick(rng, [['add', pick(rng, [3, 4, 6, 7, 8, 9, 11, 12, 15, 25])], ['sub', pick(rng, [3, 4, 5, 6, 7, 8, 9, 11, 12])]])]
+      : [pick(rng, [['add', pick(rng, [6, 7, 8, 9, 12, 15, 25, 50])], ['sub', pick(rng, [6, 7, 9, 12, 15, 25])], ['mul', pick(rng, [2, 3, 5])]])];
+  const [op, d] = ruleOps[0], a0 = op === 'sub' ? 4 * d + ri(rng, 1, 12) : op === 'mul' ? ri(rng, 1, 4) : ri(rng, 1, L === 1 ? 9 : 20);
+  const seq = nsRuleSeq(op, d, a0, 5);
+  if (kind === 'next') return tokProb('rulepat', `Rule: ${nsRuleText(op, d)}. Start at ${a0}.`, [`${a0}, `, U(seq[1]), ', ', U(seq[2]), ', ', U(seq[3]), ', ', U(seq[4])], { kind, sigx: `${op}${d}` });
+  if (kind === 'shape') {
+    const sd = ri(rng, 2, 4), s0 = ri(rng, 1, 4), counts = [s0, s0 + sd, s0 + 2 * sd], g = nsRuleSquares(counts);
+    return { mod: 'ns', type: 'rulepat', prompt: `Rule: add ${sd} squares each time.`, kind, counts, svg: g.svg, ans: String(s0 + 4 * sd), sig: `rps${s0}.${sd}`, win: 2.6, hin: g.H * 2.6 / 300 + 0.45, ew: 14, eh: 1 };
+  }
+  if (kind === 'feat') {
+    const dd = ri(rng, 2, 9), s = ri(rng, 1, 12), sq = nsRuleSeq('add', dd, s, 5), ev = sq.filter(v => v % 2 === 0).length;
+    const ans = ev === 5 ? 'all even' : ev === 0 ? 'all odd' : 'even and odd', o = ['all even', 'all odd', 'even and odd'];
+    return { mod: 'ns', type: 'rulepat', prompt: `Rule: add ${dd}. Start at ${s}. The numbers are:`, kind, seq: sq, opts: o, ans, sig: `rpf${s}.${dd}`, ew: 24, eh: 1.1 + 1.45 + 1.4 };
+  }
+  const taken = new Set([nsRuleText(op, d)]);
+  const cand = [['add', d - 1], ['add', d + 1], ['add', d + 2], ['sub', d], ['mul', 2], ['mul', 3], ['add', 2 * d]].filter(([o2, d2]) => {
+    const t = nsRuleText(o2, d2);
+    if ((o2 === 'add' && d2 <= 0) || taken.has(t) || nsRuleSeq(o2, d2, a0, 5).join() === seq.join()) return false;
+    taken.add(t); return true;   // each wrong rule appears once and none fits the numbers
+  });
+  const wrong = shuffle(rng, cand).slice(0, 2).map(([o2, d2]) => nsRuleText(o2, d2)), ans = nsRuleText(op, d), o = shuffle(rng, [ans].concat(wrong));
+  return { mod: 'ns', type: 'rulepat', prompt: 'What is the rule? Circle one.', kind, seq, opts: o, ans, sig: `rpr${seq.join('.')}${o.join('|')}`, ew: 24, eh: 1.1 + 1.45 + 1.4 };
+}
+
+const nsRulePatHtml = (p, key, x) => p.kind === 'next' ? tokHtml(p.tok, key, x) : p.kind === 'shape' ? `${p.svg}<div>Figure 5: ${x(p.ans, 3)} squares</div>` : `<div>${p.seq.join(',&ensp;')}</div><div>${opts(p.opts, p.ans, key)}</div>`;
+
 defTypes("ns", "Counting and number lines", [
   { id: "skip", label: "Skip counting and patterns", blurb: "Fill in the missing numbers.", on: true, gen: nsSkip, html: nsSkipHtml },
   { id: "cfwd", label: "Count on or back", blurb: "Count from any number, back from 20, or by 1, 2, 5 to 120.", on: false, gen: nsxCount, html: nsCfwdHtml },
@@ -113,5 +158,6 @@ defTypes("ns", "Counting and number lines", [
   { id: "cseq", label: "Count to 1000", blurb: "Count by 5s, 10s and 100s.", on: false, gen: nsxCseq, html: nsCseqHtml },
   { id: "parity", label: "Even and odd", blurb: "Circle even or odd, or pick out numbers in a list.", on: false, gen: nsParity, html: nsParityHtml },
   { id: "par20", label: "Odd and even to 20", blurb: "Pair the objects, or write an even number as two equal addends.", on: false, gen: nsxPar20, html: nsPar20Html },
-  { id: "line", label: "Number lines", blurb: "Read the number the arrow shows.", on: true, gen: nsLine, html: nsLineHtml }
+  { id: "line", label: "Number lines", blurb: "Read the number the arrow shows.", on: true, gen: nsLine, html: nsLineHtml },
+{ id: "rulepat", label: "Rule patterns", blurb: "Next terms, find the rule, even or odd features, and shape patterns.", on: false, gen: nsxRulePat, html: nsRulePatHtml }
 ]);

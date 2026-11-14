@@ -37,3 +37,6 @@ function lineSvg(lo, hi, div, k) {
   s += `<path d="M${ax} 4V19" stroke="var(--ink)" stroke-width="2" fill="none"/><path d="M${ax - 6} 15L${ax} 26L${ax + 6} 15Z" fill="var(--ink)"/>`;
   return s + '</svg>';
 }
+
+/* Word-problem size hint: one line holds about 20em / 0.62 characters. */
+const nsWordEh = text => 1.1 + Math.ceil(text.length * 0.62 / 20) * 1.45 + 1.7 + 0.6;

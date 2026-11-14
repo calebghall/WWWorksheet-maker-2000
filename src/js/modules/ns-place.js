@@ -110,8 +110,8 @@ function digitsHtml(ints, decs, ul) {
   return h;
 }
 
-function nsPlace(rng, L) {
-  const dec = L === 3 && rng() < 0.45, variant = pick(rng, dec ? ['digit', 'which'] : (L === 1 ? ['digit', 'which', 'expand'] : ['digit', 'which', 'expand', 'standard']));
+function nsPlace(rng, L, whole) {
+  const dec = !whole && L === 3 && rng() < 0.45, variant = pick(rng, dec ? ['digit', 'which'] : (L === 1 ? ['digit', 'which', 'expand'] : ['digit', 'which', 'expand', 'standard']));
   let ints, decs = [];
   if (dec) { ints = rdigits(rng, ri(rng, 1, 2)); decs = rdigits(rng, ri(rng, 2, 3)); }
   else ints = rdigits(rng, L === 1 ? 3 : L === 2 ? ri(rng, 4, 5) : 6, variant === 'expand' || variant === 'standard');
@@ -222,6 +222,57 @@ const nsTensHtml = (p, key, x) => tokHtml(p.tok, key, x);
 
 const nsF100Html = (p, key, x) => p.kind === 1 ? `${frH(p.a, 10)} = ${frBox(p.ans, 100, 'n', key)}` : `${frH(p.a, 10)} + ${frH(p.b, 100)} = ${frBox(p.ans, 100, 'n', key)}`;
 
+/* Place value with whole numbers only (up to 999,999): the "place" problems without the decimal mix. */
+const nsxPlaceW = (rng, L) => nsPlace(rng, L, true);
+
+/* Round a whole number to the nearest ten, hundred, thousand, ten thousand or hundred thousand.
+   L1 tens and hundreds, L2 up to thousands, L3 from hundreds up to hundred thousands. */
+function nsxRoundW(rng, L) {
+  const places = [[10, 'ten'], [100, 'hundred'], [1000, 'thousand'], [10000, 'ten thousand'], [100000, 'hundred thousand']];
+  const [unit, name] = pick(rng, L === 1 ? places.slice(0, 2) : L === 2 ? places.slice(0, 3) : places.slice(1));
+  const lo = Math.max(unit + 1, L === 1 ? 101 : L === 2 ? 1001 : 10001), hi = L === 1 ? 9999 : L === 2 ? 99999 : 999999;
+  let n = ri(rng, lo, hi);
+  if (n % unit === 0) n += ri(rng, 1, unit - 1);
+  return { mod: 'ns', type: 'round', prompt: `Round to the nearest ${name}:`, shown: cnum(n), ans: cnum(rndTo(n, unit)), sig: `rd${n}${unit}`,
+    ew: Math.max(13, (String(n).length + 4) * 0.62 + BW + 1.6), eh: 1.1 + 1.6 };
+}
+
+/* Tenths and hundredths: fraction to decimal, decimal to fraction, and decimals on a number line.
+   L1 tenths, L2 hundredths, L3 both. The hundredths number line zooms in on one tenth. */
+function nsxFdec(rng, L) {
+  const kind = pick(rng, L === 1 ? ['f2d', 'd2f'] : ['f2d', 'd2f', 'line']), den = L === 1 ? 10 : L === 2 ? 100 : pick(rng, [10, 100]), dp = den === 10 ? 1 : 2;
+  if (kind === 'line') {
+    const k = ri(rng, 1, 9), lo = den === 10 ? 0 : 10 * ri(rng, 0, 9), m = den === 10 ? k : lo + k;
+    return { mod: 'ns', type: 'fdec', prompt: 'Write the decimal the arrow points to:', kind, m, den, dec: dstr(m, dp), ans: dstr(m, dp), svg: den === 10 ? lineSvg(0, 100, 10, k) : lineSvg(lo, lo + 10, 10, k),
+      sig: `fdl${m}/${den}`, win: 2.75, hin: 0.72 + 0.45, hfs: 3.2, ew: 14, eh: 1 };
+  }
+  let m = ri(rng, 1, den === 10 ? 9 : 99);
+  while (den === 100 && m % 10 === 0) m = ri(rng, 1, 99);
+  const dec = dstr(m, dp);
+  return { mod: 'ns', type: 'fdec', prompt: kind === 'f2d' ? 'Write as a decimal:' : 'Write as a fraction:', kind, m, den, dec, ans: kind === 'f2d' ? dec : String(m), sig: `fd${kind}${m}/${den}`, ew: 11, eh: 1.1 + 2.6 };
+}
+
+const nsFdecHtml = (p, key, x) => p.kind === 'f2d' ? `${frH(p.m, p.den)} = ${x(p.dec, 3.4)}` : p.kind === 'd2f' ? `${p.dec} = ${frBox(p.m, p.den, 'n', key)}` : `${p.svg}<div>Decimal: ${x(p.dec, 3.4)}</div>`;
+
+/* The ten-times relationship between places: compare two equal digits side by side, 10 times as much, one tenth as much. */
+function nsxTenx(rng, L) {
+  const kind = pick(rng, L === 1 ? ['x10', 'div10'] : ['x10', 'div10', 'dig', 'dig']), bd = L === 1 ? 2 : L === 2 ? 3 : 5;
+  if (kind === 'dig') {
+    const len = L === 2 ? ri(rng, 3, 5) : ri(rng, 4, 6), i = ri(rng, 0, len - 2), d = ri(rng, 1, 9);
+    const dg = Array.from({ length: len }, () => ri(rng, 0, 9)); dg[0] = Math.max(1, dg[0]); dg[i] = d; dg[i + 1] = d;
+    const shown = dg.map((c, j) => (j === i || j === i + 1 ? `<u>${c}</u>` : String(c)) + (len >= 5 && j < len - 1 && (len - 1 - j) % 3 === 0 ? ',' : '')).join('');
+    return { mod: 'ns', type: 'tenx', prompt: 'Compare the underlined digits:', kind, shown, ans: '10', sig: `txd${dg.join('')}${i}`, ew: (len + 16) * 0.62 + 4, eh: 1.1 + 1.6 };
+  }
+  if (kind === 'x10') {
+    const a = ri(rng, P10(bd - 1) + 1, P10(bd) - 1);
+    return { mod: 'ns', type: 'tenx', prompt: 'Write 10 times as much:', kind, a, ans: cnum(a * 10), sig: `tx1${a}`, ew: (String(a).length + 6) * 0.62 + BW + 1, eh: 1.1 + 1.6 };
+  }
+  const a = 10 * ri(rng, Math.max(2, P10(bd - 2)), P10(bd - 1) - 1);
+  return { mod: 'ns', type: 'tenx', prompt: 'Write one tenth as much:', kind, a, ans: cnum(a / 10), sig: `tx2${a}`, ew: (String(a).length + 6) * 0.62 + BW + 1, eh: 1.1 + 1.6 };
+}
+
+const nsTenxHtml = (p, key, x) => p.kind === 'dig' ? `${p.shown}&emsp;left = ${x(p.ans, 2.8)} × right` : p.kind === 'x10' ? `10 × ${cnum(p.a)} = ${x(p.ans, 4)}` : `${cnum(p.a)} ÷ 10 = ${x(p.ans, 3.6)}`;
+
 defTypes("ns", "Place value, comparing and rounding", [
   { id: "place", label: "Place value", blurb: "Underlined digit, digit in a place, expanded and standard form.", on: true, gen: nsPlace, html: nsPlaceHtml },
   { id: "compare", label: "Compare numbers", blurb: "Write <, > or = between two numbers.", on: true, gen: nsCompare, html: nsCompareHtml },
@@ -234,5 +285,9 @@ defTypes("ns", "Place value, comparing and rounding", [
   { id: "more", label: "Mentally add or subtract 10 or 100", blurb: "10 more or less, 100 more or less.", on: false, gen: nsxMore, html: nsMoreHtml },
   { id: "moreexp", label: "10 more or less, explained", blurb: "Write the number and say how you know.", on: false, gen: nsxMoreExp, html: nsMoreexpHtml },
   { id: "tens", label: "Tens and ones", blurb: "Write a number as tens and ones.", on: false, gen: nsxTens, html: nsTensHtml },
-  { id: "f100", label: "Tenths and hundredths", blurb: "Rename tenths as hundredths and add.", on: false, gen: nsxF100, html: nsF100Html }
+  { id: "f100", label: "Tenths and hundredths", blurb: "Rename tenths as hundredths and add.", on: false, gen: nsxF100, html: nsF100Html },
+{ id: "placew", label: "Place value, whole numbers", blurb: "Place value, expanded form and standard form with whole numbers to 999,999.", on: false, gen: nsxPlaceW },
+{ id: "roundw", label: "Round whole numbers", blurb: "To any place from tens to hundred thousands.", on: false, gen: nsxRoundW },
+{ id: "fdec", label: "Fractions and decimals", blurb: "Tenths and hundredths: fraction to decimal, decimal to fraction, decimals on a number line.", on: false, gen: nsxFdec, html: nsFdecHtml },
+{ id: "tenx", label: "Ten times as much", blurb: "How much a digit is worth next to the same digit, 10 times and one tenth.", on: false, gen: nsxTenx, html: nsTenxHtml }
 ]);

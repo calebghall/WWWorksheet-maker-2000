@@ -24,6 +24,26 @@ function nsxFact(rng, L) {
 
 const nsFactHtml = (p, key, x) => p.kind === 'pairs' ? tokHtml(p.tok, key, x) : p.kind === 'prime' ? `${p.n}&emsp;${opts(['prime', 'composite'], p.ans, key)}` : opts(['yes', 'no'], p.ans, key);
 
+/* Factor pairs shown as arrays: read the factor pair from an array, or draw an array for a number. */
+function nsFacArray(r, c) {
+  const sp = 14, W = c * sp + 14, H = r * sp + 10;
+  let s = `<svg xmlns="http://www.w3.org/2000/svg" width="${(W / 100).toFixed(2)}in" height="${(H / 100).toFixed(2)}in" viewBox="0 0 ${W} ${H}" role="img" aria-label="Array with ${r} rows of ${c}">`;
+  for (let i = 0; i < r; i++) for (let j = 0; j < c; j++) s += `<circle cx="${10 + j * sp}" cy="${8 + i * sp}" r="4.6" fill="var(--c1)" stroke="var(--ink)" stroke-width="1.2"/>`;
+  return { svg: s + '</svg>', W, H };
+}
+
+function nsxFacModel(rng, L) {
+  const kind = L === 1 ? 'read' : pick(rng, ['read', 'draw']), r = ri(rng, 2, L === 1 ? 6 : 8), c = ri(rng, r === 2 ? 3 : 2, L === 1 ? 8 : 10), n = r * c;
+  if (kind === 'read') {
+    const g = nsFacArray(r, c);
+    return { mod: 'ns', type: 'facmodel', prompt: 'Write the factor pair the array shows:', kind, r, c, n, svg: g.svg, tok: [U(r), ' × ', U(c), ` = ${n}`], ans: `${r} ${c}`, sig: `fm${r}x${c}`, win: Math.max(1.8, g.W / 100), hin: g.H / 100 + 0.45, ew: 14, eh: 1 };
+  }
+  return { mod: 'ns', type: 'facmodel', prompt: `Draw an array for ${n}. Write the factor pair.`, kind, r, c, n, ans: `${r} × ${c}`, sig: `fmd${n}`, ew: 17, eh: 1.1 + 3.8 + 1.7 };
+}
+
+const nsFacModelHtml = (p, key, x) => p.kind === 'read' ? `${p.svg}<div>${tokHtml(p.tok, key, x)}</div>` : `<div class="dbox"></div><div>${p.n} = ${x(p.ans, 5.4)}</div>`;
+
 defTypes("ns", "Factors and multiples", [
-  { id: "fact", label: "Factors and multiples", blurb: "Factor pairs, multiples, prime or composite.", on: false, gen: nsxFact, html: nsFactHtml }
+  { id: "fact", label: "Factors and multiples", blurb: "Factor pairs, multiples, prime or composite.", on: false, gen: nsxFact, html: nsFactHtml },
+{ id: "facmodel", label: "Factor pairs with arrays", blurb: "Read a factor pair from an array or draw one.", on: false, gen: nsxFacModel, html: nsFacModelHtml }
 ]);

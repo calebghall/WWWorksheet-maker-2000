@@ -2,7 +2,7 @@
 
 Grade 3 has no Gap or Partial standards in standards-coverage.md. Items below that name only 3.x codes are covered; the remaining work is Grade 4 and 5.
 
-Ranked by standards gaps closed (45 gaps in standards-coverage.md) and reuse of existing drawing code.
+Ranked by standards gaps closed (31 gaps in standards-coverage.md) and reuse of existing drawing code.
 
 1. Fractions (3.NF.A.1, 3.NF.A.2, 4.NF, 5.NF): shaded bar, circle and set models; fractions on a number line; equivalent and comparing; unlike-denominator add and subtract. Largest gap cluster; reuses the `vis` SVG kit and the `--c0` to `--c3` greyscale palette.
 2. Geometry and Angles (3.G.A.1 to 3.G.A.3, 4.MD.C.5 to 4.MD.C.7, 4.G.A.1 to 4.G.A.3): classify polygons, partition into equal areas, identify and measure angles with a protractor, lines of symmetry, parallel and perpendicular lines.

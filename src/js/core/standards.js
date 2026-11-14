@@ -109,12 +109,12 @@ const STANDARDS = [
   { c: '4.OA.A.1', t: 'Multiplicative comparison statements', m: 'ns', ns: { types: ['mcomp'], level: 2 } },
   { c: '4.OA.A.2', t: 'Multiplicative comparison word problems', m: 'ns', ns: { types: ['wcmp'], level: 2 } },
   { c: '4.OA.A.3', t: 'Multi-step word problems', m: 'ns', ns: { types: ['wstep'], level: 2 } },
-  { c: '4.OA.B.4', t: 'Factors, multiples, prime and composite', m: 'ns', ns: { types: ['fact'], level: 2 }, n: 'Factor pairs are written as equations; models are not generated.' },
-  { c: '4.OA.C.5', t: 'Number patterns', m: 'ns', ns: { types: ['skip'], level: 2 }, n: 'Patterns are skip counting; rule-based and shape patterns are not generated.' },
-  { c: '4.NBT.A.1', t: 'Place value', m: 'ns', ns: { types: ['place'], level: 2 }, n: 'The ten-times relationship between places is not generated.' },
-  { c: '4.NBT.A.2', t: 'Read and write multi-digit numbers', m: 'ns', ns: { types: ['place'], level: 3 }, n: 'Level 3 mixes in decimals.' },
-  { c: '4.NBT.A.3', t: 'Round multi-digit numbers', m: 'ns', ns: { types: ['round'], level: 3 }, n: 'Rounds to thousands and ten thousands; level 3 also mixes in decimals.' },
-  { c: '4.NBT.B.4', t: 'Add and subtract multi-digit numbers', m: 'addsub', as: AS(4, 4), n: 'Limited to four digits; the standard goes to 1,000,000.' },
+  { c: '4.OA.B.4', t: 'Factors, multiples, prime and composite', m: 'ns', ns: { types: ['fact', 'facmodel'], level: 2 } },
+  { c: '4.OA.C.5', t: 'Number and shape patterns', m: 'ns', ns: { types: ['rulepat'], level: 2 } },
+  { c: '4.NBT.A.1', t: 'Place value', m: 'ns', ns: { types: ['place', 'tenx'], level: 2 } },
+  { c: '4.NBT.A.2', t: 'Read and write multi-digit numbers', m: 'ns', ns: { types: ['placew'], level: 3 } },
+  { c: '4.NBT.A.3', t: 'Round multi-digit numbers', m: 'ns', ns: { types: ['roundw'], level: 3 } },
+  { c: '4.NBT.B.4', t: 'Add and subtract within 1,000,000', m: 'addsub', as: AS(6, 6, { cap: 1000000 }) },
   { c: '4.NBT.B.5', t: 'Multiply up to four digits by one digit', m: 'muldiv', md: MD({ div: false, mode: 'digits', da: 4, db: 1 }), n: 'Two-digit by two-digit problems: set both factors to 2 digits.' },
   { c: '4.NBT.B.6', t: 'Divide with remainders', m: 'muldiv', md: MD({ mul: false, mode: 'digits', na: 4, nb: 1, rem: true }) },
   { c: '4.NF.A.1', t: 'Equivalent fractions', m: 'fdp', fd: { types: ['equiv'], level: 2 } },
@@ -122,10 +122,12 @@ const STANDARDS = [
   { c: '4.NF.B.3', t: 'Add and subtract fractions with like denominators', m: 'fdp', fd: { types: ['fadd'], level: 1 } },
   { c: '4.NF.B.4', t: 'Multiply a whole number by a fraction', m: 'fdp', fd: { types: ['fmul'], level: 1 } },
   { c: '4.NF.C.5', t: 'Tenths and hundredths', m: 'ns', ns: { types: ['f100'], level: 3 } },
-  { c: '4.NF.C.6', t: 'Fractions and decimals', m: 'fdp', fd: { types: ['conv'], level: 1 }, n: 'Conversions include percents; denominators are not limited to 10 and 100.' },
+  { c: '4.NF.C.6', t: 'Fractions and decimals', m: 'ns', ns: { types: ['fdec'], level: 3 } },
   { c: '4.NF.C.7', t: 'Compare decimals', m: 'ns', ns: { types: ['compare'], level: 3 } },
-  { c: '4.MD.A.1', t: 'Convert units of time', m: 'tm', tm: { types: ['conv'], level: 2 }, n: 'Time units only; length, volume and mass are not generated.' },
-  { c: '4.MD.A.3', t: 'Area of rectangles', m: 'area', area: { types: ['mult'], level: 3 }, n: 'Perimeter and unknown-side problems are not generated.' }
+  { c: '4.MD.A.1', t: 'Convert measurement units', m: 'ns', ns: { types: ['convm'], level: 2 } },
+  { c: '4.MD.A.2', t: 'Measurement word problems', m: 'ns', ns: { types: ['mword'], level: 3 } },
+  { c: '4.MD.A.3', t: 'Area and perimeter of rectangles', m: 'ns', ns: { types: ['rectf'], level: 2 } },
+  { c: '4.MD.B.4', t: 'Line plots with fractional units', m: 'ns', ns: { types: ['lineplot'], level: 2 } }
 ];
 const STD_BY_CODE = {}; STANDARDS.forEach(s => { STD_BY_CODE[s.c] = s; });
 const stdGrade = c => c.split('.')[0];

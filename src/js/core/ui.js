@@ -60,10 +60,10 @@ function normalize(s) {
   out.pages = inEnum(+out.pages, [1, 2, 3], 1);
   out.paper = inEnum(out.paper, Object.keys(PAPER), 'letter');
   out.unit = inEnum(out.unit, Object.keys(UNITS), 'units');
-  out.as.d1 = inEnum(+out.as.d1, [1, 2, 3, 4], 2);
-  out.as.d2 = inEnum(+out.as.d2, [1, 2, 3, 4], 2);
+  out.as.d1 = inEnum(+out.as.d1, [1, 2, 3, 4, 5, 6], 2);
+  out.as.d2 = inEnum(+out.as.d2, [1, 2, 3, 4, 5, 6], 2);
   out.as.addends = inEnum(+out.as.addends, [2, 3, 4], 2);
-  out.as.cap = inEnum(+out.as.cap, [0, 10, 20, 30, 100, 1000], 0);
+  out.as.cap = inEnum(+out.as.cap, [0, 10, 20, 30, 100, 1000, 1000000], 0);
   out.as.second = inEnum(out.as.second, ['digits', 'tens', 'mix'], 'digits');
   out.as.regroup = inEnum(out.as.regroup, ['any', 'required', 'none'], 'any');
   out.as.format = inEnum(out.as.format, ['vertical', 'horizontal'], 'vertical');

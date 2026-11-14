@@ -60,7 +60,7 @@ Single-page web app that generates printable elementary math worksheets with mat
 
 ## Tennessee standards
 
-- A Tennessee standard panel (grade, then standard) sets the module, problem types, level and title for 105 of the 150 K to 5 standards (Grade 5 is listed in `standards-coverage.md` but has no presets yet). Partial matches show what differs. `standards-coverage.md` lists every standard and its status.
+- A Tennessee standard panel (grade, then standard) sets the module, problem types, level and title for 119 of the 150 K to 5 standards (Grade 5 is listed in `standards-coverage.md` but has no presets yet). Partial matches show what differs. `standards-coverage.md` lists every standard and its status.
 
 ## Fractions, Decimals and Percents
 
