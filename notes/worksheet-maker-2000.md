@@ -64,6 +64,7 @@ All off by default; the standards panel switches on the right one.
 - Ten times and one tenth, decimals (`tenxd`); Powers of 10 (`pow10`); Read and write decimals (`decrw`: standard, word and expanded forms to thousandths); Round decimals (`rnddec`, with number lines); Decimal division and reasonableness (`decrsn`: whole number divided by a decimal, estimate then judge an answer). File: `ns-decimals.js`.
 - Evaluate expressions (`exeval`) and Write and interpret expressions (`exwrite`). File: `ns-equations.js`.
 - Two rule patterns (`rule2`: terms, relationship, ordered pairs). File: `ns-counting.js`.
+- Graph two patterns (`rule2g`: ordered pairs from two rule patterns graphed on a grid drawn by `cpGrid`). File: `ns-counting.js`.
 
 ## Grade 5 fraction types (Number Sense, `ns-fractions.js`)
 
@@ -73,6 +74,9 @@ All off by default. Add and subtract fractions, unlike denominators (`fadd5`, mi
 
 - Number Sense, `ns-measure.js`: Convert units, decimals and fractions (`conv5`: metric decimals, customary and time fractions, money, and multi-step problems at level 3); Line plots and operations (`lplot5`: plot a list, total, difference and share equally, in halves, fourths and eighths).
 - Shapes, Measures and Data, `vis-volume.js`: Volume with unit cubes (`vcubes`), Volume of a rectangular prism (`vlwh`: l × w × h, B × h, grouping factors, real-world problems) and Volume of joined prisms (`vcomp`). Prisms are drawn in oblique view with unit-cube grid lines (`vPrism`); the three faces use three different greys.
+- Shapes, Measures and Data, `vis-plane.js`: Coordinate plane (`cplane`: read, plot, parts of an ordered pair, moves along the axes), Graphs of real-world tables (`cpword`: plot a table, read the graph, difference, what a point means). `cpGrid` also serves the Number Sense type `rule2g`.
+- Shapes, Measures and Data, `vis-angles.js`: Angles and circles (`angc`), Measure and draw angles (`protr`, protractor with both scales), Add angle measures (`angadd`), Points, lines, rays and angles (`gfig`: name, kinds of angle, parallel and perpendicular, draw).
+- Shapes, Measures and Data, `vis-classify.js`: Classify figures (`gclass`: parallel sides, right angles, triangles by angle), Lines of symmetry (`gsym`: count, check, draw), Hierarchy of quadrilaterals (`ghier`).
 
 ## Tennessee standards
 

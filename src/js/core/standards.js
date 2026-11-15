@@ -128,6 +128,12 @@ const STANDARDS = [
   { c: '4.MD.A.2', t: 'Measurement word problems', m: 'ns', ns: { types: ['mword'], level: 3 } },
   { c: '4.MD.A.3', t: 'Area and perimeter of rectangles', m: 'ns', ns: { types: ['rectf'], level: 2 } },
   { c: '4.MD.B.4', t: 'Line plots with fractional units', m: 'ns', ns: { types: ['lineplot'], level: 2 } },
+  { c: '4.MD.C.5', t: 'Angles and parts of a circle', m: 'vis', vis: { types: ['angc', 'gfig'], level: 2 } },
+  { c: '4.MD.C.6', t: 'Measure and draw angles with a protractor', m: 'vis', vis: { types: ['protr'], level: 3 } },
+  { c: '4.MD.C.7', t: 'Angle measure is additive', m: 'vis', vis: { types: ['angadd'], level: 2 } },
+  { c: '4.G.A.1', t: 'Points, lines, segments, rays and angles', m: 'vis', vis: { types: ['gfig'], level: 3 } },
+  { c: '4.G.A.2', t: 'Classify figures by parallel sides and angles', m: 'vis', vis: { types: ['gclass'], level: 2 } },
+  { c: '4.G.A.3', t: 'Lines of symmetry', m: 'vis', vis: { types: ['gsym'], level: 2 } },
   { c: '5.NBT.A.1', t: 'Ten times and one tenth', m: 'ns', ns: { types: ['tenxd'], level: 2 } },
   { c: '5.NBT.A.2', t: 'Powers of 10', m: 'ns', ns: { types: ['pow10'], level: 2 } },
   { c: '5.NBT.A.3', t: 'Read, write and compare decimals', m: 'ns', ns: { types: ['decrw', 'compare'], level: 3 } },
@@ -137,7 +143,7 @@ const STANDARDS = [
   { c: '5.NBT.B.7', t: 'Add, subtract, multiply and divide decimals', m: 'fdp', fd: { types: ['decadd', 'decmul'], level: 3 }, n: 'Dividing a whole number by a decimal and checking an answer by estimating are in the Number Sense type "Decimal division and reasonableness".' },
   { c: '5.OA.A.1', t: 'Evaluate expressions with grouping symbols', m: 'ns', ns: { types: ['exeval'], level: 2 } },
   { c: '5.OA.A.2', t: 'Write and interpret expressions', m: 'ns', ns: { types: ['exwrite'], level: 2 } },
-  { c: '5.OA.B.3', t: 'Two patterns from two rules', m: 'ns', ns: { types: ['rule2'], level: 2 }, n: 'Graphing the ordered pairs on a coordinate plane is not included.' },
+  { c: '5.OA.B.3', t: 'Two patterns from two rules', m: 'ns', ns: { types: ['rule2', 'rule2g'], level: 2 } },
   { c: '5.NF.A.1', t: 'Add and subtract fractions and mixed numbers', m: 'ns', ns: { types: ['fadd5'], level: 3 } },
   { c: '5.NF.A.2', t: 'Fraction addition and subtraction problems', m: 'ns', ns: { types: ['fctx'], level: 2 } },
   { c: '5.NF.B.3', t: 'A fraction is a division', m: 'ns', ns: { types: ['fdiv5'], level: 3 } },
@@ -149,7 +155,10 @@ const STANDARDS = [
   { c: '5.MD.B.2', t: 'Line plots and operations', m: 'ns', ns: { types: ['lplot5'], level: 3 } },
   { c: '5.MD.C.3', t: 'Volume and unit cubes', m: 'vis', vis: { types: ['vcubes'], level: 2 } },
   { c: '5.MD.C.4', t: 'Measure volume by counting unit cubes', m: 'vis', vis: { types: ['vcubes'], level: 3 } },
-  { c: '5.MD.C.5', t: 'Volume of rectangular prisms', m: 'vis', vis: { types: ['vlwh', 'vcomp'], level: 3 } }
+  { c: '5.MD.C.5', t: 'Volume of rectangular prisms', m: 'vis', vis: { types: ['vlwh', 'vcomp'], level: 3 } },
+  { c: '5.G.A.1', t: 'Graph and name points in the first quadrant', m: 'vis', vis: { types: ['cplane'], level: 2 } },
+  { c: '5.G.A.2', t: 'Graph real-world problems', m: 'vis', vis: { types: ['cpword'], level: 3 } },
+  { c: '5.G.B.3', t: 'Hierarchy of two-dimensional figures', m: 'vis', vis: { types: ['ghier'], level: 3 } }
 ];
 const STD_BY_CODE = {}; STANDARDS.forEach(s => { STD_BY_CODE[s.c] = s; });
 const stdGrade = c => c.split('.')[0];

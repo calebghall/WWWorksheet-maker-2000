@@ -25,7 +25,7 @@ Exit: tests pass, no user-visible change.
 
 ## Phase 1: Grade 5 number and operations (10 rows, mostly existing controls)
 
-Status: done. 8 rows Supported, 2 Partial (5.NBT.B.7: whole number divided by a decimal and estimation live in a separate Number Sense type, not in the fractions/decimals preset; 5.OA.B.3: graphing the ordered pairs waits for the coordinate plane in phase 4). Both Partial rows become Supported with parts (phase 5) or phase 4. 5.NBT.B.5 and B.6 were preset-only.
+Status: done. 8 rows Supported, 2 Partial (5.NBT.B.7: whole number divided by a decimal and estimation live in a separate Number Sense type, not in the fractions/decimals preset; 5.OA.B.3: graphing the ordered pairs waits for the coordinate plane in phase 4; closed in phase 4 by `rule2g`). Both Partial rows become Supported with parts (phase 5) or phase 4. 5.NBT.B.5 and B.6 were preset-only.
 
 Rows: 5.NBT.A.1 to A.4, 5.NBT.B.5 to B.7, 5.OA.A.1, 5.OA.A.2, 5.OA.B.3.
 
@@ -70,7 +70,9 @@ Rows: 5.G.A.1, 5.G.A.2, 5.G.B.3, 4.MD.C.5, C.6, C.7, 4.G.A.1, A.2, A.3.
 - Classification and symmetry (4.G.A.2, 4.G.A.3, 5.G.B.3): shape properties, parallel and perpendicular lines, lines of symmetry, hierarchy of figures.
 - These are the largest pieces, so they come last. Order inside the phase: coordinate plane, angles, classification and symmetry.
 
-Exit: 31 of 31 Gap rows closed; `notes/standards-coverage.md` shows 150 Supported, 0 Partial, 0 Gap for Tennessee.
+Status: done. 9 rows Supported with 9 new Shapes, Measures and Data types in three family files (`vis-plane.js`: `cplane`, `cpword`; `vis-angles.js`: `angc`, `protr`, `angadd`, `gfig`; `vis-classify.js`: `gclass`, `gsym`, `ghier`), plus the Number Sense type `rule2g` (graph the ordered pairs of two rule patterns) that closes 5.OA.B.3. New drawing primitives: `cpGrid` (first-quadrant grid with points), `protrSvg` (protractor with both scales), `aArc` and `aHead` (arcs and arrowheads), `gcCanon` (canonical corner list so turned or flipped copies of one figure share a sig). Drawn cells that need wrapped text use `vwrap` and `vwrapH` in `vis-draw.js`. `tests/logic-g5g.js` recomputes each answer and drawing, and checks the figure tables (parallel sides, right angles, lines of symmetry, hierarchy) against the geometry itself. Coverage after phase 4: 149 Supported, 1 Partial (5.NBT.B.7, waiting for a later phase), 0 Gap. The exit count of 150 Supported needs 5.NBT.B.7 (whole number divided by a decimal, estimation) to join the fractions and decimals preset, which needs Phase 5 parts.
+
+Exit: 31 of 31 Gap rows closed; `notes/standards-coverage.md` shows 149 Supported, 1 Partial, 0 Gap for Tennessee after this phase, and 150 Supported once Phase 5 lets 5.NBT.B.7 combine its two modules.
 
 ## Phase 5: parts (multiple configurations of one module)
 

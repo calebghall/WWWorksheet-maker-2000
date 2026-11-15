@@ -2482,6 +2482,19 @@ const nsRule2Html = (p, key, x) => {
   return head + `<div class="wl">${key ? esc(p.ans) : '&nbsp;'}</div>`;
 };
 
+/* Graph the ordered pairs from two rule patterns (5.OA.B.3). The grid comes from the coordinate-plane family (cpGrid in vis-plane.js).
+   Values stay small enough for a first-quadrant grid: at most 12 on the B axis for "times" patterns, 11 for "plus" patterns. */
+function nsxRule2g(rng, L) {
+  const mult = L < 3 || rng() < 0.4, [d, k] = pick(rng, [[1, 2], [1, 3], [1, 4], [2, 2]]), c = ri(rng, 1, 3);
+  const dA = mult ? d : ri(rng, 1, 2), dB = mult ? d * k : dA, aS = mult ? 0 : ri(rng, 0, 2), bS = mult ? 0 : aS + c, A = nsRuleSeq('add', dA, aS, 4), B = nsRuleSeq('add', dB, bS, 4);
+  const Nx = Math.max(...A), Ny = Math.max(...B), cs = Math.min(26, Math.floor(220 / (Nx + 1)), Math.floor(170 / Ny));
+  const pts = A.map((a, i) => ({ x: a, y: B[i] })), g = cpGrid(Nx, Ny, cs, [], { named: true, xl: 'Pattern A', yl: 'Pattern B' }), gk = cpGrid(Nx, Ny, cs, pts.map(q => Object.assign({ key: true }, q)), { named: true, xl: 'Pattern A', yl: 'Pattern B' });
+  const lines = [`Pattern A: ${nsRuleText('add', dA)}, start at ${aS}`, `Pattern B: ${nsRuleText('add', dB)}, start at ${bS}`], tab = `A: ${A.join(', ')}`, tabB = `B: ${B.join(', ')}`;
+  const nlines = lines.reduce((a, t) => a + Math.ceil(t.length / 24), 0) + 2 + Math.ceil('Graph the ordered pairs (A, B).'.length / 24);
+  return { mod: 'ns', type: 'rule2g', prompt: 'Graph the ordered pairs.', mult, dA, dB, aS, bS, A, B, pts, lines, tab, tabB, svg: g.svg, svgKey: gk.svg, sw: g.W, sh: g.H, ans: pts.map(q => `(${q.x}, ${q.y})`).join(', '), sig: `r2g${dA}.${dB}.${aS}.${bS}`, win: Math.max(g.W / 100, 2.9), hin: g.H / 100 + 0.3 * nlines + 0.2, hfs: 0, bw: 0 };
+}
+const nsRule2gHtml = (p, key) => `${vwrap(p.lines[0], 2.9)}${vwrap(p.lines[1], 2.9)}<div>${esc(p.tab)}</div><div>${esc(p.tabB)}</div>${vwrap('Graph the ordered pairs (A, B).', 2.9)}${vsvg(p.sw / 100, p.sh / 100, key ? p.svgKey : p.svg, 'Coordinate grid for two patterns')}`;
+
 defTypes("ns", "Counting and number lines", [
   { id: "skip", label: "Skip counting and patterns", blurb: "Fill in the missing numbers.", on: true, gen: nsSkip, html: nsSkipHtml },
   { id: "cfwd", label: "Count on or back", blurb: "Count from any number, back from 20, or by 1, 2, 5 to 120.", on: false, gen: nsxCount, html: nsCfwdHtml },
@@ -2492,7 +2505,8 @@ defTypes("ns", "Counting and number lines", [
   { id: "line", label: "Number lines", blurb: "Read the number the arrow shows.", on: true, gen: nsLine, html: nsLineHtml },
 { id: "rulepat", label: "Rule patterns", blurb: "Next terms, find the rule, even or odd features, and shape patterns.", on: false, gen: nsxRulePat, html: nsRulePatHtml }
 ,
-  { id: "rule2", label: "Two rule patterns", blurb: "Two patterns from two rules: terms, how matching terms are related, and ordered pairs.", on: false, gen: nsxRule2, html: nsRule2Html }
+  { id: "rule2", label: "Two rule patterns", blurb: "Two patterns from two rules: terms, how matching terms are related, and ordered pairs.", on: false, gen: nsxRule2, html: nsRule2Html },
+  { id: "rule2g", label: "Graph two patterns", blurb: "Graph the ordered pairs made from the matching terms of two rule patterns.", on: false, gen: nsxRule2g, html: nsRule2gHtml }
 ]);
 /* ---------- Number Sense: equations, properties and facts ----------
    Generators take (rng, level) and return a problem with `sig` and size hints; cell bodies are (p, key, x) functions.
@@ -3438,6 +3452,10 @@ function vshape(k, cx, cy, s, fill, rot, stroke) {
 }
 
 const vp = (type, prompt, f, win, hin, hfs, bw) => Object.assign({ mod: 'vis', type, prompt, win, hin, hfs, bw: bw || 0 }, f);
+
+/* Wrapped text inside a drawn cell (drawn cells do not wrap by themselves): w inches wide; vwrapH gives its height in inches (about 24 characters per line at 2.8 inches). */
+const vwrap = (t, w) => `<div style="white-space:normal;width:${w || 2.8}in">${esc(t)}</div>`;
+const vwrapH = (t, w) => 0.3 * Math.ceil(t.length / (24 * (w || 2.8) / 2.8));
 
 const vcap = n => String(n);
 
@@ -4852,6 +4870,418 @@ defTypes("vis", "Volume", [
   { id: "vlwh", label: "Volume of a rectangular prism", blurb: "l × w × h and B × h, grouping the factors, and real-world problems.", on: false, gen: vVlwh, html: vVlwhHtml },
   { id: "vcomp", label: "Volume of joined prisms", blurb: "Add the volumes of two prisms that make one solid.", on: false, gen: vVcomp, html: vVcompHtml }
 ]);
+/* ---------- Shapes, Measures and Data: the coordinate plane (first quadrant) ----------
+   cpGrid draws the grid, axes and points and is shared with the Number Sense two-rule patterns.
+   cplane: read, plot and shift ordered pairs. cpword: graph and read a real-world rate table.
+   Generators take (rng, level) and return a problem with `sig` and size hints; cell bodies are (p, key, x) functions. */
+
+/* A first-quadrant grid Nx by Ny with cell size c (svg units; 100 per inch). pts: [{ x, y, l, key }] drawn as dots with optional letters; key points use the key colour.
+   o.named: axis names (xl, yl) centred below and beside the axes; otherwise "x" and "y" at the arrow ends. Returns { svg, W, H }. */
+function cpGrid(Nx, Ny, c, pts, o) {
+  o = o || {};
+  const lm = o.named ? 44 : 34, tm = 16, bm = o.named ? 40 : 30, rm = 26, ox = lm, oy = tm + Ny * c, W = lm + Nx * c + rm, H = oy + bm, f = n => n.toFixed(1);
+  let g = '';
+  for (let i = 0; i <= Nx; i++) g += `M${f(ox + i * c)} ${oy}V${f(oy - Ny * c)}`;
+  for (let j = 0; j <= Ny; j++) g += `M${ox} ${f(oy - j * c)}H${f(ox + Nx * c)}`;
+  let s = `<path d="${g}" stroke="${VINK}" stroke-opacity="0.28" stroke-width="0.7" fill="none"/>`;
+  s += `<path d="M${ox} ${oy}H${f(ox + Nx * c + 12)}M${ox} ${oy}V${f(oy - Ny * c - 12)}" stroke="${VINK}" stroke-width="2.2" fill="none" stroke-linecap="round"/>`;
+  s += `<path d="M${f(ox + Nx * c + 12)} ${oy}l-7 -4v8zM${ox} ${f(oy - Ny * c - 12)}l-4 7h8z" fill="${VINK}"/>`;
+  for (let i = 0; i <= Nx; i++) s += vtxt(f(ox + i * c), oy + 15, String(i), { s: 11 });
+  for (let j = 1; j <= Ny; j++) s += vtxt(ox - 7, f(oy - j * c + 4), String(j), { s: 11, a: 'end' });
+  if (o.named) {
+    s += vtxt(f(ox + Nx * c / 2), oy + 34, o.xl, { b: 1, s: 12 }) + `<text transform="translate(12 ${f(oy - Ny * c / 2)}) rotate(-90)" font-size="12" font-weight="700" text-anchor="middle" fill="${VINK}">${esc(o.yl)}</text>`;
+  } else {
+    s += vtxt(f(ox + Nx * c + 16), oy + 18, 'x', { b: 1, s: 13, c: VINK }) + vtxt(ox - 12, f(oy - Ny * c - 12), 'y', { b: 1, s: 13 });
+  }
+  for (const p of pts || []) {
+    const cx = ox + p.x * c, cy = oy - p.y * c;
+    s += `<circle cx="${f(cx)}" cy="${f(cy)}" r="${p.key ? 5.2 : 4.6}" fill="${p.key ? VKEY : VINK}" stroke="${p.key ? VKEY : VINK}" stroke-width="1"/>`;
+    if (p.l) s += vtxt(f(cx + 8), f(cy - 7), p.l, { b: 1, s: 13, a: 'start', c: p.key ? VKEY : VINK });
+  }
+  return { svg: s, W, H };
+}
+
+const CP_LET = ['A', 'B', 'C', 'D'];
+
+/* distinct points, no two on a row or column (so each is easy to read), all away from the axes unless zero is allowed */
+function cpPoints(rng, n, N, zero) {
+  const xs = shuffle(rng, Array.from({ length: N + 1 }, (_, i) => i).filter(i => zero || i > 0)), ys = shuffle(rng, Array.from({ length: N + 1 }, (_, i) => i).filter(i => zero || i > 0));
+  return Array.from({ length: n }, (_, i) => ({ x: xs[i], y: ys[i], l: CP_LET[i] }));
+}
+
+/* ordered pairs in the first quadrant. L1 a 6 by 6 grid reading and plotting, L2 an 8 by 8 grid with the meaning of the coordinates,
+   L3 a 10 by 10 grid with points on the axes and moves along the axes. */
+function vCplane(rng, L) {
+  const N = L === 1 ? 6 : L === 2 ? 8 : 10, c = N <= 6 ? 30 : N <= 8 ? 26 : 22, kind = pick(rng, L === 1 ? ['read', 'plot'] : L === 2 ? ['read', 'plot', 'plot', 'axes'] : ['read', 'plot', 'axes', 'shift']);
+  if (kind === 'axes') {
+    const x = ri(rng, 1, N), y = ri(rng, 1, N), which = pick(rng, ['x', 'y']), ask = which === 'x' ? 'x-coordinate' : 'y-coordinate';
+    return vtext('cplane', 'Parts of an ordered pair.', { kind, x, y, which, text: which === 'x' ? `In the ordered pair (${x}, ${y}), the ${ask} tells how many units to move right along the x-axis. What is the ${ask}?` : `In the ordered pair (${x}, ${y}), the ${ask} tells how many units to move up. What is the ${ask}?`, ans: String(which === 'x' ? x : y), sig: `cpa${x}${y}${which}` }, 21, 1.1 + 2 * 1.45 + 1.7 + 0.6, true);
+  }
+  if (kind === 'shift') {
+    const x = ri(rng, 1, N - 2), y = ri(rng, 1, N - 2), dir = pick(rng, ['right', 'up']), d = ri(rng, 1, N - (dir === 'right' ? x : y)), nx = dir === 'right' ? x + d : x, ny = dir === 'up' ? y + d : y;
+    return vtext('cplane', 'Move a point.', { kind, x, y, dir, d, nx, ny, text: `Point P is at (${x}, ${y}). Point Q is ${d} unit${d === 1 ? '' : 's'} ${dir} from P. Write the ordered pair for Q.`, ans: `${nx}, ${ny}`, sig: `cps${x}${y}${dir}${d}` }, 21, 1.1 + 2 * 1.45 + 1.7 + 0.6, true);
+  }
+  const n = kind === 'read' ? ri(rng, 2, 3) : ri(rng, 2, 3), pts = cpPoints(rng, n, N, L === 3), g = cpGrid(N, N, c, kind === 'read' ? pts : []), gk = cpGrid(N, N, c, pts.map(p => Object.assign({}, p, { key: true })));
+  return vp('cplane', kind === 'read' ? 'Write each ordered pair.' : 'Plot and label each point.', { kind, N, pts, svg: g.svg, svgKey: gk.svg, sw: g.W, sh: g.H, sig: `cp${kind}${N}${pts.map(p => p.x + '.' + p.y).join('_')}` }, g.W / 100, g.H / 100, kind === 'read' ? 0.3 + n * 1.5 : 1.9, 0);
+}
+
+function vCplaneHtml(p, key, x) {
+  if (p.kind === 'axes') return `<div class="wt">${esc(p.text)}</div><div>${x(p.ans, 2.4)}</div>`;
+  if (p.kind === 'shift') return `<div class="wt">${esc(p.text)}</div><div>Q = (${x(String(p.nx), 2)}, ${x(String(p.ny), 2)})</div>`;
+  const fig = vsvg(p.sw / 100, p.sh / 100, p.kind === 'plot' && key ? p.svgKey : p.svg, 'First quadrant coordinate grid');
+  if (p.kind === 'read') return fig + p.pts.map(q => `<div>${q.l} = (${x(String(q.x), 2)}, ${x(String(q.y), 2)})</div>`).join('');
+  return fig + `<div>${p.pts.map(q => `${q.l}(${q.x}, ${q.y})`).join(' &nbsp; ')}</div>`;
+}
+
+/* graphs from a rate: a table of ordered pairs, plotting them, and reading the graph in context.
+   L1 rates 1 to 3 over 4 steps, L2 adds rates up to 5, L3 adds the difference between two points and what a point means. */
+const CP_CTX = [
+  ['Hours', 'Miles', nm => `${nm} bikes the same number of miles each hour.`, 'miles', 'hours', 'hour'],
+  ['Weeks', 'Dollars', nm => `${nm} saves the same amount of money each week.`, 'dollars', 'weeks', 'week'],
+  ['Minutes', 'Pages', nm => `${nm} reads the same number of pages each minute.`, 'pages', 'minutes', 'minute'],
+  ['Boxes', 'Pencils', () => 'Each box holds the same number of pencils.', 'pencils', 'boxes', 'box']
+];
+
+const CP_TW = 2.8;   // inches of wrapped text beside/below a drawn graph
+function vCpword(rng, L) {
+  const [m, xmax] = pick(rng, [[1, 5], [1, 4], [2, 3], [2, 4], [2, 5], [3, 3], [3, 2], [4, 2], [5, 2]].filter(q => q[0] <= (L === 1 ? 2 : L === 2 ? 3 : 5))), Ny = Math.max(6, m * xmax + (m * xmax % 2)), [xl, yl, mk, yu, xu, xs] = pick(rng, CP_CTX), nm = pick(rng, NS_NAMES);
+  const Nx = xmax + 1, c = Math.min(30, Math.floor(210 / Nx), Math.floor(190 / Ny));
+  const pts = Array.from({ length: xmax }, (_, i) => ({ x: i + 1, y: m * (i + 1) })), grid = (pp) => cpGrid(Nx, Ny, c, pp, { named: true, xl, yl });
+  const kind = pick(rng, L === 1 ? ['plot', 'read'] : L === 2 ? ['plot', 'read', 'read'] : ['plot', 'read', 'diff', 'mean']);
+  const story = mk(nm), tab = `<div>${xl}: ${pts.map(q => q.x).join(', ')}</div><div>${yl}: ${pts.map(q => q.y).join(', ')}</div>`, base = { kind, m, xl, yl, yu, xu, xs, pts, Nx, Ny, story };
+  const lines = (t) => Math.ceil(t.length / 24), hh = (g, t, extra) => g.H / 100 + 0.3 * lines(t) + extra, ww = (g) => Math.max(g.W / 100, CP_TW);
+  if (kind === 'plot') {
+    const g = grid([]), gk = grid(pts.map(q => Object.assign({ key: true }, q)));
+    return vp('cpword', 'Graph the table.', Object.assign(base, { tab, svg: g.svg, svgKey: gk.svg, sw: g.W, sh: g.H, ans: 'plot', sig: `cw${kind}${m}${xl}${xmax}` }), ww(g), hh(g, story, 0.75), 0, 0);
+  }
+  const g = grid(pts), k = ri(rng, 1, xmax);
+  const mkq = (q, a, extra, sg) => vp('cpword', kind === 'mean' ? 'What does the point mean?' : 'Use the graph.', Object.assign(base, { svg: g.svg, sw: g.W, sh: g.H, k, q, ans: a, sig: sg }, extra), ww(g), hh(g, q, 0.75), 0, 0);
+  if (kind === 'read') return mkq(`${story} How many ${yu} after ${k} ${k === 1 ? xs : xu}?`, String(m * k), {}, `cw${kind}${m}${xl}${xmax}${k}`);
+  if (kind === 'diff') { const a = ri(rng, 1, xmax - 1), b = ri(rng, a + 1, xmax);
+    return mkq(`${story} How many more ${yu} after ${b} ${xu} than after ${a} ${a === 1 ? xs : xu}?`, String(m * (b - a)), { a, b }, `cw${kind}${m}${xl}${xmax}${a}${b}`); }
+  return mkq(`${story} The point (${k}, ${m * k}) is on the graph.`, `${k}, ${m * k}`, {}, `cw${kind}${m}${xl}${xmax}${k}`);
+}
+
+const cpWrap = (t) => vwrap(t, CP_TW);
+function vCpwordHtml(p, key, x) {
+  const fig = vsvg(p.sw / 100, p.sh / 100, p.kind === 'plot' && key ? p.svgKey : p.svg, `Graph of ${p.yl} against ${p.xl}`);
+  if (p.kind === 'plot') return `${cpWrap(p.story)}${p.tab}${fig}`;
+  if (p.kind === 'mean') return `${fig}${cpWrap(p.q)}<div>After ${x(String(p.k), 1.8)} ${p.xu}, there are ${x(String(p.m * p.k), 2)} ${p.yu}.</div>`;
+  return `${fig}${cpWrap(p.q)}<div>Answer: ${x(p.ans, 2.4)}</div>`;
+}
+
+defTypes("vis", "Coordinate plane", [
+  { id: "cplane", label: "Ordered pairs", blurb: "Read and plot points in the first quadrant, parts of an ordered pair, and moves along the axes.", on: false, gen: vCplane, html: vCplaneHtml },
+  { id: "cpword", label: "Graphs of real-world tables", blurb: "Plot a table of ordered pairs, read the graph, and say what a point means.", on: false, gen: vCpword, html: vCpwordHtml }
+]);
+/* ---------- Shapes, Measures and Data: angles, protractors, points, lines and rays ----------
+   Generators take (rng, level) and return a problem with `sig` and size hints; cell bodies are (p, key, x) functions.
+   angc: an angle as a fraction of a circle and as a count of one-degree angles. protr: measure an angle with a protractor and draw an angle of a given measure.
+   angadd: angle measure is additive (a whole angle split into parts). gfig: name points, lines, segments and rays, name kinds of angles, and draw them.
+   Angles are measured counterclockwise in degrees from the positive x direction; svg y runs downward, so aPt flips it. */
+
+const aPt = (cx, cy, r, deg) => [cx + r * Math.cos(deg * Math.PI / 180), cy - r * Math.sin(deg * Math.PI / 180)];
+const af1 = n => n.toFixed(1);
+
+/* arc of radius r from angle d1 to d2 (counterclockwise when d2 > d1) */
+function aArc(cx, cy, r, d1, d2, c, w) {
+  const a = aPt(cx, cy, r, d1), b = aPt(cx, cy, r, d2);
+  return `<path d="M${af1(a[0])} ${af1(a[1])}A${r} ${r} 0 ${Math.abs(d2 - d1) > 180 ? 1 : 0} ${d2 > d1 ? 0 : 1} ${af1(b[0])} ${af1(b[1])}" fill="none" stroke="${c || VINK}" stroke-width="${w || 2}"/>`;
+}
+
+/* small filled arrowhead at (x, y) pointing in direction deg */
+function aHead(x, y, deg, c) {
+  const p1 = aPt(x, y, 11, deg + 180 - 22), p2 = aPt(x, y, 11, deg + 180 + 22);
+  return `<polygon points="${af1(x)},${af1(y)} ${af1(p1[0])},${af1(p1[1])} ${af1(p2[0])},${af1(p2[1])}" fill="${c || VINK}" stroke="${c || VINK}" stroke-width="1" stroke-linejoin="round"/>`;
+}
+
+/* ---------- protractor ---------- */
+const PR_W = 290, PR_H = 152, PR_CX = 145, PR_CY = 140, PR_R = 125;
+
+/* A protractor with its center at the vertex. base 'R' puts the baseline ray on the right (read the outer scale), 'L' on the left (read the inner scale).
+   The second ray is at deg degrees from the baseline ray; draw is 'both' (read), 'base' (only the baseline ray) or 'key' (baseline in ink, the answer ray in the key color). */
+function protrSvg(base, deg, mode) {
+  const cx = PR_CX, cy = PR_CY, R = PR_R;
+  let o = `<path d="M${cx - R} ${cy}A${R} ${R} 0 0 1 ${cx + R} ${cy}Z" fill="none" stroke="${VINK}" stroke-width="1.6"/>`;
+  o += vline(cx - R, cy, cx + R, cy, VINK, 1.2);
+  let t = '';
+  for (let d = 0; d <= 180; d++) {
+    const len = d % 10 === 0 ? 13 : d % 5 === 0 ? 9 : 5, a = aPt(cx, cy, R, d), b = aPt(cx, cy, R - len, d);
+    t += `M${af1(a[0])} ${af1(a[1])}L${af1(b[0])} ${af1(b[1])}`;
+  }
+  o += `<path d="${t}" stroke="${VINK}" stroke-width="0.8" fill="none"/>`;
+  for (let d = 0; d <= 180; d += 10) {
+    const e = d % 180 === 0 ? -8 : 0, a = aPt(cx, cy, R + (e ? 14 : 10), d), b = aPt(cx, cy, R - 24, d);
+    o += vtxt(af1(a[0]), af1(a[1] + 3.5 + e), String(d), { s: 9.5 }) + vtxt(af1(b[0]), af1(b[1] + 3 + e), String(180 - d), { s: 8.5 });
+  }
+  o += `<circle cx="${cx}" cy="${cy}" r="2.5" fill="${VINK}"/>`;
+  const bdir = base === 'R' ? 0 : 180, sdir = base === 'R' ? deg : 180 - deg, e = aPt(cx, cy, R + 4, bdir), f = aPt(cx, cy, R + 4, sdir);
+  o += vline(cx, cy, e[0], e[1], VINK, 2.4);
+  if (mode === 'both') o += vline(cx, cy, f[0], f[1], VINK, 2.4);
+  if (mode === 'key') o += vline(cx, cy, f[0], f[1], VKEY, 2.6);
+  return o;
+}
+
+function vProtr(rng, L) {
+  const kind = pick(rng, L === 1 ? ['read', 'read', 'draw'] : ['read', 'draw']), base = L === 1 ? 'R' : pick(rng, ['R', 'L']);
+  let deg = L === 1 ? 10 * ri(rng, 2, 16) : L === 2 ? 5 * ri(rng, 3, 33) : ri(rng, 15, 165);
+  if (L === 3 && ri(rng, 0, 2) === 0) deg = 5 * Math.round(deg / 5);
+  return vp('protr', kind === 'read' ? 'Measure the angle.' : 'Draw the angle.', { kind, base, deg, ans: String(deg), sig: `pr${kind}${deg}${base}` }, PR_W / 100, PR_H / 100 + (kind === 'draw' ? 0.35 : 0) + 0.5, 0, 0);
+}
+function vProtrHtml(p, key, x) {
+  const fig = vsvg(PR_W / 100, PR_H / 100, protrSvg(p.base, p.deg, p.kind === 'read' ? 'both' : key ? 'key' : 'base'), 'Protractor');
+  if (p.kind === 'read') return `${fig}<div>Angle = ${x(p.ans, 2)}°</div>`;
+  return `<div>Draw an angle of ${p.deg}°.</div>${fig}`;
+}
+
+/* ---------- angle measure is additive ---------- */
+const AA_LET = 'ABCD';
+
+/* figure for a whole angle split into parts (degrees). unk: index of the unknown part, or 'total'. Returns { svg, W, H }. */
+function angAddFig(parts, unk, key) {
+  const n = parts.length, total = parts.reduce((a, b) => a + b, 0), ang = [0];
+  parts.forEach(q => ang.push(ang[ang.length - 1] + q));
+  const els = [], pts = [[-14, 16]];
+  const P = (r, d) => { const q = aPt(0, 0, r, d); pts.push(q); return q; };
+  const lab = (q, txt, isKey) => vtxt(af1(q[0]), af1(q[1] + 4), txt, { s: 12, b: true, c: isKey ? VKEY : VINK });
+  ang.forEach((d, i) => { const mid = i > 0 && i < n, e = P(mid ? 84 : 112, d), t = P(mid ? 103 : 126, d); els.push(vline(0, 0, e[0], e[1], VINK, 2.2)); els.push(vtxt(af1(t[0]), af1(t[1] + 4), AA_LET[i], { b: true })); });
+  els.push(vtxt(-14, 16, 'O', { b: true }));
+  parts.forEach((q, i) => { els.push(aArc(0, 0, 44, ang[i], ang[i + 1], VINK, 1.5)); const m = P(72, (ang[i] + ang[i + 1]) / 2); els.push(i === unk ? lab(m, key ? String(q) : '?', key) : lab(m, q + '°')); });
+  els.push(aArc(0, 0, 94, 0, total, VINK, 1.5));
+  const tm = P(122, total / 2);
+  els.push(unk === 'total' ? lab(tm, key ? String(total) : '?', key) : lab(tm, total + '°'));
+  const xs = pts.map(q => q[0]), ys = pts.map(q => q[1]), mnx = Math.min(...xs) - 16, mny = Math.min(...ys) - 14, W = Math.round(Math.max(...xs) + 16 - mnx), H = Math.round(Math.max(...ys) + 16 - mny);
+  return { svg: `<g transform="translate(${af1(-mnx)} ${af1(-mny)})">${els.join('')}</g>`, W, H };
+}
+
+function vAngadd(rng, L) {
+  const kind = pick(rng, L === 1 ? ['sum', 'sum', 'part'] : L === 2 ? ['sum', 'part'] : ['sum', 'part', 'three']), st = L === 1 ? 10 : 5, lo = L === 1 ? 20 : 20;
+  const parts = Array.from({ length: kind === 'three' ? 3 : 2 }, () => st * ri(rng, lo / st, (L === 1 ? 70 : 60) / st));
+  const total = parts.reduce((a, b) => a + b, 0), unk = kind === 'sum' || kind === 'three' ? 'total' : ri(rng, 0, 1);
+  const T = `angle AO${AA_LET[parts.length]}`, pn = i => `angle ${AA_LET[i]}O${AA_LET[i + 1]}`;
+  let text, ans;
+  if (unk === 'total') { text = parts.map((q, i) => `${pn(i)} = ${q}°`).join(', ').replace(/, ([^,]*)$/, parts.length === 2 ? ' and $1' : ', and $1') + `. What is the measure of ${T}?`; ans = total; }
+  else { const k = 1 - unk; text = `${T} = ${total}°. ${pn(k)} = ${parts[k]}°. What is the measure of ${pn(unk)}?`; ans = parts[unk]; }
+  const g = angAddFig(parts, unk, false);
+  return vp('angadd', 'Add angle measures.', { kind, parts, unk, total, text, ans: String(ans), tgt: unk === 'total' ? T : pn(unk), sw: g.W, sh: g.H, sig: `aa${parts.join('-')}${unk}` }, Math.max(g.W / 100, 2.9), g.H / 100 + vwrapH(text, 2.9) + 0.75, 0, 0);
+}
+function vAngaddHtml(p, key, x) {
+  const g = angAddFig(p.parts, p.unk, key);
+  return `${vsvg(p.sw / 100, p.sh / 100, g.svg, 'An angle split into parts')}${vwrap(p.text, 2.9)}<div>${p.tgt} = ${x(p.ans, 2)}°</div>`;
+}
+
+/* ---------- angles and circles ---------- */
+function circleWedges(d, k) {
+  const cx = 70, cy = 70, R = 58;
+  let o = `<circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="${VINK}" stroke-width="2"/>`;
+  if (k) { const a = aPt(cx, cy, R, 90), b = aPt(cx, cy, R, 90 - 360 * k / d); o += `<path d="M${cx} ${cy}L${af1(a[0])} ${af1(a[1])}A${R} ${R} 0 ${k / d > .5 ? 1 : 0} 1 ${af1(b[0])} ${af1(b[1])}Z" fill="${VFILL[0]}" stroke="none"/>`; }
+  for (let i = 0; i < d; i++) { const a = aPt(cx, cy, R, 90 - 360 * i / d); o += vline(cx, cy, af1(a[0]), af1(a[1]), VINK, 1.6); }
+  return o + `<circle cx="${cx}" cy="${cy}" r="2.5" fill="${VINK}"/>`;
+}
+
+function vAngc(rng, L) {
+  const kind = pick(rng, L === 1 ? ['frac', 'ones'] : ['frac', 'frac', 'ones', 'tellnum']);
+  if (kind === 'frac') {
+    const d = pick(rng, L === 1 ? [2, 4] : L === 2 ? [3, 4, 6, 8, 10] : [5, 6, 8, 9, 10, 12]), k = L === 1 ? 1 : ri(rng, 1, Math.min(3, d - 1)), deg = 360 * k / d;
+    return vp('angc', 'Angles in a circle.', { kind, d, k, deg, ans: String(deg), text: `A circle is cut into ${d} equal parts at the center. ${k === 1 ? 'One part is' : k + ' parts are'} shaded. What is the angle of the shaded part?`, sig: `ac${kind}${d}${k}` }, 2.9, 1.4 + vwrapH(`A circle is cut into ${d} equal parts at the center. ${k === 1 ? 'One part is' : k + ' parts are'} shaded. What is the angle of the shaded part?`, 2.9) + 0.6, 0, 0);
+  }
+  const n = L === 1 ? 10 * ri(rng, 2, 9) : L === 2 ? 5 * ri(rng, 4, 30) : ri(rng, 31, 179);
+  if (kind === 'ones') return vtext('angc', 'One-degree angles.', { kind, n, ans: String(n), text: `An angle is made of ${n} one-degree angles with no gaps or overlaps. What is the measure of the angle?`, sig: `ac${kind}${n}` }, 21, g3eh([`An angle is made of ${n} one-degree angles with no gaps or overlaps. What is the measure of the angle?`.length], 0, 1.7), true);
+  const d = pick(rng, [2, 3, 4, 5, 6, 8, 9, 10, 12]), nm = { 2: 'half', 3: 'third', 4: 'fourth', 5: 'fifth', 6: 'sixth', 8: 'eighth', 9: 'ninth', 10: 'tenth', 12: 'twelfth' }[d];
+  return vtext('angc', 'Degrees in a circle.', { kind, d, ans: String(360 / d), text: `A circle has 360 one-degree angles at its center. An angle turns through one ${nm} of the circle. How many degrees is the angle?`, sig: `ac${kind}${d}` }, 21, g3eh([136], 0, 1.7), true);
+}
+function vAngcHtml(p, key, x) {
+  if (p.kind === 'frac') return `${vsvg(1.4, 1.4, circleWedges(p.d, p.k), 'A circle cut into equal parts')}${vwrap(p.text, 2.9)}<div>Angle = ${x(p.ans, 2.2)}°</div>`;
+  return `<div class="wt">${esc(p.text)}</div><div>Angle = ${x(p.ans, 2.2)}°</div>`;
+}
+
+/* ---------- points, lines, rays and kinds of angles ---------- */
+const GF_W = 240, GF_H = 150, GF_CX = 120, GF_CY = 75;
+const GF_ANG = { acute: [30, 40, 50, 60, 70, 80], right: [90], obtuse: [100, 110, 120, 135, 150, 160], straight: [180], reflex: [200, 225, 250, 270, 300] };
+
+/* a figure of the given kind drawn in color c; t is the direction (degrees) it is turned by, th the angle measure */
+function gShape(kind, c, t, th) {
+  const cx = GF_CX, cy = GF_CY, ends = (r1, r2) => [aPt(cx, cy, r1, t + 180), aPt(cx, cy, r2, t)];
+  if (kind === 'point') return `<circle cx="${cx}" cy="${cy}" r="4.5" fill="${c}"/>${vtxt(cx, cy - 12, 'P', { b: true, c })}`;
+  if (kind === 'line') { const [a, b] = ends(100, 100); return vline(af1(a[0]), af1(a[1]), af1(b[0]), af1(b[1]), c, 2.2) + aHead(b[0], b[1], t, c) + aHead(a[0], a[1], t + 180, c); }
+  if (kind === 'segment') { const [a, b] = ends(80, 80); return vline(af1(a[0]), af1(a[1]), af1(b[0]), af1(b[1]), c, 2.2) + `<circle cx="${af1(a[0])}" cy="${af1(a[1])}" r="4.5" fill="${c}"/><circle cx="${af1(b[0])}" cy="${af1(b[1])}" r="4.5" fill="${c}"/>`; }
+  if (kind === 'ray') { const [a, b] = ends(80, 100); return vline(af1(a[0]), af1(a[1]), af1(b[0]), af1(b[1]), c, 2.2) + `<circle cx="${af1(a[0])}" cy="${af1(a[1])}" r="4.5" fill="${c}"/>` + aHead(b[0], b[1], t, c); }
+  const v = [cx, cy], e1 = aPt(cx, cy, 66, t), e2 = aPt(cx, cy, 66, t + th);
+  let o = vline(v[0], v[1], af1(e1[0]), af1(e1[1]), c, 2.2) + vline(v[0], v[1], af1(e2[0]), af1(e2[1]), c, 2.2) + `<circle cx="${cx}" cy="${cy}" r="3.5" fill="${c}"/>`;
+  if (th === 90) { const a = aPt(cx, cy, 15, t), b = aPt(cx, cy, 15, t + 90), m = [a[0] + b[0] - cx, a[1] + b[1] - cy]; o += `<path d="M${af1(a[0])} ${af1(a[1])}L${af1(m[0])} ${af1(m[1])}L${af1(b[0])} ${af1(b[1])}" fill="none" stroke="${c}" stroke-width="1.6"/>`; }
+  else o += aArc(cx, cy, th > 180 ? 28 : 24, t, t + th, c, 1.6);
+  return o;
+}
+
+/* two lines: parallel, perpendicular or intersecting at a slant */
+function gLines(kind, t, slant) {
+  const cx = GF_CX, cy = GF_CY, seg = (p, d, r) => { const a = aPt(p[0], p[1], r, d), b = aPt(p[0], p[1], r, d + 180); return vline(af1(a[0]), af1(a[1]), af1(b[0]), af1(b[1]), VINK, 2.2) + aHead(a[0], a[1], d, VINK) + aHead(b[0], b[1], d + 180, VINK); };
+  if (kind === 'parallel') { const n = aPt(cx, cy, 24, t + 90), m = aPt(cx, cy, 24, t - 90); return seg(n, t, 80) + seg(m, t, 80); }
+  const d2 = kind === 'perpendicular' ? t + 90 : t + slant;
+  let o = seg([cx, cy], t, 85) + seg([cx, cy], d2, 62);
+  if (kind === 'perpendicular') { const a = aPt(cx, cy, 15, t), b = aPt(cx, cy, 15, t + 90), m = [a[0] + b[0] - cx, a[1] + b[1] - cy]; o += `<path d="M${af1(a[0])} ${af1(a[1])}L${af1(m[0])} ${af1(m[1])}L${af1(b[0])} ${af1(b[1])}" fill="none" stroke="${VINK}" stroke-width="1.6"/>`; }
+  return o;
+}
+
+const GF_NAMES = { point: 'a point', line: 'a line', segment: 'a line segment', ray: 'a ray', acute: 'an acute angle', right: 'a right angle', obtuse: 'an obtuse angle', straight: 'a straight angle', reflex: 'a reflex angle' };
+const GF_FIG = ['point', 'line', 'line segment', 'ray'], GF_LINES = ['parallel', 'perpendicular', 'intersecting'];
+
+function vGfig(rng, L) {
+  const kinds = L === 1 ? ['name', 'angtype'] : L === 2 ? ['name', 'angtype', 'lines', 'draw'] : ['name', 'angtype', 'lines', 'draw', 'draw'], kind = pick(rng, kinds);
+  const angs = L === 1 ? ['acute', 'right', 'obtuse'] : L === 2 ? ['acute', 'right', 'obtuse', 'straight'] : ['acute', 'right', 'obtuse', 'straight', 'reflex'];
+  const t = pick(rng, [0, 15, 30, -15, -30, 160, 195]);
+  if (kind === 'name') { const w = pick(rng, ['point', 'line', 'segment', 'ray']), ans = w === 'segment' ? 'line segment' : w;
+    return vp('gfig', 'What is the figure?', { kind, w, t, ans, opts: GF_FIG, svg: gShape(w, VINK, t, 0), sig: `gn${w}${w === 'point' ? '' : w === 'ray' ? t : ((t % 180) + 180) % 180}` }, 3.3, GF_H / 100 + 0.85, 0, 0); }
+  if (kind === 'angtype') { const w = pick(rng, angs), th = pick(rng, GF_ANG[w]);
+    return vp('gfig', 'What kind of angle?', { kind, w, t, th, ans: w, opts: angs, svg: gShape(w, VINK, t, th), sig: `ga${w}${th}${t}` }, 3.3, GF_H / 100 + 0.85, 0, 0); }
+  if (kind === 'lines') { const w = pick(rng, GF_LINES), slant = pick(rng, [35, 50, 130, 145]);
+    return vp('gfig', 'How are the two lines related?', { kind, w, t, slant, ans: w, opts: GF_LINES, svg: gLines(w, t, slant), sig: `gl${w}${((t % 180) + 180) % 180}${w === 'intersecting' ? slant : ''}` }, 3.3, GF_H / 100 + 0.85, 0, 0); }
+  const w = pick(rng, L === 2 ? ['segment', 'ray', 'line', 'acute', 'right', 'obtuse'] : ['segment', 'ray', 'line', 'acute', 'right', 'obtuse', 'straight', 'reflex']), th = (GF_ANG[w] || [0])[ri(rng, 0, (GF_ANG[w] || [0]).length - 1)];
+  const frame = `<rect x="4" y="4" width="${GF_W - 8}" height="${GF_H - 8}" rx="6" fill="none" stroke="${VINK}" stroke-width="1.2" stroke-dasharray="5 4" opacity=".55"/>`;
+  return vp('gfig', `Draw ${GF_NAMES[w]}.`, { kind, w, t, th, ans: w, svg: frame, svgKey: frame + gShape(w, VKEY, t, th), sig: `gd${w}` }, GF_W / 100, GF_H / 100 + 0.2, 0, 0);
+}
+function vGfigHtml(p, key, x) {
+  if (p.kind === 'draw') return vsvg(GF_W / 100, GF_H / 100, key ? p.svgKey : p.svg, 'Space to draw');
+  return `${vsvg(GF_W / 100, GF_H / 100, p.svg, 'Figure')}<div style="white-space:normal;width:3.3in">${vopts(p.opts, p.ans, key)}</div>`;
+}
+
+defTypes("vis", "Angles, lines and figures", [
+  { id: "angc", label: "Angles and circles", blurb: "An angle as a part of a circle; one-degree angles.", on: false, gen: vAngc, html: vAngcHtml },
+  { id: "protr", label: "Measure and draw angles", blurb: "Read a protractor and draw an angle of a given measure.", on: false, gen: vProtr, html: vProtrHtml },
+  { id: "angadd", label: "Add angle measures", blurb: "Join angles or split one into parts to find an unknown measure.", on: false, gen: vAngadd, html: vAngaddHtml },
+  { id: "gfig", label: "Points, lines, rays and angles", blurb: "Name and draw points, lines, segments, rays and kinds of angles.", on: false, gen: vGfig, html: vGfigHtml }
+]);
+/* ---------- Shapes, Measures and Data: classifying two-dimensional figures ----------
+   Generators take (rng, level) and return a problem with `sig` and size hints; cell bodies are (p, key, x) functions.
+   gclass: parallel sides, right angles and kinds of triangles in a drawn figure. gsym: lines of symmetry. ghier: a hierarchy of quadrilaterals
+   (every square is a rectangle, and what is true of a category is true of its subcategories).
+   Figures are lists of points around a center at (0, 0) in svg units; a figure is drawn turned by rot degrees and optionally mirrored. */
+
+const GC_W = 240, GC_H = 170, GC_CX = 120, GC_CY = 85;
+
+/* par: pairs of parallel sides; ra: number of right angles */
+const GC_FIG = {
+  rectangle: { pts: [[-65, -38], [65, -38], [65, 38], [-65, 38]], par: 2, ra: 4 },
+  square: { pts: [[-48, -48], [48, -48], [48, 48], [-48, 48]], par: 2, ra: 4 },
+  parallelogram: { pts: [[-45, -40], [75, -40], [45, 40], [-75, 40]], par: 2, ra: 0 },
+  rhombus: { pts: [[0, -52], [34, 0], [0, 52], [-34, 0]], par: 2, ra: 0 },
+  trapezoid: { pts: [[-30, -40], [40, -40], [75, 40], [-75, 40]], par: 1, ra: 0 },
+  rtrap: { pts: [[-60, -40], [30, -40], [60, 40], [-60, 40]], par: 1, ra: 2 },
+  kite: { pts: [[0, -55], [35, -5], [0, 50], [-35, -5]], par: 0, ra: 0 },
+  pentagon: { pts: vreg(5, 0, 0, 62, 0), par: 0, ra: 0 },
+  hexagon: { pts: vreg(6, 0, 0, 62, 0), par: 3, ra: 0 },
+  acute: { pts: [[0, -52], [60, 45], [-60, 45]], par: 0, ra: 0, tri: 'acute' },
+  right: { pts: [[-50, -40], [-50, 40], [60, 40]], par: 0, ra: 1, tri: 'right' },
+  obtuse: { pts: [[-70, 40], [70, 40], [0, 0]], par: 0, ra: 0, tri: 'obtuse' }
+};
+
+/* the figure as drawn, as a sorted list of rounded corners: two turns or flips that look the same give the same text (so the repeat filter sees them as one problem) */
+function gcCanon(pts, rot, mir) {
+  const a = rot * Math.PI / 180;
+  return pts.map(q => { const x = (mir ? -1 : 1) * q[0]; return Math.round(x * Math.cos(a) - q[1] * Math.sin(a)) + ',' + Math.round(x * Math.sin(a) + q[1] * Math.cos(a)); }).sort().join(';');
+}
+const gcHash = t => { let h = 0; for (let i = 0; i < t.length; i++) h = (h * 31 + t.charCodeAt(i)) >>> 0; return h.toString(36); };
+
+function gcDraw(f, rot, mir, extra) {
+  const m = mir ? -1 : 1, pts = f.pts.map(q => [af1(GC_CX + m * q[0]), af1(GC_CY + q[1])]);
+  return `<g transform="rotate(${rot} ${GC_CX} ${GC_CY})">${vpoly(pts.map(q => [+q[0], +q[1]]), VFILL[0], 0, 0, 0)}${extra || ''}</g>`;
+}
+
+function vGclass(rng, L) {
+  const figs = L === 1 ? ['rectangle', 'square', 'parallelogram', 'rhombus', 'trapezoid'] : L === 2 ? ['rectangle', 'square', 'parallelogram', 'rhombus', 'trapezoid', 'rtrap', 'kite', 'acute', 'right', 'obtuse'] : Object.keys(GC_FIG);
+  const kinds = L === 1 ? ['par'] : ['par', 'ra', 'tri'];
+  const kind = pick(rng, kinds), name = pick(rng, kind === 'tri' ? ['acute', 'right', 'obtuse'] : kind === 'par' ? figs.filter(k => !GC_FIG[k].tri) : figs);
+  const f = GC_FIG[name], rot = pick(rng, [0, 90, 180, 270]), mir = pick(rng, [false, true]);
+  const base = { kind, name, rot, mir, svg: gcDraw(f, rot, mir) }, sg = `gc${kind}${name}${gcHash(gcCanon(f.pts, rot, mir))}`;
+  if (kind === 'tri') return vp('gclass', 'Classify the triangle by its angles.', Object.assign(base, { ans: f.tri, opts: ['acute', 'right', 'obtuse'], sig: sg }), 3.3, GC_H / 100 + 0.85, 0, 0);
+  if (kind === 'par') return vp('gclass', 'How many pairs of parallel sides?', Object.assign(base, { ans: String(f.par), sig: sg }), 3.3, GC_H / 100 + 0.55, 0, 0);
+  return vp('gclass', 'How many right angles?', Object.assign(base, { ans: String(f.ra), sig: sg }), 3.3, GC_H / 100 + 0.55, 0, 0);
+}
+function vGclassHtml(p, key, x) {
+  const fig = vsvg(GC_W / 100, GC_H / 100, p.svg, 'A two-dimensional figure');
+  if (p.kind === 'tri') return `${fig}<div style="white-space:normal;width:3.3in">${vopts(p.opts, p.ans, key)}</div>`;
+  return `${fig}<div>${x(p.ans, 1.6)} ${p.kind === 'par' ? 'pairs' : 'right angles'}</div>`;
+}
+
+/* ---------- lines of symmetry ---------- */
+/* axes: directions in degrees (counterclockwise from the right) of the lines of symmetry through the center */
+const GS_FIG = {
+  square: { pts: GC_FIG.square.pts, axes: [0, 90, 45, 135] },
+  rectangle: { pts: GC_FIG.rectangle.pts, axes: [0, 90] },
+  triangle: { pts: vreg(3, 0, 0, 62, 0), axes: [90, 30, 150] },
+  isosceles: { pts: [[0, -55], [38, 45], [-38, 45]], axes: [90] },
+  rhombus: { pts: GC_FIG.rhombus.pts, axes: [0, 90] },
+  parallelogram: { pts: GC_FIG.parallelogram.pts, axes: [] },
+  kite: { pts: GC_FIG.kite.pts, axes: [90] },
+  trapezoid: { pts: [[-35, -35], [35, -35], [70, 35], [-70, 35]], axes: [90] },
+  pentagon: { pts: vreg(5, 0, 0, 62, 0), axes: [90, 162, 54, 126, 18] },
+  hexagon: { pts: vreg(6, 0, 0, 62, 0), axes: [90, 30, 150, 0, 60, 120] }
+};
+const GS_NAME = { square: 'square', rectangle: 'rectangle', triangle: 'equilateral triangle', isosceles: 'isosceles triangle', rhombus: 'rhombus', parallelogram: 'parallelogram', kite: 'kite', trapezoid: 'isosceles trapezoid', pentagon: 'regular pentagon', hexagon: 'regular hexagon' };
+
+function gsLine(f, deg, c, dash) {
+  const r = Math.max(...f.pts.map(q => Math.hypot(q[0], q[1]))) + 12, a = aPt(GC_CX, GC_CY, r, deg), b = aPt(GC_CX, GC_CY, r, deg + 180);
+  return `<line x1="${af1(a[0])}" y1="${af1(a[1])}" x2="${af1(b[0])}" y2="${af1(b[1])}" stroke="${c}" stroke-width="2.2" stroke-dasharray="${dash ? '7 5' : '0'}" stroke-linecap="round"/>`;
+}
+function gsSvg(name, rot, mir, lines, c, dash) {
+  const f = GS_FIG[name], m = mir ? -1 : 1, pts = f.pts.map(q => [GC_CX + m * q[0], GC_CY + q[1]]);
+  return `<g transform="rotate(${rot} ${GC_CX} ${GC_CY})">${vpoly(pts, VFILL[0], 0, 0, 0)}${lines.map(d => gsLine(f, m * d, c, dash)).join('')}</g>`;
+}
+
+function vGsym(rng, L) {
+  const figs = L === 1 ? ['square', 'rectangle', 'triangle', 'isosceles'] : L === 2 ? ['square', 'rectangle', 'triangle', 'isosceles', 'rhombus', 'kite', 'trapezoid', 'parallelogram'] : Object.keys(GS_FIG);
+  const kind = pick(rng, L === 1 ? ['count', 'count', 'is'] : ['count', 'is', 'draw']), name = pick(rng, kind === 'draw' ? figs.filter(k => GS_FIG[k].axes.length) : figs), f = GS_FIG[name], rot = pick(rng, [0, 90, 180, 270]), mir = pick(rng, [false, true]);
+  const nm = GS_NAME[name], sg = `gs${kind}${name}${gcHash(gcCanon(f.pts, rot, mir))}`;
+  if (kind === 'count') return vp('gsym', `Lines of symmetry: ${nm}.`, { kind, name, rot, mir, n: f.axes.length, ans: String(f.axes.length), svg: gsSvg(name, rot, mir, [], VINK, false), svgKey: gsSvg(name, rot, mir, f.axes, VKEY, true), sig: sg }, 3.3, GC_H / 100 + 0.55, 0, 0);
+  if (kind === 'draw') return vp('gsym', `Draw all lines of symmetry: ${nm}.`, { kind, name, rot, mir, n: f.axes.length, ans: String(f.axes.length), svg: gsSvg(name, rot, mir, [], VINK, false), svgKey: gsSvg(name, rot, mir, f.axes, VKEY, true), sig: sg }, 3.3, GC_H / 100 + 0.2, 0, 0);
+  const far = d => f.axes.every(a => { const t = Math.abs(((d - a) % 180 + 180) % 180); return Math.min(t, 180 - t) >= 10; }), bad = Array.from({ length: 35 }, (_, i) => 5 * i + 5).filter(far), yes = f.axes.length > 0 && ri(rng, 0, 1) === 1;
+  const d = yes ? pick(rng, f.axes) : pick(rng, bad);
+  return vp('gsym', 'Is the dashed line a line of symmetry?', { kind, name, rot, mir, d, ans: yes ? 'yes' : 'no', svg: gsSvg(name, rot, mir, [d], VINK, true), sig: `${sg}${((Math.round((mir ? -d : d) - rot) % 180) + 180) % 180}` }, 3.3, GC_H / 100 + 0.55, 0, 0);
+}
+function vGsymHtml(p, key, x) {
+  const fig = vsvg(GC_W / 100, GC_H / 100, key && p.svgKey ? p.svgKey : p.svg, 'A figure');
+  if (p.kind === 'draw') return fig;
+  if (p.kind === 'is') return `${fig}<div>${vopts(['yes', 'no'], p.ans, key)}</div>`;
+  return `${fig}<div>${x(p.ans, 1.6)} lines of symmetry</div>`;
+}
+
+/* ---------- a hierarchy of quadrilaterals ---------- */
+/* what each category is also called (always true of every figure in it) */
+const GH_UP = { square: ['rectangle', 'rhombus', 'parallelogram', 'quadrilateral'], rectangle: ['parallelogram', 'quadrilateral'], rhombus: ['parallelogram', 'quadrilateral'], parallelogram: ['quadrilateral'], quadrilateral: [] };
+const GH_PL = { square: 'squares', rectangle: 'rectangles', rhombus: 'rhombuses', parallelogram: 'parallelograms', quadrilateral: 'quadrilaterals' };
+const GH_NAMES = Object.keys(GH_UP);
+/* properties: true of every figure in the listed categories (each list is closed under "is a kind of") */
+const GH_PROP = [['four right angles', ['rectangle', 'square']], ['four equal sides', ['rhombus', 'square']], ['two pairs of parallel sides', ['parallelogram', 'rectangle', 'rhombus', 'square']], ['four sides', GH_NAMES]];
+
+function vGhier(rng, L) {
+  const kind = pick(rng, L === 1 ? ['tf', 'tf', 'choose'] : L === 2 ? ['tf', 'choose', 'prop'] : ['tf', 'choose', 'prop', 'inh', 'inh']);
+  if (kind === 'tf') {
+    const want = ri(rng, 0, 1) === 1, pairs = [];
+    GH_NAMES.forEach(s => GH_NAMES.forEach(t => { if (s !== t && (GH_UP[s].includes(t) === want)) pairs.push([s, t]); }));
+    const [s, t] = pick(rng, pairs), text = `True or false: All ${GH_PL[s]} are ${GH_PL[t]}.`;
+    return vtext('ghier', 'Kinds of quadrilaterals.', { kind, s, t, text, opts: ['true', 'false'], ans: want ? 'true' : 'false', sig: `gh${kind}${s}${t}` }, 21, g3eh([text.length], 8, 0.8), true);
+  }
+  if (kind === 'choose') {
+    const s = pick(rng, GH_NAMES.filter(k => GH_UP[k].length)), a = pick(rng, GH_UP[s]), pool = GH_NAMES.filter(k => k !== s && !GH_UP[s].includes(k)).concat(['triangle', 'pentagon', 'hexagon']);
+    const opts = shuffle(rng, [a].concat(shuffle(rng, pool).slice(0, 3))), text = `Every ${s} is also a ...`;
+    return vtext('ghier', 'Name a bigger group.', { kind, s, text, opts, ans: a, sig: `gh${kind}${s}${opts.join('')}` }, 21, g3eh([text.length], g3optLen(opts)), true);
+  }
+  if (kind === 'prop') {
+    const want = ri(rng, 0, 1) === 1, [pr, cats] = pick(rng, GH_PROP.filter(q => want || q[1].length < GH_NAMES.length)), s = pick(rng, GH_NAMES.filter(k => cats.includes(k) === want)), text = `True or false: All ${GH_PL[s]} have ${pr}.`;
+    return vtext('ghier', 'Properties of figures.', { kind, s, pr, text, opts: ['true', 'false'], ans: cats.includes(s) ? 'true' : 'false', sig: `gh${kind}${s}${pr}` }, 21, g3eh([text.length], 8, 0.8), true);
+  }
+  const cand = [];
+  GH_PROP.forEach(([pr, cats]) => cats.forEach(s => { GH_NAMES.forEach(t => { if (t !== s && (GH_UP[t].includes(s) || GH_UP[s].includes(t))) cand.push([pr, s, t, cats.includes(t)]); }); }));
+  const [pr, s, t, yes] = pick(rng, cand), text = `Every ${s} has ${pr}. Does every ${t} have ${pr}?`;
+  return vtext('ghier', 'Properties and subcategories.', { kind, pr, s, t, text, opts: ['yes', 'no'], ans: yes ? 'yes' : 'no', sig: `gh${kind}${pr}${s}${t}` }, 21, g3eh([text.length], 6, 0.8), true);
+}
+function vGhierHtml(p, key, x) { return `<div class="wt">${esc(p.text)}</div><div>${vopts(p.opts, p.ans, key)}</div>`; }
+
+defTypes("vis", "Classifying figures", [
+  { id: "gclass", label: "Classify figures: parallel sides and right angles", blurb: "Count parallel sides and right angles in a figure and classify triangles by their angles.", on: false, gen: vGclass, html: vGclassHtml },
+  { id: "gsym", label: "Lines of symmetry", blurb: "Count, check and draw lines of symmetry.", on: false, gen: vGsym, html: vGsymHtml },
+  { id: "ghier", label: "Hierarchy of quadrilaterals", blurb: "Decide how kinds of quadrilaterals belong inside one another.", on: false, gen: vGhier, html: vGhierHtml }
+]);
 /* ---------- Shapes, Measures and Data (module id: vis) ----------
    The problem types live in the vis-*.js family files and register themselves with defTypes (core/types.js). */
 
@@ -5159,6 +5589,12 @@ const STANDARDS = [
   { c: '4.MD.A.2', t: 'Measurement word problems', m: 'ns', ns: { types: ['mword'], level: 3 } },
   { c: '4.MD.A.3', t: 'Area and perimeter of rectangles', m: 'ns', ns: { types: ['rectf'], level: 2 } },
   { c: '4.MD.B.4', t: 'Line plots with fractional units', m: 'ns', ns: { types: ['lineplot'], level: 2 } },
+  { c: '4.MD.C.5', t: 'Angles and parts of a circle', m: 'vis', vis: { types: ['angc', 'gfig'], level: 2 } },
+  { c: '4.MD.C.6', t: 'Measure and draw angles with a protractor', m: 'vis', vis: { types: ['protr'], level: 3 } },
+  { c: '4.MD.C.7', t: 'Angle measure is additive', m: 'vis', vis: { types: ['angadd'], level: 2 } },
+  { c: '4.G.A.1', t: 'Points, lines, segments, rays and angles', m: 'vis', vis: { types: ['gfig'], level: 3 } },
+  { c: '4.G.A.2', t: 'Classify figures by parallel sides and angles', m: 'vis', vis: { types: ['gclass'], level: 2 } },
+  { c: '4.G.A.3', t: 'Lines of symmetry', m: 'vis', vis: { types: ['gsym'], level: 2 } },
   { c: '5.NBT.A.1', t: 'Ten times and one tenth', m: 'ns', ns: { types: ['tenxd'], level: 2 } },
   { c: '5.NBT.A.2', t: 'Powers of 10', m: 'ns', ns: { types: ['pow10'], level: 2 } },
   { c: '5.NBT.A.3', t: 'Read, write and compare decimals', m: 'ns', ns: { types: ['decrw', 'compare'], level: 3 } },
@@ -5168,7 +5604,7 @@ const STANDARDS = [
   { c: '5.NBT.B.7', t: 'Add, subtract, multiply and divide decimals', m: 'fdp', fd: { types: ['decadd', 'decmul'], level: 3 }, n: 'Dividing a whole number by a decimal and checking an answer by estimating are in the Number Sense type "Decimal division and reasonableness".' },
   { c: '5.OA.A.1', t: 'Evaluate expressions with grouping symbols', m: 'ns', ns: { types: ['exeval'], level: 2 } },
   { c: '5.OA.A.2', t: 'Write and interpret expressions', m: 'ns', ns: { types: ['exwrite'], level: 2 } },
-  { c: '5.OA.B.3', t: 'Two patterns from two rules', m: 'ns', ns: { types: ['rule2'], level: 2 }, n: 'Graphing the ordered pairs on a coordinate plane is not included.' },
+  { c: '5.OA.B.3', t: 'Two patterns from two rules', m: 'ns', ns: { types: ['rule2', 'rule2g'], level: 2 } },
   { c: '5.NF.A.1', t: 'Add and subtract fractions and mixed numbers', m: 'ns', ns: { types: ['fadd5'], level: 3 } },
   { c: '5.NF.A.2', t: 'Fraction addition and subtraction problems', m: 'ns', ns: { types: ['fctx'], level: 2 } },
   { c: '5.NF.B.3', t: 'A fraction is a division', m: 'ns', ns: { types: ['fdiv5'], level: 3 } },
@@ -5180,7 +5616,10 @@ const STANDARDS = [
   { c: '5.MD.B.2', t: 'Line plots and operations', m: 'ns', ns: { types: ['lplot5'], level: 3 } },
   { c: '5.MD.C.3', t: 'Volume and unit cubes', m: 'vis', vis: { types: ['vcubes'], level: 2 } },
   { c: '5.MD.C.4', t: 'Measure volume by counting unit cubes', m: 'vis', vis: { types: ['vcubes'], level: 3 } },
-  { c: '5.MD.C.5', t: 'Volume of rectangular prisms', m: 'vis', vis: { types: ['vlwh', 'vcomp'], level: 3 } }
+  { c: '5.MD.C.5', t: 'Volume of rectangular prisms', m: 'vis', vis: { types: ['vlwh', 'vcomp'], level: 3 } },
+  { c: '5.G.A.1', t: 'Graph and name points in the first quadrant', m: 'vis', vis: { types: ['cplane'], level: 2 } },
+  { c: '5.G.A.2', t: 'Graph real-world problems', m: 'vis', vis: { types: ['cpword'], level: 3 } },
+  { c: '5.G.B.3', t: 'Hierarchy of two-dimensional figures', m: 'vis', vis: { types: ['ghier'], level: 3 } }
 ];
 const STD_BY_CODE = {}; STANDARDS.forEach(s => { STD_BY_CODE[s.c] = s; });
 const stdGrade = c => c.split('.')[0];

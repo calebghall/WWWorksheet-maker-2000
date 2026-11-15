@@ -2,11 +2,11 @@
 
 Source: Tennessee Instructional Focus Documents, Kindergarten to Grade 5 (July 2025 binders). 150 standards.
 
-- Supported: 139
-- Partial: 2
-- Gap: 9
+- Supported: 149
+- Partial: 1
+- Gap: 0
 
-Supported and Partial standards have a preset in the Tennessee standard panel of the worksheet maker. Partial presets list what differs from the standard. Gaps by grade: Grade 4 (6), Grade 5 (3). Kindergarten, Grade 1, Grade 2, Grade 3 have no gaps. Grade 4 gaps need new problem types for angles and for geometry classification and symmetry.
+Supported and Partial standards have a preset in the Tennessee standard panel of the worksheet maker. Partial presets list what differs from the standard. Gaps by grade: none. Kindergarten, Grade 1, Grade 2, Grade 3, Grade 4, Grade 5 have no gaps. Grade 4 gaps need new problem types for angles and for geometry classification and symmetry.
 
 ## Kindergarten
 
@@ -151,12 +151,12 @@ Supported and Partial standards have a preset in the Tennessee standard panel of
 | 4.MD.A.2 | Solve one- or two-step real-world problems involving whole number measurements (including length, liquid... | Supported | Number Sense: Measurement word problems. |
 | 4.MD.A.3 | Know and apply the area and perimeter formulas for rectangles in real- world and mathematical contexts.... | Supported | Number Sense: Area and perimeter of rectangles. |
 | 4.MD.B.4 | 1 1 1 Make a line plot to display a data set of measurements in fractions of the same unit ( or or ). Use... | Supported | Number Sense: Line plots with fractional units. |
-| 4.MD.C.5 | Recognize angles as geometric shapes that are formed wherever two rays share a common endpoint; and... | Gap | No matching generator. |
-| 4.MD.C.6 | Measure angles in whole-number degrees using a protractor. Sketch angles of specified measure. | Gap | No matching generator. |
-| 4.MD.C.7 | Recognize angle measure as additive. When an angle is decomposed into non-overlapping parts, the angle... | Gap | No matching generator. |
-| 4.G.A.1 | Draw points, lines, line segments, rays, angles (right, acute, obtuse, straight, reflex), and... | Gap | No matching generator. |
-| 4.G.A.2 | Classify two-dimensional figures based on the presence or absence of parallel or perpendicular lines or... | Gap | No matching generator. |
-| 4.G.A.3 | Recognize and draw lines of symmetry for two-dimensional figures. | Gap | No matching generator. |
+| 4.MD.C.5 | Recognize angles as geometric shapes that are formed wherever two rays share a common endpoint; and... | Supported | Shapes, Measures and Data: Angles and parts of a circle. |
+| 4.MD.C.6 | Measure angles in whole-number degrees using a protractor. Sketch angles of specified measure. | Supported | Shapes, Measures and Data: Measure and draw angles with a protractor. |
+| 4.MD.C.7 | Recognize angle measure as additive. When an angle is decomposed into non-overlapping parts, the angle... | Supported | Shapes, Measures and Data: Angle measure is additive. |
+| 4.G.A.1 | Draw points, lines, line segments, rays, angles (right, acute, obtuse, straight, reflex), and... | Supported | Shapes, Measures and Data: Points, lines, segments, rays and angles. |
+| 4.G.A.2 | Classify two-dimensional figures based on the presence or absence of parallel or perpendicular lines or... | Supported | Shapes, Measures and Data: Classify figures by parallel sides and angles. |
+| 4.G.A.3 | Recognize and draw lines of symmetry for two-dimensional figures. | Supported | Shapes, Measures and Data: Lines of symmetry. |
 
 ## Grade 5
 
@@ -164,7 +164,7 @@ Supported and Partial standards have a preset in the Tennessee standard panel of
 |---|---|---|---|
 | 5.OA.A.1 | Use parentheses and/or brackets in numerical expressions involving whole numbers and evaluate expressions... | Supported | Number Sense: Evaluate expressions with grouping symbols. |
 | 5.OA.A.2 | Write numerical expressions that record calculations with numbers and interpret numerical expressions... | Supported | Number Sense: Write and interpret expressions. |
-| 5.OA.B.3 | Generate two numerical patterns using two given rules. For example, given the rule "Add 3" and the... | Partial | Number Sense: Two patterns from two rules. Graphing the ordered pairs on a coordinate plane is not included. |
+| 5.OA.B.3 | Generate two numerical patterns using two given rules. For example, given the rule "Add 3" and the... | Supported | Number Sense: Two patterns from two rules. |
 | 5.NBT.A.1 | Recognize that in a multi-digit number, a digit in one place represents 10 times as much as it represents... | Supported | Number Sense: Ten times and one tenth. |
 | 5.NBT.A.2 | Explain patterns in the number of zeros of the product when multiplying a number by powers of 10 and... | Supported | Number Sense: Powers of 10. |
 | 5.NBT.A.3 | Read and write decimals to thousandths using standard form, word form, and expanded notation (e.g., the... | Supported | Number Sense: Read, write and compare decimals. |
@@ -184,6 +184,6 @@ Supported and Partial standards have a preset in the Tennessee standard panel of
 | 5.MD.C.3 | Recognize volume as an attribute of solid figures and understand concepts of volume measurement.... | Supported | Shapes, Measures and Data: Volume and unit cubes. |
 | 5.MD.C.4 | Measure volume by counting unit cubes, using cubic centimeters, cubic inches, cubic feet, and improvised... | Supported | Shapes, Measures and Data: Measure volume by counting unit cubes. |
 | 5.MD.C.5 | Relate volume to the operations of multiplication and addition and solve real-world and mathematical... | Supported | Shapes, Measures and Data: Volume of rectangular prisms. |
-| 5.G.A.1 | Graph ordered pairs and label points using the first quadrant of the coordinate plane. Understand in the... | Gap | No matching generator. |
-| 5.G.A.2 | Represent real-world and mathematical problems by graphing points in the first quadrant of the coordinate... | Gap | No matching generator. |
-| 5.G.B.3 | Classify two-dimensional figures in a hierarchy based on properties. Understand that attributes belonging... | Gap | No matching generator. |
+| 5.G.A.1 | Graph ordered pairs and label points using the first quadrant of the coordinate plane. Understand in the... | Supported | Shapes, Measures and Data: Graph and name points in the first quadrant. |
+| 5.G.A.2 | Represent real-world and mathematical problems by graphing points in the first quadrant of the coordinate... | Supported | Shapes, Measures and Data: Graph real-world problems. |
+| 5.G.B.3 | Classify two-dimensional figures in a hierarchy based on properties. Understand that attributes belonging... | Supported | Shapes, Measures and Data: Hierarchy of two-dimensional figures. |

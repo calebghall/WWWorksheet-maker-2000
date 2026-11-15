@@ -172,6 +172,19 @@ const nsRule2Html = (p, key, x) => {
   return head + `<div class="wl">${key ? esc(p.ans) : '&nbsp;'}</div>`;
 };
 
+/* Graph the ordered pairs from two rule patterns (5.OA.B.3). The grid comes from the coordinate-plane family (cpGrid in vis-plane.js).
+   Values stay small enough for a first-quadrant grid: at most 12 on the B axis for "times" patterns, 11 for "plus" patterns. */
+function nsxRule2g(rng, L) {
+  const mult = L < 3 || rng() < 0.4, [d, k] = pick(rng, [[1, 2], [1, 3], [1, 4], [2, 2]]), c = ri(rng, 1, 3);
+  const dA = mult ? d : ri(rng, 1, 2), dB = mult ? d * k : dA, aS = mult ? 0 : ri(rng, 0, 2), bS = mult ? 0 : aS + c, A = nsRuleSeq('add', dA, aS, 4), B = nsRuleSeq('add', dB, bS, 4);
+  const Nx = Math.max(...A), Ny = Math.max(...B), cs = Math.min(26, Math.floor(220 / (Nx + 1)), Math.floor(170 / Ny));
+  const pts = A.map((a, i) => ({ x: a, y: B[i] })), g = cpGrid(Nx, Ny, cs, [], { named: true, xl: 'Pattern A', yl: 'Pattern B' }), gk = cpGrid(Nx, Ny, cs, pts.map(q => Object.assign({ key: true }, q)), { named: true, xl: 'Pattern A', yl: 'Pattern B' });
+  const lines = [`Pattern A: ${nsRuleText('add', dA)}, start at ${aS}`, `Pattern B: ${nsRuleText('add', dB)}, start at ${bS}`], tab = `A: ${A.join(', ')}`, tabB = `B: ${B.join(', ')}`;
+  const nlines = lines.reduce((a, t) => a + Math.ceil(t.length / 24), 0) + 2 + Math.ceil('Graph the ordered pairs (A, B).'.length / 24);
+  return { mod: 'ns', type: 'rule2g', prompt: 'Graph the ordered pairs.', mult, dA, dB, aS, bS, A, B, pts, lines, tab, tabB, svg: g.svg, svgKey: gk.svg, sw: g.W, sh: g.H, ans: pts.map(q => `(${q.x}, ${q.y})`).join(', '), sig: `r2g${dA}.${dB}.${aS}.${bS}`, win: Math.max(g.W / 100, 2.9), hin: g.H / 100 + 0.3 * nlines + 0.2, hfs: 0, bw: 0 };
+}
+const nsRule2gHtml = (p, key) => `${vwrap(p.lines[0], 2.9)}${vwrap(p.lines[1], 2.9)}<div>${esc(p.tab)}</div><div>${esc(p.tabB)}</div>${vwrap('Graph the ordered pairs (A, B).', 2.9)}${vsvg(p.sw / 100, p.sh / 100, key ? p.svgKey : p.svg, 'Coordinate grid for two patterns')}`;
+
 defTypes("ns", "Counting and number lines", [
   { id: "skip", label: "Skip counting and patterns", blurb: "Fill in the missing numbers.", on: true, gen: nsSkip, html: nsSkipHtml },
   { id: "cfwd", label: "Count on or back", blurb: "Count from any number, back from 20, or by 1, 2, 5 to 120.", on: false, gen: nsxCount, html: nsCfwdHtml },
@@ -182,5 +195,6 @@ defTypes("ns", "Counting and number lines", [
   { id: "line", label: "Number lines", blurb: "Read the number the arrow shows.", on: true, gen: nsLine, html: nsLineHtml },
 { id: "rulepat", label: "Rule patterns", blurb: "Next terms, find the rule, even or odd features, and shape patterns.", on: false, gen: nsxRulePat, html: nsRulePatHtml }
 ,
-  { id: "rule2", label: "Two rule patterns", blurb: "Two patterns from two rules: terms, how matching terms are related, and ordered pairs.", on: false, gen: nsxRule2, html: nsRule2Html }
+  { id: "rule2", label: "Two rule patterns", blurb: "Two patterns from two rules: terms, how matching terms are related, and ordered pairs.", on: false, gen: nsxRule2, html: nsRule2Html },
+  { id: "rule2g", label: "Graph two patterns", blurb: "Graph the ordered pairs made from the matching terms of two rule patterns.", on: false, gen: nsxRule2g, html: nsRule2gHtml }
 ]);

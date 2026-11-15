@@ -33,6 +33,10 @@ function vshape(k, cx, cy, s, fill, rot, stroke) {
 
 const vp = (type, prompt, f, win, hin, hfs, bw) => Object.assign({ mod: 'vis', type, prompt, win, hin, hfs, bw: bw || 0 }, f);
 
+/* Wrapped text inside a drawn cell (drawn cells do not wrap by themselves): w inches wide; vwrapH gives its height in inches (about 24 characters per line at 2.8 inches). */
+const vwrap = (t, w) => `<div style="white-space:normal;width:${w || 2.8}in">${esc(t)}</div>`;
+const vwrapH = (t, w) => 0.3 * Math.ceil(t.length / (24 * (w || 2.8) / 2.8));
+
 const vcap = n => String(n);
 
 const vpl = (shape, n) => n === 1 ? shape : shape + 's';
