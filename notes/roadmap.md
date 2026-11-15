@@ -40,6 +40,8 @@ Exit: 10 rows Supported; thousands-comma scan and clipping check still pass.
 
 ## Phase 2: Grade 5 fractions (7 rows, one module family)
 
+Status: done. 7 rows Supported, as one Number Sense type per row in `ns-fractions.js` (not in `fdp.js`, so each preset keeps a single module). Coverage after phase 2: 134 Supported, 2 Partial, 14 Gap.
+
 Rows: 5.NF.A.1, A.2, B.3, B.4, B.5, B.6, B.7.
 
 - Largest cluster, so it comes before the drawing-heavy work. Reuses the fraction bar and number-line drawing in `vis-fractions.js` and the fraction types in `fdp.js`.

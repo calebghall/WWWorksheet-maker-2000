@@ -65,9 +65,13 @@ All off by default; the standards panel switches on the right one.
 - Evaluate expressions (`exeval`) and Write and interpret expressions (`exwrite`). File: `ns-equations.js`.
 - Two rule patterns (`rule2`: terms, relationship, ordered pairs). File: `ns-counting.js`.
 
+## Grade 5 fraction types (Number Sense, `ns-fractions.js`)
+
+All off by default. Add and subtract fractions, unlike denominators (`fadd5`, mixed numbers at level 3); Fraction addition and subtraction problems (`fctx`: estimate to the nearest half, and check a claimed sum); A fraction is a division (`fdiv5`); Multiply fractions (`fmul5`: whole numbers, fractions, area models, rectangle areas); Multiplication as scaling (`fscale`); Fraction multiplication problems (`fword6`); Divide unit fractions (`fdiv7`). Answers are in simplest form.
+
 ## Tennessee standards
 
-- A Tennessee standard panel (grade, then standard) sets the module, problem types, level and title for 129 of the 150 K to 5 standards (127 match fully, 2 partly; the rest are listed in `standards-coverage.md`). Partial matches show what differs. `standards-coverage.md` lists every standard and its status.
+- A Tennessee standard panel (grade, then standard) sets the module, problem types, level and title for 136 of the 150 K to 5 standards (134 match fully, 2 partly; the rest are listed in `standards-coverage.md`). Partial matches show what differs. `standards-coverage.md` lists every standard and its status.
 
 ## Fractions, Decimals and Percents
 

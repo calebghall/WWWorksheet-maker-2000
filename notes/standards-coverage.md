@@ -2,11 +2,11 @@
 
 Source: Tennessee Instructional Focus Documents, Kindergarten to Grade 5 (July 2025 binders). 150 standards.
 
-- Supported: 127
+- Supported: 134
 - Partial: 2
-- Gap: 21
+- Gap: 14
 
-Supported and Partial standards have a preset in the Tennessee standard panel of the worksheet maker. Partial presets list what differs from the standard. Gaps by grade: Grade 4 (6), Grade 5 (15). Kindergarten, Grade 1, Grade 2, Grade 3 have no gaps. Grade 4 gaps need new problem types for angles and for geometry classification and symmetry.
+Supported and Partial standards have a preset in the Tennessee standard panel of the worksheet maker. Partial presets list what differs from the standard. Gaps by grade: Grade 4 (6), Grade 5 (8). Kindergarten, Grade 1, Grade 2, Grade 3 have no gaps. Grade 4 gaps need new problem types for angles and for geometry classification and symmetry.
 
 ## Kindergarten
 
@@ -172,13 +172,13 @@ Supported and Partial standards have a preset in the Tennessee standard panel of
 | 5.NBT.B.5 | Fluently multiply multi-digit whole numbers (up to three-digit by four-digit factors) using efficient... | Supported | Multiplication and Division: Multiply up to three digits by four digits. |
 | 5.NBT.B.6 | Find whole-number quotients and remainders of whole numbers with up to four-digit dividends and two-digit... | Supported | Multiplication and Division: Divide four-digit numbers by two-digit numbers. |
 | 5.NBT.B.7 | Add, subtract, multiply, and divide decimals to hundredths, using concrete models or drawings and... | Partial | Fractions, Decimals and Percents: Add, subtract, multiply and divide decimals. Dividing a whole number by a decimal and checking an answer by estimating are in the Number Sense type "Decimal division and reasonableness". |
-| 5.NF.A.1 | Add and subtract fractions with unlike denominators (including mixed numbers) by replacing given fractions... | Gap | No matching generator. |
-| 5.NF.A.2 | Solve contextual problems involving addition and subtraction of fractions referring to the same whole,... | Gap | No matching generator. |
-| 5.NF.B.3 | Interpret a fraction as division of the numerator by the denominator ( = a ÷ b). For example, = 3 ÷ 4 so... | Gap | No matching generator. |
-| 5.NF.B.4 | Apply and extend previous understandings of multiplication to multiply a fraction by a whole number or a... | Gap | No matching generator. |
-| 5.NF.B.5 | Interpret multiplication as scaling (resizing). 5.NF.B.5.a Compare the size of a product to the size of... | Gap | No matching generator. |
-| 5.NF.B.6 | Solve real-world problems involving multiplication of fractions and mixed numbers by using visual fraction... | Gap | No matching generator. |
-| 5.NF.B.7 | Apply and extend previous understandings of division to divide unit fractions by whole numbers and whole... | Gap | No matching generator. |
+| 5.NF.A.1 | Add and subtract fractions with unlike denominators (including mixed numbers) by replacing given fractions... | Supported | Number Sense: Add and subtract fractions and mixed numbers. |
+| 5.NF.A.2 | Solve contextual problems involving addition and subtraction of fractions referring to the same whole,... | Supported | Number Sense: Fraction addition and subtraction problems. |
+| 5.NF.B.3 | Interpret a fraction as division of the numerator by the denominator ( = a ÷ b). For example, = 3 ÷ 4 so... | Supported | Number Sense: A fraction is a division. |
+| 5.NF.B.4 | Apply and extend previous understandings of multiplication to multiply a fraction by a whole number or a... | Supported | Number Sense: Multiply fractions. |
+| 5.NF.B.5 | Interpret multiplication as scaling (resizing). 5.NF.B.5.a Compare the size of a product to the size of... | Supported | Number Sense: Multiplication as scaling. |
+| 5.NF.B.6 | Solve real-world problems involving multiplication of fractions and mixed numbers by using visual fraction... | Supported | Number Sense: Fraction multiplication problems. |
+| 5.NF.B.7 | Apply and extend previous understandings of division to divide unit fractions by whole numbers and whole... | Supported | Number Sense: Divide unit fractions. |
 | 5.MD.A.1 | Convert customary and metric measurement units within a single system by expressing measurements of a... | Gap | No matching generator. |
 | 5.MD.B.2 | Make a line plot to display a data set of measurements in fractions of a unit (1/2, 1/4, 1/8). Use... | Gap | No matching generator. |
 | 5.MD.C.3 | Recognize volume as an attribute of solid figures and understand concepts of volume measurement.... | Gap | No matching generator. |
