@@ -151,6 +151,27 @@ function nsxRulePat(rng, L) {
 
 const nsRulePatHtml = (p, key, x) => p.kind === 'next' ? tokHtml(p.tok, key, x) : p.kind === 'shape' ? `${p.svg}<div>Figure 5: ${x(p.ans, 3)} squares</div>` : `<div>${p.seq.join(',&ensp;')}</div><div>${opts(p.opts, p.ans, key)}</div>`;
 
+/* Two numerical patterns from two rules. L1 and L2: both start at 0 and the second rule adds a multiple of the first (B is k times A).
+   L3 also uses equal rules with different starts (B is A plus c). kind: fill in the terms, name the relationship, write ordered pairs. */
+function nsxRule2(rng, L) {
+  const kind = pick(rng, L === 1 ? ['terms', 'relate'] : ['terms', 'relate', 'pairs']), mult = L < 3 || rng() < 0.4;
+  const d = ri(rng, L === 1 ? 1 : 2, L === 1 ? 5 : 9), k = ri(rng, 2, L === 1 ? 3 : 5), c = ri(rng, 1, 9);
+  const dA = d, dB = mult ? d * k : d, aS = mult ? 0 : ri(rng, 0, 4), bS = mult ? 0 : aS + c, A = nsRuleSeq('add', dA, aS, 5), B = nsRuleSeq('add', dB, bS, 5);
+  const rel = mult ? k : c, base = { mod: 'ns', type: 'rule2', kind, mult, dA, dB, aS, bS, rel, A, B, wide: true, sig: `r2${kind}${dA}.${dB}.${aS}.${bS}`, ew: 21 };
+  const ruleA = `Pattern A: ${nsRuleText('add', dA)}, start at ${aS}`, ruleB = `Pattern B: ${nsRuleText('add', dB)}, start at ${bS}`;
+  if (kind === 'terms') return Object.assign(base, { prompt: 'Write the next terms of each pattern.', lines: [ruleA, ruleB], tokA: [`${A[0]}, `, U(A[1]), ', ', U(A[2]), ', ', U(A[3]), ', ', U(A[4])], tokB: [`${B[0]}, `, U(B[1]), ', ', U(B[2]), ', ', U(B[3]), ', ', U(B[4])], ans: '', eh: 1.1 + 4 * 1.5 + 0.5 });
+  if (kind === 'relate') return Object.assign(base, { prompt: 'Compare the matching terms.', lines: [ruleA, ruleB], ans: String(rel), unitw: mult ? 'times' : 'more', eh: 1.1 + 5 * 1.5 + 0.6 });
+  return Object.assign(base, { prompt: 'Write the ordered pairs (A, B).', lines: [ruleA, ruleB], ans: A.slice(0, 4).map((a, i) => `(${a}, ${B[i]})`).join(', '), eh: 1.1 + 5 * 1.5 + 1.2 });
+}
+
+const nsRule2Html = (p, key, x) => {
+  const row = (t, s, tok) => `<div>${t}</div><div>${tok ? tokHtml(tok, key, x) : p[s].join(', ')}</div>`;
+  if (p.kind === 'terms') return row(p.lines[0], 'A', p.tokA) + row(p.lines[1], 'B', p.tokB);
+  const head = row(p.lines[0], 'A') + row(p.lines[1], 'B');
+  if (p.kind === 'relate') return head + `<div>Each term in B is ${x(p.ans, 2.4)} ${p.unitw} ${p.mult ? 'the matching term in A' : 'than the matching term in A'}.</div>`;
+  return head + `<div class="wl">${key ? esc(p.ans) : '&nbsp;'}</div>`;
+};
+
 defTypes("ns", "Counting and number lines", [
   { id: "skip", label: "Skip counting and patterns", blurb: "Fill in the missing numbers.", on: true, gen: nsSkip, html: nsSkipHtml },
   { id: "cfwd", label: "Count on or back", blurb: "Count from any number, back from 20, or by 1, 2, 5 to 120.", on: false, gen: nsxCount, html: nsCfwdHtml },
@@ -160,4 +181,6 @@ defTypes("ns", "Counting and number lines", [
   { id: "par20", label: "Odd and even to 20", blurb: "Pair the objects, or write an even number as two equal addends.", on: false, gen: nsxPar20, html: nsPar20Html },
   { id: "line", label: "Number lines", blurb: "Read the number the arrow shows.", on: true, gen: nsLine, html: nsLineHtml },
 { id: "rulepat", label: "Rule patterns", blurb: "Next terms, find the rule, even or odd features, and shape patterns.", on: false, gen: nsxRulePat, html: nsRulePatHtml }
+,
+  { id: "rule2", label: "Two rule patterns", blurb: "Two patterns from two rules: terms, how matching terms are related, and ordered pairs.", on: false, gen: nsxRule2, html: nsRule2Html }
 ]);

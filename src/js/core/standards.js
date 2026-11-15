@@ -127,7 +127,17 @@ const STANDARDS = [
   { c: '4.MD.A.1', t: 'Convert measurement units', m: 'ns', ns: { types: ['convm'], level: 2 } },
   { c: '4.MD.A.2', t: 'Measurement word problems', m: 'ns', ns: { types: ['mword'], level: 3 } },
   { c: '4.MD.A.3', t: 'Area and perimeter of rectangles', m: 'ns', ns: { types: ['rectf'], level: 2 } },
-  { c: '4.MD.B.4', t: 'Line plots with fractional units', m: 'ns', ns: { types: ['lineplot'], level: 2 } }
+  { c: '4.MD.B.4', t: 'Line plots with fractional units', m: 'ns', ns: { types: ['lineplot'], level: 2 } },
+  { c: '5.NBT.A.1', t: 'Ten times and one tenth', m: 'ns', ns: { types: ['tenxd'], level: 2 } },
+  { c: '5.NBT.A.2', t: 'Powers of 10', m: 'ns', ns: { types: ['pow10'], level: 2 } },
+  { c: '5.NBT.A.3', t: 'Read, write and compare decimals', m: 'ns', ns: { types: ['decrw', 'compare'], level: 3 } },
+  { c: '5.NBT.A.4', t: 'Round decimals', m: 'ns', ns: { types: ['rnddec'], level: 3 } },
+  { c: '5.NBT.B.5', t: 'Multiply up to three digits by four digits', m: 'muldiv', md: MD({ div: false, mode: 'digits', da: 4, db: 3 }) },
+  { c: '5.NBT.B.6', t: 'Divide four-digit numbers by two-digit numbers', m: 'muldiv', md: MD({ mul: false, mode: 'digits', na: 4, nb: 2, rem: true }) },
+  { c: '5.NBT.B.7', t: 'Add, subtract, multiply and divide decimals', m: 'fdp', fd: { types: ['decadd', 'decmul'], level: 3 }, n: 'Dividing a whole number by a decimal and checking an answer by estimating are in the Number Sense type "Decimal division and reasonableness".' },
+  { c: '5.OA.A.1', t: 'Evaluate expressions with grouping symbols', m: 'ns', ns: { types: ['exeval'], level: 2 } },
+  { c: '5.OA.A.2', t: 'Write and interpret expressions', m: 'ns', ns: { types: ['exwrite'], level: 2 } },
+  { c: '5.OA.B.3', t: 'Two patterns from two rules', m: 'ns', ns: { types: ['rule2'], level: 2 }, n: 'Graphing the ordered pairs on a coordinate plane is not included.' }
 ];
 const STD_BY_CODE = {}; STANDARDS.forEach(s => { STD_BY_CODE[s.c] = s; });
 const stdGrade = c => c.split('.')[0];

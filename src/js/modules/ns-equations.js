@@ -138,6 +138,66 @@ const nsRelHtml = (p, key, x) => `${tokHtml(p.tok, key, x)}&ensp;${tokHtml(p.tok
 
 const nsEqualHtml = (p, key, x) => p.kind === 'tf' ? `${esc(p.eq)}&emsp;${opts(['true', 'false'], p.ans, key)}` : tokHtml(p.tok, key, x);
 
+/* ---------- numerical expressions (grade 5): grouping symbols, order of operations, writing and interpreting expressions ---------- */
+
+/* Evaluates an expression string of whole numbers with + − × ÷ and ( ) [ ] in the usual order.
+   Returns NaN unless every division is exact and no subtraction goes below zero. */
+function exEval(s) {
+  const t = s.match(/\d+|[+−×÷()[\]]/g); let i = 0;
+  const expr = () => { let v = term(); while (t[i] === '+' || t[i] === '−') { const o = t[i++], r = term(); v = o === '+' ? v + r : v - r; if (v < 0) return NaN; } return v; };
+  const term = () => { let v = fac(); while (t[i] === '×' || t[i] === '÷') { const o = t[i++], r = fac(); if (o === '×') v *= r; else { if (!r || v % r) return NaN; v /= r; } } return v; };
+  const fac = () => { const c = t[i++]; if (c === '(' || c === '[') { const v = expr(); i++; return v; } return Number(c); };
+  const v = expr();
+  return i === t.length ? v : NaN;
+}
+
+/* Evaluate an expression with parentheses and brackets. L1 one pair of parentheses, L2 parentheses with more operations, L3 brackets around parentheses. */
+function nsxExEval(rng, L) {
+  const T = L === 1 ? [(a, b, c) => `(${a} + ${b}) × ${c}`, (a, b, c) => `${a} × (${b} + ${c})`, (a, b, c) => `(${a} − ${b}) × ${c}`, (a, b, c) => `${a} − (${b} + ${c})`, (a, b, c) => `(${a} + ${b}) ÷ ${c}`, (a, b, c) => `${a} + ${b} × ${c}`]
+    : L === 2 ? [(a, b, c, d) => `${a} + ${b} × (${c} − ${d})`, (a, b, c, d) => `(${a} + ${b}) × ${c} − ${d}`, (a, b, c, d) => `${a} × (${b} + ${c}) ÷ ${d}`, (a, b, c, d) => `(${a} − ${b}) × (${c} + ${d})`, (a, b, c, d) => `${a} + (${b} + ${c}) × ${d}`, (a, b, c, d) => `${a} × ${b} − (${c} + ${d})`]
+      : [(a, b, c, d) => `${a} × [${b} + (${c} − ${d})]`, (a, b, c, d, e) => `[(${a} + ${b}) × ${c} − ${d}] ÷ ${e}`, (a, b, c, d) => `${a} + [${b} × (${c} + ${d})]`, (a, b, c, d) => `[${a} − (${b} + ${c})] × ${d}`, (a, b, c, d) => `[${a} × (${b} − ${c})] + ${d}`, (a, b, c, d) => `${a} × [(${b} + ${c}) ÷ ${d}]`];
+  const mx = L === 1 ? 12 : L === 2 ? 15 : 20, f = pick(rng, T);
+  let s, v = NaN, g = 0;
+  do { s = f(ri(rng, 2, mx), ri(rng, 2, mx), ri(rng, 2, mx), ri(rng, 2, mx), ri(rng, 2, mx)); v = exEval(s); g++; } while ((!(v >= 1 && v <= 999) || Number.isNaN(v)) && g < 500);
+  return { mod: 'ns', type: 'exeval', prompt: 'Evaluate:', expr: s, ans: cnum(v), sig: `xe${s}`, ew: (s.length + 3) * 0.62 + BW + 1, eh: 1.1 + 1.6 };
+}
+
+const nsExEvalHtml = (p, key, x) => `${esc(p.expr)} = ${x(p.ans, 3.6)}`;
+
+/* Write an expression for words, and interpret an expression without calculating it. */
+const EX_WRITE = [
+  (a, b, c) => ({ w: `Add ${a} and ${b}, then multiply by ${c}.`, e: `${c} × (${a} + ${b})` }),
+  (a, b, c) => ({ w: `Subtract ${b} from ${a}, then multiply by ${c}.`, e: `${c} × (${a} − ${b})` }),
+  (a, b, c) => ({ w: `Add ${a} and ${b}, then divide by ${c}.`, e: `(${a} + ${b}) ÷ ${c}` }),
+  (a, b, c) => ({ w: `Multiply ${a} by ${b}, then subtract ${c}.`, e: `${a} × ${b} − ${c}` }),
+  (a, b, c) => ({ w: `Add ${c} to the product of ${a} and ${b}.`, e: `${a} × ${b} + ${c}` }),
+  (a, b, c) => ({ w: `Subtract ${c} from the sum of ${a} and ${b}.`, e: `(${a} + ${b}) − ${c}` }),
+  (a, b, c) => ({ w: `Multiply the sum of ${a} and ${b} by ${c}.`, e: `(${a} + ${b}) × ${c}` }),
+  (a, b, c) => ({ w: `Divide the difference of ${a} and ${b} by ${c}.`, e: `(${a} − ${b}) ÷ ${c}` })
+];
+
+function nsxExWrite(rng, L) {
+  const kind = pick(rng, L === 1 ? ['write', 'write', 'times'] : ['write', 'times', 'which']), big = L === 1 ? 9 : L === 2 ? 40 : 90;
+  if (kind === 'write') {
+    let r, g = 0;
+    do { r = pick(rng, EX_WRITE)(ri(rng, 2, big), ri(rng, 2, big), ri(rng, 2, L === 1 ? 9 : 12)); g++; } while (Number.isNaN(exEval(r.e)) && g < 300);
+    const eh = 1.1 + Math.ceil(r.w.length / 34) * 1.45 + 1.7 + 0.6;
+    return { mod: 'ns', type: 'exwrite', prompt: 'Write an expression. Do not solve.', kind, text: r.w, ans: r.e, wide: true, sig: `xw${r.w}`, ew: 21, eh };
+  }
+  const A = L === 1 ? ri(rng, 12, 99) : L === 2 ? ri(rng, 120, 9999) : ri(rng, 1200, 99999), B = L === 1 ? ri(rng, 12, 99) : L === 2 ? ri(rng, 120, 999) : ri(rng, 120, 9999), sum = `(${cnum(A)} + ${cnum(B)})`;
+  if (kind === 'times') {
+    const k = ri(rng, 2, 9);
+    return { mod: 'ns', type: 'exwrite', prompt: 'Do not calculate. Write the number.', kind, text: `${k} × ${sum} is ____ times as large as ${sum}.`, k, A, B, ans: String(k), wide: true, sig: `xt${k}${A}${B}`, ew: 21, eh: 1.1 + 1.45 * 2 + 1.7 + 0.6 };
+  }
+  let k1 = ri(rng, 2, 9), k2; do { k2 = ri(rng, 2, 9); } while (k2 === k1);
+  const o = [`${k1} × ${sum}`, `${k2} × ${sum}`], ans = o[k1 > k2 ? 0 : 1];
+  return { mod: 'ns', type: 'exwrite', prompt: 'Do not calculate. Circle the greater.', kind, text: 'Which is greater?', k1, k2, A, B, opts: o, ans, wide: true, sig: `xg${k1}${k2}${A}${B}`, ew: 21, eh: 1.1 + 1.45 + 1.45 * 2 + 0.6 };
+}
+
+const nsExWriteHtml = (p, key, x) => p.kind === 'write' ? `<div class="wt">${esc(p.text)}</div><div>Expression: <span class="blank" style="min-width:9em">${key ? esc(p.ans) : '&nbsp;'}</span></div>`
+  : p.kind === 'times' ? `<div class="wt">${esc(p.text).replace('____', x(p.ans, 2.4))}</div>`
+    : `<div>${p.text}</div><div>${opts(p.opts, p.ans, key)}</div>`;
+
 defTypes("ns", "Equations, properties and facts", [
   { id: "bond", label: "Number bonds", blurb: "Decompose to 10, make ten, teen numbers as ten and ones.", on: false, gen: nsxBond, html: nsBondHtml },
   { id: "bondp", label: "Number bonds with pictures", blurb: "Two-color counters and ten-frames.", on: false, gen: nsxBondp, html: nsBondpHtml },
@@ -148,5 +208,7 @@ defTypes("ns", "Equations, properties and facts", [
   { id: "substr", label: "Subtraction strategies", blurb: "Think addition, make a ten, count back.", on: false, gen: nsxSubstr, html: nsSubstrHtml },
   { id: "sub10", label: "Subtract tens", blurb: "Subtract a multiple of 10 from a two-digit number.", on: false, gen: nsxSub10, html: nsSub10Html },
   { id: "mul10", label: "Multiply by multiples of 10", blurb: "One digit times 10 to 90.", on: false, gen: nsxMul10, html: nsMul10Html },
-  { id: "mcomp", label: "Multiplicative comparison", blurb: "\"__ times as many as\" statements.", on: false, gen: nsxMcomp, html: nsMcompHtml }
+  { id: "mcomp", label: "Multiplicative comparison", blurb: "\"__ times as many as\" statements.", on: false, gen: nsxMcomp, html: nsMcompHtml },
+  { id: "exeval", label: "Evaluate expressions", blurb: "Parentheses, brackets and the order of operations.", on: false, gen: nsxExEval, html: nsExEvalHtml },
+  { id: "exwrite", label: "Write and interpret expressions", blurb: "Words to expressions, and times as large without calculating.", on: false, gen: nsxExWrite, html: nsExWriteHtml }
 ]);

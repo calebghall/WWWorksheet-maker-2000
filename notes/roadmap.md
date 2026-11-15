@@ -25,6 +25,8 @@ Exit: tests pass, no user-visible change.
 
 ## Phase 1: Grade 5 number and operations (10 rows, mostly existing controls)
 
+Status: done. 8 rows Supported, 2 Partial (5.NBT.B.7: whole number divided by a decimal and estimation live in a separate Number Sense type, not in the fractions/decimals preset; 5.OA.B.3: graphing the ordered pairs waits for the coordinate plane in phase 4). Both Partial rows become Supported with parts (phase 5) or phase 4. 5.NBT.B.5 and B.6 were preset-only.
+
 Rows: 5.NBT.A.1 to A.4, 5.NBT.B.5 to B.7, 5.OA.A.1, 5.OA.A.2, 5.OA.B.3.
 
 - 5.NBT.B.5 (up to three-digit by four-digit) and 5.NBT.B.6 (four-digit dividends, two-digit divisors) appear to fit existing Multiplication and Division settings (first factor up to 4 digits, second up to 3; dividend up to 5 digits, divisor up to 2). Likely preset-only; confirm with `tests/logic-standards.js`.

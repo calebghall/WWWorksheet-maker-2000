@@ -2,11 +2,11 @@
 
 Source: Tennessee Instructional Focus Documents, Kindergarten to Grade 5 (July 2025 binders). 150 standards.
 
-- Supported: 119
-- Partial: 0
-- Gap: 31
+- Supported: 127
+- Partial: 2
+- Gap: 21
 
-Supported and Partial standards have a preset in the Tennessee standard panel of the worksheet maker. Partial presets list what differs from the standard. Gaps by grade: Grade 4 (6), Grade 5 (25). Kindergarten, Grade 1, Grade 2, Grade 3 have no gaps. Grade 4 gaps need new problem types for angles and for geometry classification and symmetry. Grade 5 has no presets yet.
+Supported and Partial standards have a preset in the Tennessee standard panel of the worksheet maker. Partial presets list what differs from the standard. Gaps by grade: Grade 4 (6), Grade 5 (15). Kindergarten, Grade 1, Grade 2, Grade 3 have no gaps. Grade 4 gaps need new problem types for angles and for geometry classification and symmetry.
 
 ## Kindergarten
 
@@ -162,16 +162,16 @@ Supported and Partial standards have a preset in the Tennessee standard panel of
 
 | Standard | Focus | Status | Module and notes |
 |---|---|---|---|
-| 5.OA.A.1 | Use parentheses and/or brackets in numerical expressions involving whole numbers and evaluate expressions... | Gap | No matching generator. |
-| 5.OA.A.2 | Write numerical expressions that record calculations with numbers and interpret numerical expressions... | Gap | No matching generator. |
-| 5.OA.B.3 | Generate two numerical patterns using two given rules. For example, given the rule "Add 3" and the... | Gap | No matching generator. |
-| 5.NBT.A.1 | Recognize that in a multi-digit number, a digit in one place represents 10 times as much as it represents... | Gap | No matching generator. |
-| 5.NBT.A.2 | Explain patterns in the number of zeros of the product when multiplying a number by powers of 10 and... | Gap | No matching generator. |
-| 5.NBT.A.3 | Read and write decimals to thousandths using standard form, word form, and expanded notation (e.g., the... | Gap | No matching generator. |
-| 5.NBT.A.4 | Round decimals to the nearest hundredth, tenth, or whole number using understanding of place value, and... | Gap | No matching generator. |
-| 5.NBT.B.5 | Fluently multiply multi-digit whole numbers (up to three-digit by four-digit factors) using efficient... | Gap | No matching generator. |
-| 5.NBT.B.6 | Find whole-number quotients and remainders of whole numbers with up to four-digit dividends and two-digit... | Gap | No matching generator. |
-| 5.NBT.B.7 | Add, subtract, multiply, and divide decimals to hundredths, using concrete models or drawings and... | Gap | No matching generator. |
+| 5.OA.A.1 | Use parentheses and/or brackets in numerical expressions involving whole numbers and evaluate expressions... | Supported | Number Sense: Evaluate expressions with grouping symbols. |
+| 5.OA.A.2 | Write numerical expressions that record calculations with numbers and interpret numerical expressions... | Supported | Number Sense: Write and interpret expressions. |
+| 5.OA.B.3 | Generate two numerical patterns using two given rules. For example, given the rule "Add 3" and the... | Partial | Number Sense: Two patterns from two rules. Graphing the ordered pairs on a coordinate plane is not included. |
+| 5.NBT.A.1 | Recognize that in a multi-digit number, a digit in one place represents 10 times as much as it represents... | Supported | Number Sense: Ten times and one tenth. |
+| 5.NBT.A.2 | Explain patterns in the number of zeros of the product when multiplying a number by powers of 10 and... | Supported | Number Sense: Powers of 10. |
+| 5.NBT.A.3 | Read and write decimals to thousandths using standard form, word form, and expanded notation (e.g., the... | Supported | Number Sense: Read, write and compare decimals. |
+| 5.NBT.A.4 | Round decimals to the nearest hundredth, tenth, or whole number using understanding of place value, and... | Supported | Number Sense: Round decimals. |
+| 5.NBT.B.5 | Fluently multiply multi-digit whole numbers (up to three-digit by four-digit factors) using efficient... | Supported | Multiplication and Division: Multiply up to three digits by four digits. |
+| 5.NBT.B.6 | Find whole-number quotients and remainders of whole numbers with up to four-digit dividends and two-digit... | Supported | Multiplication and Division: Divide four-digit numbers by two-digit numbers. |
+| 5.NBT.B.7 | Add, subtract, multiply, and divide decimals to hundredths, using concrete models or drawings and... | Partial | Fractions, Decimals and Percents: Add, subtract, multiply and divide decimals. Dividing a whole number by a decimal and checking an answer by estimating are in the Number Sense type "Decimal division and reasonableness". |
 | 5.NF.A.1 | Add and subtract fractions with unlike denominators (including mixed numbers) by replacing given fractions... | Gap | No matching generator. |
 | 5.NF.A.2 | Solve contextual problems involving addition and subtraction of fractions referring to the same whole,... | Gap | No matching generator. |
 | 5.NF.B.3 | Interpret a fraction as division of the numerator by the denominator ( = a ÷ b). For example, = 3 ÷ 4 so... | Gap | No matching generator. |

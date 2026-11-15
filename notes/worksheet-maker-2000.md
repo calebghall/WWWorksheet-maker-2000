@@ -58,9 +58,16 @@ Single-page web app that generates printable elementary math worksheets with mat
 - Format: vertical or horizontal. Vertical division draws the long-division bracket.
 - Vertical multiplication with a multi-digit multiplier leaves one blank working row per multiplier digit. The worksheet shows only the line under the multiplier. The answer key adds the sum line under the partial products.
 
+## Grade 5 number and operations types (Number Sense)
+
+All off by default; the standards panel switches on the right one.
+- Ten times and one tenth, decimals (`tenxd`); Powers of 10 (`pow10`); Read and write decimals (`decrw`: standard, word and expanded forms to thousandths); Round decimals (`rnddec`, with number lines); Decimal division and reasonableness (`decrsn`: whole number divided by a decimal, estimate then judge an answer). File: `ns-decimals.js`.
+- Evaluate expressions (`exeval`) and Write and interpret expressions (`exwrite`). File: `ns-equations.js`.
+- Two rule patterns (`rule2`: terms, relationship, ordered pairs). File: `ns-counting.js`.
+
 ## Tennessee standards
 
-- A Tennessee standard panel (grade, then standard) sets the module, problem types, level and title for 119 of the 150 K to 5 standards (Grade 5 is listed in `standards-coverage.md` but has no presets yet). Partial matches show what differs. `standards-coverage.md` lists every standard and its status.
+- A Tennessee standard panel (grade, then standard) sets the module, problem types, level and title for 129 of the 150 K to 5 standards (127 match fully, 2 partly; the rest are listed in `standards-coverage.md`). Partial matches show what differs. `standards-coverage.md` lists every standard and its status.
 
 ## Fractions, Decimals and Percents
 

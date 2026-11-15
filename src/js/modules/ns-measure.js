@@ -105,7 +105,7 @@ function nsxLinePlot0(rng, L) {
     const tot = counts.reduce((a, b) => a + b, 0);
     if (tot >= 6 && tot <= 14 && counts.filter(c => c > 0).length >= need && (kind !== 'total' || counts.slice(1, den).some(c => c >= 2))) break;
   }
-  const svg = nsLinePlotSvg(counts, den, thing), base = { mod: 'ns', type: 'lineplot', prompt: `Use the line plot of ${thing}.`, kind, counts, den, thing, svg, wide: true, win: 2.7, hin: 1.04, ew: 22, eh: 1 };
+  const svg = nsLinePlotSvg(counts, den, thing), base = { mod: 'ns', type: 'lineplot', prompt: `Use the line plot of ${thing}.`, kind, counts, den, thing, svg, wide: true, win: 2.7, hin: kind === 'diff' || kind === 'total' ? 1.34 : 1.04, ew: 22, eh: 1 };
   if (kind === 'count') {
     const ks = counts.map((c, i) => i).filter(i => i > 0 && i < den && counts[i] > 0), k = pick(rng, ks.length ? ks : [counts.findIndex(c => c > 0)]);
     return { ...base, k, q: `How many ${thing} are exactly ${nsLpHtml(k, den)} ${u1} ${adj}?`, ans: String(counts[k]), sig: `lp${den}c${counts.join('')}k${k}` };

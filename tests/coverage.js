@@ -22,7 +22,7 @@ for(const g of ['K','1','2','3','4','5']){
 }
 const gapBy={};for(const c of codes)if(!P[c])gapBy[std[c].grade]=(gapBy[std[c].grade]||0)+1;
 const gapGrades=Object.keys(gapBy).map(g=>`${G[g]} (${gapBy[g]})`).join(', '),noGap=['K','1','2','3','4','5'].filter(g=>!gapBy[g]).map(g=>G[g]);
-const head=`# Standards coverage\n\nSource: ${FW.source}. ${codes.length} standards.\n\n- Supported: ${full}\n- Partial: ${part}\n- Gap: ${gap}\n\nSupported and Partial standards have a preset in the ${FW.name} standard panel of the worksheet maker. Partial presets list what differs from the standard. Gaps by grade: ${gapGrades || 'none'}. ${noGap.length ? noGap.join(', ') + (noGap.length > 1 ? ' have' : ' has') + ' no gaps. ' : ''}Grade 4 gaps need new problem types for angles and for geometry classification and symmetry. Grade 5 has no presets yet.\n`;
+const head=`# Standards coverage\n\nSource: ${FW.source}. ${codes.length} standards.\n\n- Supported: ${full}\n- Partial: ${part}\n- Gap: ${gap}\n\nSupported and Partial standards have a preset in the ${FW.name} standard panel of the worksheet maker. Partial presets list what differs from the standard. Gaps by grade: ${gapGrades || 'none'}. ${noGap.length ? noGap.join(', ') + (noGap.length > 1 ? ' have' : ' has') + ' no gaps. ' : ''}Grade 4 gaps need new problem types for angles and for geometry classification and symmetry.\n`;
 fs.writeFileSync(path.join(root,'notes','standards-coverage.md'),head+out);
 console.log({full,part,gap,total:codes.length});
 
