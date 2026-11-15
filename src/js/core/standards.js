@@ -144,7 +144,12 @@ const STANDARDS = [
   { c: '5.NF.B.4', t: 'Multiply fractions', m: 'ns', ns: { types: ['fmul5'], level: 2 } },
   { c: '5.NF.B.5', t: 'Multiplication as scaling', m: 'ns', ns: { types: ['fscale'], level: 3 } },
   { c: '5.NF.B.6', t: 'Fraction multiplication problems', m: 'ns', ns: { types: ['fword6'], level: 3 } },
-  { c: '5.NF.B.7', t: 'Divide unit fractions', m: 'ns', ns: { types: ['fdiv7'], level: 3 } }
+  { c: '5.NF.B.7', t: 'Divide unit fractions', m: 'ns', ns: { types: ['fdiv7'], level: 3 } },
+  { c: '5.MD.A.1', t: 'Convert units, decimals and fractions', m: 'ns', ns: { types: ['conv5'], level: 3 } },
+  { c: '5.MD.B.2', t: 'Line plots and operations', m: 'ns', ns: { types: ['lplot5'], level: 3 } },
+  { c: '5.MD.C.3', t: 'Volume and unit cubes', m: 'vis', vis: { types: ['vcubes'], level: 2 } },
+  { c: '5.MD.C.4', t: 'Measure volume by counting unit cubes', m: 'vis', vis: { types: ['vcubes'], level: 3 } },
+  { c: '5.MD.C.5', t: 'Volume of rectangular prisms', m: 'vis', vis: { types: ['vlwh', 'vcomp'], level: 3 } }
 ];
 const STD_BY_CODE = {}; STANDARDS.forEach(s => { STD_BY_CODE[s.c] = s; });
 const stdGrade = c => c.split('.')[0];

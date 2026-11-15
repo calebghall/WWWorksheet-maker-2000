@@ -51,6 +51,8 @@ Exit: 7 rows Supported; fraction answers still written in simplest form where th
 
 ## Phase 3: Grade 5 measurement and data (5 rows)
 
+Status: done. 5 rows Supported: 5.MD.A.1 and B.2 as Number Sense types in `ns-measure.js`, 5.MD.C.3 to C.5 as three volume types in `vis-volume.js` with a reusable `vPrism` drawing function (cube grid on three faces, greyscale-safe). Coverage after phase 3: 139 Supported, 2 Partial, 9 Gap.
+
 Rows: 5.MD.A.1, 5.MD.B.2, 5.MD.C.3, C.4, C.5.
 
 - 5.MD.A.1 extends the unit conversion type in `ns-measure.js` (`convm`) across customary and metric units.

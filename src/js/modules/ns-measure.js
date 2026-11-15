@@ -125,9 +125,98 @@ function nsxLinePlot0(rng, L) {
 
 const nsLinePlotHtml = (p, key, x) => `${p.svg}<div class="wt">${p.q}</div><div>Answer: ${p.kind === 'total' ? frBox(p.num, p.den, 'n', key) : x(p.ans, 2.4)}</div>`;
 
+/* ---------- grade 5 measurement: unit conversion with decimals and fractions, and line plots with operations ---------- */
+
+/* Larger-to-smaller conversions within one system: [big, small, factor, system]. */
+const NS_CONV5 = [['km', 'm', 1000, 'm'], ['m', 'cm', 100, 'm'], ['cm', 'mm', 10, 'm'], ['kg', 'g', 1000, 'm'], ['g', 'mg', 1000, 'm'], ['L', 'mL', 1000, 'm'],
+  ['yd', 'ft', 3, 'c'], ['ft', 'in', 12, 'c'], ['lb', 'oz', 16, 'c'], ['gal', 'qt', 4, 'c'], ['qt', 'pt', 2, 'c'], ['pt', 'c', 2, 'c'], ['hr', 'min', 60, 't'], ['min', 's', 60, 't'], ['day', 'hr', 24, 't']];
+
+/* simple fractions whose product with the factor is a whole number */
+const nsFracFor = (rng, f) => pick(rng, [[1, 2], [1, 4], [3, 4], [1, 3], [2, 3], [1, 5], [3, 5], [1, 8]].filter(([n, d]) => (n * f) % d === 0));
+
+/* Convert with decimals and fractions, and combine measurements in multi-step problems.
+   L1 metric decimals to tenths and halves in customary and time units, L2 hundredths, other fractions and money, L3 adds multi-step word problems. */
+function nsxConv5(rng, L) {
+  const nm = pick(rng, NS_NAMES);
+  if (L === 3 && rng() < 0.7) {
+    const k = pick(rng, ['liq', 'rope', 'board', 'movie', 'flour']), tag = { mod: 'ns', type: 'conv5', prompt: 'Read and solve.', kind: 'multi', mkind: k, wide: true };
+    if (k === 'liq') {
+      const a = ri(rng, 11, 79) / 10, b = ri(rng, 11, 79) / 10, ans = Math.round((a + b) * 1000), text = `${nm} mixed ${a} L of lemonade with ${b} L of juice. How many milliliters of drink is that in all?`;
+      return Object.assign(tag, { html: esc(text), eq: `(${a} + ${b}) × 1,000`, ans: cnum(ans), unit: 'mL', sig: `c5l${a}${b}`, ew: 21, eh: nsWordEh(text) + 0.6 });
+    }
+    if (k === 'rope') {
+      const a = ri(rng, 21, 59) / 10, b = 5 * ri(rng, 2, 30), ans = Math.round(a * 100 - b), text = `A rope is ${a} m long. ${nm} cuts off ${b} cm. How many centimeters of rope are left?`;
+      return Object.assign(tag, { html: esc(text), eq: `${a} × 100 − ${b}`, ans: cnum(ans), unit: 'cm', sig: `c5r${a}${b}`, ew: 21, eh: nsWordEh(text) + 0.6 });
+    }
+    if (k === 'board') {
+      const w = ri(rng, 2, 6), [n, d] = pick(rng, [[1, 2], [1, 4], [3, 4], [1, 3], [2, 3]]), tot = (w * d + n) * 12 / d, cut = ri(rng, 5, Math.floor(tot / 2));
+      const html = `A board is ${fvH([w, n, d])} feet long. ${esc(nm)} cuts off ${cut} inches. How many inches of board are left?`;
+      return Object.assign(tag, { html, eq: `(${w} + ${n}/${d}) × 12 − ${cut}`, ans: cnum(tot - cut), unit: 'in', sig: `c5b${w}${n}${d}${cut}`, ew: 21, eh: nsWordEh(html.replace(/<[^>]*>/g, '')) + 2.4 });
+    }
+    if (k === 'movie') {
+      const w = ri(rng, 1, 2), [n, d] = pick(rng, [[1, 2], [1, 4], [3, 4], [1, 3], [2, 3]]), pre = 5 * ri(rng, 2, 8), tot = (w * d + n) * 60 / d + pre;
+      const html = `A movie is ${fvH([w, n, d])} hours long. ${esc(nm)} also watches ${pre} minutes of previews. How many minutes is that in all?`;
+      return Object.assign(tag, { html, eq: `(${w} + ${n}/${d}) × 60 + ${pre}`, ans: cnum(tot), unit: 'min', sig: `c5m${w}${n}${d}${pre}`, ew: 21, eh: nsWordEh(html.replace(/<[^>]*>/g, '')) + 2.4 });
+    }
+    const a = ri(rng, 15, 40) / 10, b = 50 * ri(rng, 2, 12), ans = Math.round(a * 1000 - b), text = `A bag of flour has a mass of ${a} kg. ${nm} uses ${b} g. How many grams of flour are left?`;
+    return Object.assign(tag, { html: esc(text), eq: `${a} × 1,000 − ${b}`, ans: cnum(ans), unit: 'g', sig: `c5f${a}${b}`, ew: 21, eh: nsWordEh(text) + 0.6 });
+  }
+  if (L > 1 && rng() < 0.15) {
+    const c = ri(rng, 105, 999), v = c / 100;
+    return { mod: 'ns', type: 'conv5', prompt: 'Write in the smaller unit:', kind: 'one', big: 'dollar', small: 'cents', f: 100, system: 'money', shown: `$${dstr(c, 2)}`, v, ans: cnum(c), sig: `c5$${c}`, ew: 22, eh: 1.1 + 1.6 };
+  }
+  const pool = NS_CONV5.filter(r => (L === 1 ? r[3] === 'm' && r[2] >= 100 : true)), [big, small, f, system] = pick(rng, pool);
+  const useFrac = system !== 'm' || (L > 1 && rng() < 0.2 && f > 10);
+  if (!useFrac) {
+    const dp = L === 1 ? 1 : pick(rng, f === 10 ? [1] : [1, 2]), shown = dstr(ri(rng, 11, 199), dp), v = Number(shown);
+    return { mod: 'ns', type: 'conv5', prompt: 'Write in the smaller unit:', kind: 'one', big, small, f, system, shown, v, ans: cnum(Math.round(v * f)), sig: `c5d${shown}${big}`, ew: (shown.length + big.length + small.length + 8) * 0.62 + BW + 1, eh: 1.1 + 1.6 };
+  }
+  const w = ri(rng, 1, L === 1 ? 5 : 9), [n, d] = nsFracFor(rng, f), ans = (w * d + n) * f / d, frac = [w, n, d];
+  return { mod: 'ns', type: 'conv5', prompt: 'Write in the smaller unit:', kind: 'one', big, small, f, system, frac, v: w + n / d, ans: cnum(ans), sig: `c5f${w}.${n}/${d}${big}`, ew: (big.length + small.length + 8) * 0.62 + 3 + BW + 1, eh: 4.0 };
+}
+
+const nsConv5Html = (p, key, x) => p.kind === 'multi' ? `<div class="wt">${p.html}</div><div>Equation: <span class="blank" style="min-width:9em">${key ? esc(p.eq) : '&nbsp;'}</span></div><div>Answer: ${x(p.ans, 4)} ${p.unit}</div>`
+  : p.frac ? `${fvH(p.frac)} ${p.big} = ${x(p.ans, 4)} ${p.small}` : p.system === 'money' ? `${p.shown} = ${x(p.ans, 4)} cents` : `${p.shown} ${p.big} = ${x(p.ans, 4)} ${p.small}`;
+
+/* Line plots in halves, fourths and eighths of a unit, with operations on the data.
+   make: plot a list of measurements. total: add. diff: subtract. level: share the total equally (redistribute).
+   L1 halves and fourths, plotting and totals; L2 fourths and eighths, adds differences; L3 adds sharing equally. */
+const NS_LP5_ITEMS = [['beakers of water', 'cup', 'cups'], ['jars of juice', 'cup', 'cups'], ['pails of sand', 'gallon', 'gallons']];
+
+function nsxLinePlot5(rng, L) {
+  const den = L === 1 ? pick(rng, [2, 4]) : pick(rng, [4, 8]), kind = pick(rng, L === 1 ? ['make', 'total'] : L === 2 ? ['make', 'total', 'diff'] : ['make', 'total', 'diff', 'level', 'level']);
+  const [thing, u1, u2] = pick(rng, NS_LP5_ITEMS);
+  let counts, N, g = 0, sumK, nz;
+  for (;;) {
+    counts = Array.from({ length: den + 1 }, () => ri(rng, 0, 3));
+    N = counts.reduce((a, b) => a + b, 0); sumK = counts.reduce((a, c, i) => a + c * i, 0); nz = counts.filter(c => c > 0).length;
+    g++;
+    const ok = N >= 4 && N <= 9 && nz >= 3 && (kind !== 'level' || (red(sumK, den * N)[1] <= 16 && N >= 3 && N <= 8));
+    if (ok || g > 2000) break;
+  }
+  const svgFull = nsLinePlotSvg(counts, den, thing), svgBlank = nsLinePlotSvg(counts.map(() => 0), den, thing);
+  const vals = []; counts.forEach((c, i) => { for (let j = 0; j < c; j++) vals.push(i); });
+  const base = { mod: 'ns', type: 'lplot5', kind, counts, den, N, thing, svgFull, svgBlank, wide: true, win: 2.7, hin: 1.04, ew: 22, eh: 1 };
+  const cap = `${N} ${thing}`;
+  let q, ans, plainLen;
+  if (kind === 'make') {
+    const sh = shuffle(rng, vals.slice());
+    return Object.assign(base, { prompt: 'Make a line plot.', list: sh, ans: 'plot', q: `${cap} hold these amounts, in ${u2}: ${sh.map(k => nsLpHtml(k, den)).join(', ')}.`, sig: `l5m${den}${sh.join('')}`, hfs: 1.5 * Math.ceil((N * 4 + 40) / 22) + 0.8 + 1.4 });
+  }
+  if (kind === 'total') { ans = mixedOf(sumK, den); q = `The line plot shows the amount in each of ${cap}, in ${u2}. How many ${u2} are there in all?`; }
+  else if (kind === 'diff') { const hi = Math.max(...vals), lo = Math.min(...vals); ans = mixedOf(hi - lo, den); q = `The line plot shows the amount in each of ${cap}, in ${u2}. How much more is in the fullest than in the emptiest?`; }
+  else { ans = mixedOf(sumK, den * N); q = `The line plot shows the amount in each of ${cap}, in ${u2}. If all the ${thing.split(' ')[0]} are poured together and shared equally, how many ${u2} will each have?`; }
+  return Object.assign(base, { prompt: 'Use the line plot.', q, ans, sumK, sig: `l5${kind}${den}${counts.join('')}`, hfs: 1.5 * Math.ceil(q.length / 22) + 1.7 + 0.5 + 1.4 });
+}
+
+const nsLinePlot5Html = (p, key, x) => p.kind === 'make' ? `<div class="wt">${p.q}</div>${key ? p.svgFull : p.svgBlank}`
+  : `${p.svgFull}<div class="wt">${esc(p.q)}</div><div>Answer: ${ansTpl(p.ans, key)}</div>`;
+
 defTypes("ns", "Measurement and perimeter", [
   { id: "perim", label: "Perimeter", blurb: "From side lengths, an unknown side, or same perimeter and same area.", on: false, gen: nsxPerim, html: nsPerimHtml },
 { id: "convm", label: "Convert measurement units", blurb: "Length, mass, liquid volume and time, larger unit to smaller.", on: false, gen: nsxConvM, html: nsConvMHtml },
 { id: "rectf", label: "Rectangle area and perimeter", blurb: "Area, perimeter and unknown sides in real-world problems.", on: false, gen: nsxRectF, html: nsRectFHtml },
-{ id: "lineplot", label: "Line plots with fractions", blurb: "Read line plots marked in halves, fourths and eighths: counts, comparisons, spread and totals.", on: false, gen: nsxLinePlot, html: nsLinePlotHtml }
+{ id: "lineplot", label: "Line plots with fractions", blurb: "Read line plots marked in halves, fourths and eighths: counts, comparisons, spread and totals.", on: false, gen: nsxLinePlot, html: nsLinePlotHtml },
+  { id: "conv5", label: "Convert units, decimals and fractions", blurb: "Larger to smaller units with decimals, fractions and money, and multi-step problems.", on: false, gen: nsxConv5, html: nsConv5Html },
+  { id: "lplot5", label: "Line plots and operations", blurb: "Plot measurements in halves, fourths and eighths; add, subtract and share equally.", on: false, gen: nsxLinePlot5, html: nsLinePlot5Html }
 ]);

@@ -2,11 +2,11 @@
 
 Source: Tennessee Instructional Focus Documents, Kindergarten to Grade 5 (July 2025 binders). 150 standards.
 
-- Supported: 134
+- Supported: 139
 - Partial: 2
-- Gap: 14
+- Gap: 9
 
-Supported and Partial standards have a preset in the Tennessee standard panel of the worksheet maker. Partial presets list what differs from the standard. Gaps by grade: Grade 4 (6), Grade 5 (8). Kindergarten, Grade 1, Grade 2, Grade 3 have no gaps. Grade 4 gaps need new problem types for angles and for geometry classification and symmetry.
+Supported and Partial standards have a preset in the Tennessee standard panel of the worksheet maker. Partial presets list what differs from the standard. Gaps by grade: Grade 4 (6), Grade 5 (3). Kindergarten, Grade 1, Grade 2, Grade 3 have no gaps. Grade 4 gaps need new problem types for angles and for geometry classification and symmetry.
 
 ## Kindergarten
 
@@ -179,11 +179,11 @@ Supported and Partial standards have a preset in the Tennessee standard panel of
 | 5.NF.B.5 | Interpret multiplication as scaling (resizing). 5.NF.B.5.a Compare the size of a product to the size of... | Supported | Number Sense: Multiplication as scaling. |
 | 5.NF.B.6 | Solve real-world problems involving multiplication of fractions and mixed numbers by using visual fraction... | Supported | Number Sense: Fraction multiplication problems. |
 | 5.NF.B.7 | Apply and extend previous understandings of division to divide unit fractions by whole numbers and whole... | Supported | Number Sense: Divide unit fractions. |
-| 5.MD.A.1 | Convert customary and metric measurement units within a single system by expressing measurements of a... | Gap | No matching generator. |
-| 5.MD.B.2 | Make a line plot to display a data set of measurements in fractions of a unit (1/2, 1/4, 1/8). Use... | Gap | No matching generator. |
-| 5.MD.C.3 | Recognize volume as an attribute of solid figures and understand concepts of volume measurement.... | Gap | No matching generator. |
-| 5.MD.C.4 | Measure volume by counting unit cubes, using cubic centimeters, cubic inches, cubic feet, and improvised... | Gap | No matching generator. |
-| 5.MD.C.5 | Relate volume to the operations of multiplication and addition and solve real-world and mathematical... | Gap | No matching generator. |
+| 5.MD.A.1 | Convert customary and metric measurement units within a single system by expressing measurements of a... | Supported | Number Sense: Convert units, decimals and fractions. |
+| 5.MD.B.2 | Make a line plot to display a data set of measurements in fractions of a unit (1/2, 1/4, 1/8). Use... | Supported | Number Sense: Line plots and operations. |
+| 5.MD.C.3 | Recognize volume as an attribute of solid figures and understand concepts of volume measurement.... | Supported | Shapes, Measures and Data: Volume and unit cubes. |
+| 5.MD.C.4 | Measure volume by counting unit cubes, using cubic centimeters, cubic inches, cubic feet, and improvised... | Supported | Shapes, Measures and Data: Measure volume by counting unit cubes. |
+| 5.MD.C.5 | Relate volume to the operations of multiplication and addition and solve real-world and mathematical... | Supported | Shapes, Measures and Data: Volume of rectangular prisms. |
 | 5.G.A.1 | Graph ordered pairs and label points using the first quadrant of the coordinate plane. Understand in the... | Gap | No matching generator. |
 | 5.G.A.2 | Represent real-world and mathematical problems by graphing points in the first quadrant of the coordinate... | Gap | No matching generator. |
 | 5.G.B.3 | Classify two-dimensional figures in a hierarchy based on properties. Understand that attributes belonging... | Gap | No matching generator. |

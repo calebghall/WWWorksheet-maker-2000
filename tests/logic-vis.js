@@ -1,11 +1,11 @@
-/* Independent verification of the original Shapes, Measures and Data types (every id not in the k2-d and g3 lists): answers are recomputed from each problem's own fields. */
+/* Independent verification of the original Shapes, Measures and Data types (every id not in the k2-d, g3 and volume lists (volume is checked in logic-g5m.js)): answers are recomputed from each problem's own fields. */
 const fs=require('fs'),vm=require('vm'),path=require('path');
 const html=fs.readFileSync(path.join(__dirname,'..','WWWorksheet-maker-2000.html'),'utf8');
 const js=html.split('<script>')[1].split('</script>')[0].split('/*==DOM==*/')[0];
 const ctx={Math,console,globalThis:null};ctx.globalThis=ctx;vm.createContext(ctx);vm.runInContext(js,ctx);
 const SP=ctx.__SP,bad=[],E=x=>vm.runInContext(x,ctx);let n=0;
 const V_SIDES=E('V_SIDES'),V_POLY=E('V_POLY'),V_COIN=E('V_COIN'),VNUMW=E('VNUMW'),V_EST=E('V_EST');
-const K2=['patmake', 'cntn', 'showop', 'mattr', 'pos2', 'shcmp', 'shbuild', 'split', 'partw', 'pdraw', 'mtool', 'mrule2', 'pict4', 'bar4', 'chartwhy'].concat(['mfac', 'dint', 'mchart', 'fmodel', 'fline', 'mvol'].concat(['pictg', 'barg', 'rulq', 'lplotq', 'acon', 'gcat', 'gpart', 'gpoly', 'pera']));const sum=a=>a.reduce((x,y)=>x+y,0);
+const K2=['patmake', 'cntn', 'showop', 'mattr', 'pos2', 'shcmp', 'shbuild', 'split', 'partw', 'pdraw', 'mtool', 'mrule2', 'pict4', 'bar4', 'chartwhy'].concat(['mfac', 'dint', 'mchart', 'fmodel', 'fline', 'mvol'].concat(['pictg', 'barg', 'rulq', 'lplotq', 'acon', 'gcat', 'gpart', 'gpoly', 'pera', 'vcubes', 'vlwh', 'vcomp']));const sum=a=>a.reduce((x,y)=>x+y,0);
 function check(p,tag,L){
   n++;const e=m=>bad.push(`${tag} L${L} ${p.type}: ${m} ${JSON.stringify(p).slice(0,150)}`);
   if(!p.sig||!p.prompt||!((p.win>=0&&p.hin>=0)||(p.ew>0&&p.eh>0))||p.prompt.length>42)e('shape/prompt');

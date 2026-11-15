@@ -69,9 +69,14 @@ All off by default; the standards panel switches on the right one.
 
 All off by default. Add and subtract fractions, unlike denominators (`fadd5`, mixed numbers at level 3); Fraction addition and subtraction problems (`fctx`: estimate to the nearest half, and check a claimed sum); A fraction is a division (`fdiv5`); Multiply fractions (`fmul5`: whole numbers, fractions, area models, rectangle areas); Multiplication as scaling (`fscale`); Fraction multiplication problems (`fword6`); Divide unit fractions (`fdiv7`). Answers are in simplest form.
 
+## Grade 5 measurement and data types
+
+- Number Sense, `ns-measure.js`: Convert units, decimals and fractions (`conv5`: metric decimals, customary and time fractions, money, and multi-step problems at level 3); Line plots and operations (`lplot5`: plot a list, total, difference and share equally, in halves, fourths and eighths).
+- Shapes, Measures and Data, `vis-volume.js`: Volume with unit cubes (`vcubes`), Volume of a rectangular prism (`vlwh`: l × w × h, B × h, grouping factors, real-world problems) and Volume of joined prisms (`vcomp`). Prisms are drawn in oblique view with unit-cube grid lines (`vPrism`); the three faces use three different greys.
+
 ## Tennessee standards
 
-- A Tennessee standard panel (grade, then standard) sets the module, problem types, level and title for 136 of the 150 K to 5 standards (134 match fully, 2 partly; the rest are listed in `standards-coverage.md`). Partial matches show what differs. `standards-coverage.md` lists every standard and its status.
+- A Tennessee standard panel (grade, then standard) sets the module, problem types, level and title for 141 of the 150 K to 5 standards (139 match fully, 2 partly; the rest are listed in `standards-coverage.md`). Partial matches show what differs. `standards-coverage.md` lists every standard and its status.
 
 ## Fractions, Decimals and Percents
 
