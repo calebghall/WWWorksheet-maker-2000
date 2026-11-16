@@ -125,10 +125,11 @@ let stdQuery = '';
 function writeStdList() {
   const q = stdQuery.trim().toLowerCase();
   const rows = STD_ALL.filter(r => q ? (r[0] + ' ' + r[1] + ' ' + r[2]).toLowerCase().includes(q) : stdGrade(r[0]) === state.std.g);
-  const badge = p => !p ? ['gap', 'Not yet'] : p.n ? ['part', 'Partial'] : ['ok', 'Ready'];
+  const badge = p => !p ? ['gap', 'Not yet'] : p.n ? ['part', 'Partial'] : ['ok', ''];
   $('#stdList').innerHTML = rows.length ? rows.map(r => {
     const p = STD_BY_CODE[r[0]], b = badge(p), on = r[0] === state.std.c;
-    return `<button type="button" class="std ${b[0]}${on ? ' on' : ''}" data-std="${r[0]}"${p ? '' : ' disabled'}${on ? ' aria-pressed="true"' : ''}><span class="sc">${r[0]}</span><span class="st">${esc(r[1])}</span><span class="sb">${b[1]}</span></button>`;
+    const left = `<span class="sl"><span class="sc">${r[0]}</span>${b[1] ? `<span class="sb">${b[1]}</span>` : ''}</span>`;
+    return `<button type="button" class="std ${b[0]}${on ? ' on' : ''}" data-std="${r[0]}"${p ? '' : ' disabled'}${on ? ' aria-pressed="true"' : ''}>${left}<span class="st">${esc(r[1])}</span></button>`;
   }).join('') : '<p class="note">No standards match.</p>';
 }
 function writeStd() {

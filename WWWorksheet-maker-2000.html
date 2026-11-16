@@ -155,17 +155,20 @@ input[type="text"]:focus-visible, select:focus-visible, .chk input:focus-visible
 details.stdbox { margin: 20px 0 0; border: 1px solid var(--line); border-radius: 8px; padding: 0 10px; background: var(--field); }
 .stdbox > summary { display: flex; align-items: center; gap: 8px; padding: 10px 0; cursor: pointer; list-style: none; font: 700 12px var(--font-ui); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
 .stdbox > summary::-webkit-details-marker { display: none; }
-.stdbox > summary::before { content: '▸'; font-size: 13px; transition: transform .15s; }
+.stdbox > summary::before { content: '▸'; font-size: 13px; flex: none; transition: transform .15s; }
 .stdbox[open] > summary::before { transform: rotate(90deg); }
 .stdbox > summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
-.stdbox .cur { margin-left: auto; font-weight: 700; letter-spacing: 0; text-transform: none; color: var(--accent); }
+.stdbox .std-lbl { flex: 1; min-width: 0; }
+.stdbox .cur { flex: none; margin-left: auto; font-weight: 700; letter-spacing: 0; text-transform: none; color: var(--accent); }
+.stdbox .cur:empty { display: none; }
 .stdbox[open] { padding-bottom: 10px; }
 .stdq { width: 100%; box-sizing: border-box; margin-top: 8px; padding: 8px 10px; font: 14px var(--font-ui); color: var(--fg); background: var(--field); border: 1px solid var(--line); border-radius: 8px; }
 .stdlist { display: grid; gap: 4px; margin-top: 8px; max-height: 232px; overflow-y: auto; padding-right: 2px; }
-.std { display: grid; grid-template-columns: auto 1fr auto; gap: 8px; align-items: baseline; text-align: left; padding: 7px 10px; font: 13px/1.3 var(--font-ui); color: var(--fg); background: var(--field); border: 1px solid var(--line); border-radius: 8px; cursor: pointer; }
+.std { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 8px; align-items: baseline; text-align: left; padding: 7px 10px; font: 13px/1.3 var(--font-ui); color: var(--fg); background: var(--field); border: 1px solid var(--line); border-radius: 8px; cursor: pointer; }
+.std .sl { display: flex; flex-direction: column; gap: 2px; }
 .std .sc { font-weight: 700; white-space: nowrap; }
-.std .sb { font-size: 11px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
-.std.ok .sb { color: var(--accent); }
+.std .sb { font-size: 11px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+.std.gap .st { color: var(--muted); }
 .std.on { background: var(--accent-soft); border-color: var(--accent); }
 .std:disabled { opacity: .55; cursor: default; }
 .std:focus-visible, .stdq:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
@@ -374,7 +377,7 @@ details.stdbox { margin: 20px 0 0; border: 1px solid var(--line); border-radius:
 
     <form id="form" autocomplete="off">
       <details class="stdbox" id="stdBox">
-        <summary>Browse <span id="stdFw">Tennessee</span> Standards<span class="cur" id="stdCur"></span></summary>
+        <summary><span class="std-lbl">Browse <span id="stdFw">Tennessee</span> Standards</span><span class="cur" id="stdCur"></span></summary>
         <div class="seg" id="stdGrades" role="radiogroup" aria-label="Grade"></div>
         <input type="search" id="stdQ" name="stdQ" class="stdq" placeholder="Search standards (code or words)" aria-label="Search standards">
         <div class="stdlist" id="stdList"></div>
@@ -5982,10 +5985,11 @@ let stdQuery = '';
 function writeStdList() {
   const q = stdQuery.trim().toLowerCase();
   const rows = STD_ALL.filter(r => q ? (r[0] + ' ' + r[1] + ' ' + r[2]).toLowerCase().includes(q) : stdGrade(r[0]) === state.std.g);
-  const badge = p => !p ? ['gap', 'Not yet'] : p.n ? ['part', 'Partial'] : ['ok', 'Ready'];
+  const badge = p => !p ? ['gap', 'Not yet'] : p.n ? ['part', 'Partial'] : ['ok', ''];
   $('#stdList').innerHTML = rows.length ? rows.map(r => {
     const p = STD_BY_CODE[r[0]], b = badge(p), on = r[0] === state.std.c;
-    return `<button type="button" class="std ${b[0]}${on ? ' on' : ''}" data-std="${r[0]}"${p ? '' : ' disabled'}${on ? ' aria-pressed="true"' : ''}><span class="sc">${r[0]}</span><span class="st">${esc(r[1])}</span><span class="sb">${b[1]}</span></button>`;
+    const left = `<span class="sl"><span class="sc">${r[0]}</span>${b[1] ? `<span class="sb">${b[1]}</span>` : ''}</span>`;
+    return `<button type="button" class="std ${b[0]}${on ? ' on' : ''}" data-std="${r[0]}"${p ? '' : ' disabled'}${on ? ' aria-pressed="true"' : ''}>${left}<span class="st">${esc(r[1])}</span></button>`;
   }).join('') : '<p class="note">No standards match.</p>';
 }
 function writeStd() {
