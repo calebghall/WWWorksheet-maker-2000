@@ -1,26 +1,43 @@
-<div class="app">
-  <aside class="panel" aria-label="Worksheet settings">
-    <div class="brand">
-      <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true">
-        <path d="M2 2h22v22H2z" fill="none" stroke="var(--accent)" stroke-width="1.6"/>
-        <path d="M2 9.33h22M2 16.67h22M9.33 2v22M16.67 2v22" stroke="var(--accent)" stroke-width="1" opacity=".45" fill="none"/>
-        <path d="M2 2h14.67v14.67H2z" fill="var(--accent)" fill-opacity=".25" stroke="var(--accent)" stroke-width="2.4"/>
-      </svg>
-      <span>World Wide Worksheet Maker 2000</span>
-    </div>
-
-    <form id="form" autocomplete="off">
-      <details class="stdbox" id="stdBox">
-        <summary><span class="std-lbl">Browse <span id="stdFw">Tennessee</span> Standards</span><span class="cur" id="stdCur"></span></summary>
-        <div class="seg" id="stdGrades" role="radiogroup" aria-label="Grade"></div>
-        <input type="search" id="stdQ" name="stdQ" class="stdq" placeholder="Search standards (code or words)" aria-label="Search standards">
-        <div class="stdlist" id="stdList"></div>
-        <p class="note" id="stdNote"></p>
-      </details>
-
-      <fieldset>
-        <legend>Worksheet</legend>
-        <div class="mods" id="mods" role="radiogroup" aria-label="Worksheet module"></div>
+<div class="app">
+  <aside class="panel" aria-label="Worksheet settings">
+    <div class="brand">
+      <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true">
+        <path d="M2 2h22v22H2z" fill="none" stroke="var(--accent)" stroke-width="1.6"/>
+        <path d="M2 9.33h22M2 16.67h22M9.33 2v22M16.67 2v22" stroke="var(--accent)" stroke-width="1" opacity=".45" fill="none"/>
+        <path d="M2 2h14.67v14.67H2z" fill="var(--accent)" fill-opacity=".25" stroke="var(--accent)" stroke-width="2.4"/>
+      </svg>
+      <span>World Wide Worksheet Maker 2000</span>
+    </div>
+
+    <form id="form" autocomplete="off">
+      <div id="panelMain">
+      <details class="stdbox" id="stdBox">
+        <summary><span class="std-lbl">Browse <span id="stdFw">Tennessee</span> Standards</span><span class="cur" id="stdCur"></span></summary>
+        <div class="seg" id="stdGrades" role="radiogroup" aria-label="Grade"></div>
+        <input type="search" id="stdQ" name="stdQ" class="stdq" placeholder="Search standards (code or words)" aria-label="Search standards">
+        <div class="stdlist" id="stdList"></div>
+        <p class="note" id="stdNote"></p>
+      </details>
+
+      <fieldset>
+        <legend>Worksheet</legend>
+        <div class="seg" id="wkMode" role="radiogroup" aria-label="Worksheet mode">
+          <label><input type="radio" name="wkMode" value="single"><span>One topic</span></label>
+          <label><input type="radio" name="wkMode" value="multi"><span>Multi-topic</span></label>
+        </div>
+        <div class="mods" id="mods" role="radiogroup" aria-label="Worksheet module"></div>
       </fieldset>
+      </div>
 
-
+      <div id="partDrawer" class="pdrawer" hidden>
+        <div class="pdrawer-bar">
+          <button type="button" class="btn ghost sm" id="partDone">← Back to worksheet</button>
+          <span class="pdrawer-tag" id="partDrawerTag"></span>
+        </div>
+        <div class="pdrawer-meta">
+          <label class="part-f grow"><span class="lbl">Section label</span><input type="text" id="editPartLabel" name="editPartLabel" maxlength="60"></label>
+          <label class="part-f"><span class="lbl" id="editPartNLbl">Problems</span><select id="editPartN" name="editPartN" aria-label="Problems in part"></select></label>
+        </div>
+      </div>
+
+

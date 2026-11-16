@@ -82,11 +82,10 @@ function normalize(s) {
 let state;
 try { state = normalize(JSON.parse(localStorage.getItem(STORE) || 'null')); } catch (e) { state = normalize(null); }
 
-$('#mods').innerHTML = Object.keys(MODULES).map(id => `<label class="mod"><input type="radio" name="module" value="${id}"><b>${esc(MODULES[id].name)}</b><small>${esc(MODULES[id].blurb)}</small></label>`).join('');
-$('#comboRows').innerHTML = Object.keys(REG).map(id => `<div class="crow"><label class="chk"><input type="checkbox" name="combo_on" value="${id}"><b>${esc(REG[id].name)}</b></label>`
-  + `<select name="combo_n" data-id="${id}" aria-label="Problems in ${esc(REG[id].name)}">${REG[id].counts.map(n => `<option value="${n}">${n} problems</option>`).join('')}</select>`
-  + `<button type="button" class="btn ghost sm" data-goto="${id}">Settings</button></div>`).join('');
-$('#mixRows').innerHTML = MIX_MODS.map(id => `<div class="crow"><label class="chk"><input type="checkbox" name="mix_mod" value="${id}"><b>${esc(MODULES[id].name)}</b></label><button type="button" class="btn ghost sm" data-goto="${id}">Settings</button></div>`).join('');
+const SINGLE_MODS = Object.keys(MODULES).filter(id => id !== 'combo' && id !== 'mix');
+$('#mods').innerHTML = SINGLE_MODS.map(id => `<label class="mod"><input type="radio" name="module" value="${id}"><b>${esc(MODULES[id].name)}</b><small>${esc(MODULES[id].blurb)}</small></label>`).join('');
+$('#addPartMod').innerHTML = SINGLE_MODS.map(id => `<option value="${id}">${esc(MODULES[id].name)}</option>`).join('');
+$('#addPartMod').value = 'addsub';
 $('#unit').innerHTML = Object.keys(UNITS).map(k => `<option value="${k}">${UNITS[k].name}</option>`).join('');
 $('#md_focus').innerHTML = '<option value="0">All tables in the range</option>' + [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(n => `<option value="${n}">The ${n}s table</option>`).join('');
 
@@ -140,53 +139,96 @@ function writeStd() {
   $('#stdCur').textContent = s ? s.c : '';
   $('#stdNote').textContent = s ? `${s.c}: ${s.n ? 'Partial match. ' + s.n : 'The settings match this standard.'}` : 'Pick a standard to set the module, problem types and level. "Not yet" standards need a problem type this maker does not have.';
 }
+let lastSingleMod = (state.module === 'combo' || state.module === 'mix') ? 'area' : state.module;
+let lastMultiMod = state.module === 'mix' ? 'mix' : 'combo';
+let editIdx = null;
+function ensureMultiParts() {
+  if (state.parts && state.parts.length) return;
+  if (state.module === 'mix') {
+    const ms = MIX_MODS.filter(id => state.mix.mods[id]);
+    state.parts = (ms.length ? ms : ['addsub']).map(m => makePart(state, m, REG[m].n0));
+  } else {
+    const ps = partsOf(state);
+    state.parts = (ps.length ? ps : [makePart(state, lastSingleMod)]).map(p => makePart(state, p.m, p.n));
+  }
+}
+if (state.module === 'combo' || state.module === 'mix') ensureMultiParts();
+
+function editingPart() {
+  if (editIdx === null || !state.parts || !state.parts[editIdx]) { editIdx = null; return null; }
+  return state.parts[editIdx];
+}
+
 function writeForm() {
   writeStd();
-  setRadio('module', state.module);
-  setChecks('type', state.types); setRadio('level', state.level); $('#unit').value = state.unit;
-  setChecks('as_ops', { add: state.as.add, sub: state.as.sub });
-  setRadio('as_d1', state.as.d1); setRadio('as_d2', state.as.d2); setRadio('as_addends', state.as.addends); setRadio('as_regroup', state.as.regroup); setRadio('as_format', state.as.format); setRadio('as_cap', state.as.cap); setRadio('as_second', state.as.second);
-  setChecks('md_ops', { mul: state.md.mul, div: state.md.div });
-  form.elements.md_rem.checked = !!state.md.rem;
-  setRadio('md_mode', state.md.mode); setRadio('md_da', state.md.da); setRadio('md_db', state.md.db); form.elements.md_alt.checked = !!state.md.alt; setRadio('md_da2', state.md.da2); setRadio('md_db2', state.md.db2); setRadio('md_na', state.md.na); setRadio('md_nb', state.md.nb);
-  $('#md_tables').value = String(state.md.tables); $('#md_focus').value = String(state.md.focus); setRadio('md_format', state.md.format);
-  setChecks('fd_type', state.fd.types); setRadio('fd_level', state.fd.level);
-  setChecks('ns_type', state.ns.types); setRadio('ns_level', state.ns.level);
-  setChecks('tm_type', state.tm.types); setRadio('tm_level', state.tm.level);
-  setChecks('vis_type', state.vis.types); setRadio('vis_level', state.vis.level);
-  setChecks('mix_mod', state.mix.mods);
-  const on = {}; for (const id of Object.keys(REG)) on[id] = state.combo[id].on;
-  setChecks('combo_on', on);
-  form.querySelectorAll('select[name="combo_n"]').forEach(s => { s.value = String(state.combo[s.dataset.id].n); });
+  const ep = editingPart(), fsState = ep ? partState(state, ep) : state;
+  const isMulti = state.module === 'combo' || state.module === 'mix';
+  setRadio('wkMode', isMulti ? 'multi' : 'single');
+  setRadio('module', isMulti ? lastSingleMod : state.module);
+  setRadio('multi_view', state.module === 'mix' ? 'mix' : 'combo');
+  setChecks('type', fsState.types); setRadio('level', fsState.level); $('#unit').value = fsState.unit;
+  setChecks('as_ops', { add: fsState.as.add, sub: fsState.as.sub });
+  setRadio('as_d1', fsState.as.d1); setRadio('as_d2', fsState.as.d2); setRadio('as_addends', fsState.as.addends); setRadio('as_regroup', fsState.as.regroup); setRadio('as_format', fsState.as.format); setRadio('as_cap', fsState.as.cap); setRadio('as_second', fsState.as.second);
+  setChecks('md_ops', { mul: fsState.md.mul, div: fsState.md.div });
+  form.elements.md_rem.checked = !!fsState.md.rem;
+  setRadio('md_mode', fsState.md.mode); setRadio('md_da', fsState.md.da); setRadio('md_db', fsState.md.db); form.elements.md_alt.checked = !!fsState.md.alt; setRadio('md_da2', fsState.md.da2); setRadio('md_db2', fsState.md.db2); setRadio('md_na', fsState.md.na); setRadio('md_nb', fsState.md.nb);
+  $('#md_tables').value = String(fsState.md.tables); $('#md_focus').value = String(fsState.md.focus); setRadio('md_format', fsState.md.format);
+  setChecks('fd_type', fsState.fd.types); setRadio('fd_level', fsState.fd.level);
+  setChecks('ns_type', fsState.ns.types); setRadio('ns_level', fsState.ns.level);
+  setChecks('tm_type', fsState.tm.types); setRadio('tm_level', fsState.tm.level);
+  setChecks('vis_type', fsState.vis.types); setRadio('vis_level', fsState.vis.level);
   setRadio('perPage', state.perPage); setRadio('arPerPage', state.arPerPage); setRadio('pages', state.pages); setRadio('paper', state.paper);
   for (const n of ['nameLine', 'shade', 'key', 'grey']) form.elements[n].checked = !!state[n];
   form.elements.seed.value = state.seed;
   syncModuleUI();
 }
-/* The parts list in the Combined panel (label, size, order, edit, delete) and the add / update controls on the module tabs. */
-let editIdx = null;
-const PART_ICONS = { up: ['↑', 'up'], down: ['↓', 'down'], edit: ['Edit', 'edit'], del: ['Delete', 'delete'] };
+
 function writeParts() {
-  const parts = state.parts || [];
-  if (editIdx !== null && !parts[editIdx]) editIdx = null;
+  const parts = state.parts || [], isMix = state.module === 'mix';
+  const mixSum = isMix ? parts.filter(p => MIX_MODS.includes(p.m)).reduce((a, p) => a + p.n, 0) : 0;
+  const canMix = parts.some(p => MIX_MODS.includes(p.m));
+  const mixR = form.querySelector('input[name="multi_view"][value="mix"]');
+  if (mixR) mixR.disabled = !canMix;
+  const heading = $('#partsHeading');
+  if (heading) heading.textContent = isMix ? 'Topics & shares' : 'Sections';
   $('#partsList').innerHTML = parts.map((p, i) => {
-    const L = String.fromCharCode(65 + i), nm = esc(p.label || REG[p.m].name);
-    const sel = `<select name="partRowN" aria-label="Problems in part ${L}">${REG[p.m].counts.map(n => `<option value="${n}"${n === p.n ? ' selected' : ''}>${n} problems</option>`).join('')}</select>`;
-    const btn = (act, label) => `<button type="button" class="btn ghost sm" data-part-act="${act}" aria-label="${label} part ${L}"${(act === 'up' && i === 0) || (act === 'down' && i === parts.length - 1) ? ' disabled' : ''}>${PART_ICONS[act][0]}</button>`;
-    return `<li class="pr" data-i="${i}"><span class="pl">${L}</span><div class="pr-f"><input type="text" name="partRowLabel" maxlength="60" value="${esc(p.label || '')}" placeholder="${esc(REG[p.m].name)}" aria-label="Label of part ${L}">${sel}<span class="pr-b">${btn('up', 'Move up')}${btn('down', 'Move down')}${btn('edit', 'Edit')}${btn('del', 'Delete')}</span></div></li>`;
+    const L = String.fromCharCode(65 + i), mixable = MIX_MODS.includes(p.m);
+    const badge = isMix ? (mixable && mixSum ? `${Math.round(100 * p.n / mixSum)}%` : '—') : L;
+    const sel = `<select name="partRowN" aria-label="${isMix ? 'Share weight' : 'Problems'} for part ${L}">${REG[p.m].counts.map(n => `<option value="${n}"${n === p.n ? ' selected' : ''}>${isMix ? `Share ${n}` : `${n} problems`}</option>`).join('')}</select>`;
+    const btn = (act, txt, label, dis) => `<button type="button" class="btn ghost sm" data-part-act="${act}" aria-label="${label} part ${L}"${dis ? ' disabled' : ''}>${txt}</button>`;
+    const sub = `${esc(REG[p.m].name)}${isMix && !mixable ? ' · <em>Sections only</em>' : ''}`;
+    return `<li class="pr" data-i="${i}"><span class="pl">${badge}</span><div class="pr-f"><input type="text" name="partRowLabel" maxlength="60" value="${esc(p.label || '')}" placeholder="${esc(REG[p.m].name)}" aria-label="Label of part ${L}"><div class="pr-sub">${sub}</div>${sel}<span class="pr-b">${btn('edit', 'Settings', 'Settings for')}${btn('up', '↑', 'Move up', i === 0)}${btn('down', '↓', 'Move down', i === parts.length - 1)}${btn('del', '×', 'Delete', parts.length <= 1)}</span></div></li>`;
   }).join('');
-  const counts = REG[state.module] ? REG[state.module].counts : null;
-  if (counts && $('#partN') && document.activeElement !== $('#partN')) { const keep = $('#partN').value; $('#partN').innerHTML = counts.map(n => `<option value="${n}">${n} problems</option>`).join(''); $('#partN').value = counts.includes(+keep) ? keep : String(REG[state.module].n0); }
-  const editing = editIdx !== null && parts[editIdx] && parts[editIdx].m === state.module;
   $('#partAdd').disabled = parts.length >= PART_MAX;
-  $('#partAddRow').hidden = editing; $('#partEditRow').hidden = !editing;
-  if (editing) $('#partEditName').textContent = `Editing part ${String.fromCharCode(65 + editIdx)}`;
+  const hasBlocked = isMix && parts.some(p => !MIX_MODS.includes(p.m));
+  $('#multiNote').textContent = !canMix
+    ? 'Area Squares and Shapes, Measures and Data only print in sections.'
+    : isMix
+      ? 'Problems are shuffled together and packed by size. Each topic\'s Share controls how much of the sheet it gets.' + (hasBlocked ? ' Topics marked "Sections only" stay out until you switch back to In sections.' : '')
+      : 'Each part prints as a lettered section (Part A, Part B, ...) with its own settings.';
+  const ep = editingPart();
+  if (ep) {
+    const L = String.fromCharCode(65 + editIdx);
+    $('#partDrawerTag').textContent = `${isMix ? 'Editing' : `Part ${L}`} · ${REG[ep.m].name}`;
+    if (document.activeElement !== $('#editPartLabel')) $('#editPartLabel').value = ep.label || '';
+    $('#editPartNLbl').textContent = isMix ? 'Share' : 'Problems';
+    $('#editPartN').innerHTML = REG[ep.m].counts.map(n => `<option value="${n}"${n === ep.n ? ' selected' : ''}>${isMix ? `Share ${n}` : `${n} problems`}</option>`).join('');
+    $('#editPartN').value = String(ep.n);
+  }
 }
+
 function syncModuleUI() {
+  const ep = editingPart(), fsState = ep ? partState(state, ep) : state;
+  const activeMod = ep ? ep.m : state.module;
+  const isMulti = state.module === 'combo' || state.module === 'mix';
+  $('#panelMain').hidden = !!ep;
+  $('#partDrawer').hidden = !ep;
+  document.querySelectorAll('[data-chrome]').forEach(el => { el.hidden = !!ep; });
+  $('#mods').hidden = isMulti;
   form.elements.title.value = state.titles[state.module];
-  document.querySelectorAll('[data-mod]').forEach(el => { el.hidden = !el.dataset.mod.split(' ').includes(state.module); });
+  document.querySelectorAll('[data-mod]').forEach(el => { el.hidden = !el.dataset.mod.split(' ').includes(activeMod); });
   form.querySelectorAll('.mod').forEach(l => l.classList.toggle('on', l.querySelector('input').checked));
-  const M = state.md, A = state.as, digits = M.mode === 'digits';
+  const M = fsState.md, A = fsState.as, digits = M.mode === 'digits';
   form.querySelectorAll('[data-md]').forEach(el => {
     const k = el.dataset.md;
     el.hidden = !(k === 'facts' ? !digits : k === 'mul' ? digits && M.mul : k === 'alt' ? digits && M.mul && M.alt : digits && M.div);
@@ -195,22 +237,12 @@ function syncModuleUI() {
   $('#asAddends').classList.toggle('dis', !adds);
   form.querySelectorAll('input[name="as_addends"]').forEach(i => { i.disabled = !adds; });
   $('#md_tables').disabled = !!M.focus;
-  form.querySelectorAll('select[name="combo_n"]').forEach(s => { s.disabled = !state.combo[s.dataset.id].on; });
-  const hasParts = !!(state.parts && state.parts.length);
-  $('#partsBox').hidden = !hasParts; $('#comboRows').hidden = hasParts; $('#comboNote').hidden = hasParts;
-  const mixParts = hasParts ? state.parts.filter(p => MIX_MODS.includes(p.m)) : [], hasMix = mixParts.length > 0;
-  $('#mixPartsBox').hidden = !hasMix; $('#mixRows').hidden = hasMix; $('#mixNote').hidden = hasMix;
-  if (hasMix) {
-    const sum = mixParts.reduce((a, p) => a + p.n, 0), left = state.parts.length - mixParts.length;
-    $('#mixPartsList').innerHTML = mixParts.map(p => `<li><span class="pl">•</span><span>${esc(p.label || REG[p.m].name)}</span><span class="pn">${Math.round(100 * p.n / sum)}%</span></li>`).join('');
-    $('#mixPartsNote').textContent = 'Mixed Practice shares its problems among these parts by their sizes, each with its own settings.' + (left ? ` ${left} part${left === 1 ? '' : 's'} that Mixed Practice cannot hold ${left === 1 ? 'is' : 'are'} left out.` : '');
-  }
   writeParts();
-  $('#levelNote').textContent = LEVELS[state.level].note;
-  $('#fdNote').textContent = FD_NOTES[state.fd.level];
-  $('#nsNote').textContent = NS_NOTES[state.ns.level];
-  $('#tmNote').textContent = TM_NOTES[state.tm.level];
-  $('#visNote').textContent = VIS_NOTES[state.vis.level];
+  $('#levelNote').textContent = LEVELS[fsState.level].note;
+  $('#fdNote').textContent = FD_NOTES[fsState.fd.level];
+  $('#nsNote').textContent = NS_NOTES[fsState.ns.level];
+  $('#tmNote').textContent = TM_NOTES[fsState.tm.level];
+  $('#visNote').textContent = VIS_NOTES[fsState.vis.level];
   $('#asNote').textContent = A.cap && A.cap <= 30
     ? `Within ${A.cap}: every number from 1 to ${A.cap} is used, so the digit settings do not apply.`
     : A.cap ? `Within ${A.cap}: sums and starting numbers never pass ${A.cap}; numbers are shortened when they cannot fit.`
@@ -224,25 +256,32 @@ function syncModuleUI() {
   } else parts.push('Facts from the times tables. Division answers are whole numbers.');
   $('#mdNote').textContent = parts.join(' ');
 }
-function readForm(changed) {
-  if (changed && changed.name === 'module') { state.module = val('module') || state.module; editIdx = null; return; }
-  state.types = ensureOne(checksOf('type'), changed, 'type', 'count');
-  state.level = +val('level') || state.level;
-  state.unit = $('#unit').value;
+
+function readModFields(target, changed) {
+  target.types = ensureOne(checksOf('type'), changed, 'type', 'count');
+  target.level = +val('level') || target.level;
+  target.unit = $('#unit').value;
   const ao = ensureOne(checksOf('as_ops'), changed, 'as_ops', 'add');
-  state.as = { add: !!ao.add, sub: !!ao.sub, d1: +val('as_d1') || state.as.d1, d2: +val('as_d2') || state.as.d2, addends: +val('as_addends') || state.as.addends, regroup: val('as_regroup') || state.as.regroup, format: val('as_format') || state.as.format, cap: +val('as_cap') || 0, second: val('as_second') || state.as.second };
+  target.as = { add: !!ao.add, sub: !!ao.sub, d1: +val('as_d1') || target.as.d1, d2: +val('as_d2') || target.as.d2, addends: +val('as_addends') || target.as.addends, regroup: val('as_regroup') || target.as.regroup, format: val('as_format') || target.as.format, cap: +val('as_cap') || 0, second: val('as_second') || target.as.second };
   const mo = ensureOne(checksOf('md_ops'), changed, 'md_ops', 'mul');
-  state.md = { mul: !!mo.mul, div: !!mo.div, rem: form.elements.md_rem.checked, mode: val('md_mode') || state.md.mode,
-    da: +val('md_da') || state.md.da, db: +val('md_db') || state.md.db, alt: form.elements.md_alt.checked, da2: +val('md_da2') || state.md.da2, db2: +val('md_db2') || state.md.db2, na: +val('md_na') || state.md.na, nb: +val('md_nb') || state.md.nb,
-    tables: +$('#md_tables').value, focus: +$('#md_focus').value, format: val('md_format') || state.md.format };
-  state.fd = { types: ensureOne(checksOf('fd_type'), changed, 'fd_type', 'simp'), level: +val('fd_level') || state.fd.level };
-  state.ns = { types: ensureOne(checksOf('ns_type'), changed, 'ns_type', 'place'), level: +val('ns_level') || state.ns.level };
-  state.tm = { types: ensureOne(checksOf('tm_type'), changed, 'tm_type', 'coins'), level: +val('tm_level') || state.tm.level };
-  state.vis = { types: ensureOne(checksOf('vis_type'), changed, 'vis_type', 'cnt'), level: +val('vis_level') || state.vis.level };
-  state.mix = { mods: ensureOne(checksOf('mix_mod'), changed, 'mix_mod', 'addsub') };
-  const co = ensureOne(checksOf('combo_on'), changed, 'combo_on', Object.keys(REG)[0]);
-  for (const id of Object.keys(REG)) state.combo[id].on = !!co[id];
-  form.querySelectorAll('select[name="combo_n"]').forEach(s => { state.combo[s.dataset.id].n = +s.value; });
+  target.md = { mul: !!mo.mul, div: !!mo.div, rem: form.elements.md_rem.checked, mode: val('md_mode') || target.md.mode,
+    da: +val('md_da') || target.md.da, db: +val('md_db') || target.md.db, alt: form.elements.md_alt.checked, da2: +val('md_da2') || target.md.da2, db2: +val('md_db2') || target.md.db2, na: +val('md_na') || target.md.na, nb: +val('md_nb') || target.md.nb,
+    tables: +$('#md_tables').value, focus: +$('#md_focus').value, format: val('md_format') || target.md.format };
+  target.fd = { types: ensureOne(checksOf('fd_type'), changed, 'fd_type', 'simp'), level: +val('fd_level') || target.fd.level };
+  target.ns = { types: ensureOne(checksOf('ns_type'), changed, 'ns_type', 'place'), level: +val('ns_level') || target.ns.level };
+  target.tm = { types: ensureOne(checksOf('tm_type'), changed, 'tm_type', 'coins'), level: +val('tm_level') || target.tm.level };
+  target.vis = { types: ensureOne(checksOf('vis_type'), changed, 'vis_type', 'cnt'), level: +val('vis_level') || target.vis.level };
+}
+
+function readForm(changed) {
+  const ep = editingPart();
+  if (ep) {
+    const tmp = partState(state, ep);
+    readModFields(tmp, changed);
+    Object.assign(ep, captureSettings(tmp, ep.m));
+    return;
+  }
+  readModFields(state, changed);
   state.perPage = +val('perPage') || state.perPage;
   state.arPerPage = +val('arPerPage') || state.arPerPage;
   state.pages = +val('pages') || state.pages;
@@ -252,6 +291,7 @@ function readForm(changed) {
   const sd = form.elements.seed.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
   if (sd) state.seed = sd;
 }
+
 function fit() {
   const w = PAPER[state.paper].w * 96, avail = stageEl.clientWidth;
   sheetsEl.style.setProperty('--zoom', Math.min(1, avail / w).toFixed(4));
@@ -270,46 +310,87 @@ form.addEventListener('submit', e => e.preventDefault());
 const CLEARS_STD = /^(module|type|level|as_|md_|fd_|ns_|tm_|vis_)/;
 form.addEventListener('input', e => {
   const nm = e.target.name || '';
-  if (nm === 'partN' || nm === 'partLabel') return;
+  if (nm === 'addPartMod') return;
+  if (nm === 'wkMode') {
+    editIdx = null;
+    if (e.target.value === 'multi') {
+      ensureMultiParts();
+      state.module = (lastMultiMod === 'mix' && state.parts.some(p => MIX_MODS.includes(p.m))) ? 'mix' : 'combo';
+    } else {
+      if (state.module === 'combo' || state.module === 'mix') lastMultiMod = state.module;
+      state.module = lastSingleMod;
+    }
+    if (state.std.c) state.std.c = '';
+    save(); writeForm(); render(); return;
+  }
+  if (nm === 'module') {
+    editIdx = null;
+    state.module = val('module') || state.module;
+    lastSingleMod = state.module;
+    if (state.std.c) state.std.c = '';
+    save(); writeForm(); render(); return;
+  }
+  if (nm === 'multi_view') {
+    editIdx = null;
+    const v = val('multi_view');
+    if (v === 'mix' && !(state.parts || []).some(p => MIX_MODS.includes(p.m))) { writeForm(); return; }
+    state.module = lastMultiMod = v || 'combo';
+    if (state.std.c) state.std.c = '';
+    save(); writeForm(); render(); return;
+  }
+  if (nm === 'editPartLabel' || nm === 'editPartN') {
+    const ep = editingPart(); if (!ep) return;
+    if (nm === 'editPartLabel') ep.label = e.target.value.slice(0, 60);
+    else ep.n = inEnum(+e.target.value, REG[ep.m].counts, REG[ep.m].n0);
+    if (state.std.c) { state.std.c = ''; writeStd(); }
+    save(); render(); return;
+  }
   if (nm === 'partRowLabel' || nm === 'partRowN') {
     const li = e.target.closest('[data-i]'), p = li && (state.parts || [])[+li.dataset.i];
     if (!p) return;
     if (nm === 'partRowLabel') p.label = e.target.value.slice(0, 60); else p.n = inEnum(+e.target.value, REG[p.m].counts, REG[p.m].n0);
     if (state.std.c) { state.std.c = ''; writeStd(); }
-    save(); render(); return;
+    save(); if (state.module === 'mix' && nm === 'partRowN') writeParts(); render(); return;
   }
   if (nm === 'stdGrade') { state.std.g = e.target.value; stdQuery = ''; $('#stdQ').value = ''; save(); writeStdList(); return; }
   if (nm === 'stdQ') { stdQuery = e.target.value; writeStdList(); return; }
   if (CLEARS_STD.test(nm) && state.std.c) { state.std.c = ''; writeStd(); }
-  readForm(e.target); syncModuleUI(); save(); render(); });
-/* Part controls: add the settings on the current tab, edit a part's settings on its tab, move, delete. */
+  readForm(e.target); syncModuleUI(); save(); render();
+});
+
 function partAction(e) {
-  const ab = e.target.closest('[data-part-act], #partAdd, #partUpdate, #partCancel'); if (!ab) return false;
-  const parts = state.parts ? state.parts.slice() : null, mod = state.module, after = () => { if (state.std.c) state.std.c = ''; save(); writeForm(); render(); };
+  const ab = e.target.closest('[data-part-act], #partAdd, #partDone'); if (!ab) return false;
+  const parts = (state.parts || []).slice(), after = () => { if (state.std.c) state.std.c = ''; save(); writeForm(); render(); };
+  if (ab.id === 'partDone') { editIdx = null; writeForm(); form.closest('.panel').scrollTop = 0; return true; }
   if (ab.id === 'partAdd') {
-    const base = parts || partsOf(state).map(p => makePart(state, p.m, p.n));
-    if (base.length >= PART_MAX) return true;
-    state.parts = base.concat(makePart(state, mod, +$('#partN').value, $('#partLabel').value.slice(0, 60)));
-    $('#partLabel').value = ''; state.module = 'combo'; after(); return true;
+    if (parts.length >= PART_MAX) return true;
+    const m = $('#addPartMod').value;
+    state.parts = parts.concat(makePart(state, m, REG[m].n0));
+    after(); return true;
   }
-  if (ab.id === 'partUpdate') { if (editIdx !== null && parts && parts[editIdx]) { parts[editIdx] = Object.assign({}, parts[editIdx], captureSettings(state, parts[editIdx].m)); state.parts = parts; } editIdx = null; state.module = 'combo'; after(); return true; }
-  if (ab.id === 'partCancel') { editIdx = null; state.module = 'combo'; save(); writeForm(); render(); return true; }
   const i = +ab.closest('[data-i]').dataset.i, act = ab.dataset.partAct;
-  if (!parts || !parts[i]) return true;
+  if (!parts[i]) return true;
   if (act === 'up' && i > 0) [parts[i - 1], parts[i]] = [parts[i], parts[i - 1]];
   else if (act === 'down' && i < parts.length - 1) [parts[i + 1], parts[i]] = [parts[i], parts[i + 1]];
-  else if (act === 'del') parts.splice(i, 1);
-  else if (act === 'edit') { editIdx = i; state.module = parts[i].m; if (parts[i][PART_KEY[parts[i].m]]) applyModSettings(state, parts[i]); state.std.c = ''; save(); writeForm(); render(); return true; }
+  else if (act === 'del' && parts.length > 1) parts.splice(i, 1);
+  else if (act === 'edit') { editIdx = i; writeForm(); form.closest('.panel').scrollTop = 0; return true; }
   if (act !== 'edit') editIdx = null;
-  state.parts = parts.length ? parts : null; after(); return true;
+  state.parts = parts;
+  if (state.module === 'mix' && !parts.some(p => MIX_MODS.includes(p.m))) state.module = lastMultiMod = 'combo';
+  after(); return true;
 }
+
 form.addEventListener('click', e => {
   if (partAction(e)) return;
-  if (e.target.closest('#partsClear, #mixPartsClear')) { state.parts = null; if (state.std.c) state.std.c = ''; save(); writeForm(); render(); return; }
   const r = e.target.closest('[data-std]');
-  if (r && !r.disabled) { state.std = { g: stdGrade(r.dataset.std), c: r.dataset.std }; applyStandard(state, state.std.c); save(); writeForm(); render(); return; }
-  const b = e.target.closest('[data-goto]'); if (!b) return;
-  state.module = b.dataset.goto; save(); writeForm(); render();
+  if (r && !r.disabled) {
+    editIdx = null;
+    state.std = { g: stdGrade(r.dataset.std), c: r.dataset.std };
+    applyStandard(state, state.std.c);
+    if (state.module === 'combo' || state.module === 'mix') lastMultiMod = state.module;
+    else lastSingleMod = state.module;
+    save(); writeForm(); render(); return;
+  }
 });
 form.elements.seed.addEventListener('blur', () => { form.elements.seed.value = state.seed; });
 const reportBtn = $('#reportBug');

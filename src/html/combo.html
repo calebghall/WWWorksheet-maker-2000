@@ -1,12 +1,17 @@
-      <!-- ===== Combined worksheet ===== -->
-      <fieldset data-mod="combo">
-        <legend>Sections</legend>
-        <div id="partsBox" hidden>
-          <ol id="partsList" class="parts"></ol>
-          <p class="note">This standard sets one or more parts, each with its own settings. The module tabs do not change them.</p>
-          <button type="button" class="btn ghost sm" id="partsClear">Use simple sections</button>
+      <!-- ===== Multi-topic worksheet ===== -->
+      <fieldset data-mod="combo mix" id="multiBox">
+        <legend>Arrangement</legend>
+        <div class="seg" role="radiogroup" aria-label="Multi-topic arrangement">
+          <label><input type="radio" name="multi_view" value="combo"><span>In sections</span></label>
+          <label><input type="radio" name="multi_view" value="mix"><span>Mixed together</span></label>
         </div>
-        <div id="comboRows"></div>
-        <p class="note" id="comboNote">Each section uses the settings from its own tab. Press Settings to change them.</p>
-      </fieldset>
+        <p class="note" id="multiNote"></p>
 
+        <div class="lbl" id="partsHeading" style="margin-top:14px">Sections</div>
+        <ol id="partsList" class="parts"></ol>
+
+        <div class="part-add" id="partAddRow">
+          <label class="part-f grow"><span class="lbl">Add topic</span><select id="addPartMod" name="addPartMod" aria-label="Topic to add"></select></label>
+          <button type="button" class="btn sm" id="partAdd">+ Add</button>
+        </div>
+      </fieldset>

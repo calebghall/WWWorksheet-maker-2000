@@ -1,55 +1,55 @@
-      <!-- ===== Shared ===== -->
-      <fieldset>
-        <legend>Layout</legend>
-        <div class="row" data-mod="area">
-          <span class="lbl">Problems per page</span>
-          <div class="seg" role="radiogroup" aria-label="Problems per page">
-            <label><input type="radio" name="perPage" value="4"><span>4</span></label>
-            <label><input type="radio" name="perPage" value="6"><span>6</span></label>
-            <label><input type="radio" name="perPage" value="8"><span>8</span></label>
-          </div>
-        </div>
-        <div class="row" data-mod="addsub muldiv fdp ns tm vis mix">
-          <span class="lbl">Problems per page</span>
-          <div class="seg" role="radiogroup" aria-label="Problems per page">
-            <label><input type="radio" name="arPerPage" value="12"><span>12</span></label>
-            <label><input type="radio" name="arPerPage" value="20"><span>20</span></label>
-            <label><input type="radio" name="arPerPage" value="30"><span>30</span></label>
-          </div>
-        </div>
-        <div class="row" data-mod="area addsub muldiv fdp ns tm vis mix">
-          <span class="lbl">Pages</span>
-          <div class="seg" role="radiogroup" aria-label="Pages">
-            <label><input type="radio" name="pages" value="1"><span>1</span></label>
-            <label><input type="radio" name="pages" value="2"><span>2</span></label>
-            <label><input type="radio" name="pages" value="3"><span>3</span></label>
-          </div>
-        </div>
-        <p class="note" data-mod="combo">Pages are added as needed to fit every section.</p>
-        <div class="row">
-          <span class="lbl">Paper size</span>
-          <div class="seg" role="radiogroup" aria-label="Paper size">
-            <label><input type="radio" name="paper" value="letter"><span>Letter</span></label>
-            <label><input type="radio" name="paper" value="a4"><span>A4</span></label>
-          </div>
-        </div>
-      </fieldset>
-
-      <fieldset>
-        <legend>Sheet</legend>
-        <div class="row">
-          <label class="lbl" for="title">Title</label>
-          <input type="text" id="title" name="title" maxlength="70">
-        </div>
-        <label class="chk" style="margin-top:8px"><input type="checkbox" name="nameLine"><b>Name and date lines</b></label>
-        <label class="chk" data-mod="area combo"><input type="checkbox" name="shade"><b>Shade the squares</b><small>Turn off to save ink. Outlines stay.</small></label>
-        <label class="chk"><input type="checkbox" name="key"><b>Add an answer key</b><small>Prints after the worksheet, answers in red (dark grey in greyscale).</small></label>
-        <label class="chk"><input type="checkbox" name="grey"><b>Greyscale print</b><small>Black and white copy. Colored shapes, bars and coins become clearly different shades of grey, so the worksheet still works on a black and white printer.</small></label>
-      </fieldset>
-
-      <fieldset>
-        <legend>Set code</legend>
-        <input type="text" id="seed" name="seed" maxlength="12" spellcheck="false" aria-label="Set code">
-        <p class="note">The same code always makes the same problems. It prints in the footer so a key can be matched to its worksheet later.</p>
-        <button type="button" class="btn ghost" id="reportBug" style="margin-top:10px">Report a problem with this worksheet</button>
-      </fieldset>
+      <!-- ===== Shared ===== -->
+      <fieldset data-chrome>
+        <legend>Layout</legend>
+        <div class="row" data-mod="area">
+          <span class="lbl">Problems per page</span>
+          <div class="seg" role="radiogroup" aria-label="Problems per page">
+            <label><input type="radio" name="perPage" value="4"><span>4</span></label>
+            <label><input type="radio" name="perPage" value="6"><span>6</span></label>
+            <label><input type="radio" name="perPage" value="8"><span>8</span></label>
+          </div>
+        </div>
+        <div class="row" data-mod="addsub muldiv fdp ns tm vis mix">
+          <span class="lbl">Problems per page</span>
+          <div class="seg" role="radiogroup" aria-label="Problems per page">
+            <label><input type="radio" name="arPerPage" value="12"><span>12</span></label>
+            <label><input type="radio" name="arPerPage" value="20"><span>20</span></label>
+            <label><input type="radio" name="arPerPage" value="30"><span>30</span></label>
+          </div>
+        </div>
+        <div class="row" data-mod="area addsub muldiv fdp ns tm vis mix">
+          <span class="lbl">Pages</span>
+          <div class="seg" role="radiogroup" aria-label="Pages">
+            <label><input type="radio" name="pages" value="1"><span>1</span></label>
+            <label><input type="radio" name="pages" value="2"><span>2</span></label>
+            <label><input type="radio" name="pages" value="3"><span>3</span></label>
+          </div>
+        </div>
+        <p class="note" data-mod="combo">Pages are added as needed to fit every section.</p>
+        <div class="row">
+          <span class="lbl">Paper size</span>
+          <div class="seg" role="radiogroup" aria-label="Paper size">
+            <label><input type="radio" name="paper" value="letter"><span>Letter</span></label>
+            <label><input type="radio" name="paper" value="a4"><span>A4</span></label>
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset data-chrome>
+        <legend>Sheet</legend>
+        <div class="row">
+          <label class="lbl" for="title">Title</label>
+          <input type="text" id="title" name="title" maxlength="70">
+        </div>
+        <label class="chk" style="margin-top:8px"><input type="checkbox" name="nameLine"><b>Name and date lines</b></label>
+        <label class="chk" data-mod="area combo"><input type="checkbox" name="shade"><b>Shade the squares</b><small>Turn off to save ink. Outlines stay.</small></label>
+        <label class="chk"><input type="checkbox" name="key"><b>Add an answer key</b><small>Prints after the worksheet, answers in red (dark grey in greyscale).</small></label>
+        <label class="chk"><input type="checkbox" name="grey"><b>Greyscale print</b><small>Black and white copy. Colored shapes, bars and coins become clearly different shades of grey, so the worksheet still works on a black and white printer.</small></label>
+      </fieldset>
+
+      <fieldset data-chrome>
+        <legend>Set code</legend>
+        <input type="text" id="seed" name="seed" maxlength="12" spellcheck="false" aria-label="Set code">
+        <p class="note">The same code always makes the same problems. It prints in the footer so a key can be matched to its worksheet later.</p>
+        <button type="button" class="btn ghost" id="reportBug" style="margin-top:10px">Report a problem with this worksheet</button>
+      </fieldset>

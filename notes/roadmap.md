@@ -102,6 +102,17 @@ Built so far:
 
 Exit: design note reviewed; a multi-configuration preset works in Combined and Mixed; set-code regression test passes; clipping check covers multi-part pages.
 
+## Phase 5.5: unified Multi-Topic UI and live part drawer
+
+Status: done. Replaces the overlapping Combined Worksheet / Mixed Practice / Parts controls with a single Multi-Topic builder and an in-panel part drawer, while keeping the underlying state format (`st.module`, `st.parts`), generators and set codes unchanged.
+
+What changed:
+
+- **Top mode switch (`One topic` | `Multi-topic`)** in `src/html/panel-top.html`: the worksheet selector now lists only the 7 single-topic modules when `One topic` is chosen, instead of placing `Mixed Practice` and `Combined Worksheet` beside individual math topics.
+- **Unified Multi-Topic builder** in `src/html/combo.html` and `src/css/combo.css` (removing `src/html/mix.html` and `src/html/parts.html`): Multi-Topic always operates directly on `st.parts` rather than switching between module checkboxes and a separate parts list. An arrangement switch toggles between `In sections` (`combo`, showing lettered parts and exact problem counts) and `Mixed together` (`mix`, showing percentage shares and layout pagination). `Mixed Practice` is omitted as a nested section inside `In sections`, and `area` / `vis` rows display a `Sections only` indicator when `Mixed together` is active.
+- **Live in-panel part drawer (`#partDrawer`)** in `src/js/core/ui.js`: clicking `Settings` on a part opens that module's fieldsets inside a panel drawer (`← Back to worksheet`, label, count/share) without changing `state.module`. The full Multi-Topic worksheet stays live on `#sheets` as edits are made, and standalone `One topic` settings are never overwritten (edits read/write through `partState` and `captureSettings`).
+- **Tests**: `tests/parts_ui.py` and `tests/clip.py` updated for the new selectors; all core logic and set-code tests remain unchanged.
+
 ## Phase 6: other states
 
 Data source: [Common Standards Project](https://commonstandardsproject.com/developers) (CSP). Its public description: a database of academic standards from all 50 states plus other organizations, grouped into standard sets by jurisdiction, subject and grade or course, with hierarchy, codes and a GUID per standard returned as normalized JSON. The CSP importer builds on Creative Commons licensed standards from the Achievement Standards Network (ASN).
