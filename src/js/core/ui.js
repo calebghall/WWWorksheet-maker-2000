@@ -31,19 +31,58 @@ function bugReportUrl(st, agent) {
   const withParts = q(JSON.stringify({ module: st.module, seed: st.seed, level: st.level, std: st.std, parts: st.parts, combo: st.combo }));
   return withParts.length <= 6000 ? withParts : q(JSON.stringify({ module: st.module, seed: st.seed, level: st.level, std: st.std }));
 }
-globalThis.__SP = { bugReportUrl, FGEN, NGEN, generateSet, renderAll, defaults, rngFrom, LEVELS, UNITS, TYPE_IDS, geom, svg, carries, borrows, arLayout, needSize, REG, META, comboSections, comboPages, genArithN, genAreaN, TGEN, flowPack, mixLayout, mixItems, STANDARDS, applyStandard, stdList, VGEN, VIS_TYPES, genVisN, partsOf, makePart, normPart, normParts, partState, captureSettings, applyModSettings };
+globalThis.__SP = { bugReportUrl, FGEN, NGEN, generateSet, renderAll, defaults, rngFrom, LEVELS, UNITS, TYPE_IDS, geom, svg, carries, borrows, arLayout, needSize, REG, META, comboSections, comboPages, genArithN, genAreaN, TGEN, flowPack, mixLayout, mixItems, STANDARDS, applyStandard, stdList, VGEN, VIS_TYPES, genVisN, partsOf, makePart, normPart, normParts, partState, captureSettings, applyModSettings, TYPE_DEFS, TYPE_HOME, typeTags, typeGradeRanges, frameworkBands, typeInBand, stdInBand, FRAMEWORK };
 
 /*==DOM==*/
 const $ = s => document.querySelector(s);
 const STORE = 'wwwm2000.v1';
 const form = $('#form'), sheetsEl = $('#sheets'), stageEl = $('#stage');
-/* The Number Sense and Shapes, Measures and Data checkboxes are built from the type registry (core/types.js), grouped by family. */
+/* The Number Sense and Shapes, Measures and Data checkboxes are built from the type registry (core/types.js), grouped by family.
+   Each family is a collapsible group that shows how many of its types are checked. A search box and a "Word problems only" toggle filter the
+   types, and the standards panel's grade band hides types outside the band. A checked type is never hidden by a filter. */
+const GROUPS_KEY = 'wwwm2000.groups';
+let openGroups = {};
+try { openGroups = JSON.parse(localStorage.getItem(GROUPS_KEY)) || {}; } catch (e) { openGroups = {}; }
+function saveOpenGroups() { try { localStorage.setItem(GROUPS_KEY, JSON.stringify(openGroups)); } catch (e) { /* ignore */ } }
+const bandNow = () => (state && state.band ? bandById(state.band.id) : null);
 function buildTypePanels() {
   for (const mod of ['ns', 'vis']) {
     const host = document.querySelector(`[data-types="${mod}"]`); if (!host) continue;
     const groups = [];
     for (const d of TYPE_DEFS[mod]) { let g = groups.find(h => h.family === d.family); if (!g) groups.push(g = { family: d.family, defs: [] }); g.defs.push(d); }
-    host.innerHTML = groups.map(g => `<div class="tgroup"><div class="tgroup-h">${g.family}</div>${g.defs.map(d => `<label class="chk"><input type="checkbox" name="${mod}_type" value="${d.id}"><b>${d.label}</b><small>${d.blurb}</small></label>`).join('')}</div>`).join('');
+    const lbl = d => `<label class="chk" data-id="${d.id}" data-q="${esc((d.label + ' ' + d.blurb + ' ' + d.id).toLowerCase())}"${typeTags(mod, d).includes('word') ? ' data-word="1"' : ''}><input type="checkbox" name="${mod}_type" value="${d.id}"><b>${d.label}</b><small>${d.blurb}</small></label>`;
+    host.innerHTML = `<div class="tfilter"><input type="search" name="tq" class="stdq" placeholder="Search types" aria-label="Search problem types"><label class="tword"><input type="checkbox" name="tword"> Word problems only</label></div>`
+      + '<p class="note tband" hidden><span class="tband-t"></span> <button type="button" class="linkbtn" data-band-all>Show all grades</button></p>'
+      + groups.map(g => `<details class="tgroup" data-fam="${esc(g.family)}" data-total="${g.defs.length}"><summary class="tgroup-h"><span>${g.family}</span><span class="tcount"></span></summary>${g.defs.map(lbl).join('')}</details>`).join('')
+      + '<p class="note tnone" hidden>No problem types match.</p>';
+  }
+}
+/* Applies the filters and updates every group's count. openChecked opens groups that hold a checked type (after a preset or a reload). */
+function refreshTypePanels(openChecked) {
+  const band = bandNow();
+  for (const mod of ['ns', 'vis']) {
+    const host = document.querySelector(`[data-types="${mod}"]`); if (!host) continue;
+    const q = host.querySelector('[name=tq]').value.trim().toLowerCase(), wordOnly = host.querySelector('[name=tword]').checked;
+    const filtering = !!(q || wordOnly || band);
+    let shown = 0;
+    host.querySelectorAll('details.tgroup').forEach(g => {
+      const labels = [...g.querySelectorAll('label.chk')];
+      const checked = labels.filter(l => l.querySelector('input').checked).length;
+      let vis = 0;
+      for (const l of labels) {
+        const on = l.querySelector('input').checked || ((!q || l.dataset.q.includes(q)) && (!wordOnly || l.dataset.word) && typeInBand(mod, l.dataset.id, band));
+        l.hidden = !on; if (on) vis++;
+      }
+      g.hidden = vis === 0; shown += vis;
+      g.querySelector('.tcount').textContent = `${checked}/${g.dataset.total}`;
+      const key = mod + '|' + g.dataset.fam;
+      if (!g.dataset.init) { g.dataset.init = '1'; g.dataset.auto = '1'; g.open = checked > 0 || !!openGroups[key]; g.dataset.auto = ''; }
+      else if (openChecked && checked > 0 && !g.open) { g.dataset.auto = '1'; g.open = true; g.dataset.auto = ''; }
+      if ((q || wordOnly) && vis > 0 && !g.open) { g.dataset.auto = '1'; g.open = true; g.dataset.auto = ''; }
+    });
+    host.querySelector('.tnone').hidden = shown > 0;
+    const bn = host.querySelector('.tband'); bn.hidden = !band;
+    if (band) bn.querySelector('.tband-t').textContent = `Showing types for grades ${band.label}.`;
   }
 }
 buildTypePanels();
@@ -72,6 +111,7 @@ function normalize(s) {
   out.pages = inEnum(+out.pages, [1, 2, 3], 1);
   out.paper = inEnum(out.paper, Object.keys(PAPER), 'letter');
   clampMod(out);
+  if (s.band && s.band.fw === FRAMEWORK.id && bandById(s.band.id)) out.band = { fw: FRAMEWORK.id, id: s.band.id }; else delete out.band;
   for (const id of Object.keys(REG)) { const c = out.combo[id]; c.on = !!c.on; c.n = inEnum(+c.n, REG[id].counts, REG[id].n0); }
   if (!Object.values(out.combo).some(c => c.on)) out.combo[Object.keys(REG)[0]].on = true;
   out.parts = normParts(s.parts);
@@ -123,7 +163,8 @@ const NS_NOTES = {
 let stdQuery = '';
 function writeStdList() {
   const q = stdQuery.trim().toLowerCase();
-  const rows = STD_ALL.filter(r => q ? (r[0] + ' ' + r[1] + ' ' + r[2]).toLowerCase().includes(q) : stdGrade(r[0]) === state.std.g);
+  const band = bandNow();
+  const rows = STD_ALL.filter(r => stdInBand(r[0], band) && (q ? (r[0] + ' ' + r[1] + ' ' + r[2]).toLowerCase().includes(q) : stdGrade(r[0]) === state.std.g));
   const badge = p => !p ? ['gap', 'Not yet'] : p.n ? ['part', 'Partial'] : ['ok', ''];
   $('#stdList').innerHTML = rows.length ? rows.map(r => {
     const p = STD_BY_CODE[r[0]], b = badge(p), on = r[0] === state.std.c;
@@ -132,7 +173,11 @@ function writeStdList() {
   }).join('') : '<p class="note">No standards match.</p>';
 }
 function writeStd() {
-  $('#stdGrades').innerHTML = STD_GRADE_IDS.map(id => `<label><input type="radio" name="stdGrade" value="${id}"${state.std.g === id ? ' checked' : ''}><span title="${STD_GRADES[id]}">${id}</span></label>`).join('');
+  const band = bandNow(), bands = frameworkBands();
+  if (band && !band.grades.includes(gradeNum(state.std.g))) state.std.g = band.grades[0] === 0 ? 'K' : String(band.grades[0]);
+  $('#stdBands').hidden = bands.length < 2 || bands.every(b => b.grades.length === 1);
+  $('#stdBands').innerHTML = [{ id: 'all', label: 'All grades' }].concat(bands).map(b => `<label><input type="radio" name="stdBand" value="${b.id}"${(band ? band.id : 'all') === b.id ? ' checked' : ''}><span>${b.label}</span></label>`).join('');
+  $('#stdGrades').innerHTML = STD_GRADE_IDS.filter(id => !band || band.grades.includes(gradeNum(id))).map(id => `<label><input type="radio" name="stdGrade" value="${id}"${state.std.g === id ? ' checked' : ''}><span title="${STD_GRADES[id]}">${id}</span></label>`).join('');
   $('#stdFw').textContent = FRAMEWORK.name;
   writeStdList();
   const s = STD_BY_CODE[state.std.c];
@@ -182,6 +227,7 @@ function writeForm() {
   for (const n of ['nameLine', 'shade', 'key', 'grey']) form.elements[n].checked = !!state[n];
   form.elements.seed.value = state.seed;
   syncModuleUI();
+  refreshTypePanels(true);
 }
 
 function cleanPartMix(parts) {
@@ -408,10 +454,15 @@ form.addEventListener('input', e => {
     if (state.std.c) { state.std.c = ''; writeStd(); }
     save(); if (state.module === 'mix' && nm === 'partRowN') writeParts(); render(); return;
   }
+  if (nm === 'tq' || nm === 'tword') { refreshTypePanels(); return; }
+  if (nm === 'stdBand') {
+    if (e.target.value === 'all') delete state.band; else state.band = { fw: FRAMEWORK.id, id: e.target.value };
+    save(); writeStd(); refreshTypePanels(); return;
+  }
   if (nm === 'stdGrade') { state.std.g = e.target.value; stdQuery = ''; $('#stdQ').value = ''; save(); writeStdList(); return; }
   if (nm === 'stdQ') { stdQuery = e.target.value; writeStdList(); return; }
   if (CLEARS_STD.test(nm) && state.std.c) { state.std.c = ''; writeStd(); }
-  readForm(e.target); syncModuleUI(); save(); render();
+  readForm(e.target); syncModuleUI(); save(); refreshTypePanels(); render();
 });
 
 function partAction(e) {
@@ -469,6 +520,7 @@ function partAction(e) {
 }
 
 form.addEventListener('click', e => {
+  if (e.target.closest('[data-band-all]')) { delete state.band; save(); writeStd(); refreshTypePanels(); return; }
   if (partAction(e)) return;
   const r = e.target.closest('[data-std]');
   if (r && !r.disabled) {
@@ -480,6 +532,13 @@ form.addEventListener('click', e => {
     save(); writeForm(); render(); return;
   }
 });
+/* Remember which type groups the person opened (toggle does not bubble, so listen in the capture phase). */
+form.addEventListener('toggle', e => {
+  const g = e.target; if (!g.matches || !g.matches('details.tgroup') || g.dataset.auto) return;
+  const host = g.closest('[data-types]'), key = host.dataset.types + '|' + g.dataset.fam;
+  if (g.open) openGroups[key] = true; else delete openGroups[key];
+  saveOpenGroups();
+}, true);
 form.elements.seed.addEventListener('blur', () => { form.elements.seed.value = state.seed; });
 const reportBtn = $('#reportBug');
 if (reportBtn) reportBtn.addEventListener('click', () => window.open(bugReportUrl(state, navigator.userAgent), '_blank', 'noopener'));

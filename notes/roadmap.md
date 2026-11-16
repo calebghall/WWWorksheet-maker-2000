@@ -2,7 +2,7 @@
 
 Goals, in the order the work is sequenced:
 
-1. Finish Tennessee support for kindergarten through Grade 5 (31 Gap rows: Grade 4 has 6, Grade 5 has 25).
+1. Tennessee support for kindergarten through Grade 5 is complete (150 standards Supported, 0 Gap). Keep it passing as the modules are regrouped.
 2. Let one worksheet hold several configurations of the same module (the "parts" design, called Option B in earlier notes).
 3. Add other states' standards.
 
@@ -113,7 +113,9 @@ What changed:
 - **Live in-panel part drawer (`#partDrawer`)** in `src/js/core/ui.js`: clicking `Settings` on a part opens that module's fieldsets inside a panel drawer (`← Back to worksheet`, label, count/share) without changing `state.module`. The full Multi-Topic worksheet stays live on `#sheets` as edits are made, and standalone `One topic` settings are never overwritten (edits read/write through `partState` and `captureSettings`).
 - **Tests**: `tests/parts_ui.py` and `tests/clip.py` updated for the new selectors; all core logic and set-code tests remain unchanged.
 
-## Phase 5.2: refactor the worksheet grouping
+## Phase 5.2: regroup the worksheet modules
+
+Status: 5.2a, 5.2d and 5.2f are done (type map, tags, grade ranges, collapsible groups with search, grade-band filter). 5.2b, 5.2c, 5.2e and 5.2g remain. Sub-phases ship as small patches in the order 5.2a, 5.2d, 5.2b, 5.2c, 5.2e, 5.2f, 5.2g. The UI work (5.2d) goes before the migration (5.2b) because it needs no state change and fixes the long checkbox lists at once.
 
 ### Why `Area Squares` was separate (and how to combine it)
 
@@ -123,46 +125,74 @@ Mostly **history**, not a hard layout limitation:
 - `Shapes, Measures and Data` (`vis`) came later and uses `CELL_MODS` (`arLayout` / `arithPlan`), which takes `12 / 20 / 30` per page and **automatically steps down to `8`, `6`, or `4` per page** when the SVGs are tall.
 - `vis` *already* renders area and 3D-volume SVGs (`acon`, `pera`, `vcubes`, `vlwh`, `vcomp`) inside `CELL_MODS`.
 
-**How to combine `Area Squares` into `Geometry, Area & Volume`:**
-Wrap `count`, `mult`, `draw`, `cmp`, and `lsh` as `defTypes` entries inside `Geometry, Area & Volume` using their existing `svg(...)` helper and `win`/`hin` hints, and keep the `Units` dropdown + `Shade the squares` checkbox in that module's panel (only active/relevant when grid-area types are used). As a bonus, those 5 grid types become regular `CELL_MODS` problems and can participate in `Mixed together` flow layouts too if desired.
+To combine: wrap `count`, `mult`, `draw`, `cmp` and `lsh` as `defTypes` entries inside Geometry using the existing `svg(...)` helper and `win`/`hin` hints. Keep the `Units` dropdown and `Shade the squares` checkbox in that module's panel, active only when a grid-area type is checked. These types then become regular `CELL_MODS` problems and can join `Mixed together`.
 
----
+### Design rules
 
-### Proposed Path B Breakdown (8 balanced modules, Word Problems kept in `Number Sense`)
+1. **Modules follow the standards strands.** Other states reuse the Common Core domains, so strand-named modules keep Phase 6 crosswalks short. Module ids: `addsub`, `muldiv`, `ns` (number and place value), `oa` (operations and algebraic thinking; was proposed as `alg`), `fdp`, `tm`, `meas`, `geom`.
+2. **Size cap: about 30 types and 5 groups per module.** `ns` and `fdp` are at the limit. Split a group that grows past about 10 types. In `geom`, Volume and Coordinate plane share one group, "Space and coordinates".
+3. **Word problems are a tag, not a group.** Every `defTypes` entry takes `tags: [...]`. Word-style types (`wadd`, `wlen`, `wmul`, `wcmp`, `wstep`, `west`, `mword`, `fword6`, `cstory` and others) carry `tags: ['word']` and live in their home strand. The type search and a "Word problems only" toggle cut across modules. The 7 `ns` word types may stay together as one group in `ns`, but the tag is what filters.
+4. **Mapping is keyed by `(oldModule, id)`.** Ids repeat across modules (`cmp` in fdp and in Area Squares, `conv` in fdp and tm). Keys look like `ns.cmp2`, `vis.cmp`, `area.cmp`. A test fails when any registered type has no mapping, or when a mapping names a type that does not exist.
+5. **Legacy module ids stay as aliases.** Part and section seeds use the module id (`seed|id`, `seed|id|k`), so moving a type changes its random stream. `ns`, `vis` and `area` stay as hidden legacy modules that old set codes and saved settings load into and render exactly as before. New sheets use the new modules. Presets migrate one at a time. Each preset that changes output is announced and its `tests/golden-sets.json` entry updated, per the working agreements.
+6. **Mixability is a property of the group.** Today `area` and `vis` are marked "Sections only" as whole modules. After the move, only specific families (for example solids drawings and large graphs) carry `mix: false`. The Multi-Topic builder shows "Sections only" per family, not per module.
+7. **Grade-band filter lives in the standards panel**, not in the type lists, and bands come from the selected framework (see below).
+8. **Type counts reconcile before code.** The plan listed about 158 types in 8 modules against 133 registry entries today (65 `ns` and 68 `vis`). 5.2a generates the mapping table from the registry and marks each type moved, merged or new.
 
-With `Area Squares` merged into Geometry and `Word Problems` kept in `Number Sense`:
+### Target modules
 
-1. **Addition and Subtraction** (`addsub`) — unchanged
-2. **Multiplication and Division** (`muldiv`) — unchanged
-3. **Number Sense** (`ns`, 65 → **38 types** in 4 collapsible groups)
-   - *Counting & number lines*: `cnt`, `cntn`, `picop`, `showop`, `array`, `mfac`, `dint`, `cfwd`, `kseq`, `cseq`, `skip`, `parity`, `par20`, `line`, `nline`
-   - *Place value, comparing & rounding*: `place`, `placew`, `tens`, `numrw`, `more`, `moreexp`, `tenx`, `compare`, `cmp2`, `order`, `round`, `roundw`, `rnd3`, `est`
-   - *Factors & multiples*: `fact`, `facmodel`
+1. **Addition and Subtraction** (`addsub`): unchanged.
+2. **Multiplication and Division** (`muldiv`): unchanged.
+3. **Number Sense** (`ns`, from 65 types to about 38, 4 collapsible groups)
+   - *Counting and number lines*: `cnt`, `cntn`, `picop`, `showop`, `array`, `mfac`, `dint`, `cfwd`, `kseq`, `cseq`, `skip`, `parity`, `par20`, `line`, `nline`
+   - *Place value, comparing and rounding*: `place`, `placew`, `tens`, `numrw`, `more`, `moreexp`, `tenx`, `compare`, `cmp2`, `order`, `round`, `roundw`, `rnd3`, `est`
+   - *Factors and multiples*: `fact`, `facmodel`
    - *Word problems*: `wadd`, `wlen`, `wmul`, `wcmp`, `wstep`, `west`, `mword`
-4. **Equations, Expressions & Patterns** (`alg`, **20 types** in 3 collapsible groups)
-   - *Bonds, equations & properties*: `bond`, `bondp`, `eqn`, `equal`, `prop`, `rel`, `substr`, `sub10`, `mul10`, `mcomp`
-   - *Order of operations & expressions*: `exeval`, `exwrite`
-   - *Patterns & charts*: `pat`, `patmake`, `chart`, `chartwhy`, `mchart`, `rulepat`, `rule2`, `rule2g`
-5. **Fractions, Decimals & Percents** (`fdp`, 9 → **29 types** in 4 collapsible groups)
-   - *Visual models & number lines*: `part`, `partw`, `pdraw`, `gpart`, `fmodel`, `fline`
-   - *Compare, simplify & equivalence*: `simp`, `equiv`, `cmp`, `f100`, `fdec`
+4. **Operations and Algebraic Thinking** (`oa`, about 20 types, 3 groups)
+   - *Bonds, equations and properties*: `bond`, `bondp`, `eqn`, `equal`, `prop`, `rel`, `substr`, `sub10`, `mul10`, `mcomp`
+   - *Order of operations and expressions*: `exeval`, `exwrite`
+   - *Patterns and charts*: `pat`, `patmake`, `chart`, `chartwhy`, `mchart`, `rulepat`, `rule2`, `rule2g`
+5. **Fractions, Decimals and Percents** (`fdp`, 9 types grows to about 29, 4 groups; takes `ns` Fraction operations and Decimals, and `vis` Equal parts)
+   - *Visual models and number lines*: `part`, `partw`, `pdraw`, `gpart`, `fmodel`, `fline`
+   - *Compare, simplify and equivalence*: `simp`, `equiv`, `cmp`, `f100`, `fdec`
    - *Fraction operations*: `fadd`, `fmul`, `fadd5`, `fctx`, `fdiv5`, `fmul5`, `fscale`, `fword6`, `fdiv7`
-   - *Decimals, powers of 10 & percents*: `decadd`, `decmul`, `tenxd`, `pow10`, `decrw`, `rnddec`, `decrsn`, `conv`, `pct`
-6. **Time and Money** (`tm`, 11 → **12 types**)
-   - Adds `coin` (identify penny/nickel/dime/quarter & value) from `vis`, alongside `like`, `cpic`, `coins`, `madd`, `change`, `cstory`, `clock`, `dclock`, `ampm`, `elapsed`, `conv`.
-7. **Measurement & Data** (`meas`, **26 types** in 3 collapsible groups)
-   - *Measuring & tools*: `cmpm`, `ord3`, `munit`, `ruler`, `mtwo`, `mdiff`, `mest`, `mattr`, `mtool`, `mrule2`, `rulq`, `mvol`
+   - *Decimals, powers of 10 and percents*: `decadd`, `decmul`, `tenxd`, `pow10`, `decrw`, `rnddec`, `decrsn`, `conv`, `pct`
+6. **Time and Money** (`tm`, 12 types): adds `coin` from `vis`, with `like`, `cpic`, `coins`, `madd`, `change`, `cstory`, `clock`, `dclock`, `ampm`, `elapsed`, `conv`. The coin drawing helpers (`coins.js`, `coin-images.js`, `coin-paths.js`) stay in the same bundle as the types that use them; `tests/site-check.js` still guards the Pages build.
+7. **Measurement and Data** (`meas`, about 26 types, 3 groups)
+   - *Measuring and tools*: `cmpm`, `ord3`, `munit`, `ruler`, `mtwo`, `mdiff`, `mest`, `mattr`, `mtool`, `mrule2`, `rulq`, `mvol`
    - *Unit conversions*: `convm`, `conv5`
-   - *Graphs & line plots*: `sort`, `tally`, `pict`, `bar`, `pict4`, `bar4`, `pictg`, `barg`, `lplot`, `lplotq`, `lineplot`, `lplot5`
-8. **Geometry, Area & Volume** (`geom`, **33 types** in 4 collapsible groups)
-   - *Shapes, solids & symmetry*: `shname`, `shall`, `shdraw`, `solid`, `pos`, `pos2`, `shcmp`, `shbuild`, `comp`, `split`, `gcat`, `gpoly`, `gclass`, `gsym`, `ghier`
-   - *Lines & angles*: `gfig`, `angc`, `protr`, `angadd`
-   - *Area & perimeter*: `count`, `mult`, `draw`, `cmp`, `lsh` (from `Area Squares`), `acon`, `pera`, `perim`, `rectf`
-   - *Volume & coordinate plane*: `vcubes`, `vlwh`, `vcomp`, `cplane`, `cpword`
+   - *Graphs and line plots*: `sort`, `tally`, `pict`, `bar`, `pict4`, `bar4`, `pictg`, `barg`, `lplot`, `lplotq`, `lineplot`, `lplot5`
+8. **Geometry, Area and Volume** (`geom`, about 33 types, 4 groups)
+   - *Shapes, solids and symmetry*: `shname`, `shall`, `shdraw`, `solid`, `pos`, `pos2`, `shcmp`, `shbuild`, `comp`, `split`, `gcat`, `gpoly`, `gclass`, `gsym`, `ghier`
+   - *Lines and angles*: `gfig`, `angc`, `protr`, `angadd`
+   - *Area and perimeter*: `count`, `mult`, `draw`, `cmp`, `lsh` (from `Area Squares`), `acon`, `pera`, `perim`, `rectf`
+   - *Space and coordinates*: `vcubes`, `vlwh`, `vcomp`, `cplane`, `cpword`
 
-Plus, make each `.tgroup` family in those modules a **collapsible `<details>`** showing how many types are checked (e.g., `Word problems (0/7)`), with a small **"Search types…"** filter input at the top so 20–38 types never feel like a wall of checkboxes.
+### Type panels
 
-Explore whether possible to no longer limit some sections to section only - but to allow them to be mixed. Related review: overhaul of spacing and layout engine - room for improvement?
+- Each group is a collapsible `<details>` showing how many types are checked, for example `Word problems (0/7)`.
+- A "Search types…" input at the top of each module filters by label, blurb, id and tag.
+- Default state is collapsed, except groups that contain a checked type. Open and closed state is remembered per group in `localStorage`, with every read and write wrapped in try/catch, and the page works without it.
+
+### Grade-band filter
+
+- **Location:** the standards panel (`#stdBox`, under "Browse Standards"), next to the framework and standard pickers. It is not in the type lists.
+- **Bands belong to the framework.** States divide the grades differently (K to 2 and 3 to 5 for Common Core and Tennessee-style groupings; K to 1, 2 to 3 and 4 to 5 elsewhere; some states publish K to 8 or course-based bands). Each framework file carries `bands: [{ id, label, grades: [0, 1, 2] }, ...]`, with kindergarten as grade 0. A framework without `bands` gets one band per grade. The first-visit framework supplies the default bands, as it supplies the default standards.
+- **Types carry a grade range** `g: [lo, hi]` on a canonical grade scale, set in `defTypes` (a type with no `g` is always shown). A type is shown when its range overlaps the selected band's grades. Grade is a view over the groups, not a way to group; modules stay organized by kind of worksheet.
+- **Effect:** choosing a band filters the standards list and also the checkbox lists in the module panels, with a visible "Showing grades K to 2 · Show all" line in each panel. A checked type is never hidden by the filter, and the checked count still includes it.
+- **State:** `state.band` holds `{ fw, id }`. Settings saved before this change have no band and load as "all grades". Changing framework resets the band if its id does not exist in the new framework.
+- **Tests:** band overlap logic (a unit test over every type's `g`), a framework with unusual bands, a checked type that stays visible outside the band, and the panel round trip in `tests/parts_ui.py`.
+
+### Sub-phases
+
+- **5.2a Mapping and registry (no output change). Done.** `src/js/core/typemeta.js` holds `TYPE_HOME` (158 types: the 133 registry types plus the 25 hard-coded in the fdp, tm and area panels, which settles the count question), word tags, and grade ranges computed from the presets. `tests/logic-typemap.js` checks it. Add `tags` and `g` to `defTypes`. Generate the `(oldModule, id)` to new module and group table into `notes/`, with the count reconciliation. Fix the stale Goal 1 text. Test: every type mapped, no unknown ids. Set-code and golden tests unchanged.
+- **5.2d Panel UI (no output change). Done for `ns` and `vis`, the registry-built panels.** The fdp, tm and area panels are hard-coded HTML and get groups and search when their types move in 5.2b/5.2c. `tests/types_ui.py` covers it. Collapsible groups with checked counts, type search, tag toggle. Works inside the current modules first, using the existing families (`ns` has 8, `vis` has 13). Extend `tests/parts_ui.py`.
+- **5.2b Modules and migration.** Introduce `oa`, `meas` and `geom`, move types per the table, keep legacy aliases, translate saved state (`ns.types`, `vis.types`, `area.*`) on load. `tests/logic-standards.js` passes for all 150 presets; `logic-setcodes.js` passes for legacy codes.
+- **5.2c Area Squares merge.** Convert the five grid types to `defTypes` entries; move Units and Shade controls into Geometry. Announce the output change; update golden sets for the `area` module only.
+- **5.2e Group-level mixability.** Per-family `mix` flag; update the Multi-Topic indicators. Run `logic-mix.js` density checks.
+- **5.2f Grade-band filter. Done.** Bands are in `framework.js` (`bands`); `state.band` is `{ fw, id }`; the control is in the standards panel. Hard-coded fdp and tm types are not yet filtered. Needs framework `bands` (Tennessee file first). Depends on the framework layout in Phase 6 step 1 for the final data location; until then, Tennessee's bands are a constant in the framework object in `standards.js`.
+- **5.2g Layout engine review.** Time-boxed investigation of spacing and the layout engine, producing a note, not code.
+
+Exit: every registered type has a home, a group, tags and a grade range; legacy set codes and saved settings load unchanged; the full suite passes.
 
 ## Phase 6: other states
 
@@ -203,6 +233,7 @@ Exit per state: every row in the state's K to 5 standards is Supported, Partial 
 Small pieces that the phases above depend on or that are easy to miss:
 
 - **Saved settings and framework id.** The picked standard is stored as a grade and code (`state.std = { g, c }` in `src/js/core/ui.js`). Add a framework id, defaulting to the first-visit constant, and load older saved settings (which have no framework id) as Tennessee. The "Report a problem" link should include the framework and code when a standard is picked.
+- **Grade bands per framework.** Each framework file carries its own `bands` list (id, label, grades, with kindergarten as 0), used by the grade-band filter in the standards panel (Phase 5.2). Imports record the state's published divisions; a framework without them gets one band per grade.
 - **Crosswalk format.** One file per framework mapping each state code to a canonical preset id (or to a Gap or Partial note). Generate per-framework coverage notes with `tests/coverage.js` plus one index note with counts for all frameworks.
 - **Provenance metadata.** Each framework file records its CSP standard set id, import date and the data license, so a later re-import can show what changed.
 - **Refresh process.** States revise standards on their own schedule. Re-import on demand, and have the import script print a diff (added, removed, changed rows) for review before committing.
@@ -220,6 +251,8 @@ Small pieces that the phases above depend on or that are easy to miss:
 
 ## Open questions
 
+- Known intermittent clipping in the combined sheet: the vis cell "Count. Circle the group with more" (compare type) overflows its box for some seeds (13 of 60 seeds in a sweep of the combined sheet; identical before and after Phase 5.2a/d/f). `tests/clip.py` prints it but does not fail on it. Fix the cell size hints (`win`/`hin`/`bw`) in `vis-counting.js` and make the check fail.
+- Grade bands per state: confirm each target state's published K to 5 divisions before fixing the `bands` format in the framework file.
 - Which state is the second framework in phase 6 (the first is the Tennessee migration), to decide the crosswalk test case.
 - What CSP's terms of use and attribution rules are, and whether committing imported standards text to a public repo is allowed.
 - Whether a Tennessee standard that bundles skills should sit in Combined (lettered sections) or Mixed (interleaved) by default once parts exist.

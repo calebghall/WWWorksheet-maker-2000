@@ -28,12 +28,15 @@ node tests/logic-bugreport.js
 node tests/logic-mulsizes.js
 node tests/logic-setcodes.js
 node tests/logic-parts.js
+node tests/logic-typemap.js
 "$PY" tests/clip.py
 "$PY" tests/parts_ui.py
+"$PY" tests/types_ui.py
 "$PY" build.py --target site
 node tests/site-check.js
 DIST_URL=$("$PY" -c 'import pathlib; print(pathlib.Path("dist/index.html").resolve().as_uri())')
 CLIP_URL="$DIST_URL" "$PY" tests/clip.py | tail -1
 CLIP_URL="$DIST_URL" "$PY" tests/parts_ui.py
+CLIP_URL="$DIST_URL" "$PY" tests/types_ui.py
 "$PY" build.py
 echo "ALL CHECKS PASSED"

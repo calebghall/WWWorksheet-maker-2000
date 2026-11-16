@@ -16,6 +16,7 @@ with sync_playwright() as p:
         pg.check(f'input[name="module"][value="{mod}"]', force=True)
         pg.check('input[name="pages"][value="3"]', force=True)
         if mod in ('tm', 'ns', 'vis'):
+            pg.evaluate("document.querySelectorAll('details.tgroup').forEach(d => { d.open = true; })")
             for i in pg.query_selector_all(f'input[name="{pre}_type"]'):
                 if not i.is_checked(): i.check(force=True)
         for lvl in '123':
