@@ -142,6 +142,7 @@ function writeStd() {
 let lastSingleMod = (state.module === 'combo' || state.module === 'mix') ? 'area' : state.module;
 let lastMultiMod = state.module === 'mix' ? 'mix' : 'combo';
 let editIdx = null;
+let addCardIdx = null;
 function ensureMultiParts() {
   if (state.parts && state.parts.length) return;
   if (state.module === 'mix') {
@@ -223,7 +224,7 @@ function writeParts() {
       return `<li class="pr" data-i="${i}"><span class="pl">${badge}</span><div class="pr-f"><input type="text" name="partRowLabel" maxlength="60" value="${esc(p.label || '')}" placeholder="${esc(REG[p.m].name)}" aria-label="Label of item ${i + 1}"><div class="pr-sub">${sub}</div>${sel}<span class="pr-b">${btn('data-part-act="edit"', 'Settings', 'Settings for ' + REG[p.m].name)}${btn('data-part-act="up"', '↑', 'Move up', i === 0)}${btn('data-part-act="down"', '↓', 'Move down', i === parts.length - 1)}${btn('data-part-act="del"', '×', 'Delete', parts.length <= 1)}</span></div></li>`;
     }).join('');
   } else {
-    const mixOpts = MIX_MODS.map(id => `<option value="${id}">${esc(MODULES[id].name)}</option>`).join('');
+    if (addCardIdx !== null && (!cards[addCardIdx] || !cards[addCardIdx].mixable || parts.length >= PART_MAX)) addCardIdx = null;
     $('#partsList').innerHTML = cards.map((card, ci) => {
       const L = String.fromCharCode(65 + ci), lead = card.items[0].p, mixed = card.items.length > 1;
       const ph = mixed ? 'Mixed Practice' : REG[lead.m].name;
@@ -233,9 +234,12 @@ function writeParts() {
         const rm = mixed ? btn('data-part-act="del"', '×', `Remove ${REG[p.m].name} from Part ${L}`) : '';
         return `<div class="trow" data-i="${i}"><span class="trow-name">${esc(REG[p.m].name)}</span>${sel}<span class="pr-b">${btn('data-part-act="edit"', 'Settings', `Settings for ${REG[p.m].name}`)}${rm}</span></div>`;
       }).join('');
-      const addMix = card.mixable && parts.length < PART_MAX
-        ? `<div class="sec-add"><select class="sec-add-mod" name="secAddMod" aria-label="Topic to mix into Part ${L}">${mixOpts}</select>${btn('data-sec-add="1"', '+ Mix in', `Mix topic into Part ${L}`)}</div>`
-        : '';
+      let addMix = '';
+      if (card.mixable && parts.length < PART_MAX) {
+        addMix = addCardIdx === ci
+          ? `<div class="sec-add"><div class="sec-pick-h"><span>Add a topic to Part ${L}:</span>${btn('data-sec-pick-cancel="1"', 'Cancel', 'Cancel')}</div><div class="sec-pick">${MIX_MODS.map(id => btn(`data-sec-pick="${id}"`, esc(MODULES[id].name), `Add ${MODULES[id].name} to Part ${L}`)).join('')}</div></div>`
+          : `<div class="sec-add">${btn('data-sec-open="1"', '+ Add more to section', `Add more topics to Part ${L}`)}</div>`;
+      }
       return `<li class="sec-card" data-c="${ci}">${head}<div class="sec-topics">${rows}</div>${addMix}</li>`;
     }).join('');
   }
@@ -411,23 +415,27 @@ form.addEventListener('input', e => {
 });
 
 function partAction(e) {
-  const ab = e.target.closest('[data-sec-act], [data-sec-add], [data-part-act], #partAdd, #partDone'); if (!ab) return false;
+  const ab = e.target.closest('[data-sec-open], [data-sec-pick], [data-sec-pick-cancel], [data-sec-act], [data-part-act], #partAdd, #partDone'); if (!ab) return false;
   const parts = (state.parts || []).slice(), after = () => { if (state.std.c) state.std.c = ''; save(); writeForm(); render(); };
   if (ab.id === 'partDone') { editIdx = null; writeForm(); form.closest('.panel').scrollTop = 0; return true; }
+  if (ab.dataset.secOpen) { addCardIdx = +ab.closest('[data-c]').dataset.c; writeParts(); return true; }
+  if (ab.dataset.secPickCancel) { addCardIdx = null; writeParts(); return true; }
+  if (ab.dataset.secPick) {
+    if (parts.length >= PART_MAX) return true;
+    const cards = groupPartCards(parts), ci = +ab.closest('[data-c]').dataset.c, card = cards[ci];
+    addCardIdx = null;
+    if (!card || !card.mixable) { writeParts(); return true; }
+    const m = ab.dataset.secPick;
+    const np = makePart(state, m, REG[m].n0); np.mix = true;
+    parts.splice(card.end + 1, 0, np);
+    state.parts = parts; after(); return true;
+  }
+  addCardIdx = null;
   if (ab.id === 'partAdd') {
     if (parts.length >= PART_MAX) return true;
     const m = $('#addPartMod').value;
     state.parts = parts.concat(makePart(state, m, REG[m].n0));
     after(); return true;
-  }
-  if (ab.dataset.secAdd) {
-    if (parts.length >= PART_MAX) return true;
-    const cards = groupPartCards(parts), ci = +ab.closest('[data-c]').dataset.c, card = cards[ci];
-    if (!card || !card.mixable) return true;
-    const m = ab.closest('.sec-card').querySelector('.sec-add-mod').value;
-    const np = makePart(state, m, REG[m].n0); np.mix = true;
-    parts.splice(card.end + 1, 0, np);
-    state.parts = parts; after(); return true;
   }
   if (ab.dataset.secAct) {
     const cards = groupPartCards(parts), ci = +ab.closest('[data-c]').dataset.c, act = ab.dataset.secAct;

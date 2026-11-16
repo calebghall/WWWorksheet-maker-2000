@@ -61,8 +61,8 @@ with sync_playwright() as p:
     p_ = parts(); check(p_[3]['md']['da'] == 3 and p_[3]['label'] == 'Small' and p_[3]['n'] == 10, 'live edit keeps label and size')
 
     # Hybrid sheet: mix another topic directly inside Part B (Addition and Subtraction + Time and Money) alongside Area Squares (Part A)
-    pg.select_option('#partsList .sec-card:nth-child(2) .sec-add-mod', 'tm')
-    pg.click('#partsList .sec-card:nth-child(2) [data-sec-add]'); pg.wait_for_timeout(200)
+    pg.click('#partsList .sec-card:nth-child(2) [data-sec-open]'); pg.wait_for_timeout(100)
+    pg.click('#partsList .sec-card:nth-child(2) [data-sec-pick="tm"]'); pg.wait_for_timeout(200)
     check(len(parts()) == 6 and len(cards()) == 5, 'mixing into Part B keeps 5 section cards with 6 parts ' + str(cards()))
     check(cards()[1] == 'Part B:Mixed Practice', 'mixed card defaults to Mixed Practice title')
     check(pg.evaluate("()=>document.querySelectorAll('#partsList .sec-card:nth-child(2) .trow').length") == 2, 'Part B shows both equal sibling topics')

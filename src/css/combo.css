@@ -22,8 +22,9 @@
 .trow-name { flex: 1 1 100%; font-size: 13px; font-weight: 700; }
 .trow select, .pdrawer-meta select, .sec-add select { width: auto; padding: 6px 8px; font-size: 13px; }
 .trow .pr-b { margin-left: auto; }
-.sec-add { display: flex; gap: 6px; align-items: center; margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--line); }
-.sec-add select { flex: 1; min-width: 0; }
+.sec-add { margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--line); }
+.sec-pick-h { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 6px; font-size: 12px; color: var(--muted); }
+.sec-pick { display: flex; flex-wrap: wrap; gap: 6px; }
 .parts li.pr { display: grid; grid-template-columns: 2.8em minmax(0, 1fr); gap: 8px; align-items: start; padding: 8px 0; border-bottom: 1px solid var(--line); }
 .parts li.pr .pl { font-weight: 700; color: var(--accent); padding-top: 7px; }
 .parts .pr-f { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; min-width: 0; }
