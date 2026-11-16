@@ -102,7 +102,7 @@ Built so far:
 
 Exit: design note reviewed; a multi-configuration preset works in Combined and Mixed; set-code regression test passes; clipping check covers multi-part pages.
 
-## Phase 5.5: unified Multi-Topic UI and live part drawer
+## Phase 5.1: unified Multi-Topic UI and live part drawer
 
 Status: done. Replaces the overlapping Combined Worksheet / Mixed Practice / Parts controls with a single Multi-Topic builder and an in-panel part drawer, while keeping the underlying state format (`st.module`, `st.parts`), generators and set codes unchanged.
 
@@ -112,6 +112,57 @@ What changed:
 - **Unified Multi-Topic builder** in `src/html/combo.html` and `src/css/combo.css` (removing `src/html/mix.html` and `src/html/parts.html`): Multi-Topic always operates directly on `st.parts` rather than switching between module checkboxes and a separate parts list. An arrangement switch toggles between `In sections` (`combo`, showing lettered parts and exact problem counts) and `Mixed together` (`mix`, showing percentage shares and layout pagination). `Mixed Practice` is omitted as a nested section inside `In sections`, and `area` / `vis` rows display a `Sections only` indicator when `Mixed together` is active. Inside `In sections`, each section renders as its own card (`Part A`, `Part B`, ...) where mixable cards can add peer topics directly (`+ Add more to section`, setting `part.mix = true` and merging via `mixRunPlan`) to share one interleaved flow section alongside separate grid sections on the same sheet.
 - **Live in-panel part drawer (`#partDrawer`)** in `src/js/core/ui.js`: clicking `Settings` on a part opens that module's fieldsets inside a panel drawer (`← Back to worksheet`, label, count/share) without changing `state.module`. The full Multi-Topic worksheet stays live on `#sheets` as edits are made, and standalone `One topic` settings are never overwritten (edits read/write through `partState` and `captureSettings`).
 - **Tests**: `tests/parts_ui.py` and `tests/clip.py` updated for the new selectors; all core logic and set-code tests remain unchanged.
+
+## Phase 5.2: refactor the worksheet grouping
+
+### Why `Area Squares` was separate (and how to combine it)
+
+Mostly **history**, not a hard layout limitation:
+
+- `Area Squares` was the original module, so it kept its own 2-column `.prob` card renderer (`4 / 6 / 8` per page), `Units` dropdown (`units`, `cm²`, `in²`, `ft²`, `m²`), and `Shade the squares` checkbox.
+- `Shapes, Measures and Data` (`vis`) came later and uses `CELL_MODS` (`arLayout` / `arithPlan`), which takes `12 / 20 / 30` per page and **automatically steps down to `8`, `6`, or `4` per page** when the SVGs are tall.
+- `vis` *already* renders area and 3D-volume SVGs (`acon`, `pera`, `vcubes`, `vlwh`, `vcomp`) inside `CELL_MODS`.
+
+**How to combine `Area Squares` into `Geometry, Area & Volume`:**
+Wrap `count`, `mult`, `draw`, `cmp`, and `lsh` as `defTypes` entries inside `Geometry, Area & Volume` using their existing `svg(...)` helper and `win`/`hin` hints, and keep the `Units` dropdown + `Shade the squares` checkbox in that module's panel (only active/relevant when grid-area types are used). As a bonus, those 5 grid types become regular `CELL_MODS` problems and can participate in `Mixed together` flow layouts too if desired.
+
+---
+
+### Proposed Path B Breakdown (8 balanced modules, Word Problems kept in `Number Sense`)
+
+With `Area Squares` merged into Geometry and `Word Problems` kept in `Number Sense`:
+
+1. **Addition and Subtraction** (`addsub`) — unchanged
+2. **Multiplication and Division** (`muldiv`) — unchanged
+3. **Number Sense** (`ns`, 65 → **38 types** in 4 collapsible groups)
+   - *Counting & number lines*: `cnt`, `cntn`, `picop`, `showop`, `array`, `mfac`, `dint`, `cfwd`, `kseq`, `cseq`, `skip`, `parity`, `par20`, `line`, `nline`
+   - *Place value, comparing & rounding*: `place`, `placew`, `tens`, `numrw`, `more`, `moreexp`, `tenx`, `compare`, `cmp2`, `order`, `round`, `roundw`, `rnd3`, `est`
+   - *Factors & multiples*: `fact`, `facmodel`
+   - *Word problems*: `wadd`, `wlen`, `wmul`, `wcmp`, `wstep`, `west`, `mword`
+4. **Equations, Expressions & Patterns** (`alg`, **20 types** in 3 collapsible groups)
+   - *Bonds, equations & properties*: `bond`, `bondp`, `eqn`, `equal`, `prop`, `rel`, `substr`, `sub10`, `mul10`, `mcomp`
+   - *Order of operations & expressions*: `exeval`, `exwrite`
+   - *Patterns & charts*: `pat`, `patmake`, `chart`, `chartwhy`, `mchart`, `rulepat`, `rule2`, `rule2g`
+5. **Fractions, Decimals & Percents** (`fdp`, 9 → **29 types** in 4 collapsible groups)
+   - *Visual models & number lines*: `part`, `partw`, `pdraw`, `gpart`, `fmodel`, `fline`
+   - *Compare, simplify & equivalence*: `simp`, `equiv`, `cmp`, `f100`, `fdec`
+   - *Fraction operations*: `fadd`, `fmul`, `fadd5`, `fctx`, `fdiv5`, `fmul5`, `fscale`, `fword6`, `fdiv7`
+   - *Decimals, powers of 10 & percents*: `decadd`, `decmul`, `tenxd`, `pow10`, `decrw`, `rnddec`, `decrsn`, `conv`, `pct`
+6. **Time and Money** (`tm`, 11 → **12 types**)
+   - Adds `coin` (identify penny/nickel/dime/quarter & value) from `vis`, alongside `like`, `cpic`, `coins`, `madd`, `change`, `cstory`, `clock`, `dclock`, `ampm`, `elapsed`, `conv`.
+7. **Measurement & Data** (`meas`, **26 types** in 3 collapsible groups)
+   - *Measuring & tools*: `cmpm`, `ord3`, `munit`, `ruler`, `mtwo`, `mdiff`, `mest`, `mattr`, `mtool`, `mrule2`, `rulq`, `mvol`
+   - *Unit conversions*: `convm`, `conv5`
+   - *Graphs & line plots*: `sort`, `tally`, `pict`, `bar`, `pict4`, `bar4`, `pictg`, `barg`, `lplot`, `lplotq`, `lineplot`, `lplot5`
+8. **Geometry, Area & Volume** (`geom`, **33 types** in 4 collapsible groups)
+   - *Shapes, solids & symmetry*: `shname`, `shall`, `shdraw`, `solid`, `pos`, `pos2`, `shcmp`, `shbuild`, `comp`, `split`, `gcat`, `gpoly`, `gclass`, `gsym`, `ghier`
+   - *Lines & angles*: `gfig`, `angc`, `protr`, `angadd`
+   - *Area & perimeter*: `count`, `mult`, `draw`, `cmp`, `lsh` (from `Area Squares`), `acon`, `pera`, `perim`, `rectf`
+   - *Volume & coordinate plane*: `vcubes`, `vlwh`, `vcomp`, `cplane`, `cpword`
+
+Plus, make each `.tgroup` family in those modules a **collapsible `<details>`** showing how many types are checked (e.g., `Word problems (0/7)`), with a small **"Search types…"** filter input at the top so 20–38 types never feel like a wall of checkboxes.
+
+Explore whether possible to no longer limit some sections to section only - but to allow them to be mixed. Related review: overhaul of spacing and layout engine - room for improvement?
 
 ## Phase 6: other states
 
