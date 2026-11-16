@@ -14,6 +14,7 @@ function defaults() {
     mix: { mods: { addsub: true, muldiv: true, fdp: false, ns: true, tm: true } },
     combo,
     std: { g: 'K', c: '' },
+    parts: null,
     pages: 1, paper: 'letter', nameLine: true, key: true, grey: false, seed: newSeed()
   };
 }
@@ -26,15 +27,16 @@ function bugReportUrl(st, agent) {
   const q = settings => ISSUES_URL + '?' + [['template', 'bug.yml'], ['title', `Problem with ${mod} worksheet (set ${st.seed})`], ['set_code', st.seed], ['settings', settings], ['browser', agent || '']]
     .map(([k, v]) => k + '=' + encodeURIComponent(v)).join('&');
   const url = q(JSON.stringify(full));
-  return url.length <= 6000 ? url : q(JSON.stringify({ module: st.module, seed: st.seed, level: st.level, std: st.std }));
+  if (url.length <= 6000) return url;
+  const withParts = q(JSON.stringify({ module: st.module, seed: st.seed, level: st.level, std: st.std, parts: st.parts, combo: st.combo }));
+  return withParts.length <= 6000 ? withParts : q(JSON.stringify({ module: st.module, seed: st.seed, level: st.level, std: st.std }));
 }
-globalThis.__SP = { bugReportUrl, FGEN, NGEN, generateSet, renderAll, defaults, rngFrom, LEVELS, UNITS, TYPE_IDS, geom, svg, carries, borrows, arLayout, needSize, REG, META, comboSections, comboPages, genArithN, genAreaN, TGEN, flowPack, mixLayout, mixItems, STANDARDS, applyStandard, stdList, VGEN, VIS_TYPES, genVisN };
+globalThis.__SP = { bugReportUrl, FGEN, NGEN, generateSet, renderAll, defaults, rngFrom, LEVELS, UNITS, TYPE_IDS, geom, svg, carries, borrows, arLayout, needSize, REG, META, comboSections, comboPages, genArithN, genAreaN, TGEN, flowPack, mixLayout, mixItems, STANDARDS, applyStandard, stdList, VGEN, VIS_TYPES, genVisN, partsOf, makePart, normPart, normParts, partState, captureSettings, applyModSettings };
 
 /*==DOM==*/
 const $ = s => document.querySelector(s);
 const STORE = 'wwwm2000.v1';
 const form = $('#form'), sheetsEl = $('#sheets'), stageEl = $('#stage');
-const inEnum = (v, list, d) => list.includes(v) ? v : d;
 /* The Number Sense and Shapes, Measures and Data checkboxes are built from the type registry (core/types.js), grouped by family. */
 function buildTypePanels() {
   for (const mod of ['ns', 'vis']) {
@@ -65,44 +67,14 @@ function normalize(s) {
     combo
   });
   out.module = inEnum(out.module, Object.keys(MODULES), 'area');
-  out.level = inEnum(+out.level, [1, 2, 3], 2);
   out.perPage = inEnum(+out.perPage, [4, 6, 8], 6);
   out.arPerPage = inEnum(+out.arPerPage, [12, 20, 30], 20);
   out.pages = inEnum(+out.pages, [1, 2, 3], 1);
   out.paper = inEnum(out.paper, Object.keys(PAPER), 'letter');
-  out.unit = inEnum(out.unit, Object.keys(UNITS), 'units');
-  out.as.d1 = inEnum(+out.as.d1, [1, 2, 3, 4, 5, 6], 2);
-  out.as.d2 = inEnum(+out.as.d2, [1, 2, 3, 4, 5, 6], 2);
-  out.as.addends = inEnum(+out.as.addends, [2, 3, 4], 2);
-  out.as.cap = inEnum(+out.as.cap, [0, 10, 20, 30, 100, 1000, 1000000], 0);
-  out.as.second = inEnum(out.as.second, ['digits', 'tens', 'mix'], 'digits');
-  out.as.regroup = inEnum(out.as.regroup, ['any', 'required', 'none'], 'any');
-  out.as.format = inEnum(out.as.format, ['vertical', 'horizontal'], 'vertical');
-  out.md.mode = inEnum(out.md.mode, ['facts', 'digits'], 'facts');
-  out.md.da = inEnum(+out.md.da, [1, 2, 3, 4], 2);
-  out.md.db = inEnum(+out.md.db, [1, 2, 3], 1);
-  out.md.alt = !!out.md.alt;
-  out.md.da2 = inEnum(+out.md.da2, [1, 2, 3, 4], 2);
-  out.md.db2 = inEnum(+out.md.db2, [1, 2, 3], 2);
-  out.md.na = inEnum(+out.md.na, [2, 3, 4, 5], 3);
-  out.md.nb = inEnum(+out.md.nb, [1, 2], 1);
-  out.md.tables = inEnum(+out.md.tables, [5, 9, 10, 12], 10);
-  out.md.focus = inEnum(+out.md.focus, [0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], 0);
-  out.md.format = inEnum(out.md.format, ['vertical', 'horizontal'], 'vertical');
-  out.fd.level = inEnum(+out.fd.level, [1, 2, 3], 2);
-  out.ns.level = inEnum(+out.ns.level, [1, 2, 3], 2);
-  out.tm.level = inEnum(+out.tm.level, [1, 2, 3], 2);
-  out.vis.level = inEnum(+out.vis.level, [1, 2, 3], 2);
-  if (!Object.values(out.vis.types).some(Boolean)) out.vis.types.cnt = true;
-  if (!Object.values(out.fd.types).some(Boolean)) out.fd.types.simp = true;
-  if (!Object.values(out.ns.types).some(Boolean)) out.ns.types.place = true;
-  if (!Object.values(out.mix.mods).some(Boolean)) out.mix.mods.addsub = true;
-  if (!Object.values(out.tm.types).some(Boolean)) out.tm.types.coins = true;
+  clampMod(out);
   for (const id of Object.keys(REG)) { const c = out.combo[id]; c.on = !!c.on; c.n = inEnum(+c.n, REG[id].counts, REG[id].n0); }
   if (!Object.values(out.combo).some(c => c.on)) out.combo[Object.keys(REG)[0]].on = true;
-  if (!out.as.add && !out.as.sub) out.as.add = true;
-  if (!out.md.mul && !out.md.div) out.md.mul = true;
-  if (!Object.values(out.types).some(Boolean)) out.types.count = true;
+  out.parts = normParts(s.parts);
   out.grey = !!out.grey;
   if (!out.seed) out.seed = newSeed();
   return out;
@@ -204,6 +176,9 @@ function syncModuleUI() {
   form.querySelectorAll('input[name="as_addends"]').forEach(i => { i.disabled = !adds; });
   $('#md_tables').disabled = !!M.focus;
   form.querySelectorAll('select[name="combo_n"]').forEach(s => { s.disabled = !state.combo[s.dataset.id].on; });
+  const hasParts = !!(state.parts && state.parts.length);
+  $('#partsBox').hidden = !hasParts; $('#comboRows').hidden = hasParts; $('#comboNote').hidden = hasParts;
+  $('#partsList').innerHTML = hasParts ? state.parts.map((p, i) => `<li><span class="pl">${String.fromCharCode(65 + i)}</span><span>${esc(p.label || REG[p.m].name)}</span><span class="pn">${p.n} problems</span></li>`).join('') : '';
   $('#levelNote').textContent = LEVELS[state.level].note;
   $('#fdNote').textContent = FD_NOTES[state.fd.level];
   $('#nsNote').textContent = NS_NOTES[state.ns.level];
@@ -273,6 +248,7 @@ form.addEventListener('input', e => {
   if (CLEARS_STD.test(nm) && state.std.c) { state.std.c = ''; writeStd(); }
   readForm(e.target); syncModuleUI(); save(); render(); });
 form.addEventListener('click', e => {
+  if (e.target.closest('#partsClear')) { state.parts = null; if (state.std.c) state.std.c = ''; save(); writeForm(); render(); return; }
   const r = e.target.closest('[data-std]');
   if (r && !r.disabled) { state.std = { g: stdGrade(r.dataset.std), c: r.dataset.std }; applyStandard(state, state.std.c); save(); writeForm(); render(); return; }
   const b = e.target.closest('[data-goto]'); if (!b) return;

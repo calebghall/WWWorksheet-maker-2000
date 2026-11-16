@@ -1,5 +1,5 @@
 /* Multiplication with a second size ("Also mix in a second size"): every product has the digit counts of one of the two sizes, both sizes occur,
-   switching it off leaves the sets exactly as before, the 4.NBT.B.5 preset uses it, and old saved settings without the new keys still load. */
+   switching it off leaves the sets exactly as before, the 4.NBT.B.5 preset now uses two parts instead, and old saved settings without the new keys still load. */
 const fs=require('fs'),vm=require('vm'),path=require('path');
 const html=fs.readFileSync(path.join(__dirname,'..','WWWorksheet-maker-2000.html'),'utf8');
 const js=html.split('<script>')[1].split('</script>')[0].split('/*==DOM==*/')[0];
@@ -22,8 +22,8 @@ for(const [da,db,da2,db2] of [[4,1,2,2],[3,1,2,2],[2,1,3,2],[4,2,1,1]]){
 {const a=mk({da:3,db:2},'same1'),b=mk({da:3,db:2},'same1');for(const k of ['alt','da2','db2'])delete b.md[k];
   if(JSON.stringify(SP.generateSet(a))!==JSON.stringify(SP.generateSet(b)))issues.push('alt off changed the set');}
 /* the preset */
-{const s=SP.defaults();SP.applyStandard(s,'4.NBT.B.5');const M=s.md;
-  if(!(M.mode==='digits'&&M.da===4&&M.db===1&&M.alt&&M.da2===2&&M.db2===2&&!M.div))issues.push('preset settings '+JSON.stringify(M));
-  const st=SP.STANDARDS.find(x=>x.c==='4.NBT.B.5');if(st.n)issues.push('preset still carries a partial note');}
-console.log('multiplication sizes checked',checked,'problems; issues',JSON.stringify(issues.slice(0,10)));
+{const s=SP.defaults();SP.applyStandard(s,'4.NBT.B.5');const P=s.parts||[];
+  /* the preset is two Multiplication and Division parts; the alt setting stays in the generator for saved settings */
+  if(!(P.length===2&&P.every(q=>q.m==='muldiv'&&q.md.mode==='digits'&&!q.md.div&&!q.md.alt)&&P[0].md.da===4&&P[0].md.db===1&&P[1].md.da===2&&P[1].md.db===2))issues.push('preset parts '+JSON.stringify(P));
+  const st=SP.STANDARDS.find(x=>x.c==='4.NBT.B.5');if(st.n)issues.push('preset still carries a partial note');}console.log('multiplication sizes checked',checked,'problems; issues',JSON.stringify(issues.slice(0,10)));
 process.exit(issues.length?1:0);

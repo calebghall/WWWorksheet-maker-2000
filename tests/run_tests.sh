@@ -26,6 +26,8 @@ node tests/logic-ns-extra.js
 node tests/logic-commas.js
 node tests/logic-bugreport.js
 node tests/logic-mulsizes.js
+node tests/logic-setcodes.js
+node tests/logic-parts.js
 "$PY" tests/clip.py
 "$PY" build.py --target site
 node tests/site-check.js

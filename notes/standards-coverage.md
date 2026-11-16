@@ -2,8 +2,8 @@
 
 Source: Tennessee Instructional Focus Documents, Kindergarten to Grade 5 (July 2025 binders). 150 standards.
 
-- Supported: 149
-- Partial: 1
+- Supported: 150
+- Partial: 0
 - Gap: 0
 
 Supported and Partial standards have a preset in the Tennessee standard panel of the worksheet maker. Partial presets list what differs from the standard. Gaps by grade: none. Kindergarten, Grade 1, Grade 2, Grade 3, Grade 4, Grade 5 have no gaps. Grade 4 gaps need new problem types for angles and for geometry classification and symmetry.
@@ -171,7 +171,7 @@ Supported and Partial standards have a preset in the Tennessee standard panel of
 | 5.NBT.A.4 | Round decimals to the nearest hundredth, tenth, or whole number using understanding of place value, and... | Supported | Number Sense: Round decimals. |
 | 5.NBT.B.5 | Fluently multiply multi-digit whole numbers (up to three-digit by four-digit factors) using efficient... | Supported | Multiplication and Division: Multiply up to three digits by four digits. |
 | 5.NBT.B.6 | Find whole-number quotients and remainders of whole numbers with up to four-digit dividends and two-digit... | Supported | Multiplication and Division: Divide four-digit numbers by two-digit numbers. |
-| 5.NBT.B.7 | Add, subtract, multiply, and divide decimals to hundredths, using concrete models or drawings and... | Partial | Fractions, Decimals and Percents: Add, subtract, multiply and divide decimals. Dividing a whole number by a decimal and checking an answer by estimating are in the Number Sense type "Decimal division and reasonableness". |
+| 5.NBT.B.7 | Add, subtract, multiply, and divide decimals to hundredths, using concrete models or drawings and... | Supported | Fractions, Decimals and Percents and Number Sense: Add, subtract, multiply and divide decimals. |
 | 5.NF.A.1 | Add and subtract fractions with unlike denominators (including mixed numbers) by replacing given fractions... | Supported | Number Sense: Add and subtract fractions and mixed numbers. |
 | 5.NF.A.2 | Solve contextual problems involving addition and subtraction of fractions referring to the same whole,... | Supported | Number Sense: Fraction addition and subtraction problems. |
 | 5.NF.B.3 | Interpret a fraction as division of the numerator by the denominator ( = a ÷ b). For example, = 3 ÷ 4 so... | Supported | Number Sense: A fraction is a division. |

@@ -1,11 +1,15 @@
 /* ---------- combined worksheet ---------- */
 function comboSections(st) {
-  const secs = []; let num = 1;
-  for (const id of Object.keys(REG)) {
-    const c = st.combo && st.combo[id];
-    if (!c || !c.on) continue;
-    const plan = REG[id].plan(st, c.n, st.seed + '|' + id);
-    secs.push({ id, name: REG[id].name, plan, start: num, letter: String.fromCharCode(65 + secs.length) });
+  const secs = [], parts = partsOf(st), total = {}, used = {}, scope = {}; let num = 1;
+  for (const p of parts) total[p.m] = (total[p.m] || 0) + 1;
+  for (const p of parts) {
+    const id = p.m, k = used[id] = (used[id] || 0) + 1;
+    /* The first part of a module keeps the seed an unsplit section always had; later parts add their position. */
+    const seed = st.seed + '|' + id + (k > 1 ? '|' + k : '');
+    if (total[id] > 1) SIG_SCOPE = scope[id] || (scope[id] = new Set());
+    let plan;
+    try { plan = REG[id].plan(partState(st, p), p.n, seed); } finally { SIG_SCOPE = null; }
+    secs.push({ id, name: p.label || REG[id].name, plan, start: num, letter: String.fromCharCode(65 + secs.length), part: p });
     num += plan.probs.length;
   }
   return secs;

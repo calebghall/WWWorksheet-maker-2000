@@ -142,7 +142,7 @@ function arithOps(st, mod) {
 
 /* Generate n problems, cycling through the chosen kinds. Kinds are balanced and shuffled within each chunk (one page). */
 function genMixed(rng, ids, n, chunk, one, sigf) {
-  const order = shuffle(rng, ids), seen = new Set(), out = [];
+  const order = shuffle(rng, ids), seen = SIG_SCOPE || new Set(), out = [];
   let k = 0;
   for (let start = 0; start < n; start += chunk) {
     const seq = [];

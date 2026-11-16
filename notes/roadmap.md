@@ -72,7 +72,7 @@ Rows: 5.G.A.1, 5.G.A.2, 5.G.B.3, 4.MD.C.5, C.6, C.7, 4.G.A.1, A.2, A.3.
 
 Status: done. 9 rows Supported with 9 new Shapes, Measures and Data types in three family files (`vis-plane.js`: `cplane`, `cpword`; `vis-angles.js`: `angc`, `protr`, `angadd`, `gfig`; `vis-classify.js`: `gclass`, `gsym`, `ghier`), plus the Number Sense type `rule2g` (graph the ordered pairs of two rule patterns) that closes 5.OA.B.3. New drawing primitives: `cpGrid` (first-quadrant grid with points), `protrSvg` (protractor with both scales), `aArc` and `aHead` (arcs and arrowheads), `gcCanon` (canonical corner list so turned or flipped copies of one figure share a sig). Drawn cells that need wrapped text use `vwrap` and `vwrapH` in `vis-draw.js`. `tests/logic-g5g.js` recomputes each answer and drawing, and checks the figure tables (parallel sides, right angles, lines of symmetry, hierarchy) against the geometry itself. Coverage after phase 4: 149 Supported, 1 Partial (5.NBT.B.7, waiting for a later phase), 0 Gap. The exit count of 150 Supported needs 5.NBT.B.7 (whole number divided by a decimal, estimation) to join the fractions and decimals preset, which needs Phase 5 parts.
 
-Exit: 31 of 31 Gap rows closed; `notes/standards-coverage.md` shows 149 Supported, 1 Partial, 0 Gap for Tennessee after this phase, and 150 Supported once Phase 5 lets 5.NBT.B.7 combine its two modules.
+Exit: 31 of 31 Gap rows closed; `notes/standards-coverage.md` shows 149 Supported, 1 Partial, 0 Gap for Tennessee after this phase, and 150 Supported once Phase 5 lets 5.NBT.B.7 combine its two modules. (Done in Phase 5: 150 Supported, 0 Partial, 0 Gap.)
 
 ## Phase 5: parts (multiple configurations of one module)
 
@@ -88,6 +88,16 @@ Constraints:
 
 - Set codes must keep reproducing existing worksheets. Add a test that compares generated sets before and after for fixed seeds across every module.
 - Saved settings from earlier versions must load unchanged.
+
+Status: in progress. Done: the parts data model and the set-code regression test (patches P5.0 to P5.2). Remaining: Mixed Practice from a part list (P5.3), the panel controls for saving, renaming, reordering, editing and deleting parts (P5.4), the cross-checks listed under Exit (P5.5) and the release tag (P5.6).
+
+Built so far:
+
+- `src/js/core/parts.js`. A part is `{ m, n, label, <settings> }`; the settings key (`as`, `md`, `fd`, `ns`, `tm`, `vis`, `area`, `mix`) and shape match a standards preset, so a single-module preset is a part without a count. `partsOf(st)` returns `st.parts`, or one part per Combined section that is on, so worksheets without parts render exactly as before. The first part of a module keeps the old section seed (`seed|id`); later parts of that module use `seed|id|k`. Parts of one module share a dedupe set so they never print the same problem twice. `clampMod` (moved out of `normalize`) clamps settings for saved parts and saved worksheets alike.
+- Presets: `{ c, t, m: 'parts', view: 'combo', parts: [...] }`. `applyStandard` sets `st.parts` and the Combined view and leaves the module tabs alone; a single-module preset clears `st.parts`. 5.NBT.B.7 is now Fractions, Decimals and Percents plus the Number Sense "Decimal division and reasonableness" type, and 4.NBT.B.5 is two Multiplication and Division parts. `md.alt`, `md.da2` and `md.db2` stay in the generator and in `normalize` so saved settings keep their sheets; only the preset moved. This changes the output of those two presets (announced; `tests/golden-sets.json` updated for them only).
+- Tests: `tests/logic-setcodes.js` (385 hashed sheets: every module, Combined and Mixed variants, every preset), `tests/logic-parts.js`, part-aware `tests/logic-standards.js` and `tests/coverage.js`, multi-part pages in `tests/clip.py`.
+- Panel: while parts are set, the Sections list shows them with a "Use simple sections" button. Saving, renaming and reordering are not built yet.
+- Bug-report links keep `parts` and `combo` when the whole state is too long.
 
 Exit: design note reviewed; a multi-configuration preset works in Combined and Mixed; set-code regression test passes; clipping check covers multi-part pages.
 

@@ -3,6 +3,8 @@
      c  standard code            t  short worksheet title
      m  module id                n  note when the generator only partly matches the standard
    Module settings: as/md = addsub/muldiv settings objects; fd/ns/tm = { types: [ids], level }; area = { types: [ids], level }.
+   A standard that bundles skills is { c, t, m: 'parts', view: 'combo', parts: [...] }: each part is { m, n, label?, <settings> }
+   with the settings shaped as above, so a part is a single-module preset plus a problem count (see parts.js).
    Standards not listed here have no matching generator (see standards-coverage.md). */
 const STD_GRADES = { K: 'Kindergarten', 1: 'Grade 1', 2: 'Grade 2', 3: 'Grade 3', 4: 'Grade 4', 5: 'Grade 5' };
 const STD_GRADE_IDS = ['K', '1', '2', '3', '4', '5'];
@@ -115,7 +117,9 @@ const STANDARDS = [
   { c: '4.NBT.A.2', t: 'Read and write multi-digit numbers', m: 'ns', ns: { types: ['placew'], level: 3 } },
   { c: '4.NBT.A.3', t: 'Round multi-digit numbers', m: 'ns', ns: { types: ['roundw'], level: 3 } },
   { c: '4.NBT.B.4', t: 'Add and subtract within 1,000,000', m: 'addsub', as: AS(6, 6, { cap: 1000000 }) },
-  { c: '4.NBT.B.5', t: 'Multiply four digits by one digit and two digits by two digits', m: 'muldiv', md: MD({ div: false, mode: 'digits', da: 4, db: 1, alt: true, da2: 2, db2: 2 }) },
+  { c: '4.NBT.B.5', t: 'Multiply four digits by one digit and two digits by two digits', m: 'parts', view: 'combo', parts: [
+    { m: 'muldiv', n: 10, label: 'Four digits by one digit', md: MD({ div: false, mode: 'digits', da: 4, db: 1 }) },
+    { m: 'muldiv', n: 10, label: 'Two digits by two digits', md: MD({ div: false, mode: 'digits', da: 2, db: 2 }) }] },
   { c: '4.NBT.B.6', t: 'Divide with remainders', m: 'muldiv', md: MD({ mul: false, mode: 'digits', na: 4, nb: 1, rem: true }) },
   { c: '4.NF.A.1', t: 'Equivalent fractions', m: 'fdp', fd: { types: ['equiv'], level: 2 } },
   { c: '4.NF.A.2', t: 'Compare fractions', m: 'fdp', fd: { types: ['cmp'], level: 3 } },
@@ -140,7 +144,9 @@ const STANDARDS = [
   { c: '5.NBT.A.4', t: 'Round decimals', m: 'ns', ns: { types: ['rnddec'], level: 3 } },
   { c: '5.NBT.B.5', t: 'Multiply up to three digits by four digits', m: 'muldiv', md: MD({ div: false, mode: 'digits', da: 4, db: 3 }) },
   { c: '5.NBT.B.6', t: 'Divide four-digit numbers by two-digit numbers', m: 'muldiv', md: MD({ mul: false, mode: 'digits', na: 4, nb: 2, rem: true }) },
-  { c: '5.NBT.B.7', t: 'Add, subtract, multiply and divide decimals', m: 'fdp', fd: { types: ['decadd', 'decmul'], level: 3 }, n: 'Dividing a whole number by a decimal and checking an answer by estimating are in the Number Sense type "Decimal division and reasonableness".' },
+  { c: '5.NBT.B.7', t: 'Add, subtract, multiply and divide decimals', m: 'parts', view: 'combo', parts: [
+    { m: 'fdp', n: 5, label: 'Add, subtract and multiply decimals', fd: { types: ['decadd', 'decmul'], level: 3 } },
+    { m: 'ns', n: 5, label: 'Divide by a decimal and check by estimating', ns: { types: ['decrsn'], level: 3 } }] },
   { c: '5.OA.A.1', t: 'Evaluate expressions with grouping symbols', m: 'ns', ns: { types: ['exeval'], level: 2 } },
   { c: '5.OA.A.2', t: 'Write and interpret expressions', m: 'ns', ns: { types: ['exwrite'], level: 2 } },
   { c: '5.OA.B.3', t: 'Two patterns from two rules', m: 'ns', ns: { types: ['rule2', 'rule2g'], level: 2 } },
@@ -169,14 +175,16 @@ const stdMap = (ids, all) => { const o = {}; all.forEach(id => { o[id] = ids.inc
 function applyStandard(st, code) {
   const s = STD_BY_CODE[code];
   if (!s) return st;
+  if (s.m === 'parts') {
+    /* Bundled skills: the parts carry their own settings, so the module panels are left as they are. */
+    st.module = s.view || 'combo';
+    st.parts = normParts(JSON.parse(JSON.stringify(s.parts)));
+    st.titles[st.module] = `${s.c} ${s.t}`;
+    return st;
+  }
   st.module = s.m;
-  if (s.m === 'addsub') st.as = Object.assign({}, s.as);
-  else if (s.m === 'muldiv') st.md = Object.assign({}, s.md);
-  else if (s.m === 'fdp') st.fd = { types: stdMap(s.fd.types, FD_TYPES), level: s.fd.level };
-  else if (s.m === 'ns') st.ns = { types: stdMap(s.ns.types, NS_TYPES), level: s.ns.level };
-  else if (s.m === 'vis') st.vis = { types: stdMap(s.vis.types, VIS_TYPES), level: s.vis.level };
-  else if (s.m === 'tm') st.tm = { types: stdMap(s.tm.types, Object.keys(TGEN)), level: s.tm.level };
-  else if (s.m === 'area') { st.types = stdMap(s.area.types, TYPE_IDS); st.level = s.area.level; }
+  st.parts = null;
+  applyModSettings(st, s);
   st.titles[s.m] = `${s.c} ${s.t}`;
   return st;
 }

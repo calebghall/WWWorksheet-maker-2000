@@ -8,6 +8,7 @@ const P={};ctx.__SP.STANDARDS.forEach(s=>{P[s.c]=s;});
 const FW=ctx.FRAMEWORK||vm.runInContext('FRAMEWORK',ctx);
 const std=JSON.parse(fs.readFileSync(path.join(__dirname,'standards.json'),'utf8'));
 const G={K:'Kindergarten',1:'Grade 1',2:'Grade 2',3:'Grade 3',4:'Grade 4',5:'Grade 5'},MN={addsub:'Addition and Subtraction',muldiv:'Multiplication and Division',fdp:'Fractions, Decimals and Percents',ns:'Number Sense',tm:'Time and Money',area:'Area Squares',vis:'Shapes, Measures and Data'};
+const MODS=p=>p.m==='parts'?p.parts.map(q=>MN[q.m]).filter((m,i,a)=>a.indexOf(m)===i).join(' and '):MN[p.m];
 const short=t=>{t=t.replace(/\s+/g,' ').replace(/[^\x00-\x7F‘-”×÷–]/g,'').trim();return t.length>110?t.slice(0,107).replace(/\s+\S*$/,'')+'...':t;};
 let full=0,part=0,gap=0,out='';
 const codes=Object.keys(std);
@@ -16,8 +17,8 @@ for(const g of ['K','1','2','3','4','5']){
   out+=`\n## ${G[g]}\n\n| Standard | Focus | Status | Module and notes |\n|---|---|---|---|\n`;
   for(const c of rows){const p=P[c];let st,note;
     if(!p){st='Gap';note='No matching generator.';gap++;}
-    else if(p.n){st='Partial';note=`${MN[p.m]}: ${p.t}. ${p.n}`;part++;}
-    else{st='Supported';note=`${MN[p.m]}: ${p.t}.`;full++;}
+    else if(p.n){st='Partial';note=`${MODS(p)}: ${p.t}. ${p.n}`;part++;}
+    else{st='Supported';note=`${MODS(p)}: ${p.t}.`;full++;}
     out+=`| ${c} | ${short(std[c].text).replace(/\|/g,'/')} | ${st} | ${note} |\n`;}
 }
 const gapBy={};for(const c of codes)if(!P[c])gapBy[std[c].grade]=(gapBy[std[c].grade]||0)+1;

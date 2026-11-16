@@ -80,7 +80,7 @@ All off by default. Add and subtract fractions, unlike denominators (`fadd5`, mi
 
 ## Tennessee standards
 
-- A Tennessee standard panel (grade, then standard) sets the module, problem types, level and title for 141 of the 150 K to 5 standards (139 match fully, 2 partly; the rest are listed in `standards-coverage.md`). Partial matches show what differs. `standards-coverage.md` lists every standard and its status.
+- A Tennessee standard panel (grade, then standard) sets the module, problem types, level and title for all 150 K to 5 standards (all 150 match fully). A standard that bundles skills (4.NBT.B.5, 5.NBT.B.7) opens as a Combined Worksheet with one lettered part per skill; the parts carry their own settings and leave the module tabs alone. Partial matches, when there are any, show what differs. `standards-coverage.md` lists every standard and its status.
 
 ## Fractions, Decimals and Percents
 
@@ -121,6 +121,7 @@ All off by default. Add and subtract fractions, unlike denominators (`fadd5`, mi
 - Each module is a section labeled Part A, Part B and so on, with its own problem count: 2, 4, 6 or 8 for area, and 5, 10, 15, 20 or 30 for the other modules. Fractions/decimals/percents, number sense and time and money start switched off in a fresh combined sheet.
 - Each section uses the settings saved on its own module tab. A Settings button on each section row jumps to that tab.
 - Problems are numbered continuously across the sheet.
+- Parts: a standard can set a list of parts instead of one section per module. Each part has its own module, settings, problem count and optional label, and two parts can use the same module (they never print the same problem twice). While parts are set, the Sections list shows them and "Use simple sections" returns to the checkbox list.
 - Sections are packed onto pages in order. A section that does not fit continues on the next page, labeled "(continued)". Page count is automatic.
 
 ## Shared options

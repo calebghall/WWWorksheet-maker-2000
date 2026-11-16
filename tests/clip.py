@@ -52,6 +52,22 @@ with sync_playwright() as p:
         if not i.is_checked(): i.check(force=True)
     pg.wait_for_timeout(300)
     c = pg.evaluate(CLIP); bad += bool(c); print('combo clipped', c, '|', pg.inner_text('#summary'), pg.evaluate(WHICH) if c else '')
+    # standards that bundle skills: parts in a Combined sheet, seeds and both papers, parts list, reload, back to simple sections
+    pg.evaluate("document.getElementById('stdBox').open = true")
+    for code in ['5.NBT.B.7', '4.NBT.B.5']:
+        for paper in ['letter', 'a4']:
+            pg.check(f'input[name="paper"][value="{paper}"]', force=True)
+            pg.fill('#stdQ', code); pg.wait_for_timeout(60); pg.click(f'[data-std="{code}"]'); pg.wait_for_timeout(200)
+            if pg.evaluate("()=>document.getElementById('partsBox').hidden"): bad += 1; print('parts list hidden', code)
+            for seed in ['AAAAAA', 'BBBBBB', 'CCCCCC', 'DDDDDD']:
+                pg.fill('#seed', seed); pg.wait_for_timeout(80)
+                c = pg.evaluate(CLIP)
+                if c: bad += 1; print('CLIPPED parts', code, paper, seed, c, pg.evaluate(WHICH))
+        print('parts', code, '|', pg.inner_text('#summary'), '|', pg.evaluate("()=>document.getElementById('partsList').children.length"), 'parts')
+    pg.reload(); pg.wait_for_timeout(500)
+    if pg.evaluate("()=>document.getElementById('partsBox').hidden") or pg.evaluate("()=>document.querySelectorAll('.sec-h').length") < 2: bad += 1; print('parts lost after reload')
+    pg.evaluate("document.getElementById('stdBox').open = true"); pg.click('#partsClear'); pg.wait_for_timeout(200)
+    if not pg.evaluate("()=>document.getElementById('partsBox').hidden"): bad += 1; print('parts list still shown after clear')
     pg.reload(); pg.wait_for_timeout(500); print('after reload |', pg.inner_text('#summary'))
     errs += pg.evaluate('window.__errs||[]')
     print('page errors', errs, '| clipped configs', bad)
