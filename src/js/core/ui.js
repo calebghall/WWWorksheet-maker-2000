@@ -183,34 +183,79 @@ function writeForm() {
   syncModuleUI();
 }
 
+function cleanPartMix(parts) {
+  parts.forEach((p, idx) => {
+    if (idx === 0 || !MIX_MODS.includes(p.m) || !MIX_MODS.includes(parts[idx - 1].m)) delete p.mix;
+  });
+}
+
+function groupPartCards(parts) {
+  cleanPartMix(parts);
+  const cards = [];
+  for (let i = 0; i < parts.length; i++) {
+    const start = i, items = [{ p: parts[i], i }];
+    while (i + 1 < parts.length && parts[i + 1].mix && MIX_MODS.includes(parts[i].m) && MIX_MODS.includes(parts[i + 1].m)) {
+      i++;
+      items.push({ p: parts[i], i });
+    }
+    cards.push({ start, end: i, items, mixable: MIX_MODS.includes(items[0].p.m) });
+  }
+  return cards;
+}
+
 function writeParts() {
   const parts = state.parts || [], isMix = state.module === 'mix';
+  const cards = groupPartCards(parts);
   const mixSum = isMix ? parts.filter(p => MIX_MODS.includes(p.m)).reduce((a, p) => a + p.n, 0) : 0;
   const canMix = parts.some(p => MIX_MODS.includes(p.m));
   const mixR = form.querySelector('input[name="multi_view"][value="mix"]');
   if (mixR) mixR.disabled = !canMix;
   const heading = $('#partsHeading');
   if (heading) heading.textContent = isMix ? 'Topics & shares' : 'Sections';
-  $('#partsList').innerHTML = parts.map((p, i) => {
-    const L = String.fromCharCode(65 + i), mixable = MIX_MODS.includes(p.m);
-    const badge = isMix ? (mixable && mixSum ? `${Math.round(100 * p.n / mixSum)}%` : '—') : L;
-    const sel = `<select name="partRowN" aria-label="${isMix ? 'Share weight' : 'Problems'} for part ${L}">${REG[p.m].counts.map(n => `<option value="${n}"${n === p.n ? ' selected' : ''}>${isMix ? `Share ${n}` : `${n} problems`}</option>`).join('')}</select>`;
-    const btn = (act, txt, label, dis) => `<button type="button" class="btn ghost sm" data-part-act="${act}" aria-label="${label} part ${L}"${dis ? ' disabled' : ''}>${txt}</button>`;
-    const sub = `${esc(REG[p.m].name)}${isMix && !mixable ? ' · <em>Sections only</em>' : ''}`;
-    return `<li class="pr" data-i="${i}"><span class="pl">${badge}</span><div class="pr-f"><input type="text" name="partRowLabel" maxlength="60" value="${esc(p.label || '')}" placeholder="${esc(REG[p.m].name)}" aria-label="Label of part ${L}"><div class="pr-sub">${sub}</div>${sel}<span class="pr-b">${btn('edit', 'Settings', 'Settings for')}${btn('up', '↑', 'Move up', i === 0)}${btn('down', '↓', 'Move down', i === parts.length - 1)}${btn('del', '×', 'Delete', parts.length <= 1)}</span></div></li>`;
-  }).join('');
+  const btn = (attr, txt, label, dis) => `<button type="button" class="btn ghost sm" ${attr} aria-label="${label}"${dis ? ' disabled' : ''}>${txt}</button>`;
+
+  if (isMix) {
+    $('#partsList').innerHTML = parts.map((p, i) => {
+      const mixable = MIX_MODS.includes(p.m);
+      const badge = mixable && mixSum ? `${Math.round(100 * p.n / mixSum)}%` : '—';
+      const sel = `<select name="partRowN" aria-label="Share weight for ${esc(REG[p.m].name)}">${REG[p.m].counts.map(n => `<option value="${n}"${n === p.n ? ' selected' : ''}>Share ${n}</option>`).join('')}</select>`;
+      const sub = `${esc(REG[p.m].name)}${!mixable ? ' · <em>Sections only</em>' : ''}`;
+      return `<li class="pr" data-i="${i}"><span class="pl">${badge}</span><div class="pr-f"><input type="text" name="partRowLabel" maxlength="60" value="${esc(p.label || '')}" placeholder="${esc(REG[p.m].name)}" aria-label="Label of item ${i + 1}"><div class="pr-sub">${sub}</div>${sel}<span class="pr-b">${btn('data-part-act="edit"', 'Settings', 'Settings for ' + REG[p.m].name)}${btn('data-part-act="up"', '↑', 'Move up', i === 0)}${btn('data-part-act="down"', '↓', 'Move down', i === parts.length - 1)}${btn('data-part-act="del"', '×', 'Delete', parts.length <= 1)}</span></div></li>`;
+    }).join('');
+  } else {
+    const mixOpts = MIX_MODS.map(id => `<option value="${id}">${esc(MODULES[id].name)}</option>`).join('');
+    $('#partsList').innerHTML = cards.map((card, ci) => {
+      const L = String.fromCharCode(65 + ci), lead = card.items[0].p, mixed = card.items.length > 1;
+      const ph = mixed ? 'Mixed Practice' : REG[lead.m].name;
+      const head = `<div class="sec-top"><span class="pl">Part ${L}</span><input type="text" name="secLabel" data-sec-start="${card.start}" maxlength="60" value="${esc(lead.label || '')}" placeholder="${esc(ph)}" aria-label="Title of Part ${L}"><span class="pr-b">${btn('data-sec-act="up"', '↑', `Move Part ${L} up`, ci === 0)}${btn('data-sec-act="down"', '↓', `Move Part ${L} down`, ci === cards.length - 1)}${btn('data-sec-act="del"', '×', `Delete Part ${L}`, cards.length <= 1)}</span></div>`;
+      const rows = card.items.map(({ p, i }) => {
+        const sel = `<select name="partRowN" data-i="${i}" aria-label="Problems for ${esc(REG[p.m].name)} in Part ${L}">${REG[p.m].counts.map(n => `<option value="${n}"${n === p.n ? ' selected' : ''}>${n} problems</option>`).join('')}</select>`;
+        const rm = mixed ? btn('data-part-act="del"', '×', `Remove ${REG[p.m].name} from Part ${L}`) : '';
+        return `<div class="trow" data-i="${i}"><span class="trow-name">${esc(REG[p.m].name)}</span>${sel}<span class="pr-b">${btn('data-part-act="edit"', 'Settings', `Settings for ${REG[p.m].name}`)}${rm}</span></div>`;
+      }).join('');
+      const addMix = card.mixable && parts.length < PART_MAX
+        ? `<div class="sec-add"><select class="sec-add-mod" name="secAddMod" aria-label="Topic to mix into Part ${L}">${mixOpts}</select>${btn('data-sec-add="1"', '+ Mix in', `Mix topic into Part ${L}`)}</div>`
+        : '';
+      return `<li class="sec-card" data-c="${ci}">${head}<div class="sec-topics">${rows}</div>${addMix}</li>`;
+    }).join('');
+  }
+
   $('#partAdd').disabled = parts.length >= PART_MAX;
   const hasBlocked = isMix && parts.some(p => !MIX_MODS.includes(p.m));
   $('#multiNote').textContent = !canMix
     ? 'Area Squares and Shapes, Measures and Data only print in sections.'
     : isMix
       ? 'Problems are shuffled together and packed by size. Each topic\'s Share controls how much of the sheet it gets.' + (hasBlocked ? ' Topics marked "Sections only" stay out until you switch back to In sections.' : '')
-      : 'Each part prints as a lettered section (Part A, Part B, ...) with its own settings.';
+      : 'Each card is a lettered section (Part A, Part B, ...). Mix multiple topics inside one card, or add a new section below.';
   const ep = editingPart();
   if (ep) {
-    const L = String.fromCharCode(65 + editIdx);
+    const card = cards.find(c => editIdx >= c.start && editIdx <= c.end);
+    const L = card ? String.fromCharCode(65 + cards.indexOf(card)) : String.fromCharCode(65 + editIdx);
+    const inMixedCard = !isMix && card && card.items.length > 1;
     $('#partDrawerTag').textContent = `${isMix ? 'Editing' : `Part ${L}`} · ${REG[ep.m].name}`;
-    if (document.activeElement !== $('#editPartLabel')) $('#editPartLabel').value = ep.label || '';
+    const lblWrap = $('#editPartLabel').closest('.part-f');
+    if (lblWrap) lblWrap.hidden = !!inMixedCard;
+    if (!inMixedCard && document.activeElement !== $('#editPartLabel')) $('#editPartLabel').value = ep.label || '';
     $('#editPartNLbl').textContent = isMix ? 'Share' : 'Problems';
     $('#editPartN').innerHTML = REG[ep.m].counts.map(n => `<option value="${n}"${n === ep.n ? ' selected' : ''}>${isMix ? `Share ${n}` : `${n} problems`}</option>`).join('');
     $('#editPartN').value = String(ep.n);
@@ -310,7 +355,7 @@ form.addEventListener('submit', e => e.preventDefault());
 const CLEARS_STD = /^(module|type|level|as_|md_|fd_|ns_|tm_|vis_)/;
 form.addEventListener('input', e => {
   const nm = e.target.name || '';
-  if (nm === 'addPartMod') return;
+  if (nm === 'addPartMod' || nm === 'secAddMod') return;
   if (nm === 'wkMode') {
     editIdx = null;
     if (e.target.value === 'multi') {
@@ -345,8 +390,15 @@ form.addEventListener('input', e => {
     if (state.std.c) { state.std.c = ''; writeStd(); }
     save(); render(); return;
   }
+  if (nm === 'secLabel') {
+    const p = (state.parts || [])[+e.target.dataset.secStart];
+    if (!p) return;
+    p.label = e.target.value.slice(0, 60);
+    if (state.std.c) { state.std.c = ''; writeStd(); }
+    save(); render(); return;
+  }
   if (nm === 'partRowLabel' || nm === 'partRowN') {
-    const li = e.target.closest('[data-i]'), p = li && (state.parts || [])[+li.dataset.i];
+    const el = e.target.closest('[data-i]'), p = el && (state.parts || [])[+el.dataset.i];
     if (!p) return;
     if (nm === 'partRowLabel') p.label = e.target.value.slice(0, 60); else p.n = inEnum(+e.target.value, REG[p.m].counts, REG[p.m].n0);
     if (state.std.c) { state.std.c = ''; writeStd(); }
@@ -359,7 +411,7 @@ form.addEventListener('input', e => {
 });
 
 function partAction(e) {
-  const ab = e.target.closest('[data-part-act], #partAdd, #partDone'); if (!ab) return false;
+  const ab = e.target.closest('[data-sec-act], [data-sec-add], [data-part-act], #partAdd, #partDone'); if (!ab) return false;
   const parts = (state.parts || []).slice(), after = () => { if (state.std.c) state.std.c = ''; save(); writeForm(); render(); };
   if (ab.id === 'partDone') { editIdx = null; writeForm(); form.closest('.panel').scrollTop = 0; return true; }
   if (ab.id === 'partAdd') {
@@ -368,13 +420,41 @@ function partAction(e) {
     state.parts = parts.concat(makePart(state, m, REG[m].n0));
     after(); return true;
   }
+  if (ab.dataset.secAdd) {
+    if (parts.length >= PART_MAX) return true;
+    const cards = groupPartCards(parts), ci = +ab.closest('[data-c]').dataset.c, card = cards[ci];
+    if (!card || !card.mixable) return true;
+    const m = ab.closest('.sec-card').querySelector('.sec-add-mod').value;
+    const np = makePart(state, m, REG[m].n0); np.mix = true;
+    parts.splice(card.end + 1, 0, np);
+    state.parts = parts; after(); return true;
+  }
+  if (ab.dataset.secAct) {
+    const cards = groupPartCards(parts), ci = +ab.closest('[data-c]').dataset.c, act = ab.dataset.secAct;
+    const slices = cards.map(c => parts.slice(c.start, c.end + 1));
+    if (!slices[ci]) return true;
+    if (act === 'up' && ci > 0) [slices[ci - 1], slices[ci]] = [slices[ci], slices[ci - 1]];
+    else if (act === 'down' && ci < slices.length - 1) [slices[ci + 1], slices[ci]] = [slices[ci], slices[ci + 1]];
+    else if (act === 'del' && slices.length > 1) slices.splice(ci, 1);
+    editIdx = null;
+    state.parts = [].concat(...slices);
+    cleanPartMix(state.parts);
+    after(); return true;
+  }
   const i = +ab.closest('[data-i]').dataset.i, act = ab.dataset.partAct;
   if (!parts[i]) return true;
+  if (act === 'edit') { editIdx = i; writeForm(); form.closest('.panel').scrollTop = 0; return true; }
   if (act === 'up' && i > 0) [parts[i - 1], parts[i]] = [parts[i], parts[i - 1]];
   else if (act === 'down' && i < parts.length - 1) [parts[i + 1], parts[i]] = [parts[i], parts[i + 1]];
-  else if (act === 'del' && parts.length > 1) parts.splice(i, 1);
-  else if (act === 'edit') { editIdx = i; writeForm(); form.closest('.panel').scrollTop = 0; return true; }
-  if (act !== 'edit') editIdx = null;
+  else if (act === 'del' && parts.length > 1) {
+    if (parts[i + 1] && parts[i + 1].mix && !parts[i].mix) {
+      if (parts[i].label && !parts[i + 1].label) parts[i + 1].label = parts[i].label;
+      delete parts[i + 1].mix;
+    }
+    parts.splice(i, 1);
+  }
+  editIdx = null;
+  cleanPartMix(parts);
   state.parts = parts;
   if (state.module === 'mix' && !parts.some(p => MIX_MODS.includes(p.m))) state.module = lastMultiMod = 'combo';
   after(); return true;

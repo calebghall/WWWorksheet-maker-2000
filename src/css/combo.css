@@ -9,15 +9,29 @@
 .sh-grid.sec-grid.area { grid-template-columns: 1fr 1fr; gap: var(--gap) .18in; }
 .empty { margin: 1in 0; text-align: center; color: var(--soft); }
 #wkMode { margin-bottom: 8px; }
-.parts { margin: 6px 0 8px; padding: 0; list-style: none; }
+.parts { display: grid; gap: 10px; margin: 8px 0 10px; padding: 0; list-style: none; }
+.sec-card { border: 1px solid var(--line); border-radius: 8px; padding: 10px; background: var(--field); }
+.sec-top { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 8px; align-items: center; }
+.sec-top .pl { font-weight: 700; color: var(--accent); white-space: nowrap; }
+.sec-top input[type="text"] { min-width: 0; padding: 6px 8px; }
+.sec-top .pr-b, .trow .pr-b { display: flex; gap: 4px; flex-wrap: wrap; }
+.sec-top .pr-b .btn, .trow .pr-b .btn { padding: 4px 8px; }
+.sec-topics { display: grid; gap: 6px; margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--line); }
+.trow { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; padding: 4px 0; }
+.trow + .trow { border-top: 1px dashed var(--line); padding-top: 8px; }
+.trow-name { flex: 1 1 100%; font-size: 13px; font-weight: 700; }
+.trow select, .pdrawer-meta select, .sec-add select { width: auto; padding: 6px 8px; font-size: 13px; }
+.trow .pr-b { margin-left: auto; }
+.sec-add { display: flex; gap: 6px; align-items: center; margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--line); }
+.sec-add select { flex: 1; min-width: 0; }
 .parts li.pr { display: grid; grid-template-columns: 2.8em minmax(0, 1fr); gap: 8px; align-items: start; padding: 8px 0; border-bottom: 1px solid var(--line); }
-.parts .pl { font-weight: 700; color: var(--accent); padding-top: 7px; }
+.parts li.pr .pl { font-weight: 700; color: var(--accent); padding-top: 7px; }
 .parts .pr-f { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; min-width: 0; }
 .parts .pr-f input[type="text"] { flex: 1 1 100%; min-width: 0; }
 .parts .pr-sub { flex: 1 1 100%; font-size: 12px; color: var(--muted); }
-.parts .pr-f select, .pdrawer-meta select { width: auto; padding: 6px 8px; font-size: 13px; }
-.parts .pr-b { display: flex; gap: 4px; flex-wrap: wrap; margin-left: auto; }
-.parts .pr-b .btn { padding: 4px 8px; }
+.parts .pr-f select { width: auto; padding: 6px 8px; font-size: 13px; }
+.parts .pr-f .pr-b { display: flex; gap: 4px; flex-wrap: wrap; margin-left: auto; }
+.parts .pr-f .pr-b .btn { padding: 4px 8px; }
 .part-add { display: flex; flex-wrap: wrap; gap: 8px; align-items: end; margin-top: 8px; }
 .part-f { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
 .part-f.grow { flex: 1 1 12em; }

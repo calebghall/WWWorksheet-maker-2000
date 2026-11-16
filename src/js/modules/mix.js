@@ -41,17 +41,40 @@ function mixPartsOf(st) {
   return given.length ? given : mixOn(st).map(m => ({ m, n: 1 }));
 }
 /* total problems from the parts, split by weight and interleaved; each part runs with its own settings */
-function mixItemsP(st, parts, total, seed) {
-  const counts = mixSplit(parts.map(p => p.n), total), used = {}, tot = {}, scope = {};
+function mixItemsP(st, parts, total, seed, scope) {
+  const counts = mixSplit(parts.map(p => p.n), total), used = {}, tot = {}, prev = SIG_SCOPE;
+  scope = scope || {};
   for (const p of parts) tot[p.m] = (tot[p.m] || 0) + 1;
   const lists = parts.map((p, i) => {
     const k = used[p.m] = (used[p.m] || 0) + 1;
-    if (tot[p.m] > 1) SIG_SCOPE = scope[p.m] || (scope[p.m] = new Set());
-    try { return mixGen(partState(st, p), p.m, counts[i], seed + '|mix|' + p.m + (k > 1 ? '|' + k : '')); } finally { SIG_SCOPE = null; }
+    if (tot[p.m] > 1 || prev || Object.keys(scope).length) SIG_SCOPE = scope[p.m] || (scope[p.m] = new Set());
+    try { return mixGen(partState(st, p), p.m, counts[i], seed + '|mix|' + p.m + (k > 1 ? '|' + k : '')); } finally { SIG_SCOPE = prev; }
   });
   const out = [];
   for (let k = 0; out.length < total; k++) for (const l of lists) if (k < l.length) out.push(l[k]);
   return out;
+}
+
+/* Flow-packed section plan for a group of mix-linked parts inside a Combined sheet. */
+function mixRunPlan(st, parts, seed, scope) {
+  const cw = PAPER[st.paper].w - 1.1, total = parts.reduce((a, p) => a + p.n, 0);
+  const items = mixItemsP(st, parts, total, seed, scope);
+  let fs = 10, sizes = null;
+  for (const cand of [12, 11, 10]) {
+    const raw = items.map(it => {
+      const [w, h] = needSize(it.p, cand, it.horiz), key = it.mod + ':' + it.p.type + (!it.horiz && (it.mod === 'addsub' || it.mod === 'muldiv') ? ':v' : '');
+      const [rw, rh] = FLOW_FIT[key] || [1, 1];
+      return { rawW: w * Math.min(1, 1.06 / rw), w: Math.min(w * Math.min(1, 1.06 / rw), cw), h: Math.ceil(h * Math.min(1, 1.06 / rh) * 20) / 20 };
+    });
+    if (cand === 10 || raw.every(s => s.rawW <= cw)) { fs = cand; sizes = raw; break; }
+  }
+  const rows = flowPack(sizes, rngFrom(seed + '|flow'), cw, Infinity, MIX_GX, MIX_GY)[0].rows;
+  const rowFrom = []; let c = 0;
+  for (const r of rows) { rowFrom.push(c); c += r.idx.length; }
+  return {
+    sub: mixSub(st, parts), probs: items.map(it => it.p), flowRows: rows, gap: MIX_GY, fs,
+    flowHtml: (a, b, start, key) => rows.slice(a, b).map((r, k) => mixRowHtml(r, items, sizes, i => start + rowFrom[a + k] + r.idx.indexOf(i), key)).join('')
+  };
 }
 const mixItemsN = (st, mods, total, seed) => mixItemsP(st, mods.map(m => ({ m, n: 1 })), total, seed);
 const mixItems = st => mixItemsP(st, mixPartsOf(st), st.arPerPage * st.pages, st.seed);

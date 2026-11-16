@@ -1,4 +1,4 @@
-"""Multi-topic builder & live part drawer: add parts, edit in drawer with live multi-topic preview, keep standalone settings untouched, switch arrangement, reorder, delete, reload.
+"""Multi-topic section cards & live part drawer: add sections, mix sibling topics inside a section card, edit in drawer with live preview, keep standalone settings untouched, reorder, delete, reload.
 Run: python3 tests/parts_ui.py   (needs playwright + chromium)"""
 import os, sys
 from playwright.sync_api import sync_playwright
@@ -13,17 +13,17 @@ with sync_playwright() as p:
     pg.goto(URL); pg.evaluate("localStorage.clear()"); pg.reload(); pg.wait_for_timeout(400)
     st_get = lambda: pg.evaluate("()=>JSON.parse(localStorage.getItem('wwwm2000.v1'))")
     parts = lambda: st_get()['parts']
-    rows = lambda: pg.evaluate("()=>[...document.querySelectorAll('#partsList li')].map(li=>li.querySelector('.pl').textContent+':'+(li.querySelector('input').value||li.querySelector('input').placeholder))")
+    cards = lambda: pg.evaluate("()=>[...document.querySelectorAll('#partsList .sec-card')].map(c=>c.querySelector('.pl').textContent+':'+(c.querySelector('input[name=secLabel]').value||c.querySelector('input[name=secLabel]').placeholder))")
 
-    # Switch to Multi-topic and add two muldiv parts with distinct digit sizes edited inside the live drawer
+    # Switch to Multi-topic and add two muldiv sections
     pg.check('input[name="wkMode"][value="multi"]', force=True); pg.wait_for_timeout(150)
-    check(len(rows()) == 3, 'multi starts with default sections ' + str(rows()))
+    check(len(cards()) == 3, 'multi starts with 3 section cards ' + str(cards()))
     pg.select_option('#addPartMod', 'muldiv'); pg.click('#partAdd'); pg.wait_for_timeout(100)
     pg.select_option('#addPartMod', 'muldiv'); pg.click('#partAdd'); pg.wait_for_timeout(100)
-    check(len(parts()) == 5, 'added two muldiv parts')
+    check(len(parts()) == 5 and len(cards()) == 5, 'added two muldiv sections')
 
     # Edit Part D in drawer: multi-topic sheet stays live on the right!
-    pg.click('#partsList li:nth-child(4) [data-part-act=edit]'); pg.wait_for_timeout(150)
+    pg.click('#partsList .sec-card:nth-child(4) [data-part-act=edit]'); pg.wait_for_timeout(150)
     check(pg.is_visible('#partDrawer') and not pg.is_visible('#panelMain') and not pg.is_visible('#multiBox'), 'drawer opens cleanly')
     pg.fill('#editPartLabel', 'Big'); pg.select_option('#editPartN', '5')
     pg.check('input[name="md_mode"][value="digits"]', force=True); pg.uncheck('input[name="md_ops"][value="div"]', force=True)
@@ -35,7 +35,7 @@ with sync_playwright() as p:
     check(pg.is_visible('#multiBox') and not pg.is_visible('#partDrawer'), 'drawer closes back to multi-topic list')
 
     # Edit Part E in drawer
-    pg.click('#partsList li:nth-child(5) [data-part-act=edit]'); pg.wait_for_timeout(150)
+    pg.click('#partsList .sec-card:nth-child(5) [data-part-act=edit]'); pg.wait_for_timeout(150)
     pg.fill('#editPartLabel', 'Small'); pg.select_option('#editPartN', '10')
     pg.check('input[name="md_mode"][value="digits"]', force=True); pg.uncheck('input[name="md_ops"][value="div"]', force=True)
     pg.check('input[name="md_da"][value="2"]', force=True); pg.check('input[name="md_db"][value="2"]', force=True)
@@ -46,18 +46,33 @@ with sync_playwright() as p:
     check(st_get()['md']['mode'] == 'facts', 'standalone muldiv settings untouched by part drawer')
     check(pg.evaluate(CLIP) == 0, 'clipped')
 
-    # Rename, resize, reorder inline
-    pg.fill('#partsList li:nth-child(4) input[type=text]', 'Four by one'); pg.select_option('#partsList li:nth-child(4) select', '15')
+    # Rename, resize, reorder section cards
+    pg.fill('#partsList .sec-card:nth-child(4) input[name=secLabel]', 'Four by one')
+    pg.select_option('#partsList .sec-card:nth-child(4) select[name=partRowN]', '15')
     p_ = parts(); check(p_[3]['label'] == 'Four by one' and p_[3]['n'] == 15, 'rename and resize saved')
-    pg.click('#partsList li:nth-child(5) [data-part-act=up]'); pg.wait_for_timeout(100)
-    check(rows()[3] == 'D:Small' and rows()[4] == 'E:Four by one', 'move up ' + str(rows()))
+    pg.click('#partsList .sec-card:nth-child(5) [data-sec-act=up]'); pg.wait_for_timeout(100)
+    check(cards()[3] == 'Part D:Small' and cards()[4] == 'Part E:Four by one', 'move card up ' + str(cards()))
     t = pg.text_content('#sheets'); check('Four by one' in t and 'Part E' in t, 'sheet shows labels and letters')
 
-    # Re-open drawer on moved part D (Small), change da to 3
-    pg.click('#partsList li:nth-child(4) [data-part-act=edit]'); pg.wait_for_timeout(100)
+    # Re-open drawer on moved Part D (Small), change da to 3
+    pg.click('#partsList .sec-card:nth-child(4) [data-part-act=edit]'); pg.wait_for_timeout(100)
     check(pg.is_checked('input[name="md_da"][value="2"]'), 'drawer loads moved part settings')
     pg.check('input[name="md_da"][value="3"]', force=True); pg.click('#partDone'); pg.wait_for_timeout(100)
     p_ = parts(); check(p_[3]['md']['da'] == 3 and p_[3]['label'] == 'Small' and p_[3]['n'] == 10, 'live edit keeps label and size')
+
+    # Hybrid sheet: mix another topic directly inside Part B (Addition and Subtraction + Time and Money) alongside Area Squares (Part A)
+    pg.select_option('#partsList .sec-card:nth-child(2) .sec-add-mod', 'tm')
+    pg.click('#partsList .sec-card:nth-child(2) [data-sec-add]'); pg.wait_for_timeout(200)
+    check(len(parts()) == 6 and len(cards()) == 5, 'mixing into Part B keeps 5 section cards with 6 parts ' + str(cards()))
+    check(cards()[1] == 'Part B:Mixed Practice', 'mixed card defaults to Mixed Practice title')
+    check(pg.evaluate("()=>document.querySelectorAll('#partsList .sec-card:nth-child(2) .trow').length") == 2, 'Part B shows both equal sibling topics')
+    check(pg.evaluate(CLIP) == 0, 'clipped in hybrid mix+sections')
+    # Move mixed Part B card up above Part A (Area Squares) and verify both topics move together
+    pg.click('#partsList .sec-card:nth-child(2) [data-sec-act=up]'); pg.wait_for_timeout(150)
+    check(cards()[0] == 'Part A:Mixed Practice' and cards()[1] == 'Part B:Area Squares', 'whole mixed card moves together ' + str(cards()))
+    # Remove the first topic from the mixed card; the remaining topic keeps Part A
+    pg.click('#partsList .sec-card:nth-child(1) .trow:nth-child(1) [data-part-act=del]'); pg.wait_for_timeout(150)
+    check(len(parts()) == 5 and len(cards()) == 5 and parts()[0].get('mix') is None, 'removing first mixed topic promotes sibling cleanly')
 
     # Switch to Mixed together and back to In sections
     pg.check('input[name="multi_view"][value="mix"]', force=True); pg.wait_for_timeout(200)
@@ -66,21 +81,15 @@ with sync_playwright() as p:
     check(pg.evaluate(CLIP) == 0, 'clipped in mix view')
     pg.check('input[name="multi_view"][value="combo"]', force=True); pg.wait_for_timeout(150)
 
-    # Add and delete a 6th part
-    pg.select_option('#addPartMod', 'ns'); pg.click('#partAdd'); pg.wait_for_timeout(100)
-    check(len(parts()) == 6, 'added 6th part')
-    pg.click('#partsList li:nth-child(6) [data-part-act=del]'); pg.wait_for_timeout(100)
-    check(len(parts()) == 5, 'delete part')
-
     # Persistence across reload
     pg.reload(); pg.wait_for_timeout(400)
-    check(len(parts()) == 5 and rows()[3] == 'D:Small', 'parts survive reload')
+    check(len(parts()) == 5 and cards()[3] == 'Part D:Small', 'parts survive reload')
     check(pg.evaluate(CLIP) == 0, 'clipped after reload')
 
     # Standard preset with parts, then edit Part A in drawer
     pg.evaluate("document.getElementById('stdBox').open = true"); pg.fill('#stdQ', '5.NBT.B.7'); pg.click('[data-std="5.NBT.B.7"]'); pg.wait_for_timeout(150)
     check(len(parts()) == 2 and pg.is_checked('input[name="wkMode"][value="multi"]'), 'preset parts open Multi-topic')
-    pg.click('#partsList li:nth-child(1) [data-part-act=edit]'); pg.wait_for_timeout(100)
+    pg.click('#partsList .sec-card:nth-child(1) [data-part-act=edit]'); pg.wait_for_timeout(100)
     check(pg.is_visible('#partDrawer') and pg.is_visible('fieldset[data-mod="fdp"]'), 'preset part drawer opens fdp')
     pg.click('#partDone'); pg.wait_for_timeout(100)
     check(len(parts()) == 2 and pg.is_visible('#multiBox'), 'done returns to multi-topic')
