@@ -12,6 +12,15 @@
 .parts li { display: grid; grid-template-columns: 2.2em 1fr auto; gap: 8px; align-items: baseline; padding: 6px 0; border-bottom: 1px solid var(--line); }
 .parts .pl { font-weight: 700; color: var(--accent); }
 .parts .pn { color: var(--muted); font-size: 13px; }
+.parts li.pr { grid-template-columns: 2.2em 1fr; }
+.parts .pr-f { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.parts .pr-f input[type="text"] { flex: 1 1 10em; min-width: 0; }
+.parts .pr-b { display: flex; gap: 4px; flex-wrap: wrap; }
+.parts .pr-b .btn { padding: 4px 8px; }
+.part-add { display: flex; flex-wrap: wrap; gap: 8px; align-items: end; margin-top: 4px; }
+.part-f { display: flex; flex-direction: column; gap: 2px; }
+.part-f.grow { flex: 1 1 12em; }
+.part-f.grow input { width: 100%; box-sizing: border-box; }
 .crow { display: grid; grid-template-columns: auto auto 1fr; gap: 4px 8px; align-items: center; padding: 6px 0; }
 .crow .chk { grid-column: 1 / -1; padding: 0; }
 .crow .chk b { white-space: normal; }

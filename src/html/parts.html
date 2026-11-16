@@ -1,0 +1,16 @@
+      <!-- ===== Parts: save the settings on this tab as a part ===== -->
+      <fieldset data-mod="area addsub muldiv fdp ns tm vis" id="partsAdd">
+        <legend>Parts</legend>
+        <div id="partAddRow" class="part-add">
+          <label class="part-f"><span class="lbl">Problems</span><select name="partN" id="partN" aria-label="Problems in the new part"></select></label>
+          <label class="part-f grow"><span class="lbl">Label</span><input type="text" name="partLabel" id="partLabel" maxlength="60" placeholder="Optional, such as Two digits by two digits"></label>
+          <button type="button" class="btn sm" id="partAdd">Add as a part</button>
+        </div>
+        <div id="partEditRow" class="part-add" hidden>
+          <b id="partEditName"></b>
+          <button type="button" class="btn sm" id="partUpdate">Update part</button>
+          <button type="button" class="btn ghost sm" id="partCancel">Cancel</button>
+        </div>
+        <p class="note">A part keeps the settings shown on this tab and its own problem count. Parts are lettered sections in the Combined Worksheet and share the problems in Mixed Practice. Two parts can use the same module.</p>
+      </fieldset>
+

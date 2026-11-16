@@ -68,6 +68,26 @@ with sync_playwright() as p:
     if pg.evaluate("()=>document.getElementById('partsBox').hidden") or pg.evaluate("()=>document.querySelectorAll('.sec-h').length") < 2: bad += 1; print('parts lost after reload')
     pg.evaluate("document.getElementById('stdBox').open = true"); pg.click('#partsClear'); pg.wait_for_timeout(200)
     if not pg.evaluate("()=>document.getElementById('partsBox').hidden"): bad += 1; print('parts list still shown after clear')
+    # Mixed Practice from parts: weighted parts with their own settings (state written to storage, then reloaded)
+    MIXPARTS = """([fmt, lvl, per, pages, seed])=>{
+      const st = JSON.parse(localStorage.getItem('wwwm2000.v1')); st.module = 'mix'; st.seed = seed; st.arPerPage = +per; st.pages = +pages;
+      const md = (da, db) => ({ mul: true, div: false, mode: 'digits', tables: 10, focus: 0, rem: false, da, db, alt: false, da2: 2, db2: 2, na: 3, nb: 1, format: fmt });
+      st.parts = [{ m: 'muldiv', n: 10, label: 'a', md: md(4, 1) }, { m: 'muldiv', n: 5, label: 'b', md: md(2, 2) },
+        { m: 'fdp', n: 5, fd: { types: ['decadd', 'decmul', 'conv'], level: +lvl } }, { m: 'ns', n: 5, ns: { types: ['decrsn', 'place', 'round'], level: +lvl } },
+        { m: 'addsub', n: 5, as: { add: true, sub: true, d1: 3, d2: 3, addends: 2, regroup: 'any', format: fmt, cap: 0, second: 'digits' } }];
+      localStorage.setItem('wwwm2000.v1', JSON.stringify(st)); }"""
+    for fmt in ['vertical', 'horizontal']:
+        for lvl in '123':
+            for per in ['30', '20']:
+                for pages in ['1', '2']:
+                    for seed in ['AAAAAA', 'BBBBBB', 'CCCCCC']:
+                        pg.evaluate(MIXPARTS, [fmt, lvl, per, pages, seed]); pg.reload(); pg.wait_for_timeout(120)
+                        c = pg.evaluate(CLIP)
+                        if c: bad += 1; print('CLIPPED mix parts', fmt, lvl, per, pages, seed, c, pg.evaluate(WHICH))
+    print('mix parts |', pg.inner_text('#summary'), '| list hidden:', pg.evaluate("()=>document.getElementById('mixPartsBox').hidden"))
+    if pg.evaluate("()=>document.getElementById('mixPartsBox').hidden"): bad += 1; print('mix parts list hidden')
+    pg.evaluate("document.getElementById('mixPartsClear').click()"); pg.wait_for_timeout(200)
+    if not pg.evaluate("()=>document.getElementById('mixPartsBox').hidden"): bad += 1; print('mix parts still shown after clear')
     pg.reload(); pg.wait_for_timeout(500); print('after reload |', pg.inner_text('#summary'))
     errs += pg.evaluate('window.__errs||[]')
     print('page errors', errs, '| clipped configs', bad)

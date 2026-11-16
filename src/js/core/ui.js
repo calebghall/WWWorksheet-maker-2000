@@ -162,6 +162,25 @@ function writeForm() {
   form.elements.seed.value = state.seed;
   syncModuleUI();
 }
+/* The parts list in the Combined panel (label, size, order, edit, delete) and the add / update controls on the module tabs. */
+let editIdx = null;
+const PART_ICONS = { up: ['↑', 'up'], down: ['↓', 'down'], edit: ['Edit', 'edit'], del: ['Delete', 'delete'] };
+function writeParts() {
+  const parts = state.parts || [];
+  if (editIdx !== null && !parts[editIdx]) editIdx = null;
+  $('#partsList').innerHTML = parts.map((p, i) => {
+    const L = String.fromCharCode(65 + i), nm = esc(p.label || REG[p.m].name);
+    const sel = `<select name="partRowN" aria-label="Problems in part ${L}">${REG[p.m].counts.map(n => `<option value="${n}"${n === p.n ? ' selected' : ''}>${n} problems</option>`).join('')}</select>`;
+    const btn = (act, label) => `<button type="button" class="btn ghost sm" data-part-act="${act}" aria-label="${label} part ${L}"${(act === 'up' && i === 0) || (act === 'down' && i === parts.length - 1) ? ' disabled' : ''}>${PART_ICONS[act][0]}</button>`;
+    return `<li class="pr" data-i="${i}"><span class="pl">${L}</span><div class="pr-f"><input type="text" name="partRowLabel" maxlength="60" value="${esc(p.label || '')}" placeholder="${esc(REG[p.m].name)}" aria-label="Label of part ${L}">${sel}<span class="pr-b">${btn('up', 'Move up')}${btn('down', 'Move down')}${btn('edit', 'Edit')}${btn('del', 'Delete')}</span></div></li>`;
+  }).join('');
+  const counts = REG[state.module] ? REG[state.module].counts : null;
+  if (counts && $('#partN') && document.activeElement !== $('#partN')) { const keep = $('#partN').value; $('#partN').innerHTML = counts.map(n => `<option value="${n}">${n} problems</option>`).join(''); $('#partN').value = counts.includes(+keep) ? keep : String(REG[state.module].n0); }
+  const editing = editIdx !== null && parts[editIdx] && parts[editIdx].m === state.module;
+  $('#partAdd').disabled = parts.length >= PART_MAX;
+  $('#partAddRow').hidden = editing; $('#partEditRow').hidden = !editing;
+  if (editing) $('#partEditName').textContent = `Editing part ${String.fromCharCode(65 + editIdx)}`;
+}
 function syncModuleUI() {
   form.elements.title.value = state.titles[state.module];
   document.querySelectorAll('[data-mod]').forEach(el => { el.hidden = !el.dataset.mod.split(' ').includes(state.module); });
@@ -178,7 +197,14 @@ function syncModuleUI() {
   form.querySelectorAll('select[name="combo_n"]').forEach(s => { s.disabled = !state.combo[s.dataset.id].on; });
   const hasParts = !!(state.parts && state.parts.length);
   $('#partsBox').hidden = !hasParts; $('#comboRows').hidden = hasParts; $('#comboNote').hidden = hasParts;
-  $('#partsList').innerHTML = hasParts ? state.parts.map((p, i) => `<li><span class="pl">${String.fromCharCode(65 + i)}</span><span>${esc(p.label || REG[p.m].name)}</span><span class="pn">${p.n} problems</span></li>`).join('') : '';
+  const mixParts = hasParts ? state.parts.filter(p => MIX_MODS.includes(p.m)) : [], hasMix = mixParts.length > 0;
+  $('#mixPartsBox').hidden = !hasMix; $('#mixRows').hidden = hasMix; $('#mixNote').hidden = hasMix;
+  if (hasMix) {
+    const sum = mixParts.reduce((a, p) => a + p.n, 0), left = state.parts.length - mixParts.length;
+    $('#mixPartsList').innerHTML = mixParts.map(p => `<li><span class="pl">•</span><span>${esc(p.label || REG[p.m].name)}</span><span class="pn">${Math.round(100 * p.n / sum)}%</span></li>`).join('');
+    $('#mixPartsNote').textContent = 'Mixed Practice shares its problems among these parts by their sizes, each with its own settings.' + (left ? ` ${left} part${left === 1 ? '' : 's'} that Mixed Practice cannot hold ${left === 1 ? 'is' : 'are'} left out.` : '');
+  }
+  writeParts();
   $('#levelNote').textContent = LEVELS[state.level].note;
   $('#fdNote').textContent = FD_NOTES[state.fd.level];
   $('#nsNote').textContent = NS_NOTES[state.ns.level];
@@ -198,7 +224,7 @@ function syncModuleUI() {
   $('#mdNote').textContent = parts.join(' ');
 }
 function readForm(changed) {
-  if (changed && changed.name === 'module') { state.module = val('module') || state.module; return; }
+  if (changed && changed.name === 'module') { state.module = val('module') || state.module; editIdx = null; return; }
   state.types = ensureOne(checksOf('type'), changed, 'type', 'count');
   state.level = +val('level') || state.level;
   state.unit = $('#unit').value;
@@ -243,12 +269,42 @@ form.addEventListener('submit', e => e.preventDefault());
 const CLEARS_STD = /^(module|type|level|as_|md_|fd_|ns_|tm_|vis_)/;
 form.addEventListener('input', e => {
   const nm = e.target.name || '';
+  if (nm === 'partN' || nm === 'partLabel') return;
+  if (nm === 'partRowLabel' || nm === 'partRowN') {
+    const li = e.target.closest('[data-i]'), p = li && (state.parts || [])[+li.dataset.i];
+    if (!p) return;
+    if (nm === 'partRowLabel') p.label = e.target.value.slice(0, 60); else p.n = inEnum(+e.target.value, REG[p.m].counts, REG[p.m].n0);
+    if (state.std.c) { state.std.c = ''; writeStd(); }
+    save(); render(); return;
+  }
   if (nm === 'stdGrade') { state.std.g = e.target.value; stdQuery = ''; $('#stdQ').value = ''; save(); writeStdList(); return; }
   if (nm === 'stdQ') { stdQuery = e.target.value; writeStdList(); return; }
   if (CLEARS_STD.test(nm) && state.std.c) { state.std.c = ''; writeStd(); }
   readForm(e.target); syncModuleUI(); save(); render(); });
+/* Part controls: add the settings on the current tab, edit a part's settings on its tab, move, delete. */
+function partAction(e) {
+  const ab = e.target.closest('[data-part-act], #partAdd, #partUpdate, #partCancel'); if (!ab) return false;
+  const parts = state.parts ? state.parts.slice() : null, mod = state.module, after = () => { if (state.std.c) state.std.c = ''; save(); writeForm(); render(); };
+  if (ab.id === 'partAdd') {
+    const base = parts || partsOf(state).map(p => makePart(state, p.m, p.n));
+    if (base.length >= PART_MAX) return true;
+    state.parts = base.concat(makePart(state, mod, +$('#partN').value, $('#partLabel').value.slice(0, 60)));
+    $('#partLabel').value = ''; state.module = 'combo'; after(); return true;
+  }
+  if (ab.id === 'partUpdate') { if (editIdx !== null && parts && parts[editIdx]) { parts[editIdx] = Object.assign({}, parts[editIdx], captureSettings(state, parts[editIdx].m)); state.parts = parts; } editIdx = null; state.module = 'combo'; after(); return true; }
+  if (ab.id === 'partCancel') { editIdx = null; state.module = 'combo'; save(); writeForm(); render(); return true; }
+  const i = +ab.closest('[data-i]').dataset.i, act = ab.dataset.partAct;
+  if (!parts || !parts[i]) return true;
+  if (act === 'up' && i > 0) [parts[i - 1], parts[i]] = [parts[i], parts[i - 1]];
+  else if (act === 'down' && i < parts.length - 1) [parts[i + 1], parts[i]] = [parts[i], parts[i + 1]];
+  else if (act === 'del') parts.splice(i, 1);
+  else if (act === 'edit') { editIdx = i; state.module = parts[i].m; if (parts[i][PART_KEY[parts[i].m]]) applyModSettings(state, parts[i]); state.std.c = ''; save(); writeForm(); render(); return true; }
+  if (act !== 'edit') editIdx = null;
+  state.parts = parts.length ? parts : null; after(); return true;
+}
 form.addEventListener('click', e => {
-  if (e.target.closest('#partsClear')) { state.parts = null; if (state.std.c) state.std.c = ''; save(); writeForm(); render(); return; }
+  if (partAction(e)) return;
+  if (e.target.closest('#partsClear, #mixPartsClear')) { state.parts = null; if (state.std.c) state.std.c = ''; save(); writeForm(); render(); return; }
   const r = e.target.closest('[data-std]');
   if (r && !r.disabled) { state.std = { g: stdGrade(r.dataset.std), c: r.dataset.std }; applyStandard(state, state.std.c); save(); writeForm(); render(); return; }
   const b = e.target.closest('[data-goto]'); if (!b) return;

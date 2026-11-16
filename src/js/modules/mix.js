@@ -25,14 +25,36 @@ function mixGen(st, mod, n, seed) {
   const horiz = modFormat(st, mod) === 'horizontal';
   return ps.map(p => ({ p, mod, horiz }));
 }
-/* total problems from the chosen topics, split evenly and interleaved */
-function mixItemsN(st, mods, total, seed) {
-  const lists = mods.map((m, i) => mixGen(st, m, Math.floor(total / mods.length) + (i < total % mods.length ? 1 : 0), seed + '|mix|' + m));
+/* Splits total problems across parts by weight (the parts' n). Equal weights split evenly, the first parts taking the extra
+   problems, which is how topics have always been split; otherwise largest remainder. */
+function mixSplit(weights, total) {
+  const k = weights.length;
+  if (weights.every(w => w === weights[0])) return weights.map((w, i) => Math.floor(total / k) + (i < total % k ? 1 : 0));
+  const sum = weights.reduce((a, b) => a + b, 0), raw = weights.map(w => total * w / sum), cnt = raw.map(Math.floor);
+  let left = total - cnt.reduce((a, b) => a + b, 0);
+  raw.map((r, i) => [r - cnt[i], i]).sort((a, b) => b[0] - a[0] || a[1] - b[1]).forEach(([, i]) => { if (left-- > 0) cnt[i]++; });
+  return cnt;
+}
+/* The parts Mixed Practice draws from: the worksheet's parts that use a mixable topic, otherwise one part per checked topic. */
+function mixPartsOf(st) {
+  const given = Array.isArray(st.parts) ? st.parts.filter(p => MIX_MODS.includes(p.m)) : [];
+  return given.length ? given : mixOn(st).map(m => ({ m, n: 1 }));
+}
+/* total problems from the parts, split by weight and interleaved; each part runs with its own settings */
+function mixItemsP(st, parts, total, seed) {
+  const counts = mixSplit(parts.map(p => p.n), total), used = {}, tot = {}, scope = {};
+  for (const p of parts) tot[p.m] = (tot[p.m] || 0) + 1;
+  const lists = parts.map((p, i) => {
+    const k = used[p.m] = (used[p.m] || 0) + 1;
+    if (tot[p.m] > 1) SIG_SCOPE = scope[p.m] || (scope[p.m] = new Set());
+    try { return mixGen(partState(st, p), p.m, counts[i], seed + '|mix|' + p.m + (k > 1 ? '|' + k : '')); } finally { SIG_SCOPE = null; }
+  });
   const out = [];
   for (let k = 0; out.length < total; k++) for (const l of lists) if (k < l.length) out.push(l[k]);
   return out;
 }
-const mixItems = st => mixItemsN(st, mixOn(st), st.arPerPage * st.pages, st.seed);
+const mixItemsN = (st, mods, total, seed) => mixItemsP(st, mods.map(m => ({ m, n: 1 })), total, seed);
+const mixItems = st => mixItemsP(st, mixPartsOf(st), st.arPerPage * st.pages, st.seed);
 /* HTML for one flow row. numOf(i) gives the problem number of item i. */
 function mixRowHtml(r, items, sizes, numOf, key) {
   return `<div class="fl-row" style="height:${r.h}in">` + r.idx.map((i, k) =>
@@ -50,9 +72,10 @@ function mixLayout(st) {
   }
   return last;
 }
-function mixSub(st) {
-  const on = mixOn(st);
-  return 'Solve each problem.' + (on.includes('fdp') ? ' Write fractions in simplest form.' : '') + (on.includes('muldiv') && st.md.div && st.md.rem ? ' Write remainders with R.' : '');
+function mixSub(st, parts) {
+  parts = parts || mixOn(st).map(m => ({ m, n: 1 }));
+  const rem = parts.some(p => { if (p.m !== 'muldiv') return false; const s = partState(st, p); return s.md.div && s.md.rem; });
+  return 'Solve each problem.' + (parts.some(p => p.m === 'fdp') ? ' Write fractions in simplest form.' : '') + (rem ? ' Write remainders with R.' : '');
 }
 function renderMix(st) {
   const L = mixLayout(st), st2 = Object.assign({}, st, { pages: L.pages.length }), num = new Map();
@@ -60,7 +83,7 @@ function renderMix(st) {
   for (const pg of L.pages) for (const r of pg.rows) for (const i of r.idx) num.set(i, ++n);
   const make = key => L.pages.map((pg, pi) => {
     const rows = pg.rows.map(r => mixRowHtml(r, L.items, L.sizes, i => num.get(i), key)).join('');
-    return sheetShell(st2, key, pi, mixSub(st), `<div class="flow" style="--fs:${L.fs}pt">${rows}</div>`);
+    return sheetShell(st2, key, pi, mixSub(st, mixPartsOf(st)), `<div class="flow" style="--fs:${L.fs}pt">${rows}</div>`);
   }).join('');
   META.problems = L.items.length; META.pages = L.pages.length;
   META.note = L.pages.length < st.pages ? `fits on ${L.pages.length} page${L.pages.length === 1 ? '' : 's'}` : '';

@@ -291,6 +291,15 @@ details.stdbox { margin: 20px 0 0; border: 1px solid var(--line); border-radius:
 .parts li { display: grid; grid-template-columns: 2.2em 1fr auto; gap: 8px; align-items: baseline; padding: 6px 0; border-bottom: 1px solid var(--line); }
 .parts .pl { font-weight: 700; color: var(--accent); }
 .parts .pn { color: var(--muted); font-size: 13px; }
+.parts li.pr { grid-template-columns: 2.2em 1fr; }
+.parts .pr-f { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.parts .pr-f input[type="text"] { flex: 1 1 10em; min-width: 0; }
+.parts .pr-b { display: flex; gap: 4px; flex-wrap: wrap; }
+.parts .pr-b .btn { padding: 4px 8px; }
+.part-add { display: flex; flex-wrap: wrap; gap: 8px; align-items: end; margin-top: 4px; }
+.part-f { display: flex; flex-direction: column; gap: 2px; }
+.part-f.grow { flex: 1 1 12em; }
+.part-f.grow input { width: 100%; box-sizing: border-box; }
 .crow { display: grid; grid-template-columns: auto auto 1fr; gap: 4px 8px; align-items: center; padding: 6px 0; }
 .crow .chk { grid-column: 1 / -1; padding: 0; }
 .crow .chk b { white-space: normal; }
@@ -590,8 +599,13 @@ details.stdbox { margin: 20px 0 0; border: 1px solid var(--line); border-radius:
       <!-- ===== Mixed Practice ===== -->
       <fieldset data-mod="mix">
         <legend>Topics to mix</legend>
+        <div id="mixPartsBox" hidden>
+          <ol id="mixPartsList" class="parts"></ol>
+          <p class="note" id="mixPartsNote"></p>
+          <button type="button" class="btn ghost sm" id="mixPartsClear">Use the topic checkboxes</button>
+        </div>
         <div id="mixRows"></div>
-        <p class="note">Problems from the chosen topics are interspersed and packed onto each page by size. Each topic uses the settings from its own tab. Press Settings to change them.</p>
+        <p class="note" id="mixNote">Problems from the chosen topics are interspersed and packed onto each page by size. Each topic uses the settings from its own tab. Press Settings to change them.</p>
       </fieldset>
       <!-- ===== Combined worksheet ===== -->
       <fieldset data-mod="combo">
@@ -603,6 +617,21 @@ details.stdbox { margin: 20px 0 0; border: 1px solid var(--line); border-radius:
         </div>
         <div id="comboRows"></div>
         <p class="note" id="comboNote">Each section uses the settings from its own tab. Press Settings to change them.</p>
+      </fieldset>
+      <!-- ===== Parts: save the settings on this tab as a part ===== -->
+      <fieldset data-mod="area addsub muldiv fdp ns tm vis" id="partsAdd">
+        <legend>Parts</legend>
+        <div id="partAddRow" class="part-add">
+          <label class="part-f"><span class="lbl">Problems</span><select name="partN" id="partN" aria-label="Problems in the new part"></select></label>
+          <label class="part-f grow"><span class="lbl">Label</span><input type="text" name="partLabel" id="partLabel" maxlength="60" placeholder="Optional, such as Two digits by two digits"></label>
+          <button type="button" class="btn sm" id="partAdd">Add as a part</button>
+        </div>
+        <div id="partEditRow" class="part-add" hidden>
+          <b id="partEditName"></b>
+          <button type="button" class="btn sm" id="partUpdate">Update part</button>
+          <button type="button" class="btn ghost sm" id="partCancel">Cancel</button>
+        </div>
+        <p class="note">A part keeps the settings shown on this tab and its own problem count. Parts are lettered sections in the Combined Worksheet and share the problems in Mixed Practice. Two parts can use the same module.</p>
       </fieldset>
       <!-- ===== Shared ===== -->
       <fieldset>
@@ -5337,14 +5366,36 @@ function mixGen(st, mod, n, seed) {
   const horiz = modFormat(st, mod) === 'horizontal';
   return ps.map(p => ({ p, mod, horiz }));
 }
-/* total problems from the chosen topics, split evenly and interleaved */
-function mixItemsN(st, mods, total, seed) {
-  const lists = mods.map((m, i) => mixGen(st, m, Math.floor(total / mods.length) + (i < total % mods.length ? 1 : 0), seed + '|mix|' + m));
+/* Splits total problems across parts by weight (the parts' n). Equal weights split evenly, the first parts taking the extra
+   problems, which is how topics have always been split; otherwise largest remainder. */
+function mixSplit(weights, total) {
+  const k = weights.length;
+  if (weights.every(w => w === weights[0])) return weights.map((w, i) => Math.floor(total / k) + (i < total % k ? 1 : 0));
+  const sum = weights.reduce((a, b) => a + b, 0), raw = weights.map(w => total * w / sum), cnt = raw.map(Math.floor);
+  let left = total - cnt.reduce((a, b) => a + b, 0);
+  raw.map((r, i) => [r - cnt[i], i]).sort((a, b) => b[0] - a[0] || a[1] - b[1]).forEach(([, i]) => { if (left-- > 0) cnt[i]++; });
+  return cnt;
+}
+/* The parts Mixed Practice draws from: the worksheet's parts that use a mixable topic, otherwise one part per checked topic. */
+function mixPartsOf(st) {
+  const given = Array.isArray(st.parts) ? st.parts.filter(p => MIX_MODS.includes(p.m)) : [];
+  return given.length ? given : mixOn(st).map(m => ({ m, n: 1 }));
+}
+/* total problems from the parts, split by weight and interleaved; each part runs with its own settings */
+function mixItemsP(st, parts, total, seed) {
+  const counts = mixSplit(parts.map(p => p.n), total), used = {}, tot = {}, scope = {};
+  for (const p of parts) tot[p.m] = (tot[p.m] || 0) + 1;
+  const lists = parts.map((p, i) => {
+    const k = used[p.m] = (used[p.m] || 0) + 1;
+    if (tot[p.m] > 1) SIG_SCOPE = scope[p.m] || (scope[p.m] = new Set());
+    try { return mixGen(partState(st, p), p.m, counts[i], seed + '|mix|' + p.m + (k > 1 ? '|' + k : '')); } finally { SIG_SCOPE = null; }
+  });
   const out = [];
   for (let k = 0; out.length < total; k++) for (const l of lists) if (k < l.length) out.push(l[k]);
   return out;
 }
-const mixItems = st => mixItemsN(st, mixOn(st), st.arPerPage * st.pages, st.seed);
+const mixItemsN = (st, mods, total, seed) => mixItemsP(st, mods.map(m => ({ m, n: 1 })), total, seed);
+const mixItems = st => mixItemsP(st, mixPartsOf(st), st.arPerPage * st.pages, st.seed);
 /* HTML for one flow row. numOf(i) gives the problem number of item i. */
 function mixRowHtml(r, items, sizes, numOf, key) {
   return `<div class="fl-row" style="height:${r.h}in">` + r.idx.map((i, k) =>
@@ -5362,9 +5413,10 @@ function mixLayout(st) {
   }
   return last;
 }
-function mixSub(st) {
-  const on = mixOn(st);
-  return 'Solve each problem.' + (on.includes('fdp') ? ' Write fractions in simplest form.' : '') + (on.includes('muldiv') && st.md.div && st.md.rem ? ' Write remainders with R.' : '');
+function mixSub(st, parts) {
+  parts = parts || mixOn(st).map(m => ({ m, n: 1 }));
+  const rem = parts.some(p => { if (p.m !== 'muldiv') return false; const s = partState(st, p); return s.md.div && s.md.rem; });
+  return 'Solve each problem.' + (parts.some(p => p.m === 'fdp') ? ' Write fractions in simplest form.' : '') + (rem ? ' Write remainders with R.' : '');
 }
 function renderMix(st) {
   const L = mixLayout(st), st2 = Object.assign({}, st, { pages: L.pages.length }), num = new Map();
@@ -5372,7 +5424,7 @@ function renderMix(st) {
   for (const pg of L.pages) for (const r of pg.rows) for (const i of r.idx) num.set(i, ++n);
   const make = key => L.pages.map((pg, pi) => {
     const rows = pg.rows.map(r => mixRowHtml(r, L.items, L.sizes, i => num.get(i), key)).join('');
-    return sheetShell(st2, key, pi, mixSub(st), `<div class="flow" style="--fs:${L.fs}pt">${rows}</div>`);
+    return sheetShell(st2, key, pi, mixSub(st, mixPartsOf(st)), `<div class="flow" style="--fs:${L.fs}pt">${rows}</div>`);
   }).join('');
   META.problems = L.items.length; META.pages = L.pages.length;
   META.note = L.pages.length < st.pages ? `fits on ${L.pages.length} page${L.pages.length === 1 ? '' : 's'}` : '';
@@ -5967,6 +6019,25 @@ function writeForm() {
   form.elements.seed.value = state.seed;
   syncModuleUI();
 }
+/* The parts list in the Combined panel (label, size, order, edit, delete) and the add / update controls on the module tabs. */
+let editIdx = null;
+const PART_ICONS = { up: ['↑', 'up'], down: ['↓', 'down'], edit: ['Edit', 'edit'], del: ['Delete', 'delete'] };
+function writeParts() {
+  const parts = state.parts || [];
+  if (editIdx !== null && !parts[editIdx]) editIdx = null;
+  $('#partsList').innerHTML = parts.map((p, i) => {
+    const L = String.fromCharCode(65 + i), nm = esc(p.label || REG[p.m].name);
+    const sel = `<select name="partRowN" aria-label="Problems in part ${L}">${REG[p.m].counts.map(n => `<option value="${n}"${n === p.n ? ' selected' : ''}>${n} problems</option>`).join('')}</select>`;
+    const btn = (act, label) => `<button type="button" class="btn ghost sm" data-part-act="${act}" aria-label="${label} part ${L}"${(act === 'up' && i === 0) || (act === 'down' && i === parts.length - 1) ? ' disabled' : ''}>${PART_ICONS[act][0]}</button>`;
+    return `<li class="pr" data-i="${i}"><span class="pl">${L}</span><div class="pr-f"><input type="text" name="partRowLabel" maxlength="60" value="${esc(p.label || '')}" placeholder="${esc(REG[p.m].name)}" aria-label="Label of part ${L}">${sel}<span class="pr-b">${btn('up', 'Move up')}${btn('down', 'Move down')}${btn('edit', 'Edit')}${btn('del', 'Delete')}</span></div></li>`;
+  }).join('');
+  const counts = REG[state.module] ? REG[state.module].counts : null;
+  if (counts && $('#partN') && document.activeElement !== $('#partN')) { const keep = $('#partN').value; $('#partN').innerHTML = counts.map(n => `<option value="${n}">${n} problems</option>`).join(''); $('#partN').value = counts.includes(+keep) ? keep : String(REG[state.module].n0); }
+  const editing = editIdx !== null && parts[editIdx] && parts[editIdx].m === state.module;
+  $('#partAdd').disabled = parts.length >= PART_MAX;
+  $('#partAddRow').hidden = editing; $('#partEditRow').hidden = !editing;
+  if (editing) $('#partEditName').textContent = `Editing part ${String.fromCharCode(65 + editIdx)}`;
+}
 function syncModuleUI() {
   form.elements.title.value = state.titles[state.module];
   document.querySelectorAll('[data-mod]').forEach(el => { el.hidden = !el.dataset.mod.split(' ').includes(state.module); });
@@ -5983,7 +6054,14 @@ function syncModuleUI() {
   form.querySelectorAll('select[name="combo_n"]').forEach(s => { s.disabled = !state.combo[s.dataset.id].on; });
   const hasParts = !!(state.parts && state.parts.length);
   $('#partsBox').hidden = !hasParts; $('#comboRows').hidden = hasParts; $('#comboNote').hidden = hasParts;
-  $('#partsList').innerHTML = hasParts ? state.parts.map((p, i) => `<li><span class="pl">${String.fromCharCode(65 + i)}</span><span>${esc(p.label || REG[p.m].name)}</span><span class="pn">${p.n} problems</span></li>`).join('') : '';
+  const mixParts = hasParts ? state.parts.filter(p => MIX_MODS.includes(p.m)) : [], hasMix = mixParts.length > 0;
+  $('#mixPartsBox').hidden = !hasMix; $('#mixRows').hidden = hasMix; $('#mixNote').hidden = hasMix;
+  if (hasMix) {
+    const sum = mixParts.reduce((a, p) => a + p.n, 0), left = state.parts.length - mixParts.length;
+    $('#mixPartsList').innerHTML = mixParts.map(p => `<li><span class="pl">•</span><span>${esc(p.label || REG[p.m].name)}</span><span class="pn">${Math.round(100 * p.n / sum)}%</span></li>`).join('');
+    $('#mixPartsNote').textContent = 'Mixed Practice shares its problems among these parts by their sizes, each with its own settings.' + (left ? ` ${left} part${left === 1 ? '' : 's'} that Mixed Practice cannot hold ${left === 1 ? 'is' : 'are'} left out.` : '');
+  }
+  writeParts();
   $('#levelNote').textContent = LEVELS[state.level].note;
   $('#fdNote').textContent = FD_NOTES[state.fd.level];
   $('#nsNote').textContent = NS_NOTES[state.ns.level];
@@ -6003,7 +6081,7 @@ function syncModuleUI() {
   $('#mdNote').textContent = parts.join(' ');
 }
 function readForm(changed) {
-  if (changed && changed.name === 'module') { state.module = val('module') || state.module; return; }
+  if (changed && changed.name === 'module') { state.module = val('module') || state.module; editIdx = null; return; }
   state.types = ensureOne(checksOf('type'), changed, 'type', 'count');
   state.level = +val('level') || state.level;
   state.unit = $('#unit').value;
@@ -6048,12 +6126,42 @@ form.addEventListener('submit', e => e.preventDefault());
 const CLEARS_STD = /^(module|type|level|as_|md_|fd_|ns_|tm_|vis_)/;
 form.addEventListener('input', e => {
   const nm = e.target.name || '';
+  if (nm === 'partN' || nm === 'partLabel') return;
+  if (nm === 'partRowLabel' || nm === 'partRowN') {
+    const li = e.target.closest('[data-i]'), p = li && (state.parts || [])[+li.dataset.i];
+    if (!p) return;
+    if (nm === 'partRowLabel') p.label = e.target.value.slice(0, 60); else p.n = inEnum(+e.target.value, REG[p.m].counts, REG[p.m].n0);
+    if (state.std.c) { state.std.c = ''; writeStd(); }
+    save(); render(); return;
+  }
   if (nm === 'stdGrade') { state.std.g = e.target.value; stdQuery = ''; $('#stdQ').value = ''; save(); writeStdList(); return; }
   if (nm === 'stdQ') { stdQuery = e.target.value; writeStdList(); return; }
   if (CLEARS_STD.test(nm) && state.std.c) { state.std.c = ''; writeStd(); }
   readForm(e.target); syncModuleUI(); save(); render(); });
+/* Part controls: add the settings on the current tab, edit a part's settings on its tab, move, delete. */
+function partAction(e) {
+  const ab = e.target.closest('[data-part-act], #partAdd, #partUpdate, #partCancel'); if (!ab) return false;
+  const parts = state.parts ? state.parts.slice() : null, mod = state.module, after = () => { if (state.std.c) state.std.c = ''; save(); writeForm(); render(); };
+  if (ab.id === 'partAdd') {
+    const base = parts || partsOf(state).map(p => makePart(state, p.m, p.n));
+    if (base.length >= PART_MAX) return true;
+    state.parts = base.concat(makePart(state, mod, +$('#partN').value, $('#partLabel').value.slice(0, 60)));
+    $('#partLabel').value = ''; state.module = 'combo'; after(); return true;
+  }
+  if (ab.id === 'partUpdate') { if (editIdx !== null && parts && parts[editIdx]) { parts[editIdx] = Object.assign({}, parts[editIdx], captureSettings(state, parts[editIdx].m)); state.parts = parts; } editIdx = null; state.module = 'combo'; after(); return true; }
+  if (ab.id === 'partCancel') { editIdx = null; state.module = 'combo'; save(); writeForm(); render(); return true; }
+  const i = +ab.closest('[data-i]').dataset.i, act = ab.dataset.partAct;
+  if (!parts || !parts[i]) return true;
+  if (act === 'up' && i > 0) [parts[i - 1], parts[i]] = [parts[i], parts[i - 1]];
+  else if (act === 'down' && i < parts.length - 1) [parts[i + 1], parts[i]] = [parts[i], parts[i + 1]];
+  else if (act === 'del') parts.splice(i, 1);
+  else if (act === 'edit') { editIdx = i; state.module = parts[i].m; if (parts[i][PART_KEY[parts[i].m]]) applyModSettings(state, parts[i]); state.std.c = ''; save(); writeForm(); render(); return true; }
+  if (act !== 'edit') editIdx = null;
+  state.parts = parts.length ? parts : null; after(); return true;
+}
 form.addEventListener('click', e => {
-  if (e.target.closest('#partsClear')) { state.parts = null; if (state.std.c) state.std.c = ''; save(); writeForm(); render(); return; }
+  if (partAction(e)) return;
+  if (e.target.closest('#partsClear, #mixPartsClear')) { state.parts = null; if (state.std.c) state.std.c = ''; save(); writeForm(); render(); return; }
   const r = e.target.closest('[data-std]');
   if (r && !r.disabled) { state.std = { g: stdGrade(r.dataset.std), c: r.dataset.std }; applyStandard(state, state.std.c); save(); writeForm(); render(); return; }
   const b = e.target.closest('[data-goto]'); if (!b) return;

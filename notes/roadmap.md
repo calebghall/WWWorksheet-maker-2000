@@ -89,14 +89,15 @@ Constraints:
 - Set codes must keep reproducing existing worksheets. Add a test that compares generated sets before and after for fixed seeds across every module.
 - Saved settings from earlier versions must load unchanged.
 
-Status: in progress. Done: the parts data model and the set-code regression test (patches P5.0 to P5.2). Remaining: Mixed Practice from a part list (P5.3), the panel controls for saving, renaming, reordering, editing and deleting parts (P5.4), the cross-checks listed under Exit (P5.5) and the release tag (P5.6).
+Status: functionally done; release step remains. Done: the parts data model and the set-code regression test (P5.0 to P5.2), Mixed Practice from weighted parts (P5.3), and the panel controls for adding, labeling, resizing, reordering, editing and deleting parts (P5.4). Remaining: review of the design note against real use, and the release tag (P5.6).
 
 Built so far:
 
 - `src/js/core/parts.js`. A part is `{ m, n, label, <settings> }`; the settings key (`as`, `md`, `fd`, `ns`, `tm`, `vis`, `area`, `mix`) and shape match a standards preset, so a single-module preset is a part without a count. `partsOf(st)` returns `st.parts`, or one part per Combined section that is on, so worksheets without parts render exactly as before. The first part of a module keeps the old section seed (`seed|id`); later parts of that module use `seed|id|k`. Parts of one module share a dedupe set so they never print the same problem twice. `clampMod` (moved out of `normalize`) clamps settings for saved parts and saved worksheets alike.
 - Presets: `{ c, t, m: 'parts', view: 'combo', parts: [...] }`. `applyStandard` sets `st.parts` and the Combined view and leaves the module tabs alone; a single-module preset clears `st.parts`. 5.NBT.B.7 is now Fractions, Decimals and Percents plus the Number Sense "Decimal division and reasonableness" type, and 4.NBT.B.5 is two Multiplication and Division parts. `md.alt`, `md.da2` and `md.db2` stay in the generator and in `normalize` so saved settings keep their sheets; only the preset moved. This changes the output of those two presets (announced; `tests/golden-sets.json` updated for them only).
 - Tests: `tests/logic-setcodes.js` (385 hashed sheets: every module, Combined and Mixed variants, every preset), `tests/logic-parts.js`, part-aware `tests/logic-standards.js` and `tests/coverage.js`, multi-part pages in `tests/clip.py`.
-- Panel: while parts are set, the Sections list shows them with a "Use simple sections" button. Saving, renaming and reordering are not built yet.
+- Mixed Practice: `mixPartsOf` takes the parts that use a mixable topic (parts' `n` are weights, split by largest remainder; equal weights split exactly as topics always were); parts using `vis` or `area` are left out of Mixed. Seeds follow the Combined rule (`seed|mix|id`, then `|k`).
+- Panel (`html/parts.html`, `writeParts` and `partAction` in `ui.js`): "Add as a part" on each module tab, and in the Sections list label, size, move, edit, delete (up to 12 parts) and "Use simple sections". Editing loads the part's settings into its tab, which replaces what the tab held; "Update part" writes them back.
 - Bug-report links keep `parts` and `combo` when the whole state is too long.
 
 Exit: design note reviewed; a multi-configuration preset works in Combined and Mixed; set-code regression test passes; clipping check covers multi-part pages.

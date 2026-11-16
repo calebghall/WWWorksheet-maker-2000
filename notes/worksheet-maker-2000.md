@@ -121,7 +121,7 @@ All off by default. Add and subtract fractions, unlike denominators (`fadd5`, mi
 - Each module is a section labeled Part A, Part B and so on, with its own problem count: 2, 4, 6 or 8 for area, and 5, 10, 15, 20 or 30 for the other modules. Fractions/decimals/percents, number sense and time and money start switched off in a fresh combined sheet.
 - Each section uses the settings saved on its own module tab. A Settings button on each section row jumps to that tab.
 - Problems are numbered continuously across the sheet.
-- Parts: a standard can set a list of parts instead of one section per module. Each part has its own module, settings, problem count and optional label, and two parts can use the same module (they never print the same problem twice). While parts are set, the Sections list shows them and "Use simple sections" returns to the checkbox list.
+- Parts: a standard can set a list of parts instead of one section per module. Each part has its own module, settings, problem count and optional label, and two parts can use the same module (they never print the same problem twice). On each module tab, "Add as a part" saves the settings on that tab with a problem count and an optional label (the first time, the sections already on become parts). The Sections list can rename, resize, reorder, edit (opens the part's settings on its tab, then "Update part") and delete parts, up to 12; "Use simple sections" returns to the checkbox list. Mixed Practice shares its problems among the parts that use its topics, by their sizes, each with its own settings.
 - Sections are packed onto pages in order. A section that does not fit continues on the next page, labeled "(continued)". Page count is automatic.
 
 ## Shared options

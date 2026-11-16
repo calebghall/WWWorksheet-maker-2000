@@ -91,5 +91,32 @@ for (const mod of Object.keys(SP.REG)) {
   const u = new URL(SP.bugReportUrl(st, 'agent')), back = JSON.parse(u.searchParams.get('settings'));
   ok(u.href.length <= 6000 && J(back.parts) === J(st.parts), 'bug report with 6 parts: ' + u.href.length);
 }
+
+/* 8. Mixed Practice from parts */
+{
+  /* explicit equal parts for the checked topics give the same sheet as the topic checkboxes */
+  for (let i = 0; i < 4; i++) {
+    const a = D(); Object.assign(a, { module: 'mix', seed: 'MX' + i, pages: 1 + i % 2, arPerPage: [12, 20, 30][i % 3] });
+    const b = JSON.parse(J(a)); b.parts = ['addsub', 'muldiv', 'ns', 'tm'].map(m => ({ m, n: 5 }));
+    ok(SP.renderAll(a) === SP.renderAll(b), 'mix parts differ from checkboxes ' + i);
+  }
+  /* weights: sizes follow the parts' n, totals are exact, and each part uses its own settings */
+  const st = D(); Object.assign(st, { module: 'mix', seed: 'MY', pages: 1, arPerPage: 20 });
+  const md = (da, db) => ({ mul: true, div: false, mode: 'digits', tables: 10, focus: 0, rem: false, da, db, alt: false, da2: 2, db2: 2, na: 3, nb: 1, format: 'vertical' });
+  st.parts = [{ m: 'muldiv', n: 15, label: 'Big', md: md(4, 1) }, { m: 'muldiv', n: 5, label: 'Small', md: md(2, 2) }, { m: 'vis', n: 5, vis: { types: ['cnt'], level: 1 } }];
+  const items = SP.mixItems(st), big = items.filter(it => it.p.a >= 1000), small = items.filter(it => it.p.a < 100);
+  ok(items.length === 20 && big.length === 15 && small.length === 5, 'mix weights ' + items.length + '/' + big.length + '/' + small.length);
+  ok(items.every(it => it.mod === 'muldiv') && new Set(items.map(it => it.p.a + 'x' + it.p.b)).size === 20, 'vis part left out, no repeats');
+  const out = SP.renderAll(st); ok(!/NaN|undefined/.test(out) && SP.META.problems === 20, 'mix render');
+  /* largest remainder: 20 across 3, 3, 1 is 8.6, 8.6, 2.9, so 9, 8, 3 */
+  st.parts = [{ m: 'addsub', n: 3 }, { m: 'ns', n: 3 }, { m: 'tm', n: 1 }];
+  const by = {}; SP.mixItems(st).forEach(it => { by[it.mod] = (by[it.mod] || 0) + 1; });
+  ok(by.addsub + by.ns + by.tm === 20 && by.addsub === 9 && by.ns === 8 && by.tm === 3, 'largest remainder ' + J(by));
+  /* parts that Mixed cannot hold fall back to the topic checkboxes */
+  st.parts = [{ m: 'vis', n: 5 }, { m: 'area', n: 4 }]; const fb = SP.mixItems(st); ok(fb.length === 20 && fb.every(it => ['addsub', 'muldiv', 'ns', 'tm'].includes(it.mod)), 'unmixable parts fall back');
+  /* remainder wording follows the parts */
+  st.parts = [{ m: 'muldiv', n: 5, md: Object.assign(md(3, 1), { div: true, rem: true, na: 3, nb: 1 }) }, { m: 'addsub', n: 5 }];
+  ok(/remainders with R/.test(SP.renderAll(st)), 'mix subtitle remainder');
+}
 console.log('parts', checks, 'checks; issues', J(bad));
 process.exit(bad.length ? 1 : 0);
