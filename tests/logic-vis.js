@@ -47,6 +47,11 @@ function check(p,tag,L){
   case 'array':if(String(p.r*p.c)!==p.ans||p.r>5||p.c>5||p.r<2||p.c<2)e('array');break;
   case 'chart':{if(p.kind==='add'){const exp=p.blanks.map(b=>(p.r0+Math.floor(b/4))+(p.c0+b%4)).join(' ');if(exp!==p.ans||new Set(p.blanks).size!==3)e('add');}
     else if(p.kind==='hund'){const exp=p.blanks.map(b=>(p.row+Math.floor(b/5))*10+p.col+b%5).join(' ');if(exp!==p.ans||(p.row+3)*10+p.col+4>100)e('hund');}else if(p.ans!=='1 10')e('rule');break;}
+  case 'acount':if(p.shape.cells.length!==p.area||p.area<1||p.shape.cells.some(c=>c[0]<0||c[1]<0||c[0]>=p.shape.cols||c[1]>=p.shape.rows))e('acount');break;
+  case 'amult':if(p.w*p.h!==p.area||p.w<2)e('amult');break;
+  case 'adraw':{const m=p.sample;if(m.w*m.h!==p.area||m.ox<0||m.oy<0||m.ox+m.w>p.cols||m.oy+m.h>p.rows||!p.prompt.includes(String(p.area)))e('adraw');break;}
+  case 'acmp':{const A=p.a.shape.cells.length,B=p.b.shape.cells.length;if(A!==p.a.area||B!==p.b.area||p.ans!==(A===B?'S':A>B?'A':'B'))e('acmp');break;}
+  case 'alsh':if(p.W*p.H-p.cw*p.ch!==p.area||p.shape.cells.length!==p.area)e('alsh');break;
   default:e('unexpected');
   }
 }

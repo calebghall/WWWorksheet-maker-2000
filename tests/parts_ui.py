@@ -60,16 +60,16 @@ with sync_playwright() as p:
     pg.check('input[name="md_da"][value="3"]', force=True); pg.click('#partDone'); pg.wait_for_timeout(100)
     p_ = parts(); check(p_[3]['md']['da'] == 3 and p_[3]['label'] == 'Small' and p_[3]['n'] == 10, 'live edit keeps label and size')
 
-    # Hybrid sheet: mix another topic directly inside Part B (Addition and Subtraction + Time and Money) alongside Area Squares (Part A)
+    # Hybrid sheet: mix another topic directly inside Part B (Addition and Subtraction + Time and Money) alongside Geometry (Part A)
     pg.click('#partsList .sec-card:nth-child(2) [data-sec-open]'); pg.wait_for_timeout(100)
-    pg.click('#partsList .sec-card:nth-child(2) [data-sec-pick="tm"]'); pg.wait_for_timeout(200)
+    pg.click('#partsList .sec-card:nth-child(2) [data-sec-pick="time"]'); pg.wait_for_timeout(200)
     check(len(parts()) == 6 and len(cards()) == 5, 'mixing into Part B keeps 5 section cards with 6 parts ' + str(cards()))
     check(cards()[1] == 'Part B:Mixed Practice', 'mixed card defaults to Mixed Practice title')
     check(pg.evaluate("()=>document.querySelectorAll('#partsList .sec-card:nth-child(2) .trow').length") == 2, 'Part B shows both equal sibling topics')
     check(pg.evaluate(CLIP) == 0, 'clipped in hybrid mix+sections')
     # Move mixed Part B card up above Part A (Area Squares) and verify both topics move together
     pg.click('#partsList .sec-card:nth-child(2) [data-sec-act=up]'); pg.wait_for_timeout(150)
-    check(cards()[0] == 'Part A:Mixed Practice' and cards()[1] == 'Part B:Area Squares', 'whole mixed card moves together ' + str(cards()))
+    check(cards()[0] == 'Part A:Mixed Practice' and cards()[1] == 'Part B:Geometry, Area and Volume', 'whole mixed card moves together ' + str(cards()))
     # Remove the first topic from the mixed card; the remaining topic keeps Part A
     pg.click('#partsList .sec-card:nth-child(1) .trow:nth-child(1) [data-part-act=del]'); pg.wait_for_timeout(150)
     check(len(parts()) == 5 and len(cards()) == 5 and parts()[0].get('mix') is None, 'removing first mixed topic promotes sibling cleanly')
@@ -77,7 +77,17 @@ with sync_playwright() as p:
     # Switch to Mixed together and back to In sections
     pg.check('input[name="multi_view"][value="mix"]', force=True); pg.wait_for_timeout(200)
     check(st_get()['module'] == 'mix', 'multi_view mix sets module mix')
-    check('%' in pg.text_content('#partsList') and 'Sections only' in pg.text_content('#partsList'), 'mix view shows % shares and Sections only tag for area')
+    check('%' in pg.text_content('#partsList') and 'Sections only' not in pg.text_content('#partsList'), 'mix view shows % shares; geometry with area on grids can mix')
+    # a geometry part with a drawing type (shape names) is sections only
+    pg.click('#partsList .pr:has(.pr-sub:text("Geometry")) [data-part-act=edit]'); pg.wait_for_timeout(120)
+    pg.evaluate("document.querySelectorAll('details.tgroup').forEach(d => { d.open = true; })")
+    pg.check('input[name="geom_type"][value="vis.shname"]', force=True); pg.wait_for_timeout(120)
+    pg.click('#partDone'); pg.wait_for_timeout(150)
+    check('Sections only' in pg.text_content('#partsList'), 'geometry part with a drawing group is sections only')
+    pg.click('#partsList .pr:has(.pr-sub:text("Geometry")) [data-part-act=edit]'); pg.wait_for_timeout(120)
+    pg.evaluate("document.querySelectorAll('details.tgroup').forEach(d => { d.open = true; })")
+    pg.uncheck('input[name="geom_type"][value="vis.shname"]', force=True); pg.wait_for_timeout(120)
+    pg.click('#partDone'); pg.wait_for_timeout(150)
     check(pg.evaluate(CLIP) == 0, 'clipped in mix view')
     pg.check('input[name="multi_view"][value="combo"]', force=True); pg.wait_for_timeout(150)
 
@@ -90,14 +100,14 @@ with sync_playwright() as p:
     pg.evaluate("document.getElementById('stdBox').open = true"); pg.fill('#stdQ', '5.NBT.B.7'); pg.click('[data-std="5.NBT.B.7"]'); pg.wait_for_timeout(150)
     check(len(parts()) == 2 and pg.is_checked('input[name="wkMode"][value="multi"]'), 'preset parts open Multi-topic')
     pg.click('#partsList .sec-card:nth-child(1) [data-part-act=edit]'); pg.wait_for_timeout(100)
-    check(pg.is_visible('#partDrawer') and pg.is_visible('fieldset[data-mod="fdp"]'), 'preset part drawer opens fdp')
+    check(pg.is_visible('#partDrawer') and pg.is_visible('fieldset[data-mod="frac"]'), 'preset part drawer opens frac')
     pg.click('#partDone'); pg.wait_for_timeout(100)
     check(len(parts()) == 2 and pg.is_visible('#multiBox'), 'done returns to multi-topic')
 
-    # Limit of 12 parts
-    for _ in range(12):
+    # Limit of 16 parts
+    for _ in range(16):
         if pg.is_enabled('#partAdd'): pg.click('#partAdd')
-    check(len(parts()) == 12 and not pg.is_enabled('#partAdd'), 'limit of 12 parts ' + str(len(parts())))
+    check(len(parts()) == 16 and not pg.is_enabled('#partAdd'), 'limit of 16 parts ' + str(len(parts())))
     check(not errs, 'page errors ' + str(errs))
     b.close()
 print('parts ui issues', bad)

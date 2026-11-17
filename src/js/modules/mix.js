@@ -1,5 +1,5 @@
 /* ---------- mixed practice: problems from several topics, flow layout ---------- */
-const MIX_MODS = ['addsub', 'muldiv', 'fdp', 'ns', 'tm'];
+const MIX_MODS = ['addsub', 'muldiv', 'fdp', 'ns', 'tm', 'num', 'oa', 'frac', 'time', 'meas', 'geom'];
 const MIX_GX = 0.15, MIX_GY = 0.1, MIX_SIZES = [14, 13, 12, 11, 10];
 /* Measured ratios of the size hints (needSize) to the real rendered size, smallest over many samples at 10 to 14 pt: [width, height].
    The hints are deliberately generous so grid cells never clip; flow packing trims them back, keeping 6% spare. */
@@ -12,7 +12,7 @@ const FLOW_FIT = {
 };
 /* Space item it needs at type size fs, in inches, capped to the page width cw. */
 function mixSize(it, fs, cw) {
-  const [w, h] = needSize(it.p, fs, it.horiz), key = it.mod + ':' + it.p.type + (!it.horiz && (it.mod === 'addsub' || it.mod === 'muldiv') ? ':v' : '');
+  const [w, h] = needSize(it.p, fs, it.horiz), key = (it.p.mod || it.mod) + ':' + it.p.type + (!it.horiz && (it.mod === 'addsub' || it.mod === 'muldiv') ? ':v' : '');
   const [rw, rh] = FLOW_FIT[key] || [1, 1];
   return { w: Math.min(w * Math.min(1, 1.06 / rw), cw), h: Math.ceil(h * Math.min(1, 1.06 / rh) * 20) / 20 };
 }
@@ -21,7 +21,7 @@ const mixOn = st => { const on = MIX_MODS.filter(id => st.mix.mods[id]); return 
 /* Problems from one topic, using that topic's own settings. Returns items { p, mod, horiz }. */
 function mixGen(st, mod, n, seed) {
   const s2 = Object.assign({}, st, { module: mod }), rng = rngFrom(seed);
-  const ps = mod === 'fdp' ? genFdpN(rng, s2, n, n) : mod === 'ns' ? genNsN(rng, s2, n, n) : mod === 'tm' ? genTmN(rng, s2, n, n) : genArithN(rng, s2, mod, n, n);
+  const ps = isStrand(mod) ? genStrandN(rng, s2, mod, n, n) : mod === 'fdp' ? genFdpN(rng, s2, n, n) : mod === 'ns' ? genNsN(rng, s2, n, n) : mod === 'tm' ? genTmN(rng, s2, n, n) : genArithN(rng, s2, mod, n, n);
   const horiz = modFormat(st, mod) === 'horizontal';
   return ps.map(p => ({ p, mod, horiz }));
 }
@@ -37,7 +37,7 @@ function mixSplit(weights, total) {
 }
 /* The parts Mixed Practice draws from: the worksheet's parts that use a mixable topic, otherwise one part per checked topic. */
 function mixPartsOf(st) {
-  const given = Array.isArray(st.parts) ? st.parts.filter(p => MIX_MODS.includes(p.m)) : [];
+  const given = Array.isArray(st.parts) ? st.parts.filter(p => partMixable(st, p)) : [];
   return given.length ? given : mixOn(st).map(m => ({ m, n: 1 }));
 }
 /* total problems from the parts, split by weight and interleaved; each part runs with its own settings */
@@ -62,7 +62,7 @@ function mixRunPlan(st, parts, seed, scope) {
   let fs = 10, sizes = null;
   for (const cand of [12, 11, 10]) {
     const raw = items.map(it => {
-      const [w, h] = needSize(it.p, cand, it.horiz), key = it.mod + ':' + it.p.type + (!it.horiz && (it.mod === 'addsub' || it.mod === 'muldiv') ? ':v' : '');
+      const [w, h] = needSize(it.p, cand, it.horiz), key = (it.p.mod || it.mod) + ':' + it.p.type + (!it.horiz && (it.mod === 'addsub' || it.mod === 'muldiv') ? ':v' : '');
       const [rw, rh] = FLOW_FIT[key] || [1, 1];
       return { rawW: w * Math.min(1, 1.06 / rw), w: Math.min(w * Math.min(1, 1.06 / rw), cw), h: Math.ceil(h * Math.min(1, 1.06 / rh) * 20) / 20 };
     });
@@ -98,7 +98,7 @@ function mixLayout(st) {
 function mixSub(st, parts) {
   parts = parts || mixOn(st).map(m => ({ m, n: 1 }));
   const rem = parts.some(p => { if (p.m !== 'muldiv') return false; const s = partState(st, p); return s.md.div && s.md.rem; });
-  return 'Solve each problem.' + (parts.some(p => p.m === 'fdp') ? ' Write fractions in simplest form.' : '') + (rem ? ' Write remainders with R.' : '');
+  return 'Solve each problem.' + (parts.some(p => p.m === 'fdp' || p.m === 'frac') ? ' Write fractions in simplest form.' : '') + (rem ? ' Write remainders with R.' : '');
 }
 function renderMix(st) {
   const L = mixLayout(st), st2 = Object.assign({}, st, { pages: L.pages.length }), num = new Map();

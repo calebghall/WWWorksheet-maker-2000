@@ -2,7 +2,7 @@ function defaults() {
   const combo = {}; for (const id of Object.keys(REG)) combo[id] = { on: REG[id].on0 !== false, n: REG[id].n0 };
   return {
     module: 'area',
-    titles: { area: 'Area Squares', addsub: 'Addition and Subtraction', muldiv: 'Multiplication and Division', fdp: 'Fractions, Decimals and Percents', ns: 'Number Sense', tm: 'Time and Money', vis: 'Shapes, Measures and Data', mix: 'Mixed Practice', combo: 'Math Practice' },
+    titles: { area: 'Area Squares', addsub: 'Addition and Subtraction', muldiv: 'Multiplication and Division', fdp: 'Fractions, Decimals and Percents', ns: 'Number Sense', tm: 'Time and Money', vis: 'Shapes, Measures and Data', mix: 'Mixed Practice', combo: 'Math Practice', num: 'Number Sense', oa: 'Operations and Algebraic Thinking', frac: 'Fractions, Decimals and Percents', time: 'Time and Money', meas: 'Measurement and Data', geom: 'Geometry, Area and Volume' },
     types: { count: true, mult: true, draw: true, cmp: true, lsh: false }, level: 2, perPage: 6, unit: 'units', shade: true,
     arPerPage: 20,
     as: { add: true, sub: true, d1: 2, d2: 2, addends: 2, regroup: 'any', format: 'vertical', cap: 0, second: 'digits' },
@@ -12,6 +12,8 @@ function defaults() {
     vis: { types: typeDefaults('vis'), level: 2 },
     tm: { types: { coins: true, madd: true, change: true, clock: false, elapsed: true, conv: true, dclock: false, ampm: false, like: false, cpic: false, cstory: false }, level: 2 },
     mix: { mods: { addsub: true, muldiv: true, fdp: false, ns: true, tm: true } },
+    num: strandDefaults('num'), oa: strandDefaults('oa'), frac: strandDefaults('frac'), time: strandDefaults('time'), meas: strandDefaults('meas'),
+    geom: Object.assign(strandDefaults('geom'), { unit: 'units', shade: true }),
     combo,
     std: { g: 'K', c: '' },
     parts: null,
@@ -21,9 +23,15 @@ function defaults() {
 /* Pre-filled GitHub issue for the current worksheet: set code, module and every setting needed to rebuild the same problems.
    Opens the issue form (.github/ISSUE_TEMPLATE/bug.yml); the person reviews and submits it. Falls back to the basics if the URL would be too long. */
 const ISSUES_URL = 'https://github.com/calebghall/WWWorksheet-maker-2000/issues/new';
+/* Saved type lists are { id: bool } maps; the bug report sends the checked ids only, so both forms load. */
+function mergeTypes(base, t) { return Array.isArray(t) ? stdMap(t, Object.keys(base)) : Object.assign(base, t || {}); }
+const checkedIds = o => Object.keys(o).filter(k => o[k]);
 function bugReportUrl(st, agent) {
   const mod = (typeof MODULES !== 'undefined' && MODULES[st.module]) ? MODULES[st.module].name : st.module;
   const full = Object.assign({}, st); delete full.titles;
+  /* The type lists are long; send only the checked ids (normalize reads either form). */
+  for (const M of STRAND_IDS.concat(['fd', 'ns', 'tm', 'vis'])) full[M] = Object.assign({}, st[M], { types: checkedIds(st[M].types) });
+  full.types = checkedIds(st.types);
   const q = settings => ISSUES_URL + '?' + [['template', 'bug.yml'], ['title', `Problem with ${mod} worksheet (set ${st.seed})`], ['set_code', st.seed], ['settings', settings], ['browser', agent || '']]
     .map(([k, v]) => k + '=' + encodeURIComponent(v)).join('&');
   const url = q(JSON.stringify(full));
@@ -31,7 +39,7 @@ function bugReportUrl(st, agent) {
   const withParts = q(JSON.stringify({ module: st.module, seed: st.seed, level: st.level, std: st.std, parts: st.parts, combo: st.combo }));
   return withParts.length <= 6000 ? withParts : q(JSON.stringify({ module: st.module, seed: st.seed, level: st.level, std: st.std }));
 }
-globalThis.__SP = { bugReportUrl, FGEN, NGEN, generateSet, renderAll, defaults, rngFrom, LEVELS, UNITS, TYPE_IDS, geom, svg, carries, borrows, arLayout, needSize, REG, META, comboSections, comboPages, genArithN, genAreaN, TGEN, flowPack, mixLayout, mixItems, STANDARDS, applyStandard, stdList, VGEN, VIS_TYPES, genVisN, partsOf, makePart, normPart, normParts, partState, captureSettings, applyModSettings, TYPE_DEFS, TYPE_HOME, typeTags, typeGradeRanges, frameworkBands, typeInBand, stdInBand, FRAMEWORK };
+globalThis.__SP = { applyGradeStandards, gradeStandardParts, bugReportUrl, FGEN, NGEN, generateSet, renderAll, defaults, rngFrom, LEVELS, UNITS, TYPE_IDS, geom, svg, carries, borrows, arLayout, needSize, REG, META, comboSections, comboPages, genArithN, genAreaN, TGEN, flowPack, mixLayout, mixItems, STANDARDS, applyStandard, stdList, VGEN, VIS_TYPES, genVisN, partsOf, makePart, normPart, normParts, partState, captureSettings, applyModSettings, TYPE_DEFS, TYPE_HOME, STRAND_IDS, STRAND_REFS, STRAND_META, STRAND_GROUPS, genStrandN, migrateLegacyState, migrateParts, partMixable, strandsFromLegacy, genNsN, genVisN, genFdpN, genTmN, mixItems, typeTags, FRAMEWORK };
 
 /*==DOM==*/
 const $ = s => document.querySelector(s);
@@ -39,38 +47,47 @@ const STORE = 'wwwm2000.v1';
 const form = $('#form'), sheetsEl = $('#sheets'), stageEl = $('#stage');
 /* The Number Sense and Shapes, Measures and Data checkboxes are built from the type registry (core/types.js), grouped by family.
    Each family is a collapsible group that shows how many of its types are checked. A search box and a "Word problems only" toggle filter the
-   types, and the standards panel's grade band hides types outside the band. A checked type is never hidden by a filter. */
+   types. A checked type is never hidden by a filter. */
 const GROUPS_KEY = 'wwwm2000.groups';
 let openGroups = {};
 try { openGroups = JSON.parse(localStorage.getItem(GROUPS_KEY)) || {}; } catch (e) { openGroups = {}; }
 function saveOpenGroups() { try { localStorage.setItem(GROUPS_KEY, JSON.stringify(openGroups)); } catch (e) { /* ignore */ } }
-const bandNow = () => (state && state.band ? bandById(state.band.id) : null);
+const TYPE_PANEL_MODS = ['ns', 'vis'].concat(STRAND_IDS);
+/* The strand modules' panels (problem types, difficulty, and the grid-area options for geometry) are built here; the type lists are filled in by buildTypePanels. */
+function buildStrandPanels() {
+  const host = document.querySelector('#strandPanels'); if (!host) return;
+  host.innerHTML = STRAND_IDS.map(M => `<fieldset data-mod="${M}"><legend>Problem types</legend><div data-types="${M}"></div></fieldset>
+    <fieldset data-mod="${M}"><legend>Difficulty</legend><div class="seg" role="radiogroup" aria-label="Difficulty">${[1, 2, 3].map(L => `<label><input type="radio" name="${M}_level" value="${L}"><span>${['Easy', 'Medium', 'Hard'][L - 1]}</span></label>`).join('')}</div>
+    <p class="note">Difficulty sets the number sizes and the number of steps in each type.</p></fieldset>`).join('')
+    + `<fieldset data-mod="geom"><legend>Area on grids</legend><label class="tword" style="display:flex;margin-bottom:6px">Units <select id="geom_unit" name="geom_unit" aria-label="Units" style="margin-left:8px">${Object.keys(UNITS).map(k => `<option value="${k}">${UNITS[k].name}</option>`).join('')}</select></label>
+    <label class="tword"><input type="checkbox" name="geom_shade"> Shade the squares</label><p class="note">For the Area on grids types.</p></fieldset>`;
+}
+buildStrandPanels();
 function buildTypePanels() {
-  for (const mod of ['ns', 'vis']) {
+  for (const mod of TYPE_PANEL_MODS) {
     const host = document.querySelector(`[data-types="${mod}"]`); if (!host) continue;
     const groups = [];
-    for (const d of TYPE_DEFS[mod]) { let g = groups.find(h => h.family === d.family); if (!g) groups.push(g = { family: d.family, defs: [] }); g.defs.push(d); }
-    const lbl = d => `<label class="chk" data-id="${d.id}" data-q="${esc((d.label + ' ' + d.blurb + ' ' + d.id).toLowerCase())}"${typeTags(mod, d).includes('word') ? ' data-word="1"' : ''}><input type="checkbox" name="${mod}_type" value="${d.id}"><b>${d.label}</b><small>${d.blurb}</small></label>`;
+    if (isStrand(mod)) for (const g of STRAND_GROUPS[mod]) groups.push(g);
+    else for (const d of TYPE_DEFS[mod]) { let g = groups.find(h => h.family === d.family); if (!g) groups.push(g = { family: d.family, defs: [] }); g.defs.push(d); }
+    const lbl = d => `<label class="chk" data-origin="${d.origin || mod}" data-id="${d.origin ? refId(d.id) : d.id}" data-q="${esc((d.label + ' ' + d.blurb + ' ' + d.id).toLowerCase())}"${(d.tags || typeTags(mod, d)).includes('word') ? ' data-word="1"' : ''}><input type="checkbox" name="${mod}_type" value="${d.id}"><b>${d.label}</b><small>${d.blurb}</small></label>`;
     host.innerHTML = `<div class="tfilter"><input type="search" name="tq" class="stdq" placeholder="Search types" aria-label="Search problem types"><label class="tword"><input type="checkbox" name="tword"> Word problems only</label></div>`
-      + '<p class="note tband" hidden><span class="tband-t"></span> <button type="button" class="linkbtn" data-band-all>Show all grades</button></p>'
       + groups.map(g => `<details class="tgroup" data-fam="${esc(g.family)}" data-total="${g.defs.length}"><summary class="tgroup-h"><span>${g.family}</span><span class="tcount"></span></summary>${g.defs.map(lbl).join('')}</details>`).join('')
       + '<p class="note tnone" hidden>No problem types match.</p>';
   }
 }
 /* Applies the filters and updates every group's count. openChecked opens groups that hold a checked type (after a preset or a reload). */
 function refreshTypePanels(openChecked) {
-  const band = bandNow();
-  for (const mod of ['ns', 'vis']) {
+  for (const mod of TYPE_PANEL_MODS) {
     const host = document.querySelector(`[data-types="${mod}"]`); if (!host) continue;
     const q = host.querySelector('[name=tq]').value.trim().toLowerCase(), wordOnly = host.querySelector('[name=tword]').checked;
-    const filtering = !!(q || wordOnly || band);
+    const filtering = !!(q || wordOnly);
     let shown = 0;
     host.querySelectorAll('details.tgroup').forEach(g => {
       const labels = [...g.querySelectorAll('label.chk')];
       const checked = labels.filter(l => l.querySelector('input').checked).length;
       let vis = 0;
       for (const l of labels) {
-        const on = l.querySelector('input').checked || ((!q || l.dataset.q.includes(q)) && (!wordOnly || l.dataset.word) && typeInBand(mod, l.dataset.id, band));
+        const on = l.querySelector('input').checked || ((!q || l.dataset.q.includes(q)) && (!wordOnly || l.dataset.word));
         l.hidden = !on; if (on) vis++;
       }
       g.hidden = vis === 0; shown += vis;
@@ -81,8 +98,6 @@ function refreshTypePanels(openChecked) {
       if ((q || wordOnly) && vis > 0 && !g.open) { g.dataset.auto = '1'; g.open = true; g.dataset.auto = ''; }
     });
     host.querySelector('.tnone').hidden = shown > 0;
-    const bn = host.querySelector('.tband'); bn.hidden = !band;
-    if (band) bn.querySelector('.tband-t').textContent = `Showing types for grades ${band.label}.`;
   }
 }
 buildTypePanels();
@@ -95,26 +110,32 @@ function normalize(s) {
   const out = Object.assign(d, s, {
     titles: Object.assign(d.titles, s.titles || {}),
     std: { g: inEnum(String((s.std || {}).g), STD_GRADE_IDS, 'K'), c: STD_BY_CODE[(s.std || {}).c] ? s.std.c : '' },
-    types: Object.assign(d.types, s.types || {}),
+    types: mergeTypes(d.types, s.types),
     as: Object.assign(d.as, s.as || {}),
     md: Object.assign(d.md, s.md || {}),
-    fd: Object.assign(d.fd, s.fd || {}, { types: Object.assign(d.fd.types, (s.fd || {}).types || {}) }),
-    ns: Object.assign(d.ns, s.ns || {}, { types: Object.assign(d.ns.types, (s.ns || {}).types || {}) }),
-    tm: Object.assign(d.tm, s.tm || {}, { types: Object.assign(d.tm.types, (s.tm || {}).types || {}) }),
-    vis: Object.assign(d.vis, s.vis || {}, { types: Object.assign(d.vis.types, (s.vis || {}).types || {}) }),
+    fd: Object.assign(d.fd, s.fd || {}, { types: mergeTypes(d.fd.types, (s.fd || {}).types) }),
+    ns: Object.assign(d.ns, s.ns || {}, { types: mergeTypes(d.ns.types, (s.ns || {}).types) }),
+    tm: Object.assign(d.tm, s.tm || {}, { types: mergeTypes(d.tm.types, (s.tm || {}).types) }),
+    vis: Object.assign(d.vis, s.vis || {}, { types: mergeTypes(d.vis.types, (s.vis || {}).types) }),
     mix: { mods: Object.assign(d.mix.mods, (s.mix || {}).mods || {}) },
     combo
   });
+  for (const M of STRAND_IDS) {
+    const t = (s[M] || {}).types;
+    out[M] = Object.assign(d[M], s[M] || {}, { types: mergeTypes(d[M].types, t) });
+  }
   out.module = inEnum(out.module, Object.keys(MODULES), 'area');
   out.perPage = inEnum(+out.perPage, [4, 6, 8], 6);
   out.arPerPage = inEnum(+out.arPerPage, [12, 20, 30], 20);
   out.pages = inEnum(+out.pages, [1, 2, 3], 1);
   out.paper = inEnum(out.paper, Object.keys(PAPER), 'letter');
   clampMod(out);
-  if (s.band && s.band.fw === FRAMEWORK.id && bandById(s.band.id)) out.band = { fw: FRAMEWORK.id, id: s.band.id }; else delete out.band;
+  delete out.band;
   for (const id of Object.keys(REG)) { const c = out.combo[id]; c.on = !!c.on; c.n = inEnum(+c.n, REG[id].counts, REG[id].n0); }
   if (!Object.values(out.combo).some(c => c.on)) out.combo[Object.keys(REG)[0]].on = true;
   out.parts = normParts(s.parts);
+  migrateLegacyState(out);
+  if (out.parts) out.parts = migrateParts(out, out.parts);
   out.grey = !!out.grey;
   if (!out.seed) out.seed = newSeed();
   return out;
@@ -122,7 +143,7 @@ function normalize(s) {
 let state;
 try { state = normalize(JSON.parse(localStorage.getItem(STORE) || 'null')); } catch (e) { state = normalize(null); }
 
-const SINGLE_MODS = Object.keys(MODULES).filter(id => id !== 'combo' && id !== 'mix');
+const SINGLE_MODS = Object.keys(MODULES).filter(id => id !== 'combo' && id !== 'mix' && !MODULES[id].legacy);
 $('#mods').innerHTML = SINGLE_MODS.map(id => `<label class="mod"><input type="radio" name="module" value="${id}"><b>${esc(MODULES[id].name)}</b><small>${esc(MODULES[id].blurb)}</small></label>`).join('');
 $('#addPartMod').innerHTML = SINGLE_MODS.map(id => `<option value="${id}">${esc(MODULES[id].name)}</option>`).join('');
 $('#addPartMod').value = 'addsub';
@@ -163,28 +184,23 @@ const NS_NOTES = {
 let stdQuery = '';
 function writeStdList() {
   const q = stdQuery.trim().toLowerCase();
-  const band = bandNow();
-  const rows = STD_ALL.filter(r => stdInBand(r[0], band) && (q ? (r[0] + ' ' + r[1] + ' ' + r[2]).toLowerCase().includes(q) : stdGrade(r[0]) === state.std.g));
+  const rows = STD_ALL.filter(r => (q ? (r[0] + ' ' + r[1] + ' ' + r[2]).toLowerCase().includes(q) : stdGrade(r[0]) === state.std.g));
   const badge = p => !p ? ['gap', 'Not yet'] : p.n ? ['part', 'Partial'] : ['ok', ''];
   $('#stdList').innerHTML = rows.length ? rows.map(r => {
     const p = STD_BY_CODE[r[0]], b = badge(p), on = r[0] === state.std.c;
     const left = `<span class="sl"><span class="sc">${r[0]}</span>${b[1] ? `<span class="sb">${b[1]}</span>` : ''}</span>`;
     return `<button type="button" class="std ${b[0]}${on ? ' on' : ''}" data-std="${r[0]}"${p ? '' : ' disabled'}${on ? ' aria-pressed="true"' : ''}>${left}<span class="st">${esc(r[1])}</span></button>`;
-  }).join('') : '<p class="note">No standards match.</p>';
+  }).join('') + (!q && rows.length ? `<button type="button" class="std all" data-std-all="${state.std.g}"><span class="sl"><span class="sc">All</span></span><span class="st">All standards for this grade</span></button>` : '') : '<p class="note">No standards match.</p>';
 }
 function writeStd() {
-  const band = bandNow(), bands = frameworkBands();
-  if (band && !band.grades.includes(gradeNum(state.std.g))) state.std.g = band.grades[0] === 0 ? 'K' : String(band.grades[0]);
-  $('#stdBands').hidden = bands.length < 2 || bands.every(b => b.grades.length === 1);
-  $('#stdBands').innerHTML = [{ id: 'all', label: 'All grades' }].concat(bands).map(b => `<label><input type="radio" name="stdBand" value="${b.id}"${(band ? band.id : 'all') === b.id ? ' checked' : ''}><span>${b.label}</span></label>`).join('');
-  $('#stdGrades').innerHTML = STD_GRADE_IDS.filter(id => !band || band.grades.includes(gradeNum(id))).map(id => `<label><input type="radio" name="stdGrade" value="${id}"${state.std.g === id ? ' checked' : ''}><span title="${STD_GRADES[id]}">${id}</span></label>`).join('');
+  $('#stdGrades').innerHTML = STD_GRADE_IDS.map(id => `<label><input type="radio" name="stdGrade" value="${id}"${state.std.g === id ? ' checked' : ''}><span title="${STD_GRADES[id]}">${id}</span></label>`).join('');
   $('#stdFw').textContent = FRAMEWORK.name;
   writeStdList();
   const s = STD_BY_CODE[state.std.c];
   $('#stdCur').textContent = s ? s.c : '';
   $('#stdNote').textContent = s ? `${s.c}: ${s.n ? 'Partial match. ' + s.n : 'The settings match this standard.'}` : 'Pick a standard to set the module, problem types and level. "Not yet" standards need a problem type this maker does not have.';
 }
-let lastSingleMod = (state.module === 'combo' || state.module === 'mix') ? 'area' : state.module;
+let lastSingleMod = (state.module === 'combo' || state.module === 'mix') ? 'geom' : state.module;
 let lastMultiMod = state.module === 'mix' ? 'mix' : 'combo';
 let editIdx = null;
 let addCardIdx = null;
@@ -192,10 +208,10 @@ function ensureMultiParts() {
   if (state.parts && state.parts.length) return;
   if (state.module === 'mix') {
     const ms = MIX_MODS.filter(id => state.mix.mods[id]);
-    state.parts = (ms.length ? ms : ['addsub']).map(m => makePart(state, m, REG[m].n0));
+    state.parts = migrateParts(state, (ms.length ? ms : ['addsub']).map(m => makePart(state, m, REG[m].n0)));
   } else {
     const ps = partsOf(state);
-    state.parts = (ps.length ? ps : [makePart(state, lastSingleMod)]).map(p => makePart(state, p.m, p.n));
+    state.parts = migrateParts(state, (ps.length ? ps : [makePart(state, lastSingleMod)]).map(p => makePart(state, p.m, p.n)));
   }
 }
 if (state.module === 'combo' || state.module === 'mix') ensureMultiParts();
@@ -223,6 +239,8 @@ function writeForm() {
   setChecks('ns_type', fsState.ns.types); setRadio('ns_level', fsState.ns.level);
   setChecks('tm_type', fsState.tm.types); setRadio('tm_level', fsState.tm.level);
   setChecks('vis_type', fsState.vis.types); setRadio('vis_level', fsState.vis.level);
+  for (const M of STRAND_IDS) { setChecks(M + '_type', fsState[M].types); setRadio(M + '_level', fsState[M].level); }
+  $('#geom_unit').value = fsState.geom.unit; form.elements.geom_shade.checked = !!fsState.geom.shade;
   setRadio('perPage', state.perPage); setRadio('arPerPage', state.arPerPage); setRadio('pages', state.pages); setRadio('paper', state.paper);
   for (const n of ['nameLine', 'shade', 'key', 'grey']) form.elements[n].checked = !!state[n];
   form.elements.seed.value = state.seed;
@@ -232,7 +250,7 @@ function writeForm() {
 
 function cleanPartMix(parts) {
   parts.forEach((p, idx) => {
-    if (idx === 0 || !MIX_MODS.includes(p.m) || !MIX_MODS.includes(parts[idx - 1].m)) delete p.mix;
+    if (idx === 0 || !partMixable(state, p) || !partMixable(state, parts[idx - 1])) delete p.mix;
   });
 }
 
@@ -241,11 +259,11 @@ function groupPartCards(parts) {
   const cards = [];
   for (let i = 0; i < parts.length; i++) {
     const start = i, items = [{ p: parts[i], i }];
-    while (i + 1 < parts.length && parts[i + 1].mix && MIX_MODS.includes(parts[i].m) && MIX_MODS.includes(parts[i + 1].m)) {
+    while (i + 1 < parts.length && parts[i + 1].mix && partMixable(state, parts[i]) && partMixable(state, parts[i + 1])) {
       i++;
       items.push({ p: parts[i], i });
     }
-    cards.push({ start, end: i, items, mixable: MIX_MODS.includes(items[0].p.m) });
+    cards.push({ start, end: i, items, mixable: partMixable(state, items[0].p) });
   }
   return cards;
 }
@@ -253,8 +271,8 @@ function groupPartCards(parts) {
 function writeParts() {
   const parts = state.parts || [], isMix = state.module === 'mix';
   const cards = groupPartCards(parts);
-  const mixSum = isMix ? parts.filter(p => MIX_MODS.includes(p.m)).reduce((a, p) => a + p.n, 0) : 0;
-  const canMix = parts.some(p => MIX_MODS.includes(p.m));
+  const mixSum = isMix ? parts.filter(p => partMixable(state, p)).reduce((a, p) => a + p.n, 0) : 0;
+  const canMix = parts.some(p => partMixable(state, p));
   const mixR = form.querySelector('input[name="multi_view"][value="mix"]');
   if (mixR) mixR.disabled = !canMix;
   const heading = $('#partsHeading');
@@ -263,7 +281,7 @@ function writeParts() {
 
   if (isMix) {
     $('#partsList').innerHTML = parts.map((p, i) => {
-      const mixable = MIX_MODS.includes(p.m);
+      const mixable = partMixable(state, p);
       const badge = mixable && mixSum ? `${Math.round(100 * p.n / mixSum)}%` : '—';
       const sel = `<select name="partRowN" aria-label="Share weight for ${esc(REG[p.m].name)}">${REG[p.m].counts.map(n => `<option value="${n}"${n === p.n ? ' selected' : ''}>Share ${n}</option>`).join('')}</select>`;
       const sub = `${esc(REG[p.m].name)}${!mixable ? ' · <em>Sections only</em>' : ''}`;
@@ -291,7 +309,7 @@ function writeParts() {
   }
 
   $('#partAdd').disabled = parts.length >= PART_MAX;
-  const hasBlocked = isMix && parts.some(p => !MIX_MODS.includes(p.m));
+  const hasBlocked = isMix && parts.some(p => !partMixable(state, p));
   $('#multiNote').textContent = !canMix
     ? 'Area Squares and Shapes, Measures and Data only print in sections.'
     : isMix
@@ -366,6 +384,8 @@ function readModFields(target, changed) {
   target.ns = { types: ensureOne(checksOf('ns_type'), changed, 'ns_type', 'place'), level: +val('ns_level') || target.ns.level };
   target.tm = { types: ensureOne(checksOf('tm_type'), changed, 'tm_type', 'coins'), level: +val('tm_level') || target.tm.level };
   target.vis = { types: ensureOne(checksOf('vis_type'), changed, 'vis_type', 'cnt'), level: +val('vis_level') || target.vis.level };
+  for (const M of STRAND_IDS) target[M] = { types: ensureOne(checksOf(M + '_type'), changed, M + '_type', STRAND_META[M].def), level: +val(M + '_level') || target[M].level };
+  target.geom.unit = $('#geom_unit').value; target.geom.shade = form.elements.geom_shade.checked;
 }
 
 function readForm(changed) {
@@ -402,7 +422,7 @@ function render() {
 function save() { try { localStorage.setItem(STORE, JSON.stringify(state)); } catch (e) { /* ignore */ } }
 
 form.addEventListener('submit', e => e.preventDefault());
-const CLEARS_STD = /^(module|type|level|as_|md_|fd_|ns_|tm_|vis_)/;
+const CLEARS_STD = /^(module|type|level|as_|md_|fd_|ns_|tm_|vis_|num_|oa_|frac_|time_|meas_|geom_)/;
 form.addEventListener('input', e => {
   const nm = e.target.name || '';
   if (nm === 'addPartMod' || nm === 'secAddMod') return;
@@ -410,7 +430,7 @@ form.addEventListener('input', e => {
     editIdx = null;
     if (e.target.value === 'multi') {
       ensureMultiParts();
-      state.module = (lastMultiMod === 'mix' && state.parts.some(p => MIX_MODS.includes(p.m))) ? 'mix' : 'combo';
+      state.module = (lastMultiMod === 'mix' && state.parts.some(p => partMixable(state, p))) ? 'mix' : 'combo';
     } else {
       if (state.module === 'combo' || state.module === 'mix') lastMultiMod = state.module;
       state.module = lastSingleMod;
@@ -428,7 +448,7 @@ form.addEventListener('input', e => {
   if (nm === 'multi_view') {
     editIdx = null;
     const v = val('multi_view');
-    if (v === 'mix' && !(state.parts || []).some(p => MIX_MODS.includes(p.m))) { writeForm(); return; }
+    if (v === 'mix' && !(state.parts || []).some(p => partMixable(state, p))) { writeForm(); return; }
     state.module = lastMultiMod = v || 'combo';
     if (state.std.c) state.std.c = '';
     save(); writeForm(); render(); return;
@@ -455,10 +475,6 @@ form.addEventListener('input', e => {
     save(); if (state.module === 'mix' && nm === 'partRowN') writeParts(); render(); return;
   }
   if (nm === 'tq' || nm === 'tword') { refreshTypePanels(); return; }
-  if (nm === 'stdBand') {
-    if (e.target.value === 'all') delete state.band; else state.band = { fw: FRAMEWORK.id, id: e.target.value };
-    save(); writeStd(); refreshTypePanels(); return;
-  }
   if (nm === 'stdGrade') { state.std.g = e.target.value; stdQuery = ''; $('#stdQ').value = ''; save(); writeStdList(); return; }
   if (nm === 'stdQ') { stdQuery = e.target.value; writeStdList(); return; }
   if (CLEARS_STD.test(nm) && state.std.c) { state.std.c = ''; writeStd(); }
@@ -515,13 +531,14 @@ function partAction(e) {
   editIdx = null;
   cleanPartMix(parts);
   state.parts = parts;
-  if (state.module === 'mix' && !parts.some(p => MIX_MODS.includes(p.m))) state.module = lastMultiMod = 'combo';
+  if (state.module === 'mix' && !parts.some(p => partMixable(state, p))) state.module = lastMultiMod = 'combo';
   after(); return true;
 }
 
 form.addEventListener('click', e => {
-  if (e.target.closest('[data-band-all]')) { delete state.band; save(); writeStd(); refreshTypePanels(); return; }
   if (partAction(e)) return;
+  const ra = e.target.closest('[data-std-all]');
+  if (ra && applyGradeStandards(state, ra.dataset.stdAll)) { editIdx = null; lastMultiMod = 'combo'; save(); writeForm(); render(); return; }
   const r = e.target.closest('[data-std]');
   if (r && !r.disabled) {
     editIdx = null;

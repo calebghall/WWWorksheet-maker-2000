@@ -150,11 +150,11 @@ const TYPE_HOME = {
   "vis.angc": ["geom", "Lines and angles"],
   "vis.protr": ["geom", "Lines and angles"],
   "vis.angadd": ["geom", "Lines and angles"],
-  "area.count": ["geom", "Area and perimeter"],
-  "area.mult": ["geom", "Area and perimeter"],
-  "area.draw": ["geom", "Area and perimeter"],
-  "area.cmp": ["geom", "Area and perimeter"],
-  "area.lsh": ["geom", "Area and perimeter"],
+  "vis.acount": ["geom", "Area and perimeter"],
+  "vis.amult": ["geom", "Area and perimeter"],
+  "vis.adraw": ["geom", "Area and perimeter"],
+  "vis.acmp": ["geom", "Area and perimeter"],
+  "vis.alsh": ["geom", "Area and perimeter"],
   "vis.acon": ["geom", "Area and perimeter"],
   "vis.pera": ["geom", "Area and perimeter"],
   "ns.perim": ["geom", "Area and perimeter"],
@@ -172,30 +172,3 @@ function typeTags(mod, d) {
   return t;
 }
 const gradeNum = c => { const g = String(c).split('.')[0]; return g === 'K' ? 0 : +g; };
-let TYPE_GRADES_CACHE = null;
-/* { "<module>.<id>": [lo, hi] } from every preset and every part of a bundled preset. */
-function typeGradeRanges() {
-  if (TYPE_GRADES_CACHE) return TYPE_GRADES_CACHE;
-  const out = {};
-  const add = (m, s, g) => { const ty = s && s.types; if (!ty) return; for (const id of ty) { const k = m + '.' + id, r = out[k]; if (!r) out[k] = [g, g]; else { r[0] = Math.min(r[0], g); r[1] = Math.max(r[1], g); } } };
-  for (const s of STANDARDS) {
-    const g = gradeNum(s.c);
-    if (s.m === 'parts') for (const p of s.parts) add(p.m, p[p.m], g); else add(s.m, s[s.m], g);
-  }
-  return (TYPE_GRADES_CACHE = out);
-}
-/* Grade bands: the framework's own divisions of the grades (framework.js). Without bands, one band per grade. */
-function frameworkBands() {
-  if (FRAMEWORK.bands && FRAMEWORK.bands.length) return FRAMEWORK.bands;
-  return STD_GRADE_IDS.map(id => ({ id, label: id, grades: [id === 'K' ? 0 : +id] }));
-}
-const bandById = id => frameworkBands().find(b => b.id === id) || null;
-/* A type shows in a band when its grade range overlaps the band; a type with no range, or no band chosen, always shows. */
-function typeInBand(mod, id, band) {
-  if (!band) return true;
-  const r = typeGradeRanges()[mod + '.' + id];
-  if (!r) return true;
-  return band.grades.some(g => g >= r[0] && g <= r[1]);
-}
-/* A standard shows in a band when its grade is one of the band's grades. */
-const stdInBand = (code, band) => !band || band.grades.includes(gradeNum(code));

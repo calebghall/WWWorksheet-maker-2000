@@ -29,6 +29,7 @@ node tests/logic-mulsizes.js
 node tests/logic-setcodes.js
 node tests/logic-parts.js
 node tests/logic-typemap.js
+node tests/logic-strands.js
 "$PY" tests/clip.py
 "$PY" tests/parts_ui.py
 "$PY" tests/types_ui.py

@@ -117,9 +117,6 @@ details.tgroup[open] > .tgroup-h::before { transform: rotate(90deg); }
 .tword input { accent-color: var(--accent); }
 .chk[hidden], details.tgroup[hidden], .note[hidden] { display: none; }
 .linkbtn { background: none; border: 0; padding: 0; font: inherit; color: var(--accent); text-decoration: underline; cursor: pointer; }
-.stdbands { margin-top: 8px; }
-.stdbands[hidden] { display: none; }
-.stdbands + .seg { margin-top: 8px; }
 .chk.dis { opacity: .5; cursor: default; }
 
 .row { display: grid; gap: 6px; margin-top: 12px; }
@@ -175,6 +172,7 @@ details.stdbox { margin: 20px 0 0; border: 1px solid var(--line); border-radius:
 .std .sb { font-size: 11px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
 .std.gap .st { color: var(--muted); }
 .std.on { background: var(--accent-soft); border-color: var(--accent); }
+.std.all { border-style: dashed; font-weight: 700; }
 .std:disabled { opacity: .55; cursor: default; }
 .std:focus-visible, .stdq:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 

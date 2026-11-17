@@ -1,5 +1,6 @@
 function generateSet(st) {
   if (st.module === 'mix') return mixItems(st).map(it => it.p);
+  if (isStrand(st.module)) return genStrandN(rngFrom(st.seed), st, st.module, st.arPerPage * st.pages, st.arPerPage);
   if (st.module === 'fdp') return genFdpN(rngFrom(st.seed), st, st.arPerPage * st.pages, st.arPerPage);
   if (st.module === 'tm') return genTmN(rngFrom(st.seed), st, st.arPerPage * st.pages, st.arPerPage);
   if (st.module === 'vis') return genVisN(rngFrom(st.seed), st, st.arPerPage * st.pages, st.arPerPage);

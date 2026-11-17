@@ -3,8 +3,8 @@
    (see standards.js), so a single-module preset is a part without n. A part without a settings key uses the
    module's own panel settings, which is how a Combined Worksheet without parts is read (partsOf derives them).
    Settings keys: addsub as, muldiv md, fdp fd, ns ns, tm tm, vis vis, area area, mix mix. */
-const PART_KEY = { addsub: 'as', muldiv: 'md', fdp: 'fd', ns: 'ns', tm: 'tm', vis: 'vis', area: 'area', mix: 'mix' };
-const PART_MAX = 12;
+const PART_KEY = { addsub: 'as', muldiv: 'md', fdp: 'fd', ns: 'ns', tm: 'tm', vis: 'vis', area: 'area', mix: 'mix', num: 'num', oa: 'oa', frac: 'frac', time: 'time', meas: 'meas', geom: 'geom' };
+const PART_MAX = 16;
 /* Set of problem signatures shared by the parts of one module while they generate, so two parts of the same
    module do not print an identical problem. null (the default) leaves generation exactly as it was. */
 let SIG_SCOPE = null;
@@ -25,6 +25,10 @@ function applyModSettings(st, s) {
     if (s.area.unit) st.unit = s.area.unit;
     if (s.area.shade != null) st.shade = !!s.area.shade;
   } else if (m === 'mix') st.mix = { mods: stdMap(s.mix.mods, MIX_MODS) };
+  else if (isStrand(m)) {
+    st[m] = { types: stdMap(s[m].types, STRAND_REFS[m]), level: s[m].level };
+    if (m === 'geom') { st.geom.unit = s.geom.unit || 'units'; st.geom.shade = s.geom.shade == null ? true : !!s.geom.shade; }
+  }
   return st;
 }
 
@@ -42,7 +46,10 @@ function captureSettings(st, mod) {
   else if (mod === 'muldiv') o.md = Object.assign({}, st.md);
   else if (mod === 'area') o.area = { types: enabledIds(st.types), level: st.level, unit: st.unit, shade: !!st.shade };
   else if (mod === 'mix') o.mix = { mods: enabledIds(st.mix.mods) };
-  else if (key) o[key] = { types: enabledIds(st[key].types), level: st[key].level };
+  else if (key) {
+    o[key] = { types: enabledIds(st[key].types), level: st[key].level };
+    if (mod === 'geom') { o.geom.unit = st.geom.unit; o.geom.shade = !!st.geom.shade; }
+  }
   return o;
 }
 function makePart(st, mod, n, label) {
@@ -87,6 +94,12 @@ function clampMod(out) {
   if (!Object.values(out.fd.types).some(Boolean)) out.fd.types.simp = true;
   if (!Object.values(out.ns.types).some(Boolean)) out.ns.types.place = true;
   if (!Object.values(out.mix.mods).some(Boolean)) out.mix.mods.addsub = true;
+  for (const M of STRAND_IDS) {
+    const o = out[M]; o.level = inEnum(+o.level, [1, 2, 3], 2);
+    for (const k of Object.keys(o.types)) if (!STRAND_REFS[M].includes(k)) delete o.types[k];
+    if (!Object.values(o.types).some(Boolean)) o.types[STRAND_META[M].def] = true;
+  }
+  out.geom.unit = inEnum(out.geom.unit, Object.keys(UNITS), 'units'); out.geom.shade = out.geom.shade !== false;
   if (!Object.values(out.tm.types).some(Boolean)) out.tm.types.coins = true;
   if (!out.as.add && !out.as.sub) out.as.add = true;
   if (!out.md.mul && !out.md.div) out.md.mul = true;
@@ -106,6 +119,7 @@ function normPart(part) {
   if (m === 'addsub') s.as = Object.assign(tmp.as, given);
   else if (m === 'muldiv') s.md = Object.assign(tmp.md, given);
   else if (m === 'area') s.area = { types: list(given.types), level: given.level, unit: given.unit, shade: given.shade };
+  else if (m === 'geom') s.geom = { types: list(given.types), level: given.level, unit: given.unit, shade: given.shade };
   else if (m === 'mix') s.mix = { mods: list(given.mods) };
   else s[key] = { types: list(given.types), level: given.level };
   applyModSettings(tmp, s); clampMod(tmp);

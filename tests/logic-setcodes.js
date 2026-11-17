@@ -20,13 +20,14 @@ function put(key, st) {
   else if (st.module !== 'area') extra = JSON.stringify(SP.generateSet(st).map(p => p.sig));
   got[key] = h(out + '\n' + extra + '\n' + JSON.stringify(SP.META));
 }
-const MODS = ['area', 'addsub', 'muldiv', 'fdp', 'ns', 'tm', 'vis', 'mix', 'combo'];
+const STRANDS = ['num', 'oa', 'frac', 'time', 'meas', 'geom'], LEGACY_REG = id => !STRANDS.includes(id);
+const MODS = ['area', 'addsub', 'muldiv', 'fdp', 'ns', 'tm', 'vis', 'mix', 'combo'].concat(STRANDS);
 for (const mod of MODS) for (const seed of ['S1', 'S2', 'S3']) for (const paper of ['letter', 'a4']) {
   const st = SP.defaults(); Object.assign(st, { module: mod, seed, paper, pages: 2 });
   put(`default|${mod}|${seed}|${paper}`, st);
 }
 /* every problem type on, at each level */
-for (const mod of ['fdp', 'ns', 'tm', 'vis']) for (const level of [1, 2, 3]) {
+for (const mod of ['fdp', 'ns', 'tm', 'vis'].concat(STRANDS)) for (const level of [1, 2, 3]) {
   const st = SP.defaults(), key = mod === 'fdp' ? 'fd' : mod; Object.assign(st, { module: mod, seed: 'T' + level, pages: 2 });
   allOn(st[key]); st[key].level = level; put(`alltypes|${mod}|${level}`, st);
 }
@@ -39,7 +40,8 @@ for (const lvl of [1, 2, 3]) { const st = SP.defaults(); Object.assign(st, { mod
 /* Combined: every section on at each count, and a mix of on/off patterns */
 for (let i = 0; i < 6; i++) {
   const st = SP.defaults(); Object.assign(st, { module: 'combo', seed: 'C' + i, paper: i % 2 ? 'a4' : 'letter' });
-  Object.keys(st.combo).forEach((id, k) => { st.combo[id].on = (i + k) % 3 !== 0; st.combo[id].n = SP.REG[id].counts[(i + k) % SP.REG[id].counts.length]; });
+  /* the sections that existed before the strand modules; the strand modules have their own entries above */
+  Object.keys(st.combo).filter(LEGACY_REG).forEach((id, k) => { st.combo[id].on = (i + k) % 3 !== 0; st.combo[id].n = SP.REG[id].counts[(i + k) % SP.REG[id].counts.length]; });
   put(`combo|${i}`, st);
 }
 /* Mixed: each topic subset, standalone */

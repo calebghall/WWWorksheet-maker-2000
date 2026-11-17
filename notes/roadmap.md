@@ -115,7 +115,7 @@ What changed:
 
 ## Phase 5.2: regroup the worksheet modules
 
-Status: 5.2a, 5.2d and 5.2f are done (type map, tags, grade ranges, collapsible groups with search, grade-band filter). 5.2b, 5.2c, 5.2e and 5.2g remain. Sub-phases ship as small patches in the order 5.2a, 5.2d, 5.2b, 5.2c, 5.2e, 5.2f, 5.2g. The UI work (5.2d) goes before the migration (5.2b) because it needs no state change and fixes the long checkbox lists at once.
+Status: 5.2a to 5.2f are done (type map, tags, grade ranges, collapsible groups with search, all-standards-for-a-grade entry, strand modules with migration, Area Squares merge, group-level mixability). 5.2g remains. Sub-phases ship as small patches in the order 5.2a, 5.2d, 5.2b, 5.2c, 5.2e, 5.2f, 5.2g. The UI work (5.2d) goes before the migration (5.2b) because it needs no state change and fixes the long checkbox lists at once.
 
 ### Why `Area Squares` was separate (and how to combine it)
 
@@ -135,7 +135,7 @@ To combine: wrap `count`, `mult`, `draw`, `cmp` and `lsh` as `defTypes` entries 
 4. **Mapping is keyed by `(oldModule, id)`.** Ids repeat across modules (`cmp` in fdp and in Area Squares, `conv` in fdp and tm). Keys look like `ns.cmp2`, `vis.cmp`, `area.cmp`. A test fails when any registered type has no mapping, or when a mapping names a type that does not exist.
 5. **Legacy module ids stay as aliases.** Part and section seeds use the module id (`seed|id`, `seed|id|k`), so moving a type changes its random stream. `ns`, `vis` and `area` stay as hidden legacy modules that old set codes and saved settings load into and render exactly as before. New sheets use the new modules. Presets migrate one at a time. Each preset that changes output is announced and its `tests/golden-sets.json` entry updated, per the working agreements.
 6. **Mixability is a property of the group.** Today `area` and `vis` are marked "Sections only" as whole modules. After the move, only specific families (for example solids drawings and large graphs) carry `mix: false`. The Multi-Topic builder shows "Sections only" per family, not per module.
-7. **Grade-band filter lives in the standards panel**, not in the type lists, and bands come from the selected framework (see below).
+7. **No grade-band filter.** Built in 5.2f, then dropped: the intent was a worksheet covering all standards of a grade, which is now the last entry of the standards list (see 5.2f).
 8. **Type counts reconcile before code.** The plan listed about 158 types in 8 modules against 133 registry entries today (65 `ns` and 68 `vis`). 5.2a generates the mapping table from the registry and marks each type moved, merged or new.
 
 ### Target modules
@@ -173,23 +173,20 @@ To combine: wrap `count`, `mult`, `draw`, `cmp` and `lsh` as `defTypes` entries 
 - A "Search types…" input at the top of each module filters by label, blurb, id and tag.
 - Default state is collapsed, except groups that contain a checked type. Open and closed state is remembered per group in `localStorage`, with every read and write wrapped in try/catch, and the page works without it.
 
-### Grade-band filter
+### All standards for a grade
 
-- **Location:** the standards panel (`#stdBox`, under "Browse Standards"), next to the framework and standard pickers. It is not in the type lists.
-- **Bands belong to the framework.** States divide the grades differently (K to 2 and 3 to 5 for Common Core and Tennessee-style groupings; K to 1, 2 to 3 and 4 to 5 elsewhere; some states publish K to 8 or course-based bands). Each framework file carries `bands: [{ id, label, grades: [0, 1, 2] }, ...]`, with kindergarten as grade 0. A framework without `bands` gets one band per grade. The first-visit framework supplies the default bands, as it supplies the default standards.
-- **Types carry a grade range** `g: [lo, hi]` on a canonical grade scale, set in `defTypes` (a type with no `g` is always shown). A type is shown when its range overlaps the selected band's grades. Grade is a view over the groups, not a way to group; modules stay organized by kind of worksheet.
-- **Effect:** choosing a band filters the standards list and also the checkbox lists in the module panels, with a visible "Showing grades K to 2 · Show all" line in each panel. A checked type is never hidden by the filter, and the checked count still includes it.
-- **State:** `state.band` holds `{ fw, id }`. Settings saved before this change have no band and load as "all grades". Changing framework resets the band if its id does not exist in the new framework.
-- **Tests:** band overlap logic (a unit test over every type's `g`), a framework with unusual bands, a checked type that stays visible outside the band, and the panel round trip in `tests/parts_ui.py`.
+- The standards list for a selected grade ends with "All standards for this grade" (not shown while searching). It builds a Combined Worksheet in sections (`gradeStandardParts`, `applyGradeStandards` in `standards.js`): Add and Subtract and Multiply and Divide (the hardest preset of the grade each), then one section per strand module and problem family holding every preset type of that family, at the average level, sized by the number of types.
+- The part limit is 16 (was 12) so grades 3 and 4 fit. Sections keep problems of similar size together; a section that mixes very tall and short types still lays out on a uniform grid and can use many pages (grade 3 comes to about 18 pages). That is a layout-engine limit for 5.2g.
+- **Tests:** `logic-standards.js` (every preset type of each grade appears; every section renders) and `types_ui.py` (no band row; last entry; click builds the worksheet).
 
 ### Sub-phases
 
 - **5.2a Mapping and registry (no output change). Done.** `src/js/core/typemeta.js` holds `TYPE_HOME` (158 types: the 133 registry types plus the 25 hard-coded in the fdp, tm and area panels, which settles the count question), word tags, and grade ranges computed from the presets. `tests/logic-typemap.js` checks it. Add `tags` and `g` to `defTypes`. Generate the `(oldModule, id)` to new module and group table into `notes/`, with the count reconciliation. Fix the stale Goal 1 text. Test: every type mapped, no unknown ids. Set-code and golden tests unchanged.
 - **5.2d Panel UI (no output change). Done for `ns` and `vis`, the registry-built panels.** The fdp, tm and area panels are hard-coded HTML and get groups and search when their types move in 5.2b/5.2c. `tests/types_ui.py` covers it. Collapsible groups with checked counts, type search, tag toggle. Works inside the current modules first, using the existing families (`ns` has 8, `vis` has 13). Extend `tests/parts_ui.py`.
-- **5.2b Modules and migration.** Introduce `oa`, `meas` and `geom`, move types per the table, keep legacy aliases, translate saved state (`ns.types`, `vis.types`, `area.*`) on load. `tests/logic-standards.js` passes for all 150 presets; `logic-setcodes.js` passes for legacy codes.
-- **5.2c Area Squares merge.** Convert the five grid types to `defTypes` entries; move Units and Shade controls into Geometry. Announce the output change; update golden sets for the `area` module only.
-- **5.2e Group-level mixability.** Per-family `mix` flag; update the Multi-Topic indicators. Run `logic-mix.js` density checks.
-- **5.2f Grade-band filter. Done.** Bands are in `framework.js` (`bands`); `state.band` is `{ fw, id }`; the control is in the standards panel. Hard-coded fdp and tm types are not yet filtered. Needs framework `bands` (Tennessee file first). Depends on the framework layout in Phase 6 step 1 for the final data location; until then, Tennessee's bands are a constant in the framework object in `standards.js`.
+- **5.2b Modules and migration. Done.** `src/js/core/strands.js` defines six strand modules: `num`, `oa`, `frac`, `time`, `meas`, `geom`. Ids deviate from the plan for three modules: `ns` became `num`, `fdp` became `frac` and `tm` became `time`, because the legacy ids stay reserved for aliases. Types are referenced as `<origin>.<id>` (`TYPE_HOME`); a sheet whose checked types all come from one origin delegates to that origin generator, so output stays bit-identical. Saved state, parts and the 134 migratable presets translate on load (`migrateLegacyState`, `migrateParts`, `strandsFromLegacy`; 5.NBT.A.3 splits into two parts). The fdp and tm types are still hard-coded (`HARD_TYPES`) but get panels from `buildStrandPanels`. `logic-standards.js` passes for all 150 presets; `logic-setcodes.js` passes for legacy codes (439 sheets, only the two 3.MD.C.7 sheets changed, see 5.2c). `tests/logic-strands.js` covers the module layer.
+- **5.2c Area Squares merge. Done.** The five grid types (`acount`, `amult`, `adraw`, `acmp`, `alsh`) are `defTypes` entries in `src/js/modules/vis-gridarea.js` under `vis`, shown in Geometry, using the CELL_MODS layout with height hints. Units and Shade controls moved into the Geometry panel (`geom_unit`, `geom_shade`). Announced output change: Area Squares sheets (and the 3.MD.C.7 presets) now use cell layout, shorter prompts and varied draw-grid sizes; the two affected golden entries were updated, nothing else.
+- **5.2e Group-level mixability. Done.** `STRAND_NOMIX` lists groups that cannot flow-pack (drawing groups, for example shape names); `partMixable` marks a part Sections only when it checks a type from such a group. Geometry with grid-area types mixes. `parts_ui.py` covers both states; `logic-mix.js` density checks pass.
+- **5.2f All standards for a grade. Done.** Replaces the planned grade-band filter (K to 2, 3 to 5 toggle), which was removed again: the standards panel has only the grade buttons, and the grade list ends with an entry that builds a worksheet with every preset standard of that grade (see the section above).
 - **5.2g Layout engine review.** Time-boxed investigation of spacing and the layout engine, producing a note, not code.
 
 Exit: every registered type has a home, a group, tags and a grade range; legacy set codes and saved settings load unchanged; the full suite passes.
@@ -233,7 +230,6 @@ Exit per state: every row in the state's K to 5 standards is Supported, Partial 
 Small pieces that the phases above depend on or that are easy to miss:
 
 - **Saved settings and framework id.** The picked standard is stored as a grade and code (`state.std = { g, c }` in `src/js/core/ui.js`). Add a framework id, defaulting to the first-visit constant, and load older saved settings (which have no framework id) as Tennessee. The "Report a problem" link should include the framework and code when a standard is picked.
-- **Grade bands per framework.** Each framework file carries its own `bands` list (id, label, grades, with kindergarten as 0), used by the grade-band filter in the standards panel (Phase 5.2). Imports record the state's published divisions; a framework without them gets one band per grade.
 - **Crosswalk format.** One file per framework mapping each state code to a canonical preset id (or to a Gap or Partial note). Generate per-framework coverage notes with `tests/coverage.js` plus one index note with counts for all frameworks.
 - **Provenance metadata.** Each framework file records its CSP standard set id, import date and the data license, so a later re-import can show what changed.
 - **Refresh process.** States revise standards on their own schedule. Re-import on demand, and have the import script print a diff (added, removed, changed rows) for review before committing.
@@ -252,7 +248,6 @@ Small pieces that the phases above depend on or that are easy to miss:
 ## Open questions
 
 - Known intermittent clipping in the combined sheet: the vis cell "Count. Circle the group with more" (compare type) overflows its box for some seeds (13 of 60 seeds in a sweep of the combined sheet; identical before and after Phase 5.2a/d/f). `tests/clip.py` prints it but does not fail on it. Fix the cell size hints (`win`/`hin`/`bw`) in `vis-counting.js` and make the check fail.
-- Grade bands per state: confirm each target state's published K to 5 divisions before fixing the `bands` format in the framework file.
 - Which state is the second framework in phase 6 (the first is the Tennessee migration), to decide the crosswalk test case.
 - What CSP's terms of use and attribution rules are, and whether committing imported standards text to a public repo is allowed.
 - Whether a Tennessee standard that bundles skills should sit in Combined (lettered sections) or Mixed (interleaved) by default once parts exist.

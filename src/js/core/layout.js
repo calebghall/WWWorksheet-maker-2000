@@ -40,11 +40,13 @@ function arLayout(st, probs, mod) {
   }
   return { cols: 2, rows: 2, fs: sizes[sizes.length - 1], horiz, total: 4, fits: false };
 }
-function arSub(st, mod) {
+/* The instruction line. A strand module whose problems all come from one origin (ns, vis, fdp, tm) uses that origin's line, so the sheet reads as it did before the regrouping. */
+function arSub(st, mod, probs) {
   mod = mod || st.module;
-  if (mod === 'addsub' || mod === 'ns' || mod === 'tm') return 'Solve each problem.';
-  if (mod === 'vis') return 'Look at each picture and answer.';
-  if (mod === 'fdp') return 'Solve each problem. Write fractions in simplest form.';
+  if (isStrand(mod) && probs && probs.length) { const o = [...new Set(probs.map(p => p.mod))]; if (o.length === 1 && o[0]) mod = o[0]; }
+  if (mod === 'addsub' || mod === 'ns' || mod === 'tm' || mod === 'num' || mod === 'oa' || mod === 'time') return 'Solve each problem.';
+  if (mod === 'vis' || mod === 'meas' || mod === 'geom') return 'Look at each picture and answer.';
+  if (mod === 'fdp' || mod === 'frac') return 'Solve each problem. Write fractions in simplest form.';
   return st.md.div && st.md.rem ? 'Solve each problem. Write remainders with R.' : 'Solve each problem.';
 }
 const META = { problems: 0, pages: 0, note: '' };
@@ -53,7 +55,7 @@ function renderArithAll(st) {
   const sheet = (key, i) => {
     const slice = probs.slice(i * total, (i + 1) * total);
     const cells = slice.map((p, k) => renderArithCell(p, i * total + k + 1, lay.horiz, key)).join('');
-    return sheetShell(st, key, i, arSub(st), `<div class="sh-grid ar" style="--cols:${lay.cols};--rows:${lay.rows};--fs:${lay.fs}pt">${cells}</div>`);
+    return sheetShell(st, key, i, arSub(st, null, probs), `<div class="sh-grid ar" style="--cols:${lay.cols};--rows:${lay.rows};--fs:${lay.fs}pt">${cells}</div>`);
   };
   let out = '';
   for (let i = 0; i < st.pages; i++) out += sheet(false, i);

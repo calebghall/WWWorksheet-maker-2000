@@ -4,7 +4,7 @@ function comboSections(st) {
   for (const p of parts) total[p.m] = (total[p.m] || 0) + 1;
   for (let i = 0; i < parts.length; i++) {
     const group = [parts[i]];
-    while (i + 1 < parts.length && parts[i + 1].mix && MIX_MODS.includes(group[0].m) && MIX_MODS.includes(parts[i + 1].m)) {
+    while (i + 1 < parts.length && parts[i + 1].mix && partMixable(st, group[0]) && partMixable(st, parts[i + 1])) {
       group.push(parts[++i]);
     }
     const letter = String.fromCharCode(65 + secs.length);

@@ -15,7 +15,7 @@ function arithPlan(st, mod, probs) {
   if (!pick_) pick_ = { fs: sizes[sizes.length - 1], cols: 2 };
   const rowH = Math.ceil(Math.max(...probs.map(p => needSize(p, pick_.fs, horiz)[1])) * 20) / 20;
   return {
-    sub: arSub(st, mod), probs, cols: pick_.cols, rowH, gap: 0.1, cls: 'ar', style: `--fs:${pick_.fs}pt`,
+    sub: arSub(st, mod, probs), probs, cols: pick_.cols, rowH, gap: 0.1, cls: 'ar', style: `--fs:${pick_.fs}pt`,
     cell: (p, num, key) => renderArithCell(p, num, horiz, key)
   };
 }

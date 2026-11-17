@@ -7,7 +7,7 @@ const ctx={Math,console,globalThis:null};ctx.globalThis=ctx;vm.createContext(ctx
 const P={};ctx.__SP.STANDARDS.forEach(s=>{P[s.c]=s;});
 const FW=ctx.FRAMEWORK||vm.runInContext('FRAMEWORK',ctx);
 const std=JSON.parse(fs.readFileSync(path.join(__dirname,'standards.json'),'utf8'));
-const G={K:'Kindergarten',1:'Grade 1',2:'Grade 2',3:'Grade 3',4:'Grade 4',5:'Grade 5'},MN={addsub:'Addition and Subtraction',muldiv:'Multiplication and Division',fdp:'Fractions, Decimals and Percents',ns:'Number Sense',tm:'Time and Money',area:'Area Squares',vis:'Shapes, Measures and Data'};
+const G={K:'Kindergarten',1:'Grade 1',2:'Grade 2',3:'Grade 3',4:'Grade 4',5:'Grade 5'},MN={num:'Number Sense',oa:'Operations and Algebraic Thinking',frac:'Fractions, Decimals and Percents',time:'Time and Money',meas:'Measurement and Data',geom:'Geometry, Area and Volume',addsub:'Addition and Subtraction',muldiv:'Multiplication and Division',fdp:'Fractions, Decimals and Percents',ns:'Number Sense',tm:'Time and Money',area:'Area Squares',vis:'Shapes, Measures and Data'};
 const MODS=p=>p.m==='parts'?p.parts.map(q=>MN[q.m]).filter((m,i,a)=>a.indexOf(m)===i).join(' and '):MN[p.m];
 const short=t=>{t=t.replace(/\s+/g,' ').replace(/[^\x00-\x7F‘-”×÷–]/g,'').trim();return t.length>110?t.slice(0,107).replace(/\s+\S*$/,'')+'...':t;};
 let full=0,part=0,gap=0,out='';

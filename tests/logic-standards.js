@@ -15,7 +15,7 @@ function checkUnit(code,m,spec,st,p,fix){
     if(!ok)bad.push(code+' digit range or cap');}
   if(m==='muldiv'&&st.md.mode==='digits'){const ok=p.every(q=>q.type==='div'?(q.d<10**st.md.nb&&q.n<10**st.md.na&&q.q*q.d+q.r===q.n):((q.a<10**st.md.da&&q.b<10**st.md.db||st.md.alt&&q.a<10**st.md.da2&&q.b<10**st.md.db2)&&q.a*q.b===q.ans));if(!ok)bad.push(code+' digit range');}
   const types=spec[m==='addsub'||m==='muldiv'?null:m];
-  if(types&&types.types){const allowed=new Set(types.types);if(allowed.has('cmp2'))allowed.add('compare');if(allowed.has('par20'))allowed.add('parity');if(allowed.has('placew'))allowed.add('place');if(allowed.has('roundw'))allowed.add('round');const got=new Set(p.map(q=>q.type));
+  if(types&&types.types){const allowed=new Set(types.types.map(r=>r.replace(/^[a-z]+\./,'')));if(allowed.has('cmp2'))allowed.add('compare');if(allowed.has('par20'))allowed.add('parity');if(allowed.has('placew'))allowed.add('place');if(allowed.has('roundw'))allowed.add('round');const got=new Set(p.map(q=>q.type));
     for(const t of got)if(!allowed.has(t)&&!(code==='4.NF.B.4'&&t==='fmulw'))bad.push(code+' unexpected type '+t);}
 }
 for(const s of SP.STANDARDS){
@@ -35,6 +35,18 @@ for(const s of SP.STANDARDS){
           secs.forEach((sec,i)=>{const part=s.parts[i],ps=SP.partState(st,part);checkUnit(s.c+' part '+sec.letter,part.m,part,ps,sec.plan.probs);});}
       }else if(s.m!=='area')checkUnit(s.c,s.m,s,st,SP.generateSet(st));
     }catch(e){bad.push(s.c+' threw '+e.message);}
+  }
+}
+/* All standards for a grade: a Combined Worksheet whose sections cover every preset type of the grade. */
+for(const g of ['K','1','2','3','4','5']){
+  for(const seed of ['A','B','C']){
+    const st=SP.defaults();st.seed=seed;st.pages=2;
+    if(!SP.applyGradeStandards(st,g)){bad.push('grade '+g+' no parts');continue;}
+    if(st.module!=='combo'||!st.parts||st.parts.length<2||st.parts.length>16)bad.push('grade '+g+' parts '+(st.parts&&st.parts.length));
+    const want=new Set();for(const s of SP.STANDARDS)if(s.c.split('.')[0]===g)for(const p of (s.m==='parts'?s.parts:[s]))if(p.m!=='addsub'&&p.m!=='muldiv')p[p.m].types.forEach(t=>want.add(p.m+'|'+t));
+    const have=new Set();for(const p of st.parts)if(p.m!=='addsub'&&p.m!=='muldiv'){const t=p[p.m].types;(Array.isArray(t)?t:Object.keys(t).filter(k=>t[k])).forEach(x=>have.add(p.m+'|'+x));}
+    for(const k of want)if(!have.has(k))bad.push('grade '+g+' misses '+k);
+    try{const out=SP.renderAll(st);if(!out||!out.includes('sheet'))bad.push('grade '+g+' empty render');SP.comboSections(st).forEach(sec=>{if(!sec.plan.probs.length)bad.push('grade '+g+' empty section '+sec.letter);});}catch(e){bad.push('grade '+g+' threw '+e.message);}
   }
 }
 // digit-limits spot checks

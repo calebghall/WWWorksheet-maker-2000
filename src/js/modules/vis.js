@@ -11,6 +11,7 @@ function visHtml(p, key, x) { return VHTML[p.type](p, key, x); }
 
 
 function genVisN(rng, st, count, perPage) {
+  GRID_CTX.unit = st.unit || 'units'; GRID_CTX.shade = st.shade !== false;
   const types = VIS_TYPES.filter(t => st.vis.types[t]); if (!types.length) types.push('cnt');
   const out = [], seen = SIG_SCOPE || new Set(); let g = 0;
   while (out.length < count && g++ < count * 60) { const p = VGEN[pick(rng, types)](rng, st.vis.level); if (seen.has(p.sig)) continue; seen.add(p.sig); out.push(p); }

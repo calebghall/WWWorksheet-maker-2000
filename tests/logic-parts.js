@@ -62,7 +62,7 @@ for (let i = 0; i < 8; i++) {
   ok(n[2].as.d1 === 2 && n[2].as.add === true, 'addsub clamp ' + J(n[2].as));
   ok(n[3].m === 'tm' && !('tm' in n[3]), 'part without settings');
   ok(SP.normParts([]) === null && SP.normParts('x') === null && SP.normParts(null) === null, 'empty parts');
-  ok(SP.normParts(new Array(40).fill({ m: 'fdp', n: 5 })).length === 12, 'part limit');
+  ok(SP.normParts(new Array(40).fill({ m: 'fdp', n: 5 })).length === 16, 'part limit');
   const again = SP.normParts(n); ok(J(again) === J(n), 'normalizing twice changes parts');
 }
 /* 5. every module's captured settings normalize to themselves and apply to a fresh state */
@@ -74,10 +74,10 @@ for (const mod of Object.keys(SP.REG)) {
 
 /* 6. presets with parts: set the parts and the Combined view, leave the module panels alone, and a single-module preset clears the parts */
 {
-  const st = D(); const panels = J([st.as, st.md, st.fd, st.ns, st.tm, st.vis]);
+  const st = D(); const panels = J([st.as, st.md, st.fd, st.ns, st.tm, st.vis, st.num, st.oa, st.frac, st.time, st.meas, st.geom]);
   SP.applyStandard(st, '5.NBT.B.7');
-  ok(st.module === 'combo' && st.parts && st.parts.length === 2 && st.parts[0].m === 'fdp' && st.parts[1].m === 'ns', 'parts preset ' + J(st.parts));
-  ok(J([st.as, st.md, st.fd, st.ns, st.tm, st.vis]) === panels, 'parts preset changed the module panels');
+  ok(st.module === 'combo' && st.parts && st.parts.length === 2 && st.parts[0].m === 'frac' && st.parts[1].m === 'frac', 'parts preset ' + J(st.parts));
+  ok(J([st.as, st.md, st.fd, st.ns, st.tm, st.vis, st.num, st.oa, st.frac, st.time, st.meas, st.geom]) === panels, 'parts preset changed the module panels');
   ok(J(SP.normParts(st.parts)) === J(st.parts), 'preset parts are already normalized');
   const secs = SP.comboSections(st);
   ok(secs.length === 2 && secs[0].plan.probs.every(p => ['decadd', 'decmul'].includes(p.type)) && secs[1].plan.probs.every(p => p.type === 'decrsn'), '5.NBT.B.7 sections');

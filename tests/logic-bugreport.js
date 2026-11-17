@@ -16,6 +16,8 @@ for(const mod of ['area','addsub','muldiv','fdp','ns','tm','vis','mix','combo'])
   for(const k of ['set_code','settings','browser'])if(!ids.includes(k))issues.push('template lacks field '+k);
   let back;try{back=JSON.parse(p.get('settings'));}catch(e){issues.push(mod+' settings not JSON');continue;}
   if(back.module!==mod||back.seed!=='ABC123')issues.push(mod+' settings lost module or seed');
+  for(const M of ['num','oa','frac','time','meas','geom','fd','ns','tm','vis'])if(back[M]&&Array.isArray(back[M].types)){const m={};for(const k of Object.keys(s[M].types))m[k]=back[M].types.includes(k);back[M].types=m;}
+  if(Array.isArray(back.types)){const m={};for(const k of Object.keys(s.types))m[k]=back.types.includes(k);back.types=m;}
   if(JSON.stringify(Object.assign({},s,{titles:undefined}))!==JSON.stringify(Object.assign({},back,{titles:undefined})))issues.push(mod+' settings do not round trip');
 }
 /* an oversized state falls back to the basics */

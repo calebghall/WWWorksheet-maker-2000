@@ -12,10 +12,10 @@ with sync_playwright() as p:
     pg.add_init_script("window.addEventListener('error', e => { window.__errs = (window.__errs||[]).concat(e.message); });")
     pg.goto(URL); pg.wait_for_timeout(500)
     pg.check('input[name="wkMode"][value="single"]', force=True)
-    for mod, pre in [('fdp', 'fd'), ('ns', 'ns'), ('tm', 'tm'), ('vis', 'vis')]:
+    for mod, pre in [('frac', 'frac'), ('num', 'num'), ('time', 'time'), ('oa', 'oa'), ('meas', 'meas'), ('geom', 'geom')]:
         pg.check(f'input[name="module"][value="{mod}"]', force=True)
         pg.check('input[name="pages"][value="3"]', force=True)
-        if mod in ('tm', 'ns', 'vis'):
+        if mod != 'frac':
             pg.evaluate("document.querySelectorAll('details.tgroup').forEach(d => { d.open = true; })")
             for i in pg.query_selector_all(f'input[name="{pre}_type"]'):
                 if not i.is_checked(): i.check(force=True)
@@ -51,7 +51,7 @@ with sync_playwright() as p:
     pg.evaluate("localStorage.clear()"); pg.reload(); pg.wait_for_timeout(400)
     pg.check('input[name="wkMode"][value="multi"]', force=True)
     pg.check('input[name="multi_view"][value="combo"]', force=True)
-    for m in ['fdp', 'ns', 'tm', 'vis']:
+    for m in ['frac', 'num', 'time', 'oa', 'meas', 'geom']:
         pg.select_option('#addPartMod', m); pg.click('#partAdd'); pg.wait_for_timeout(60)
     pg.wait_for_timeout(300)
     c = pg.evaluate(CLIP); bad += bool(c); print('combo clipped', c, '|', pg.inner_text('#summary'), pg.evaluate(WHICH) if c else '')

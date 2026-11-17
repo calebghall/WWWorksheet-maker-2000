@@ -129,9 +129,6 @@ details.tgroup[open] > .tgroup-h::before { transform: rotate(90deg); }
 .tword input { accent-color: var(--accent); }
 .chk[hidden], details.tgroup[hidden], .note[hidden] { display: none; }
 .linkbtn { background: none; border: 0; padding: 0; font: inherit; color: var(--accent); text-decoration: underline; cursor: pointer; }
-.stdbands { margin-top: 8px; }
-.stdbands[hidden] { display: none; }
-.stdbands + .seg { margin-top: 8px; }
 .chk.dis { opacity: .5; cursor: default; }
 
 .row { display: grid; gap: 6px; margin-top: 12px; }
@@ -187,6 +184,7 @@ details.stdbox { margin: 20px 0 0; border: 1px solid var(--line); border-radius:
 .std .sb { font-size: 11px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
 .std.gap .st { color: var(--muted); }
 .std.on { background: var(--accent-soft); border-color: var(--accent); }
+.std.all { border-style: dashed; font-weight: 700; }
 .std:disabled { opacity: .55; cursor: default; }
 .std:focus-visible, .stdq:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
@@ -426,7 +424,6 @@ details.stdbox { margin: 20px 0 0; border: 1px solid var(--line); border-radius:
 
         <summary><span class="std-lbl">Browse <span id="stdFw">Tennessee</span> Standards</span><span class="cur" id="stdCur"></span></summary>
 
-        <div class="seg stdbands" id="stdBands" role="radiogroup" aria-label="Grade band" hidden></div>
         <div class="seg" id="stdGrades" role="radiogroup" aria-label="Grade"></div>
 
         <input type="search" id="stdQ" name="stdQ" class="stdq" placeholder="Search standards (code or words)" aria-label="Search standards">
@@ -462,6 +459,7 @@ details.stdbox { margin: 20px 0 0; border: 1px solid var(--line); border-radius:
           <label class="part-f"><span class="lbl" id="editPartNLbl">Problems</span><select id="editPartN" name="editPartN" aria-label="Problems in part"></select></label>
         </div>
       </div>
+<div id="strandPanels"></div>
       <!-- ===== Area Squares ===== -->
       <fieldset data-mod="area">
         <legend>Exercise types</legend>
@@ -712,7 +710,7 @@ details.stdbox { margin: 20px 0 0; border: 1px solid var(--line); border-radius:
 
         </div>
 
-        <div class="row" data-mod="addsub muldiv fdp ns tm vis mix">
+        <div class="row" data-mod="addsub muldiv num oa frac time meas geom mix">
 
           <span class="lbl">Problems per page</span>
 
@@ -728,7 +726,7 @@ details.stdbox { margin: 20px 0 0; border: 1px solid var(--line); border-radius:
 
         </div>
 
-        <div class="row" data-mod="area addsub muldiv fdp ns tm vis mix">
+        <div class="row" data-mod="addsub muldiv num oa frac time meas geom mix">
 
           <span class="lbl">Pages</span>
 
@@ -1029,11 +1027,13 @@ function arLayout(st, probs, mod) {
   }
   return { cols: 2, rows: 2, fs: sizes[sizes.length - 1], horiz, total: 4, fits: false };
 }
-function arSub(st, mod) {
+/* The instruction line. A strand module whose problems all come from one origin (ns, vis, fdp, tm) uses that origin's line, so the sheet reads as it did before the regrouping. */
+function arSub(st, mod, probs) {
   mod = mod || st.module;
-  if (mod === 'addsub' || mod === 'ns' || mod === 'tm') return 'Solve each problem.';
-  if (mod === 'vis') return 'Look at each picture and answer.';
-  if (mod === 'fdp') return 'Solve each problem. Write fractions in simplest form.';
+  if (isStrand(mod) && probs && probs.length) { const o = [...new Set(probs.map(p => p.mod))]; if (o.length === 1 && o[0]) mod = o[0]; }
+  if (mod === 'addsub' || mod === 'ns' || mod === 'tm' || mod === 'num' || mod === 'oa' || mod === 'time') return 'Solve each problem.';
+  if (mod === 'vis' || mod === 'meas' || mod === 'geom') return 'Look at each picture and answer.';
+  if (mod === 'fdp' || mod === 'frac') return 'Solve each problem. Write fractions in simplest form.';
   return st.md.div && st.md.rem ? 'Solve each problem. Write remainders with R.' : 'Solve each problem.';
 }
 const META = { problems: 0, pages: 0, note: '' };
@@ -1042,7 +1042,7 @@ function renderArithAll(st) {
   const sheet = (key, i) => {
     const slice = probs.slice(i * total, (i + 1) * total);
     const cells = slice.map((p, k) => renderArithCell(p, i * total + k + 1, lay.horiz, key)).join('');
-    return sheetShell(st, key, i, arSub(st), `<div class="sh-grid ar" style="--cols:${lay.cols};--rows:${lay.rows};--fs:${lay.fs}pt">${cells}</div>`);
+    return sheetShell(st, key, i, arSub(st, null, probs), `<div class="sh-grid ar" style="--cols:${lay.cols};--rows:${lay.rows};--fs:${lay.fs}pt">${cells}</div>`);
   };
   let out = '';
   for (let i = 0; i < st.pages; i++) out += sheet(false, i);
@@ -1115,7 +1115,7 @@ function arithPlan(st, mod, probs) {
   if (!pick_) pick_ = { fs: sizes[sizes.length - 1], cols: 2 };
   const rowH = Math.ceil(Math.max(...probs.map(p => needSize(p, pick_.fs, horiz)[1])) * 20) / 20;
   return {
-    sub: arSub(st, mod), probs, cols: pick_.cols, rowH, gap: 0.1, cls: 'ar', style: `--fs:${pick_.fs}pt`,
+    sub: arSub(st, mod, probs), probs, cols: pick_.cols, rowH, gap: 0.1, cls: 'ar', style: `--fs:${pick_.fs}pt`,
     cell: (p, num, key) => renderArithCell(p, num, horiz, key)
   };
 }
@@ -4903,6 +4903,93 @@ defTypes("vis", "Area and perimeter", [
   { id: "acon", label: "Area concepts", blurb: "Compare areas, tiling without gaps, unit squares.", on: false, gen: g3Acon, html: g3AconHtml },
   { id: "pera", label: "Compare rectangles", blurb: "Same perimeter or same area, which is greater.", on: false, gen: g3Pera, html: g3PeraHtml }
 ]);
+/* ---------- Shapes, Measures and Data: area on grids (the Area Squares problems as grid cells) ----------
+   Count the squares, multiply the sides, draw a rectangle, compare two shapes and find the area of an L-shape. These were the Area Squares
+   module's own card layout; here they are ordinary cells (size hints win/hin), so they share the grid and flow layouts with every other type.
+   The shapes and generators are the Area Squares ones (area.js). Units and shading are worksheet settings (state.unit, state.shade); the generator
+   reads them from GRID_CTX, which genGeomN and the legacy paths set before generating, and bakes them into the problem. */
+const GRID_CTX = { unit: 'units', shade: true };
+const GA_W = 3.0, GA_H = 1.65;   // the figure box, in inches
+const gaUnit = p => UNITS[p.unit || 'units'];
+function gaBase(id, raw, prompt, o) {
+  const pads = padsFor(o.labels || []), cpx = fitCell(o.cols, o.rows, o.fw || GA_W, o.fh || GA_H, pads, o.cap);
+  const w = (o.cols * cpx + pads.l + pads.r) / 96, h = (o.rows * cpx + pads.t + pads.b) / 96;
+  return Object.assign({ mod: 'vis', prompt, win: o.win || w, hin: o.hin || h + (o.extra || 0), hfs: 0, bw: 0, unit: GRID_CTX.unit, shade: GRID_CTX.shade, cpx, sig: sig(raw) + GRID_CTX.unit }, raw, { type: id });
+}
+function gaCount(rng, L) {
+  const r = genCount(rng, L), s = r.shape;
+  return gaBase('acount', r, 'Count the squares to find the area.', { cols: s.cols, rows: s.rows, extra: 0.46 });
+}
+function gaCountHtml(p, key, x) {
+  const s = p.shape, U = gaUnit(p);
+  return svg({ cols: s.cols, rows: s.rows, cpx: p.cpx, cells: s.cells, shade: p.shade, aria: `Shape on a grid, ${s.cols} squares wide and ${s.rows} tall` }) + `<div>Area = ${x(p.area, 2.4)} ${U.area}</div>`;
+}
+const gaMultLabels = (p, U) => [{ side: 'top', text: `${p.w} ${U.len}` }, { side: 'left', text: `${p.h} ${U.len}` }];
+function gaMult(rng, L) {
+  const r = genMult(rng, L), U = UNITS[GRID_CTX.unit];
+  return gaBase('amult', r, 'Find the area of this rectangle.', { cols: r.w, rows: r.h, labels: gaMultLabels(r, U), fh: GA_H - 0.1, extra: 0.46 });
+}
+function gaMultHtml(p, key, x) {
+  const U = gaUnit(p), labels = gaMultLabels(p, U);
+  return svg({ cols: p.w, rows: p.h, cpx: p.cpx, cells: rectShape(p.w, p.h).cells, grid: p.grid, shade: p.shade, labels, aria: `Rectangle ${p.w} by ${p.h}` })
+    + `<div>Area = ${x(p.w, 1.4)} × ${x(p.h, 1.4)} = ${x(p.area, 2)} ${U.area}</div>`;
+}
+function gaDraw(rng, L) {
+  const r = genDraw(rng, L), U = UNITS[GRID_CTX.unit], sm = r.sample;
+  /* The blank grid varies a little in size (one column or row fewer when the sample rectangle still fits), so the same area is not always the same drawing. */
+  if (ri(rng, 0, 1) && sm.ox + sm.w <= r.cols - 1) r.cols--;
+  if (ri(rng, 0, 1) && sm.oy + sm.h <= r.rows - 1) r.rows--;
+  const p = gaBase('adraw', r, `Draw a rectangle of area ${r.area} ${U.area}.`, { cols: r.cols, rows: r.rows, extra: 0.46 });
+  p.sig = `d${r.area}${GRID_CTX.unit}${r.cols}x${r.rows}`; return p;
+}
+function gaDrawHtml(p, key, x) {
+  const sm = p.sample, cells = [];
+  if (key) for (let r = 0; r < sm.h; r++) for (let c = 0; c < sm.w; c++) cells.push([sm.ox + c, sm.oy + r]);
+  return svg({ cols: p.cols, rows: p.rows, cpx: p.cpx, cells, tone: 'key', shade: p.shade, aria: `Blank grid, ${p.cols} squares wide and ${p.rows} tall` })
+    + (key ? `<div style="color:var(--key);font-weight:700">One answer: ${sm.w} × ${sm.h} = ${p.area}</div>` : '');
+}
+function gaCmp(rng, L) {
+  const r = genCmp(rng, L), fw = (GA_W - 0.25) / 2, fh = GA_H - 0.26, pads = padsFor([]);
+  const cpx = Math.min(fitCell(r.a.shape.cols, r.a.shape.rows, fw, fh, pads, 0.3), fitCell(r.b.shape.cols, r.b.shape.rows, fw, fh, pads, 0.3));
+  const wa = (r.a.shape.cols * cpx + 10) / 96, wb = (r.b.shape.cols * cpx + 10) / 96, hh = (Math.max(r.a.shape.rows, r.b.shape.rows) * cpx + 10) / 96;
+  const p = gaBase('acmp', r, 'Which shape has the greater area?', { cols: 1, rows: 1, win: wa + wb + 0.25, hin: hh + 0.3 + 0.82 });
+  p.cpx = cpx; return p;
+}
+function gaCmpHtml(p, key, x) {
+  const mk = (s, name) => `<figure><figcaption>${name}</figcaption>${svg({ cols: s.shape.cols, rows: s.shape.rows, cpx: p.cpx, cells: s.shape.cells, shade: p.shade, aria: `Shape ${name}, ${s.shape.cols} squares wide and ${s.shape.rows} tall` })}</figure>`;
+  const opt = (id, t) => `<span class="opt${key && p.ans === id ? ' on' : ''}" style="min-width:0">${t}</span>`;
+  return `<div class="p-fig cmp ga">${mk(p.a, 'A')}${mk(p.b, 'B')}</div><div>${opt('A', 'A')}${opt('B', 'B')}${opt('S', 'Same')}</div>`
+    + (key ? `<div style="font-size:.85em">A = ${p.a.area} · B = ${p.b.area} ${gaUnit(p).area}</div>` : '');
+}
+function gaLsh(rng, L) {
+  const r = genLsh(rng, L), U = UNITS[GRID_CTX.unit], g = gaLshParts(r, U);
+  return gaBase('alsh', r, 'Find the area of this L-shaped figure.',
+    { cols: r.shape.cols, rows: r.shape.rows, labels: g.labels, fh: GA_H - 0.1, extra: 0.74 });
+}
+function gaLshParts(p, U) {
+  let labels = [], notes = [];
+  if (p.labels) {
+    const isT = p.corner.includes('t'), isR = p.corner.includes('r'), x0 = isR ? p.W - p.cw : 0, y0 = p.corner.includes('b') ? p.H - p.ch : 0;
+    labels = [{ side: isT ? 'bottom' : 'top', text: `${p.W} ${U.len}` }, { side: isR ? 'left' : 'right', text: `${p.H} ${U.len}` }];
+    notes = [
+      { x: x0 + p.cw / 2, y: isT ? p.ch - 0.5 : p.H - p.ch + 0.5, text: String(p.cw) },
+      { x: isR ? p.W - p.cw + 0.3 : p.cw - 0.3, y: y0 + p.ch / 2, text: String(p.ch), anchor: isR ? 'start' : 'end' }
+    ];
+  }
+  return { labels, notes };
+}
+function gaLshHtml(p, key, x) {
+  const U = gaUnit(p), g = gaLshParts(p, U), s = p.shape;
+  return svg({ cols: s.cols, rows: s.rows, cpx: p.cpx, cells: s.cells, grid: !p.labels, shade: p.shade, labels: g.labels, notes: g.notes, aria: `L-shaped figure, ${s.cols} squares wide and ${s.rows} tall` })
+    + `<div>Area = ${x(p.area, 2.4)} ${U.area}</div>` + (key ? `<div style="font-size:.85em">${p.W} × ${p.H} − ${p.cw} × ${p.ch} = ${p.area}</div>` : '');
+}
+defTypes("vis", "Area on grids", [
+  { id: "acount", label: "Count squares for area", blurb: "Count the unit squares in a shape on a grid.", on: false, gen: gaCount, html: gaCountHtml },
+  { id: "amult", label: "Area of a rectangle", blurb: "Multiply the side lengths of a labeled rectangle on a grid.", on: false, gen: gaMult, html: gaMultHtml },
+  { id: "adraw", label: "Draw a rectangle with a given area", blurb: "Draw a rectangle on a blank grid.", on: false, gen: gaDraw, html: gaDrawHtml },
+  { id: "acmp", label: "Compare areas on grids", blurb: "Which of two shapes has the greater area.", on: false, gen: gaCmp, html: gaCmpHtml },
+  { id: "alsh", label: "Area of an L-shaped figure", blurb: "Count squares or split into two rectangles.", on: false, gen: gaLsh, html: gaLshHtml }
+]);
 /* ---------- Shapes, Measures and Data: volume ----------
    Generators take (rng, level) and return a problem with `sig` and size hints; cell bodies are (p, key, x) functions.
    vcubes: count unit cubes in a drawn prism, and what a volume in unit cubes means. vlwh: volume of a rectangular prism from its edges
@@ -5444,6 +5531,7 @@ function visHtml(p, key, x) { return VHTML[p.type](p, key, x); }
 
 
 function genVisN(rng, st, count, perPage) {
+  GRID_CTX.unit = st.unit || 'units'; GRID_CTX.shade = st.shade !== false;
   const types = VIS_TYPES.filter(t => st.vis.types[t]); if (!types.length) types.push('cnt');
   const out = [], seen = SIG_SCOPE || new Set(); let g = 0;
   while (out.length < count && g++ < count * 60) { const p = VGEN[pick(rng, types)](rng, st.vis.level); if (seen.has(p.sig)) continue; seen.add(p.sig); out.push(p); }
@@ -5451,7 +5539,7 @@ function genVisN(rng, st, count, perPage) {
   return out;
 }
 /* ---------- mixed practice: problems from several topics, flow layout ---------- */
-const MIX_MODS = ['addsub', 'muldiv', 'fdp', 'ns', 'tm'];
+const MIX_MODS = ['addsub', 'muldiv', 'fdp', 'ns', 'tm', 'num', 'oa', 'frac', 'time', 'meas', 'geom'];
 const MIX_GX = 0.15, MIX_GY = 0.1, MIX_SIZES = [14, 13, 12, 11, 10];
 /* Measured ratios of the size hints (needSize) to the real rendered size, smallest over many samples at 10 to 14 pt: [width, height].
    The hints are deliberately generous so grid cells never clip; flow packing trims them back, keeping 6% spare. */
@@ -5464,7 +5552,7 @@ const FLOW_FIT = {
 };
 /* Space item it needs at type size fs, in inches, capped to the page width cw. */
 function mixSize(it, fs, cw) {
-  const [w, h] = needSize(it.p, fs, it.horiz), key = it.mod + ':' + it.p.type + (!it.horiz && (it.mod === 'addsub' || it.mod === 'muldiv') ? ':v' : '');
+  const [w, h] = needSize(it.p, fs, it.horiz), key = (it.p.mod || it.mod) + ':' + it.p.type + (!it.horiz && (it.mod === 'addsub' || it.mod === 'muldiv') ? ':v' : '');
   const [rw, rh] = FLOW_FIT[key] || [1, 1];
   return { w: Math.min(w * Math.min(1, 1.06 / rw), cw), h: Math.ceil(h * Math.min(1, 1.06 / rh) * 20) / 20 };
 }
@@ -5473,7 +5561,7 @@ const mixOn = st => { const on = MIX_MODS.filter(id => st.mix.mods[id]); return 
 /* Problems from one topic, using that topic's own settings. Returns items { p, mod, horiz }. */
 function mixGen(st, mod, n, seed) {
   const s2 = Object.assign({}, st, { module: mod }), rng = rngFrom(seed);
-  const ps = mod === 'fdp' ? genFdpN(rng, s2, n, n) : mod === 'ns' ? genNsN(rng, s2, n, n) : mod === 'tm' ? genTmN(rng, s2, n, n) : genArithN(rng, s2, mod, n, n);
+  const ps = isStrand(mod) ? genStrandN(rng, s2, mod, n, n) : mod === 'fdp' ? genFdpN(rng, s2, n, n) : mod === 'ns' ? genNsN(rng, s2, n, n) : mod === 'tm' ? genTmN(rng, s2, n, n) : genArithN(rng, s2, mod, n, n);
   const horiz = modFormat(st, mod) === 'horizontal';
   return ps.map(p => ({ p, mod, horiz }));
 }
@@ -5489,7 +5577,7 @@ function mixSplit(weights, total) {
 }
 /* The parts Mixed Practice draws from: the worksheet's parts that use a mixable topic, otherwise one part per checked topic. */
 function mixPartsOf(st) {
-  const given = Array.isArray(st.parts) ? st.parts.filter(p => MIX_MODS.includes(p.m)) : [];
+  const given = Array.isArray(st.parts) ? st.parts.filter(p => partMixable(st, p)) : [];
   return given.length ? given : mixOn(st).map(m => ({ m, n: 1 }));
 }
 /* total problems from the parts, split by weight and interleaved; each part runs with its own settings */
@@ -5514,7 +5602,7 @@ function mixRunPlan(st, parts, seed, scope) {
   let fs = 10, sizes = null;
   for (const cand of [12, 11, 10]) {
     const raw = items.map(it => {
-      const [w, h] = needSize(it.p, cand, it.horiz), key = it.mod + ':' + it.p.type + (!it.horiz && (it.mod === 'addsub' || it.mod === 'muldiv') ? ':v' : '');
+      const [w, h] = needSize(it.p, cand, it.horiz), key = (it.p.mod || it.mod) + ':' + it.p.type + (!it.horiz && (it.mod === 'addsub' || it.mod === 'muldiv') ? ':v' : '');
       const [rw, rh] = FLOW_FIT[key] || [1, 1];
       return { rawW: w * Math.min(1, 1.06 / rw), w: Math.min(w * Math.min(1, 1.06 / rw), cw), h: Math.ceil(h * Math.min(1, 1.06 / rh) * 20) / 20 };
     });
@@ -5550,7 +5638,7 @@ function mixLayout(st) {
 function mixSub(st, parts) {
   parts = parts || mixOn(st).map(m => ({ m, n: 1 }));
   const rem = parts.some(p => { if (p.m !== 'muldiv') return false; const s = partState(st, p); return s.md.div && s.md.rem; });
-  return 'Solve each problem.' + (parts.some(p => p.m === 'fdp') ? ' Write fractions in simplest form.' : '') + (rem ? ' Write remainders with R.' : '');
+  return 'Solve each problem.' + (parts.some(p => p.m === 'fdp' || p.m === 'frac') ? ' Write fractions in simplest form.' : '') + (rem ? ' Write remainders with R.' : '');
 }
 function renderMix(st) {
   const L = mixLayout(st), st2 = Object.assign({}, st, { pages: L.pages.length }), num = new Map();
@@ -5588,7 +5676,7 @@ function comboSections(st) {
   for (const p of parts) total[p.m] = (total[p.m] || 0) + 1;
   for (let i = 0; i < parts.length; i++) {
     const group = [parts[i]];
-    while (i + 1 < parts.length && parts[i + 1].mix && MIX_MODS.includes(group[0].m) && MIX_MODS.includes(parts[i + 1].m)) {
+    while (i + 1 < parts.length && parts[i + 1].mix && partMixable(st, group[0]) && partMixable(st, parts[i + 1])) {
       group.push(parts[++i]);
     }
     const letter = String.fromCharCode(65 + secs.length);
@@ -5723,8 +5811,6 @@ function renderCombo(st) {
 const FRAMEWORK = {
   id: 'tn',
   name: 'Tennessee',
-  /* How this framework divides the grades; kindergarten is grade 0. Used by the grade-band filter in the standards panel. */
-  bands: [{ id: 'k2', label: 'K to 2', grades: [0, 1, 2] }, { id: '35', label: '3 to 5', grades: [3, 4, 5] }],
   source: 'Tennessee Instructional Focus Documents, Kindergarten to Grade 5 (July 2025 binders)'
 };
 /* ---------- Standards presets for the framework named in framework.js (currently Tennessee, from the Instructional Focus Documents) ----------
@@ -5740,160 +5826,162 @@ const STD_GRADE_IDS = ['K', '1', '2', '3', '4', '5'];
 const AS = (d1, d2, extra) => Object.assign({ add: true, sub: true, d1, d2, addends: 2, regroup: 'any', format: 'vertical', cap: 0, second: 'digits' }, extra || {});
 const MD = o => Object.assign({ mul: true, div: true, mode: 'facts', tables: 10, focus: 0, rem: false, da: 2, db: 1, alt: false, da2: 2, db2: 2, na: 3, nb: 1, format: 'vertical' }, o);
 const STANDARDS = [
-  { c: 'K.CC.A.1', t: 'Count by fives and tens', m: 'ns', ns: { types: ['kseq'], level: 1 } },
-  { c: 'K.CC.A.2', t: 'Count on from any number', m: 'ns', ns: { types: ['cfwd'], level: 1 } },
-  { c: 'K.CC.A.3', t: 'Write numbers 0 to 20 and show quantities', m: 'vis', vis: { types: ['cnt'], level: 3 } },
-  { c: 'K.CC.A.4', t: 'Repeating patterns and the core', m: 'vis', vis: { types: ['pat', 'patmake'], level: 3 } },
-  { c: 'K.CC.B.5', t: 'Count to tell how many', m: 'vis', vis: { types: ['cnt', 'cntn'], level: 2 } },
-  { c: 'K.CC.B.6', t: 'Count up to 20 in lines, arrays and circles', m: 'vis', vis: { types: ['cnt'], level: 2 } },
-  { c: 'K.OA.A.1', t: 'Show addition and subtraction with pictures', m: 'vis', vis: { types: ['picop', 'showop'], level: 2 } },
+  { c: 'K.CC.A.1', t: 'Count by fives and tens', m: 'num', num: { types: ['ns.kseq'], level: 1 } },
+  { c: 'K.CC.A.2', t: 'Count on from any number', m: 'num', num: { types: ['ns.cfwd'], level: 1 } },
+  { c: 'K.CC.A.3', t: 'Write numbers 0 to 20 and show quantities', m: 'num', num: { types: ['vis.cnt'], level: 3 } },
+  { c: 'K.CC.A.4', t: 'Repeating patterns and the core', m: 'oa', oa: { types: ['vis.pat', 'vis.patmake'], level: 3 } },
+  { c: 'K.CC.B.5', t: 'Count to tell how many', m: 'num', num: { types: ['vis.cnt', 'vis.cntn'], level: 2 } },
+  { c: 'K.CC.B.6', t: 'Count up to 20 in lines, arrays and circles', m: 'num', num: { types: ['vis.cnt'], level: 2 } },
+  { c: 'K.OA.A.1', t: 'Show addition and subtraction with pictures', m: 'num', num: { types: ['vis.picop', 'vis.showop'], level: 2 } },
   { c: 'K.OA.A.2', t: 'Add and subtract within 10', m: 'addsub', as: AS(1, 1, { format: 'horizontal', cap: 10 }) },
-  { c: 'K.OA.A.3', t: 'Decompose numbers to 10', m: 'ns', ns: { types: ['bond', 'bondp'], level: 1 } },
-  { c: 'K.OA.A.4', t: 'Make ten', m: 'ns', ns: { types: ['bond', 'bondp'], level: 2 } },
+  { c: 'K.OA.A.3', t: 'Decompose numbers to 10', m: 'oa', oa: { types: ['ns.bond', 'ns.bondp'], level: 1 } },
+  { c: 'K.OA.A.4', t: 'Make ten', m: 'oa', oa: { types: ['ns.bond', 'ns.bondp'], level: 2 } },
   { c: 'K.OA.A.5', t: 'Addition and subtraction fluency within 10', m: 'addsub', as: AS(1, 1, { format: 'horizontal', cap: 10 }) },
-  { c: 'K.NBT.A.1', t: 'Compose and decompose 11 to 19', m: 'ns', ns: { types: ['bond', 'bondp'], level: 3 } },
-  { c: 'K.MD.A.1', t: 'Compare length, height and weight', m: 'vis', vis: { types: ['cmpm', 'mattr'], level: 2 } },
-  { c: 'K.MD.A.2', t: 'Directly compare two objects', m: 'vis', vis: { types: ['cmpm'], level: 1 } },
-  { c: 'K.MD.B.3', t: 'Identify coins and their values', m: 'vis', vis: { types: ['coin'], level: 2 } },
-  { c: 'K.MD.C.4', t: 'Sort and compare groups', m: 'vis', vis: { types: ['sort'], level: 2 } },
-  { c: 'K.G.A.1', t: 'Position words', m: 'vis', vis: { types: ['pos', 'pos2'], level: 2 } },
-  { c: 'K.G.A.2', t: 'Name shapes in any orientation or size', m: 'vis', vis: { types: ['shname', 'shall'], level: 1 } },
-  { c: 'K.G.A.3', t: 'Flat shapes and solids', m: 'vis', vis: { types: ['solid'], level: 1 } },
-  { c: 'K.G.B.4', t: 'Compare flat shapes and solids', m: 'vis', vis: { types: ['solid', 'shcmp'], level: 2 } },
-  { c: 'K.G.B.5', t: 'Draw shapes', m: 'vis', vis: { types: ['shdraw', 'shbuild'], level: 1 } },
-  { c: 'K.G.B.6', t: 'Shapes inside a figure', m: 'vis', vis: { types: ['comp', 'split'], level: 1 } },
-  { c: '1.OA.A.1', t: 'Add and subtract word problems within 20', m: 'ns', ns: { types: ['wadd'], level: 1 } },
+  { c: 'K.NBT.A.1', t: 'Compose and decompose 11 to 19', m: 'oa', oa: { types: ['ns.bond', 'ns.bondp'], level: 3 } },
+  { c: 'K.MD.A.1', t: 'Compare length, height and weight', m: 'meas', meas: { types: ['vis.cmpm', 'vis.mattr'], level: 2 } },
+  { c: 'K.MD.A.2', t: 'Directly compare two objects', m: 'meas', meas: { types: ['vis.cmpm'], level: 1 } },
+  { c: 'K.MD.B.3', t: 'Identify coins and their values', m: 'time', time: { types: ['vis.coin'], level: 2 } },
+  { c: 'K.MD.C.4', t: 'Sort and compare groups', m: 'meas', meas: { types: ['vis.sort'], level: 2 } },
+  { c: 'K.G.A.1', t: 'Position words', m: 'geom', geom: { types: ['vis.pos', 'vis.pos2'], level: 2 } },
+  { c: 'K.G.A.2', t: 'Name shapes in any orientation or size', m: 'geom', geom: { types: ['vis.shname', 'vis.shall'], level: 1 } },
+  { c: 'K.G.A.3', t: 'Flat shapes and solids', m: 'geom', geom: { types: ['vis.solid'], level: 1 } },
+  { c: 'K.G.B.4', t: 'Compare flat shapes and solids', m: 'geom', geom: { types: ['vis.solid', 'vis.shcmp'], level: 2 } },
+  { c: 'K.G.B.5', t: 'Draw shapes', m: 'geom', geom: { types: ['vis.shdraw', 'vis.shbuild'], level: 1 } },
+  { c: 'K.G.B.6', t: 'Shapes inside a figure', m: 'geom', geom: { types: ['vis.comp', 'vis.split'], level: 1 } },
+  { c: '1.OA.A.1', t: 'Add and subtract word problems within 20', m: 'num', num: { types: ['ns.wadd'], level: 1 } },
   { c: '1.OA.A.2', t: 'Add three numbers', m: 'addsub', as: AS(1, 1, { sub: false, addends: 3, format: 'horizontal', cap: 20 }) },
-  { c: '1.OA.B.3', t: 'Properties of addition', m: 'ns', ns: { types: ['prop', 'substr'], level: 1 } },
-  { c: '1.OA.B.4', t: 'Subtraction as an unknown addend', m: 'ns', ns: { types: ['rel'], level: 1 } },
+  { c: '1.OA.B.3', t: 'Properties of addition', m: 'oa', oa: { types: ['ns.prop', 'ns.substr'], level: 1 } },
+  { c: '1.OA.B.4', t: 'Subtraction as an unknown addend', m: 'oa', oa: { types: ['ns.rel'], level: 1 } },
   { c: '1.OA.C.5', t: 'Add and subtract within 20', m: 'addsub', as: AS(1, 1, { format: 'horizontal', cap: 20 }) },
   { c: '1.OA.C.6', t: 'Addition and subtraction fluency within 20', m: 'addsub', as: AS(1, 1, { format: 'horizontal', cap: 20 }) },
-  { c: '1.OA.D.7', t: 'Meaning of the equal sign', m: 'ns', ns: { types: ['equal'], level: 2 } },
-  { c: '1.OA.D.8', t: 'Unknown number in an equation within 20', m: 'ns', ns: { types: ['eqn'], level: 1 } },
-  { c: '1.NBT.A.1', t: 'Count on and back', m: 'ns', ns: { types: ['cfwd', 'numrw'], level: 3 } },
-  { c: '1.NBT.A.2', t: 'Counting patterns', m: 'ns', ns: { types: ['skip'], level: 1 } },
-  { c: '1.NBT.B.3', t: 'Tens and ones', m: 'ns', ns: { types: ['tens'], level: 3 } },
-  { c: '1.NBT.B.4', t: 'Compare numbers', m: 'ns', ns: { types: ['cmp2'], level: 2 } },
+  { c: '1.OA.D.7', t: 'Meaning of the equal sign', m: 'oa', oa: { types: ['ns.equal'], level: 2 } },
+  { c: '1.OA.D.8', t: 'Unknown number in an equation within 20', m: 'oa', oa: { types: ['ns.eqn'], level: 1 } },
+  { c: '1.NBT.A.1', t: 'Count on and back', m: 'num', num: { types: ['ns.cfwd', 'ns.numrw'], level: 3 } },
+  { c: '1.NBT.A.2', t: 'Counting patterns', m: 'num', num: { types: ['ns.skip'], level: 1 } },
+  { c: '1.NBT.B.3', t: 'Tens and ones', m: 'num', num: { types: ['ns.tens'], level: 3 } },
+  { c: '1.NBT.B.4', t: 'Compare numbers', m: 'num', num: { types: ['ns.cmp2'], level: 2 } },
   { c: '1.NBT.C.5', t: 'Add a two-digit and a one-digit number', m: 'addsub', as: AS(2, 1, { sub: false, format: 'horizontal', cap: 100, second: 'mix' }) },
-  { c: '1.NBT.C.6', t: '10 more and 10 less', m: 'ns', ns: { types: ['more', 'moreexp'], level: 1 } },
-  { c: '1.NBT.C.7', t: 'Subtract multiples of 10', m: 'ns', ns: { types: ['sub10'], level: 1 } },
-  { c: '1.MD.A.1', t: 'Order three objects by length', m: 'vis', vis: { types: ['ord3'], level: 3 } },
-  { c: '1.MD.A.2', t: 'Measure with non-standard units', m: 'vis', vis: { types: ['munit'], level: 1 } },
-  { c: '1.MD.B.3', t: 'Tell time to the hour and half hour', m: 'tm', tm: { types: ['clock', 'dclock'], level: 1 } },
-  { c: '1.MD.B.4', t: 'Count coins under one dollar', m: 'tm', tm: { types: ['like', 'cpic', 'coins'], level: 1 } },
-  { c: '1.MD.C.5', t: 'Tally charts, pictographs and bar graphs', m: 'vis', vis: { types: ['tally', 'pict', 'bar'], level: 2 } },
-  { c: '1.G.A.1', t: 'Defining attributes of shapes', m: 'vis', vis: { types: ['shall', 'shname', 'shdraw'], level: 2 } },
-  { c: '1.G.A.2', t: 'Shapes that make a figure', m: 'vis', vis: { types: ['comp', 'split'], level: 2 } },
-  { c: '1.G.A.3', t: 'Halves and fourths', m: 'vis', vis: { types: ['part', 'partw'], level: 1 } },
-  { c: '2.OA.A.1', t: 'Add and subtract word problems within 100', m: 'ns', ns: { types: ['wadd'], level: 2 } },
+  { c: '1.NBT.C.6', t: '10 more and 10 less', m: 'num', num: { types: ['ns.more', 'ns.moreexp'], level: 1 } },
+  { c: '1.NBT.C.7', t: 'Subtract multiples of 10', m: 'oa', oa: { types: ['ns.sub10'], level: 1 } },
+  { c: '1.MD.A.1', t: 'Order three objects by length', m: 'meas', meas: { types: ['vis.ord3'], level: 3 } },
+  { c: '1.MD.A.2', t: 'Measure with non-standard units', m: 'meas', meas: { types: ['vis.munit'], level: 1 } },
+  { c: '1.MD.B.3', t: 'Tell time to the hour and half hour', m: 'time', time: { types: ['tm.clock', 'tm.dclock'], level: 1 } },
+  { c: '1.MD.B.4', t: 'Count coins under one dollar', m: 'time', time: { types: ['tm.like', 'tm.cpic', 'tm.coins'], level: 1 } },
+  { c: '1.MD.C.5', t: 'Tally charts, pictographs and bar graphs', m: 'meas', meas: { types: ['vis.tally', 'vis.pict', 'vis.bar'], level: 2 } },
+  { c: '1.G.A.1', t: 'Defining attributes of shapes', m: 'geom', geom: { types: ['vis.shall', 'vis.shname', 'vis.shdraw'], level: 2 } },
+  { c: '1.G.A.2', t: 'Shapes that make a figure', m: 'geom', geom: { types: ['vis.comp', 'vis.split'], level: 2 } },
+  { c: '1.G.A.3', t: 'Halves and fourths', m: 'frac', frac: { types: ['vis.part', 'vis.partw'], level: 1 } },
+  { c: '2.OA.A.1', t: 'Add and subtract word problems within 100', m: 'num', num: { types: ['ns.wadd'], level: 2 } },
   { c: '2.OA.B.2', t: 'Fluently add and subtract within 30', m: 'addsub', as: AS(1, 1, { format: 'horizontal', cap: 30 }) },
-  { c: '2.OA.C.3', t: 'Odd and even', m: 'ns', ns: { types: ['par20'], level: 2 } },
-  { c: '2.OA.C.4', t: 'Arrays and repeated addition', m: 'vis', vis: { types: ['array'], level: 2 } },
-  { c: '2.OA.D.5', t: 'Patterns in hundreds and addition charts', m: 'vis', vis: { types: ['chart', 'chartwhy'], level: 3 } },
-  { c: '2.NBT.A.1', t: 'Place value to hundreds', m: 'ns', ns: { types: ['place'], level: 1 } },
-  { c: '2.NBT.A.2', t: 'Counting patterns', m: 'ns', ns: { types: ['skip', 'cseq'], level: 1 } },
-  { c: '2.NBT.A.4', t: 'Compare three-digit numbers', m: 'ns', ns: { types: ['compare'], level: 1 } },
+  { c: '2.OA.C.3', t: 'Odd and even', m: 'num', num: { types: ['ns.par20'], level: 2 } },
+  { c: '2.OA.C.4', t: 'Arrays and repeated addition', m: 'num', num: { types: ['vis.array'], level: 2 } },
+  { c: '2.OA.D.5', t: 'Patterns in hundreds and addition charts', m: 'oa', oa: { types: ['vis.chart', 'vis.chartwhy'], level: 3 } },
+  { c: '2.NBT.A.1', t: 'Place value to hundreds', m: 'num', num: { types: ['ns.place'], level: 1 } },
+  { c: '2.NBT.A.2', t: 'Counting patterns', m: 'num', num: { types: ['ns.skip', 'ns.cseq'], level: 1 } },
+  { c: '2.NBT.A.4', t: 'Compare three-digit numbers', m: 'num', num: { types: ['ns.compare'], level: 1 } },
   { c: '2.NBT.B.5', t: 'Add and subtract within 100', m: 'addsub', as: AS(2, 2, { cap: 100 }) },
   { c: '2.NBT.B.6', t: 'Add two-digit numbers', m: 'addsub', as: AS(2, 2, { sub: false, addends: 4 }) },
   { c: '2.NBT.B.7', t: 'Add and subtract within 1000', m: 'addsub', as: AS(3, 3, { cap: 1000 }) },
-  { c: '2.NBT.B.8', t: 'Mentally add or subtract 10 or 100', m: 'ns', ns: { types: ['more'], level: 2 } },
-  { c: '2.MD.A.1', t: 'Measure length with a ruler', m: 'vis', vis: { types: ['ruler', 'mtool'], level: 2 } },
-  { c: '2.MD.A.2', t: 'Measure with two different units', m: 'vis', vis: { types: ['mtwo', 'mrule2'], level: 2 } },
-  { c: '2.MD.A.3', t: 'Estimate lengths', m: 'vis', vis: { types: ['mest'], level: 2 } },
-  { c: '2.MD.A.4', t: 'How much longer', m: 'vis', vis: { types: ['mdiff'], level: 2 } },
-  { c: '2.MD.B.5', t: 'Add and subtract lengths within 100', m: 'ns', ns: { types: ['wlen'], level: 2 } },
-  { c: '2.MD.B.6', t: 'Number line sums and differences', m: 'vis', vis: { types: ['nline'], level: 3 } },
-  { c: '2.MD.C.7', t: 'Tell time to five minutes', m: 'tm', tm: { types: ['clock', 'dclock', 'ampm'], level: 2 } },
-  { c: '2.MD.C.8', t: 'Coins under one dollar', m: 'tm', tm: { types: ['cpic', 'madd', 'change', 'cstory'], level: 2 } },
-  { c: '2.MD.D.9', t: 'Line plots', m: 'vis', vis: { types: ['lplot'], level: 3 } },
-  { c: '2.MD.D.10', t: 'Draw pictographs and bar graphs', m: 'vis', vis: { types: ['pict4', 'bar4'], level: 3 } },
-  { c: '2.G.A.1', t: 'Name and draw polygons', m: 'vis', vis: { types: ['shname', 'shall', 'shdraw'], level: 3 } },
-  { c: '2.G.A.2', t: 'Count unit squares in a rectangle', m: 'area', area: { types: ['count'], level: 1 } },
-  { c: '2.G.A.3', t: 'Equal shares', m: 'vis', vis: { types: ['part', 'pdraw'], level: 3 } },
-  { c: '3.OA.A.3', t: 'Multiply and divide word problems', m: 'ns', ns: { types: ['wmul'], level: 2 } },
-  { c: '3.OA.A.4', t: 'Unknown number in a multiplication or division equation', m: 'ns', ns: { types: ['eqn'], level: 3 } },
-  { c: '3.OA.B.5', t: 'Properties of multiplication', m: 'ns', ns: { types: ['prop'], level: 3 } },
-  { c: '3.OA.B.6', t: 'Division as an unknown factor', m: 'ns', ns: { types: ['rel'], level: 2 } },
+  { c: '2.NBT.B.8', t: 'Mentally add or subtract 10 or 100', m: 'num', num: { types: ['ns.more'], level: 2 } },
+  { c: '2.MD.A.1', t: 'Measure length with a ruler', m: 'meas', meas: { types: ['vis.ruler', 'vis.mtool'], level: 2 } },
+  { c: '2.MD.A.2', t: 'Measure with two different units', m: 'meas', meas: { types: ['vis.mtwo', 'vis.mrule2'], level: 2 } },
+  { c: '2.MD.A.3', t: 'Estimate lengths', m: 'meas', meas: { types: ['vis.mest'], level: 2 } },
+  { c: '2.MD.A.4', t: 'How much longer', m: 'meas', meas: { types: ['vis.mdiff'], level: 2 } },
+  { c: '2.MD.B.5', t: 'Add and subtract lengths within 100', m: 'num', num: { types: ['ns.wlen'], level: 2 } },
+  { c: '2.MD.B.6', t: 'Number line sums and differences', m: 'num', num: { types: ['vis.nline'], level: 3 } },
+  { c: '2.MD.C.7', t: 'Tell time to five minutes', m: 'time', time: { types: ['tm.clock', 'tm.dclock', 'tm.ampm'], level: 2 } },
+  { c: '2.MD.C.8', t: 'Coins under one dollar', m: 'time', time: { types: ['tm.cpic', 'tm.madd', 'tm.change', 'tm.cstory'], level: 2 } },
+  { c: '2.MD.D.9', t: 'Line plots', m: 'meas', meas: { types: ['vis.lplot'], level: 3 } },
+  { c: '2.MD.D.10', t: 'Draw pictographs and bar graphs', m: 'meas', meas: { types: ['vis.pict4', 'vis.bar4'], level: 3 } },
+  { c: '2.G.A.1', t: 'Name and draw polygons', m: 'geom', geom: { types: ['vis.shname', 'vis.shall', 'vis.shdraw'], level: 3 } },
+  { c: '2.G.A.2', t: 'Count unit squares in a rectangle', m: 'geom', geom: { types: ['vis.acount'], level: 1 } },
+  { c: '2.G.A.3', t: 'Equal shares', m: 'frac', frac: { types: ['vis.part', 'vis.pdraw'], level: 3 } },
+  { c: '3.OA.A.3', t: 'Multiply and divide word problems', m: 'num', num: { types: ['ns.wmul'], level: 2 } },
+  { c: '3.OA.A.4', t: 'Unknown number in a multiplication or division equation', m: 'oa', oa: { types: ['ns.eqn'], level: 3 } },
+  { c: '3.OA.B.5', t: 'Properties of multiplication', m: 'oa', oa: { types: ['ns.prop'], level: 3 } },
+  { c: '3.OA.B.6', t: 'Division as an unknown factor', m: 'oa', oa: { types: ['ns.rel'], level: 2 } },
   { c: '3.OA.C.7', t: 'Multiply and divide within 100', m: 'muldiv', md: MD({ tables: 10 }) },
-  { c: '3.OA.D.8', t: 'Two-step word problems', m: 'ns', ns: { types: ['wmul', 'west'], level: 3 } },
-  { c: '3.NBT.A.1', t: 'Round to the nearest 10 or 100', m: 'ns', ns: { types: ['rnd3'], level: 3 } },
+  { c: '3.OA.D.8', t: 'Two-step word problems', m: 'num', num: { types: ['ns.wmul', 'ns.west'], level: 3 } },
+  { c: '3.NBT.A.1', t: 'Round to the nearest 10 or 100', m: 'num', num: { types: ['ns.rnd3'], level: 3 } },
   { c: '3.NBT.A.2', t: 'Add and subtract within 1000', m: 'addsub', as: AS(3, 3, { cap: 1000 }) },
-  { c: '3.NBT.A.3', t: 'Multiply by multiples of 10', m: 'ns', ns: { types: ['mul10'], level: 1 } },
-  { c: '3.NBT.A.4', t: 'Read and write numbers', m: 'ns', ns: { types: ['place'], level: 2 } },
-  { c: '3.NF.A.3', t: 'Equivalent fractions and comparing fractions', m: 'fdp', fd: { types: ['equiv', 'cmp'], level: 1 } },
-  { c: '3.MD.A.1', t: 'Time to the minute and elapsed time', m: 'tm', tm: { types: ['clock', 'elapsed'], level: 3 } },
-  { c: '3.MD.C.6', t: 'Measure area by counting unit squares', m: 'area', area: { types: ['count'], level: 2 } },
-  { c: '3.MD.C.7', t: 'Area of rectangles', m: 'area', area: { types: ['mult', 'lsh'], level: 2 } },
-  { c: '3.MD.D.8', t: 'Perimeter', m: 'ns', ns: { types: ['perim'], level: 3 } },
-  { c: '3.OA.A.1', t: 'Interpret factors and products', m: 'vis', vis: { types: ['mfac'], level: 2 } },
-  { c: '3.OA.A.2', t: 'Interpret dividend, divisor and quotient', m: 'vis', vis: { types: ['dint'], level: 2 } },
-  { c: '3.OA.D.9', t: 'Patterns in the multiplication chart', m: 'vis', vis: { types: ['mchart'], level: 3 } },
-  { c: '3.NF.A.1', t: 'Fractions as parts of a whole', m: 'vis', vis: { types: ['fmodel'], level: 2 } },
-  { c: '3.NF.A.2', t: 'Fractions on a number line', m: 'vis', vis: { types: ['fline'], level: 2 } },
-  { c: '3.MD.A.2', t: 'Mass and liquid volume', m: 'vis', vis: { types: ['mvol'], level: 2 } },
-  { c: '3.MD.B.3', t: 'Scaled pictographs and bar graphs', m: 'vis', vis: { types: ['pictg', 'barg'], level: 3 } },
-  { c: '3.MD.B.4', t: 'Measure to halves and fourths; line plots', m: 'vis', vis: { types: ['rulq', 'lplotq'], level: 2 } },
-  { c: '3.MD.C.5', t: 'Area concepts', m: 'vis', vis: { types: ['acon'], level: 2 } },
-  { c: '3.G.A.1', t: 'Quadrilateral categories', m: 'vis', vis: { types: ['gcat'], level: 2 } },
-  { c: '3.G.A.2', t: 'Equal areas and unit fractions', m: 'vis', vis: { types: ['gpart'], level: 2 } },
-  { c: '3.G.A.3', t: 'Is it a polygon?', m: 'vis', vis: { types: ['gpoly'], level: 2 } },
-  { c: '4.OA.A.1', t: 'Multiplicative comparison statements', m: 'ns', ns: { types: ['mcomp'], level: 2 } },
-  { c: '4.OA.A.2', t: 'Multiplicative comparison word problems', m: 'ns', ns: { types: ['wcmp'], level: 2 } },
-  { c: '4.OA.A.3', t: 'Multi-step word problems', m: 'ns', ns: { types: ['wstep'], level: 2 } },
-  { c: '4.OA.B.4', t: 'Factors, multiples, prime and composite', m: 'ns', ns: { types: ['fact', 'facmodel'], level: 2 } },
-  { c: '4.OA.C.5', t: 'Number and shape patterns', m: 'ns', ns: { types: ['rulepat'], level: 2 } },
-  { c: '4.NBT.A.1', t: 'Place value', m: 'ns', ns: { types: ['place', 'tenx'], level: 2 } },
-  { c: '4.NBT.A.2', t: 'Read and write multi-digit numbers', m: 'ns', ns: { types: ['placew'], level: 3 } },
-  { c: '4.NBT.A.3', t: 'Round multi-digit numbers', m: 'ns', ns: { types: ['roundw'], level: 3 } },
+  { c: '3.NBT.A.3', t: 'Multiply by multiples of 10', m: 'oa', oa: { types: ['ns.mul10'], level: 1 } },
+  { c: '3.NBT.A.4', t: 'Read and write numbers', m: 'num', num: { types: ['ns.place'], level: 2 } },
+  { c: '3.NF.A.3', t: 'Equivalent fractions and comparing fractions', m: 'frac', frac: { types: ['fdp.equiv', 'fdp.cmp'], level: 1 } },
+  { c: '3.MD.A.1', t: 'Time to the minute and elapsed time', m: 'time', time: { types: ['tm.clock', 'tm.elapsed'], level: 3 } },
+  { c: '3.MD.C.6', t: 'Measure area by counting unit squares', m: 'geom', geom: { types: ['vis.acount'], level: 2 } },
+  { c: '3.MD.C.7', t: 'Area of rectangles', m: 'geom', geom: { types: ['vis.amult', 'vis.alsh'], level: 2 } },
+  { c: '3.MD.D.8', t: 'Perimeter', m: 'geom', geom: { types: ['ns.perim'], level: 3 } },
+  { c: '3.OA.A.1', t: 'Interpret factors and products', m: 'num', num: { types: ['vis.mfac'], level: 2 } },
+  { c: '3.OA.A.2', t: 'Interpret dividend, divisor and quotient', m: 'num', num: { types: ['vis.dint'], level: 2 } },
+  { c: '3.OA.D.9', t: 'Patterns in the multiplication chart', m: 'oa', oa: { types: ['vis.mchart'], level: 3 } },
+  { c: '3.NF.A.1', t: 'Fractions as parts of a whole', m: 'frac', frac: { types: ['vis.fmodel'], level: 2 } },
+  { c: '3.NF.A.2', t: 'Fractions on a number line', m: 'frac', frac: { types: ['vis.fline'], level: 2 } },
+  { c: '3.MD.A.2', t: 'Mass and liquid volume', m: 'meas', meas: { types: ['vis.mvol'], level: 2 } },
+  { c: '3.MD.B.3', t: 'Scaled pictographs and bar graphs', m: 'meas', meas: { types: ['vis.pictg', 'vis.barg'], level: 3 } },
+  { c: '3.MD.B.4', t: 'Measure to halves and fourths; line plots', m: 'meas', meas: { types: ['vis.rulq', 'vis.lplotq'], level: 2 } },
+  { c: '3.MD.C.5', t: 'Area concepts', m: 'geom', geom: { types: ['vis.acon'], level: 2 } },
+  { c: '3.G.A.1', t: 'Quadrilateral categories', m: 'geom', geom: { types: ['vis.gcat'], level: 2 } },
+  { c: '3.G.A.2', t: 'Equal areas and unit fractions', m: 'frac', frac: { types: ['vis.gpart'], level: 2 } },
+  { c: '3.G.A.3', t: 'Is it a polygon?', m: 'geom', geom: { types: ['vis.gpoly'], level: 2 } },
+  { c: '4.OA.A.1', t: 'Multiplicative comparison statements', m: 'oa', oa: { types: ['ns.mcomp'], level: 2 } },
+  { c: '4.OA.A.2', t: 'Multiplicative comparison word problems', m: 'num', num: { types: ['ns.wcmp'], level: 2 } },
+  { c: '4.OA.A.3', t: 'Multi-step word problems', m: 'num', num: { types: ['ns.wstep'], level: 2 } },
+  { c: '4.OA.B.4', t: 'Factors, multiples, prime and composite', m: 'num', num: { types: ['ns.fact', 'ns.facmodel'], level: 2 } },
+  { c: '4.OA.C.5', t: 'Number and shape patterns', m: 'oa', oa: { types: ['ns.rulepat'], level: 2 } },
+  { c: '4.NBT.A.1', t: 'Place value', m: 'num', num: { types: ['ns.place', 'ns.tenx'], level: 2 } },
+  { c: '4.NBT.A.2', t: 'Read and write multi-digit numbers', m: 'num', num: { types: ['ns.placew'], level: 3 } },
+  { c: '4.NBT.A.3', t: 'Round multi-digit numbers', m: 'num', num: { types: ['ns.roundw'], level: 3 } },
   { c: '4.NBT.B.4', t: 'Add and subtract within 1,000,000', m: 'addsub', as: AS(6, 6, { cap: 1000000 }) },
   { c: '4.NBT.B.5', t: 'Multiply four digits by one digit and two digits by two digits', m: 'parts', view: 'combo', parts: [
     { m: 'muldiv', n: 10, label: 'Four digits by one digit', md: MD({ div: false, mode: 'digits', da: 4, db: 1 }) },
     { m: 'muldiv', n: 10, label: 'Two digits by two digits', md: MD({ div: false, mode: 'digits', da: 2, db: 2 }) }] },
   { c: '4.NBT.B.6', t: 'Divide with remainders', m: 'muldiv', md: MD({ mul: false, mode: 'digits', na: 4, nb: 1, rem: true }) },
-  { c: '4.NF.A.1', t: 'Equivalent fractions', m: 'fdp', fd: { types: ['equiv'], level: 2 } },
-  { c: '4.NF.A.2', t: 'Compare fractions', m: 'fdp', fd: { types: ['cmp'], level: 3 } },
-  { c: '4.NF.B.3', t: 'Add and subtract fractions with like denominators', m: 'fdp', fd: { types: ['fadd'], level: 1 } },
-  { c: '4.NF.B.4', t: 'Multiply a whole number by a fraction', m: 'fdp', fd: { types: ['fmul'], level: 1 } },
-  { c: '4.NF.C.5', t: 'Tenths and hundredths', m: 'ns', ns: { types: ['f100'], level: 3 } },
-  { c: '4.NF.C.6', t: 'Fractions and decimals', m: 'ns', ns: { types: ['fdec'], level: 3 } },
-  { c: '4.NF.C.7', t: 'Compare decimals', m: 'ns', ns: { types: ['compare'], level: 3 } },
-  { c: '4.MD.A.1', t: 'Convert measurement units', m: 'ns', ns: { types: ['convm'], level: 2 } },
-  { c: '4.MD.A.2', t: 'Measurement word problems', m: 'ns', ns: { types: ['mword'], level: 3 } },
-  { c: '4.MD.A.3', t: 'Area and perimeter of rectangles', m: 'ns', ns: { types: ['rectf'], level: 2 } },
-  { c: '4.MD.B.4', t: 'Line plots with fractional units', m: 'ns', ns: { types: ['lineplot'], level: 2 } },
-  { c: '4.MD.C.5', t: 'Angles and parts of a circle', m: 'vis', vis: { types: ['angc', 'gfig'], level: 2 } },
-  { c: '4.MD.C.6', t: 'Measure and draw angles with a protractor', m: 'vis', vis: { types: ['protr'], level: 3 } },
-  { c: '4.MD.C.7', t: 'Angle measure is additive', m: 'vis', vis: { types: ['angadd'], level: 2 } },
-  { c: '4.G.A.1', t: 'Points, lines, segments, rays and angles', m: 'vis', vis: { types: ['gfig'], level: 3 } },
-  { c: '4.G.A.2', t: 'Classify figures by parallel sides and angles', m: 'vis', vis: { types: ['gclass'], level: 2 } },
-  { c: '4.G.A.3', t: 'Lines of symmetry', m: 'vis', vis: { types: ['gsym'], level: 2 } },
-  { c: '5.NBT.A.1', t: 'Ten times and one tenth', m: 'ns', ns: { types: ['tenxd'], level: 2 } },
-  { c: '5.NBT.A.2', t: 'Powers of 10', m: 'ns', ns: { types: ['pow10'], level: 2 } },
-  { c: '5.NBT.A.3', t: 'Read, write and compare decimals', m: 'ns', ns: { types: ['decrw', 'compare'], level: 3 } },
-  { c: '5.NBT.A.4', t: 'Round decimals', m: 'ns', ns: { types: ['rnddec'], level: 3 } },
+  { c: '4.NF.A.1', t: 'Equivalent fractions', m: 'frac', frac: { types: ['fdp.equiv'], level: 2 } },
+  { c: '4.NF.A.2', t: 'Compare fractions', m: 'frac', frac: { types: ['fdp.cmp'], level: 3 } },
+  { c: '4.NF.B.3', t: 'Add and subtract fractions with like denominators', m: 'frac', frac: { types: ['fdp.fadd'], level: 1 } },
+  { c: '4.NF.B.4', t: 'Multiply a whole number by a fraction', m: 'frac', frac: { types: ['fdp.fmul'], level: 1 } },
+  { c: '4.NF.C.5', t: 'Tenths and hundredths', m: 'frac', frac: { types: ['ns.f100'], level: 3 } },
+  { c: '4.NF.C.6', t: 'Fractions and decimals', m: 'frac', frac: { types: ['ns.fdec'], level: 3 } },
+  { c: '4.NF.C.7', t: 'Compare decimals', m: 'num', num: { types: ['ns.compare'], level: 3 } },
+  { c: '4.MD.A.1', t: 'Convert measurement units', m: 'meas', meas: { types: ['ns.convm'], level: 2 } },
+  { c: '4.MD.A.2', t: 'Measurement word problems', m: 'num', num: { types: ['ns.mword'], level: 3 } },
+  { c: '4.MD.A.3', t: 'Area and perimeter of rectangles', m: 'geom', geom: { types: ['ns.rectf'], level: 2 } },
+  { c: '4.MD.B.4', t: 'Line plots with fractional units', m: 'meas', meas: { types: ['ns.lineplot'], level: 2 } },
+  { c: '4.MD.C.5', t: 'Angles and parts of a circle', m: 'geom', geom: { types: ['vis.angc', 'vis.gfig'], level: 2 } },
+  { c: '4.MD.C.6', t: 'Measure and draw angles with a protractor', m: 'geom', geom: { types: ['vis.protr'], level: 3 } },
+  { c: '4.MD.C.7', t: 'Angle measure is additive', m: 'geom', geom: { types: ['vis.angadd'], level: 2 } },
+  { c: '4.G.A.1', t: 'Points, lines, segments, rays and angles', m: 'geom', geom: { types: ['vis.gfig'], level: 3 } },
+  { c: '4.G.A.2', t: 'Classify figures by parallel sides and angles', m: 'geom', geom: { types: ['vis.gclass'], level: 2 } },
+  { c: '4.G.A.3', t: 'Lines of symmetry', m: 'geom', geom: { types: ['vis.gsym'], level: 2 } },
+  { c: '5.NBT.A.1', t: 'Ten times and one tenth', m: 'frac', frac: { types: ['ns.tenxd'], level: 2 } },
+  { c: '5.NBT.A.2', t: 'Powers of 10', m: 'frac', frac: { types: ['ns.pow10'], level: 2 } },
+  { c: '5.NBT.A.3', t: 'Read, write and compare decimals', m: 'parts', view: 'combo', parts: [
+    { m: 'frac', n: 10, label: 'Read and write decimals', frac: { types: ['ns.decrw'], level: 3 } },
+    { m: 'num', n: 10, label: 'Compare decimals', num: { types: ['ns.compare'], level: 3 } }] },
+  { c: '5.NBT.A.4', t: 'Round decimals', m: 'frac', frac: { types: ['ns.rnddec'], level: 3 } },
   { c: '5.NBT.B.5', t: 'Multiply up to three digits by four digits', m: 'muldiv', md: MD({ div: false, mode: 'digits', da: 4, db: 3 }) },
   { c: '5.NBT.B.6', t: 'Divide four-digit numbers by two-digit numbers', m: 'muldiv', md: MD({ mul: false, mode: 'digits', na: 4, nb: 2, rem: true }) },
   { c: '5.NBT.B.7', t: 'Add, subtract, multiply and divide decimals', m: 'parts', view: 'combo', parts: [
-    { m: 'fdp', n: 5, label: 'Add, subtract and multiply decimals', fd: { types: ['decadd', 'decmul'], level: 3 } },
-    { m: 'ns', n: 5, label: 'Divide by a decimal and check by estimating', ns: { types: ['decrsn'], level: 3 } }] },
-  { c: '5.OA.A.1', t: 'Evaluate expressions with grouping symbols', m: 'ns', ns: { types: ['exeval'], level: 2 } },
-  { c: '5.OA.A.2', t: 'Write and interpret expressions', m: 'ns', ns: { types: ['exwrite'], level: 2 } },
-  { c: '5.OA.B.3', t: 'Two patterns from two rules', m: 'ns', ns: { types: ['rule2', 'rule2g'], level: 2 } },
-  { c: '5.NF.A.1', t: 'Add and subtract fractions and mixed numbers', m: 'ns', ns: { types: ['fadd5'], level: 3 } },
-  { c: '5.NF.A.2', t: 'Fraction addition and subtraction problems', m: 'ns', ns: { types: ['fctx'], level: 2 } },
-  { c: '5.NF.B.3', t: 'A fraction is a division', m: 'ns', ns: { types: ['fdiv5'], level: 3 } },
-  { c: '5.NF.B.4', t: 'Multiply fractions', m: 'ns', ns: { types: ['fmul5'], level: 2 } },
-  { c: '5.NF.B.5', t: 'Multiplication as scaling', m: 'ns', ns: { types: ['fscale'], level: 3 } },
-  { c: '5.NF.B.6', t: 'Fraction multiplication problems', m: 'ns', ns: { types: ['fword6'], level: 3 } },
-  { c: '5.NF.B.7', t: 'Divide unit fractions', m: 'ns', ns: { types: ['fdiv7'], level: 3 } },
-  { c: '5.MD.A.1', t: 'Convert units, decimals and fractions', m: 'ns', ns: { types: ['conv5'], level: 3 } },
-  { c: '5.MD.B.2', t: 'Line plots and operations', m: 'ns', ns: { types: ['lplot5'], level: 3 } },
-  { c: '5.MD.C.3', t: 'Volume and unit cubes', m: 'vis', vis: { types: ['vcubes'], level: 2 } },
-  { c: '5.MD.C.4', t: 'Measure volume by counting unit cubes', m: 'vis', vis: { types: ['vcubes'], level: 3 } },
-  { c: '5.MD.C.5', t: 'Volume of rectangular prisms', m: 'vis', vis: { types: ['vlwh', 'vcomp'], level: 3 } },
-  { c: '5.G.A.1', t: 'Graph and name points in the first quadrant', m: 'vis', vis: { types: ['cplane'], level: 2 } },
-  { c: '5.G.A.2', t: 'Graph real-world problems', m: 'vis', vis: { types: ['cpword'], level: 3 } },
-  { c: '5.G.B.3', t: 'Hierarchy of two-dimensional figures', m: 'vis', vis: { types: ['ghier'], level: 3 } }
+    { m: 'frac', n: 5, label: 'Add, subtract and multiply decimals', frac: { types: ['fdp.decadd', 'fdp.decmul'], level: 3 } },
+    { m: 'frac', n: 5, label: 'Divide by a decimal and check by estimating', frac: { types: ['ns.decrsn'], level: 3 } }] },
+  { c: '5.OA.A.1', t: 'Evaluate expressions with grouping symbols', m: 'oa', oa: { types: ['ns.exeval'], level: 2 } },
+  { c: '5.OA.A.2', t: 'Write and interpret expressions', m: 'oa', oa: { types: ['ns.exwrite'], level: 2 } },
+  { c: '5.OA.B.3', t: 'Two patterns from two rules', m: 'oa', oa: { types: ['ns.rule2', 'ns.rule2g'], level: 2 } },
+  { c: '5.NF.A.1', t: 'Add and subtract fractions and mixed numbers', m: 'frac', frac: { types: ['ns.fadd5'], level: 3 } },
+  { c: '5.NF.A.2', t: 'Fraction addition and subtraction problems', m: 'frac', frac: { types: ['ns.fctx'], level: 2 } },
+  { c: '5.NF.B.3', t: 'A fraction is a division', m: 'frac', frac: { types: ['ns.fdiv5'], level: 3 } },
+  { c: '5.NF.B.4', t: 'Multiply fractions', m: 'frac', frac: { types: ['ns.fmul5'], level: 2 } },
+  { c: '5.NF.B.5', t: 'Multiplication as scaling', m: 'frac', frac: { types: ['ns.fscale'], level: 3 } },
+  { c: '5.NF.B.6', t: 'Fraction multiplication problems', m: 'frac', frac: { types: ['ns.fword6'], level: 3 } },
+  { c: '5.NF.B.7', t: 'Divide unit fractions', m: 'frac', frac: { types: ['ns.fdiv7'], level: 3 } },
+  { c: '5.MD.A.1', t: 'Convert units, decimals and fractions', m: 'meas', meas: { types: ['ns.conv5'], level: 3 } },
+  { c: '5.MD.B.2', t: 'Line plots and operations', m: 'meas', meas: { types: ['ns.lplot5'], level: 3 } },
+  { c: '5.MD.C.3', t: 'Volume and unit cubes', m: 'geom', geom: { types: ['vis.vcubes'], level: 2 } },
+  { c: '5.MD.C.4', t: 'Measure volume by counting unit cubes', m: 'geom', geom: { types: ['vis.vcubes'], level: 3 } },
+  { c: '5.MD.C.5', t: 'Volume of rectangular prisms', m: 'geom', geom: { types: ['vis.vlwh', 'vis.vcomp'], level: 3 } },
+  { c: '5.G.A.1', t: 'Graph and name points in the first quadrant', m: 'geom', geom: { types: ['vis.cplane'], level: 2 } },
+  { c: '5.G.A.2', t: 'Graph real-world problems', m: 'geom', geom: { types: ['vis.cpword'], level: 3 } },
+  { c: '5.G.B.3', t: 'Hierarchy of two-dimensional figures', m: 'geom', geom: { types: ['vis.ghier'], level: 3 } }
 ];
 const STD_BY_CODE = {}; STANDARDS.forEach(s => { STD_BY_CODE[s.c] = s; });
 const stdGrade = c => c.split('.')[0];
@@ -5917,6 +6005,38 @@ function applyStandard(st, code) {
   st.titles[s.m] = `${s.c} ${s.t}`;
   return st;
 }
+
+/* "All standards for this grade": one Combined Worksheet in sections. Each kind of skill is a section of its own, so the problems in a section
+   are similar in size: Add and Subtract and Multiply and Divide (the hardest preset of the grade each), then one section per strand module
+   and problem family, holding every preset type of that family with the average level and a size that follows the number of types.
+   Returns the parts, or [] for a grade with no presets. */
+function gradeStandardParts(g) {
+  const groups = {}, hard = {};
+  const take = (m, s) => {
+    if (!isStrand(m)) { hard[m] = { m, [PART_KEY[m]]: s }; return; }
+    for (const t of s.types) {
+      const key = m + '|' + TYPE_HOME[t][1], a = groups[key] || (groups[key] = { m, fam: TYPE_HOME[t][1], types: [], levels: [] });
+      if (!a.types.includes(t)) { a.types.push(t); a.levels.push(s.level); }
+    }
+  };
+  for (const s of stdList(g)) {
+    if (s.m === 'parts') s.parts.forEach(p => take(p.m, p[p.m])); else take(s.m, s[s.m]);
+  }
+  const nearest = (counts, want) => counts.reduce((a, c) => Math.abs(c - want) < Math.abs(a - want) ? c : a);
+  const out = ['addsub', 'muldiv'].filter(m => hard[m]).map(m => Object.assign({ n: nearest(REG[m].counts, 10), label: '' }, JSON.parse(JSON.stringify(hard[m]))));
+  for (const m of STRAND_IDS) for (const a of Object.values(groups).filter(x => x.m === m)) {
+    out.push({ m, n: nearest(REG[m].counts, a.types.length), label: a.fam, [m]: { types: a.types, level: Math.round(a.levels.reduce((x, y) => x + y, 0) / a.levels.length) } });
+  }
+  return out;
+}
+function applyGradeStandards(st, g) {
+  const parts = normParts(gradeStandardParts(g));
+  if (!parts) return false;
+  st.module = 'combo'; st.parts = parts;
+  st.titles.combo = `${STD_GRADES[g]}: all standards`;
+  st.std.c = '';
+  return true;
+}
 /* Generated by tests/coverage.js from tests/standards.json. Do not edit. */
 const STD_ALL = [["K.CC.A.1","Count to 100 by ones, fives, and tens. Count backward from 10.","Know number names and the counting sequence."],["K.CC.A.2","Count forward by ones beginning from any given number within the known sequence (instead of having to...","Know number names and the counting sequence."],["K.CC.A.3","Write numbers from 0 to 20. Represent a quantity of objects with a written numeral 0-20.","Know number names and the counting sequence."],["K.CC.A.4","Recognize, describe, extend, and create patterns and explain a simple rule for a pattern using concrete...","Know number names and the counting sequence."],["K.CC.B.5","Understand the relationship between numbers and quantities; connect counting to cardinality. K.CC.B.5a....","Count to tell the number of objects."],["K.CC.B.6","Count to answer “how many?” questions about as many as 20 things arranged in a line, a rectangular array,...","Count to tell the number of objects."],["K.OA.A.1","Represent addition and subtraction with objects, fingers, drawings, acting out situations, verbal...","Represent and solve problems involving addition and subtraction."],["K.OA.A.2","Add and subtract within 10 to solve contextual problems with result/total unknown involving situations of...","Represent and solve problems involving addition and subtraction."],["K.OA.A.3","Decompose numbers less than or equal to 10 into addend pairs in more than one way (e.g., 5 = 2 + 3 and 5 =...","Represent and solve problems involving addition and subtraction."],["K.OA.A.4","Find the number that makes 10, when added to any given number, from 1 to 9 using objects or drawings....","Represent and solve problems involving addition and subtraction."],["K.OA.A.5","Use mental strategies flexibly to develop fluency in addition and subtraction within 10.","Represent and solve problems involving addition and subtraction."],["K.NBT.A.1","Compose and decompose numbers from 11 to 19 into a group of ten ones and some more ones by using objects...","Work with numbers 11-19 to gain foundations for place value."],["K.MD.A.1","Describe the measurable attributes of an object, such as length (long/short), height (tall/short), or...","Describe and compare measurable attributes."],["K.MD.A.2","Directly compare two objects with a measurable attribute in common, to describe which object has more...","Describe and compare measurable attributes."],["K.MD.B.3","Identify the penny, nickel, dime, and quarter based on their attributes (size and color) and recognize the...","Work with money"],["K.MD.C.4","Sort a collection of objects into a given category, with 10 or fewer in each category. Compare the...","Classify objects and count the number of objects in each category."],["K.G.A.1","Describe objects in the environment using names of shapes and solids (squares, circles, triangles,...","Identify and describe shapes and solids."],["K.G.A.2","Correctly name shapes and solids (squares, circles, triangles, rectangles, hexagons, cubes, cones,...","Identify and describe shapes and solids."],["K.G.A.3","Identify shapes (squares, circles, triangles, rectangles, and hexagons) as two-dimensional and solids...","Identify and describe shapes and solids."],["K.G.B.4","Describe similarities and differences between two- and three-dimensional shapes/solids, in different sizes...","Analyze, compare, create, and compose shapes."],["K.G.B.5","Model shapes/solids in the world by building or drawing them.","Analyze, compare, create, and compose shapes."],["K.G.B.6","Compose a figure using simple shapes/solids and identify smaller shapes/solids within the figure.","Analyze, compare, create, and compose shapes."],["1.OA.A.1","Add and subtract within 20 to solve contextual problems, with unknowns in all positions, involving...","Represent and solve problems involving addition and subtraction."],["1.OA.A.2","Add three whole numbers whose sum is within 20 to solve contextual problems using objects, drawings, and...","Represent and solve problems involving addition and subtraction."],["1.OA.B.3","Apply properties of operations (additive identity, commutative, and associative) as strategies to add and...","Understand and apply properties of operations and the relationship between addition and"],["1.OA.B.4","Understand the relationship between addition and subtraction by representing subtraction as an...","Understand and apply properties of operations and the relationship between addition and"],["1.OA.C.5","Add and subtract within 20 using strategies such as counting on, counting back, making 10, related known...","Add and subtract within 20."],["1.OA.C.6","Use mental strategies flexibly and efficiently to develop fluency in addition and subtraction within 20....","Add and subtract within 20."],["1.OA.D.7","Understand the meaning of the equal sign (e.g., 6 = 6; 5 + 2 = 4 + 3; 7 = 8 – 1). Determine if equations...","Work with addition and subtraction equations."],["1.OA.D.8","Determine the unknown whole number in an addition or subtraction equation with sums/differences within 20,...","Work with addition and subtraction equations."],["1.NBT.A.1","Count to 120, by ones, twos, and fives starting at any multiple of that number. Count backward from 20....","Extend the counting sequence."],["1.NBT.A.2","Recognize, describe, extend, and create patterns when counting by ones, twos, fives, and tens and use...","Extend the counting sequence."],["1.NBT.B.3","Know that the digits of a two-digit number represent groups of tens and ones (e.g., 39 can be represented...","Understand place value."],["1.NBT.B.4","Compare two two-digit numbers based on the meanings of the digits in each place and use the symbols >, =,...","Understand place value."],["1.NBT.C.5","Add a two-digit number to a one-digit number and a two-digit number to a multiple of ten (within 100). Use...","Use place value understanding and properties of operations to add and subtract."],["1.NBT.C.6","Mentally find 10 more or 10 less than a given two-digit number without having to count by ones and explain...","Use place value understanding and properties of operations to add and subtract."],["1.NBT.C.7","Subtract multiples of 10 from any number in the range of 10-99 using concrete models, drawings, strategies...","Use place value understanding and properties of operations to add and subtract."],["1.MD.A.1","Order three objects by length. Compare the lengths of two objects indirectly by using a third object. For...","Measure lengths indirectly and by iterating length units."],["1.MD.A.2","Measure the length of an object using non-standard units (paper clips, cubes, etc.) and express this...","Measure lengths indirectly and by iterating length units."],["1.MD.B.3","Recognize a clock as a measurement tool. Tell and write time in hours and half-hours using analog and...","Work with time and money."],["1.MD.B.4","Count the value of a set of like coins less than one dollar using the  symbol only.","Work with time and money."],["1.MD.C.5","Organize, represent, and interpret data with up to three categories using pictographs, bar graphs, and...","Represent and interpret data."],["1.G.A.1","Distinguish between attributes that define a shape (e.g., number of sides and vertices) versus attributes...","Reason about shapes/solids and their attributes"],["1.G.A.2","Create a composite figure and use the composite figure to make new figures by using two-dimensional shapes...","Reason about shapes/solids and their attributes."],["1.G.A.3","Partition circles and rectangles into two and four equal shares, describe the shares using the words...","Reason about shapes/solids and their attributes."],["2.OA.A.1","Add and subtract within 100 to solve one- and two-step contextual problems, with unknowns in all...","Represent and solve problems involving additional and subtraction."],["2.OA.B.2","Fluently add and subtract within 30 using mental strategies. By the end of 2nd grade, know all sums of two...","Add and subtract within 30."],["2.OA.C.3","Determine whether a group of objects (up to 20) has an odd or even number of members by pairing objects or...","Work with equal groups of objects to gain foundations for multiplication."],["2.OA.C.4","Use repeated addition to find the total number of objects arranged in rectangular arrays with up to 5 rows...","Work with equal groups of objects to gain foundations for multiplication."],["2.OA.D.5","Identify arithmetic patterns in an addition or hundreds chart and explain them using properties of...","Solve problems involving addition and subtraction and identify and explain patterns in arithmetic."],["2.NBT.A.1","Know that the three digits of a three-digit number represent amounts of hundreds, tens, and ones (e.g.,...","Understand place value."],["2.NBT.A.2","Recognize, describe, extend, and create patterns when counting by ones, twos, fives, tens, and hundreds...","Understand place value."],["2.NBT.A.4","Compare two three-digit numbers based on the meanings of the digits in each place and use the symbols >,...","Understand place value."],["2.NBT.B.5","Fluently add and subtract within 100 using properties of operations, strategies based on place value,...","Use place value understanding and properties of operations to add and subtract."],["2.NBT.B.6","Add up to four two-digit numbers using properties of operations and strategies based on place value.","Use place value understanding and properties of operations to add and subtract."],["2.NBT.B.7","Add and subtract within 1000 using concrete models, drawings, strategies based on place value, properties...","Use place value understanding and properties of operations to add and subtract."],["2.NBT.B.8","Mentally add or subtract 10 or 100 to/from any given number within 1000.","Use place value understanding and properties of operations to add and subtract."],["2.MD.A.1","Measure the length of an object in whole number units by selecting and using appropriate tools such as...","Measure and estimate lengths in standard units."],["2.MD.A.2","Measure the length of an object using two different whole number units of measure and describe how the two...","Measure and estimate lengths in standard units."],["2.MD.A.3","Estimate lengths using whole number units of inches, feet, yards, centimeters, and meters.","Measure and estimate lengths in standard units."],["2.MD.A.4","Measure, using whole number lengths, to determine how much longer one object is than another and express...","Measure and estimate lengths in standard units."],["2.MD.B.5","Add and subtract within 100 to solve contextual problems, with the unknown in any position, involving...","Relate addition and subtraction to length."],["2.MD.B.6","Represent whole numbers as lengths from 0 on a number line and know that the points corresponding to the...","Relate addition and subtraction to length."],["2.MD.C.7","Tell and write time in quarter hours and to the nearest five minutes (in a.m. and p.m.) using analog and...","Work with time and money."],["2.MD.C.8","Solve contextual problems involving amounts less than one dollar including quarters, dimes, nickels, and...","Work with time and money."],["2.MD.D.9","Given a set of data, create a line plot, where the horizonal scale is marked off in whole-number units.","Represent and interpret data."],["2.MD.D.10","Draw a pictograph (with a key of values of 1, 2, 5, or 10) and a bar graph (with intervals of one) to...","Represent and interpret data."],["2.G.A.1","Identify triangles, quadrilaterals, pentagons, and hexagons. Draw two-dimensional shapes having specified...","Reason about shapes and their attributes."],["2.G.A.2","Partition a rectangle into rows and columns of same-sized squares and find the total number of squares.","Reason about shapes and their attributes."],["2.G.A.3","Partition circles and rectangles into two, three, and four equal shares. Describe the shares using the...","Reason about shapes and their attributes."],["3.OA.A.1","Interpret the factors and products in whole number multiplication equations (e.g., 4 x 7 is 4 groups of 7...","Represent and solve problems involving multiplication and division."],["3.OA.A.2","Interpret the dividend, divisor, and quotient in whole number division equations (e.g., 28 ÷ 7 can be...","Represent and solve problems involving multiplication and division."],["3.OA.A.3","Multiply and divide within 100 to solve contextual problems, with the unknown in any positions, in...","Represent and solve problems involving multiplication and division."],["3.OA.A.4","Determine the unknown whole number in a multiplication or division equation relating three whole numbers...","Represent and solve problems involving multiplication and division."],["3.OA.B.5","Apply properties of operations as strategies to multiply and divide. (Students do not need to use formal...","B Understand properties of multiplication and the relationship between multiplication and division."],["3.OA.B.6","Understand division as an unknown-factor problem. For example, find 32 ÷ 8 by finding the number that...","Understand properties of multiplication and the relationship between multiplication and division."],["3.OA.C.7","Fluently multiply and divide within 100, using strategies such as the properties of operations or the...","Multiply and divide within 100."],["3.OA.D.8","Solve two-step contextual problems using the four operations. Represent these problems using equations...","Solve problems involving the four operations and identify and explain patterns in arithmetic."],["3.OA.D.9","Identify patterns in a multiplication chart and explain them using properties of operations. For example,...","Solve problems involving the four operations and identify and explain patterns in arithmetic."],["3.NBT.A.1","Round whole numbers to the nearest 10 or 100 using understanding of place value and use a number line to...","Use place value understanding and properties of operations to perform multi-digit arithmetic."],["3.NBT.A.2","Fluently add and subtract within 1000 using strategies and algorithms based on place value, properties of...","Use place value understanding and properties of operations to perform multi-digit arithmetic."],["3.NBT.A.3","Multiply one-digit whole numbers by multiples of 10 in the range 10–90 (e.g., 9 x 80, 5 x 60) using...","Use place value understanding and properties of operations to perform multi-digit arithmetic."],["3.NBT.A.4","Read and write multi-digit whole numbers (less than or equal to 100,000) using standard form, word form,...","Use place value understanding and properties of operations to perform multi-digit arithmetic."],["3.NF.A.1","1  Understand a fraction, , as the quantity formed by 1 part when a whole is partitioned into b equal...","Develop understanding of fractions as numbers."],["3.NF.A.2","Understand a fraction as a number on the number line. Represent fractions on a number line. 1 3.NF.A.2a...","Develop understanding of fractions as numbers."],["3.NF.A.3","Explain equivalence of fractions and compare fractions by reasoning about their size. 3.NF.A.3a Understand...","Develop understanding of fractions as numbers."],["3.MD.A.1","Solve contextual problems in time and money.","Solve problems involving measurement and estimation of intervals of time, liquid volumes, and"],["3.MD.A.2","Measure the mass of objects and liquid volume using standard units of grams (g), kilograms (kg),...","Solve problems involving measurement and estimation of intervals of time, liquid volumes, and"],["3.MD.B.3","Draw a pictograph and a scaled bar graph to represent a data set with several categories. Solve one- and...","Represent and interpret data."],["3.MD.B.4","Generate measurement data by measuring lengths using rulers marked with halves and fourths of an inch....","Represent and interpret data."],["3.MD.C.5","Recognize that plane figures have an area and understand concepts of area measurement.","Geometric measurement: understand and apply concepts of area and relate area to multiplication and"],["3.MD.C.6","Measure areas by counting unit squares (square centimeters, square meters, square inches, square feet, and...","Geometric measurement: understand and apply concepts of area and relate area to multiplication and"],["3.MD.C.7","Relate area of rectangles to the operations of multiplication and addition.","Geometric measurement: understand and apply concepts of area and relate area to multiplication and"],["3.MD.D.8","Solve real-world and mathematical problems involving perimeters of polygons, including finding the...","Geometric measurement: recognize perimeter as an attribute of plane figures and distinguish"],["3.G.A.1","Understand that shapes in different categories may share attributes and that the shared attributes can...","Reason about shapes and their attributes."],["3.G.A.2","Partition shapes into parts with equal areas. Recognize that equal shares of identical wholes need not...","Reason about shapes and their attributes."],["3.G.A.3","Determine if a figure is a polygon.","Reason about shapes and their attributes."],["4.OA.A.1","Interpret a multiplication equation as a comparison (e.g., interpret 35 = 5 x 7 as a statement that 35 is...","Use the four operations with whole numbers to solve problems."],["4.OA.A.2","Multiply or divide to solve contextual problems involving multiplicative comparison and distinguish...","Use the four operations with whole numbers to solve problems."],["4.OA.A.3","Solve multi-step contextual problems (posed with whole numbers and having whole number answers using the...","Use the four operations with whole numbers to solve problems."],["4.OA.B.4","Find factor pairs for whole numbers in the range 1–100 using models. Recognize that a whole number is a...","Gain familiarity with factors and multiples."],["4.OA.C.5","Generate a number or shape pattern that follows a given rule. Identify apparent features of the pattern...","Generate and analyze patterns."],["4.NBT.A.1","Recognize that in a multi-digit whole number (less than or equal to 1,000,000), a digit in one place...","Generalize place value understanding for multi-digit whole numbers."],["4.NBT.A.2","Read and write multi-digit whole numbers (less than or equal to 1,000,000) using standard form, word form,...","Generalize place value understanding for multi-digit whole numbers."],["4.NBT.A.3","Round multi-digit whole numbers to any place (up to and including the hundred-thousand place) using...","Generalize place value understanding for multi-digit whole numbers."],["4.NBT.B.4","Fluently add and subtract within 1,000,000 using efficient strategies and algorithms.","Use place value understanding and properties of operations to perform multi-digit arithmetic."],["4.NBT.B.5","Multiply a whole number of up to four digits by a one-digit whole number and multiply two two-digit...","Use place value understanding and properties of operations to perform multi-digit arithmetic."],["4.NBT.B.6","Find whole-number quotients and remainders with up to four-digit dividends and one-digit divisors, using...","Use place value understanding and properties of operations to perform multi-digit arithmetic."],["4.NF.A.1","÷ Explain why a fraction  is equivalent to a fraction or by using visual fraction models, with attention...","Extend understanding of fraction equivalence and comparison."],["4.NF.A.2","Compare two fractions with different numerators and different denominators by creating common denominators...","Extend understanding of fraction equivalence and comparison."],["4.NF.B.3","1 4 1 1 1 1 Understand a fraction with a > 1 as a sum of fractions . For example, = + + + .   5 5 5 5 5...","Build fractions from unit fractions by applying and extending previous understandings of operations"],["4.NF.B.4","Apply and extend previous understandings of multiplication as repeated addition to multiply a whole number...","Build fractions from unit fractions by applying and extending previous understandings of operations"],["4.NF.C.5","Express a fraction with denominator 10 as an equivalent fraction with denominator 100 and use this...","Understand decimal notation for fractions and compare decimal fractions."],["4.NF.C.6","Read and write decimal notation for fractions with denominators 10 or 100. Locate these decimals on a...","Understand decimal notation for fractions and compare decimal fractions."],["4.NF.C.7","Compare two decimals to hundredths by reasoning about their size. Recognize that comparisons are valid...","Understand decimal notation for fractions and compare decimal fractions."],["4.MD.A.1","Measure and estimate to determine relative sizes of measurement units within a single system of...","Estimate and solve problems involving measurement."],["4.MD.A.2","Solve one- or two-step real-world problems involving whole number measurements (including length, liquid...","Estimate and solve problems involving measurement."],["4.MD.A.3","Know and apply the area and perimeter formulas for rectangles in real- world and mathematical contexts....","Estimate and solve problems involving measurement."],["4.MD.B.4","Make a line plot to display a data set of measurements in fractions of the same unit. Use operations on...","Represent and interpret data."],["4.MD.C.5","Recognize angles as geometric shapes that are formed wherever two rays share a common endpoint; and...","Geometric measurement: understand concepts of angle and measure angles."],["4.MD.C.6","Measure angles in whole-number degrees using a protractor. Sketch angles of specified measure.","Geometric measurement: understand concepts of angle and measure angles."],["4.MD.C.7","Recognize angle measure as additive. When an angle is decomposed into non-overlapping parts, the angle...","Geometric measurement: understand concepts of angle and measure angles."],["4.G.A.1","Draw points, lines, line segments, rays, angles (right, acute, obtuse, straight, reflex), and...","Draw and identify lines and angles and classify shapes by properties of their lines and angles."],["4.G.A.2","Classify two-dimensional figures based on the presence or absence of parallel or perpendicular lines or...","Draw and identify lines and angles and classify shapes by properties of their lines and angles."],["4.G.A.3","Recognize and draw lines of symmetry for two-dimensional figures.","Draw and identify lines and angles and classify shapes by properties of their lines and angles."],["5.OA.A.1","Use parentheses and/or brackets in numerical expressions involving whole numbers and evaluate expressions...","Write and interpret numerical expressions."],["5.OA.A.2","Write numerical expressions that record calculations with numbers and interpret numerical expressions...","Write and Interpret numerical expressions."],["5.OA.B.3","Generate two numerical patterns using two given rules. For example, given the rule \"Add 3\" and the...","Analyze patterns and relationships."],["5.NBT.A.1","Recognize that in a multi-digit number, a digit in one place represents 10 times as much as it represents...","Understand the place value system."],["5.NBT.A.2","Explain patterns in the number of zeros of the product when multiplying a number by powers of 10 and...","Understand the place value system."],["5.NBT.A.3","Read and write decimals to thousandths using standard form, word form, and expanded notation (e.g., the...","Understand the place value system."],["5.NBT.A.4","Round decimals to the nearest hundredth, tenth, or whole number using understanding of place value, and...","Understand the place value system."],["5.NBT.B.5","Fluently multiply multi-digit whole numbers (up to three-digit by four-digit factors) using efficient...","Perform operations with multi-digit whole numbers and with decimals to hundredths."],["5.NBT.B.6","Find whole-number quotients and remainders of whole numbers with up to four-digit dividends and two-digit...","Perform operations with multi-digit whole numbers and with decimals to hundredths."],["5.NBT.B.7","Add, subtract, multiply, and divide decimals to hundredths, using concrete models or drawings and...","Perform operations with multi-digit whole numbers and with decimals to hundredths."],["5.NF.A.1","Add and subtract fractions with unlike denominators (including mixed numbers) by replacing given fractions...","Use equivalent fractions as a strategy to add and subtract fractions."],["5.NF.A.2","Solve contextual problems involving addition and subtraction of fractions referring to the same whole,...","Use equivalent fractions as a strategy to add and subtract fractions."],["5.NF.B.3","Interpret a fraction as division of the numerator by the denominator ( = a ÷ b). For example, = 3 ÷ 4 so...","Apply and extend previous understandings of multiplication and division to multiply and divide fractions."],["5.NF.B.4","Apply and extend previous understandings of multiplication to multiply a fraction by a whole number or a...","Apply and extend previous understandings of multiplication and division to multiply and divide fractions."],["5.NF.B.5","Interpret multiplication as scaling (resizing).","Apply and extend previous understandings of multiplication and division to multiply and divide fractions."],["5.NF.B.6","Solve real-world problems involving multiplication of fractions and mixed numbers by using visual fraction...","Apply and extend previous understandings of multiplication and division to multiply and divide fractions."],["5.NF.B.7","Apply and extend previous understandings of division to divide unit fractions by whole numbers and whole...","Apply and extend previous understandings of multiplication and division to multiply and divide fractions."],["5.MD.A.1","Convert customary and metric measurement units within a single system by expressing measurements of a...","Convert like measurement units within a given measurement system from a larger unit to a smaller unit."],["5.MD.B.2","Make a line plot to display a data set of measurements in fractions of a unit (1/2, 1/4, 1/8). Use...","Represent and interpret data."],["5.MD.C.3","Recognize volume as an attribute of solid figures and understand concepts of volume measurement.","Geometric measurement: understand concepts of volume and relate volume to multiplication and to addition."],["5.MD.C.4","Measure volume by counting unit cubes, using cubic centimeters, cubic inches, cubic feet, and improvised...","Geometric measurement: understand concepts of volume and relate volume to multiplication and to addition."],["5.MD.C.5","Relate volume to the operations of multiplication and addition and solve real-world and mathematical...","Geometric measurement: understand concepts of volume and relate volume to multiplication and to addition."],["5.G.A.1","Graph ordered pairs and label points using the first quadrant of the coordinate plane. Understand in the...","Graph points on the coordinate plane to solve real-word and mathematical problems."],["5.G.A.2","Represent real-world and mathematical problems by graphing points in the first quadrant of the coordinate...","Graph points on the coordinate plane to solve real-word and mathematical problems."],["5.G.B.3","Classify two-dimensional figures in a hierarchy based on properties. Understand that attributes belonging...","Classify two-dimensional figures into categories based on their properties."]];
 /* ---------- Parts: several configurations of one worksheet, each with its own module and settings ----------
@@ -5929,9 +6049,9 @@ const STD_ALL = [["K.CC.A.1","Count to 100 by ones, fives, and tens. Count backw
 
    Settings keys: addsub as, muldiv md, fdp fd, ns ns, tm tm, vis vis, area area, mix mix. */
 
-const PART_KEY = { addsub: 'as', muldiv: 'md', fdp: 'fd', ns: 'ns', tm: 'tm', vis: 'vis', area: 'area', mix: 'mix' };
+const PART_KEY = { addsub: 'as', muldiv: 'md', fdp: 'fd', ns: 'ns', tm: 'tm', vis: 'vis', area: 'area', mix: 'mix', num: 'num', oa: 'oa', frac: 'frac', time: 'time', meas: 'meas', geom: 'geom' };
 
-const PART_MAX = 12;
+const PART_MAX = 16;
 
 /* Set of problem signatures shared by the parts of one module while they generate, so two parts of the same
 
@@ -5973,6 +6093,14 @@ function applyModSettings(st, s) {
 
   } else if (m === 'mix') st.mix = { mods: stdMap(s.mix.mods, MIX_MODS) };
 
+  else if (isStrand(m)) {
+
+    st[m] = { types: stdMap(s[m].types, STRAND_REFS[m]), level: s[m].level };
+
+    if (m === 'geom') { st.geom.unit = s.geom.unit || 'units'; st.geom.shade = s.geom.shade == null ? true : !!s.geom.shade; }
+
+  }
+
   return st;
 
 }
@@ -6007,7 +6135,13 @@ function captureSettings(st, mod) {
 
   else if (mod === 'mix') o.mix = { mods: enabledIds(st.mix.mods) };
 
-  else if (key) o[key] = { types: enabledIds(st[key].types), level: st[key].level };
+  else if (key) {
+
+    o[key] = { types: enabledIds(st[key].types), level: st[key].level };
+
+    if (mod === 'geom') { o.geom.unit = st.geom.unit; o.geom.shade = !!st.geom.shade; }
+
+  }
 
   return o;
 
@@ -6097,6 +6231,18 @@ function clampMod(out) {
 
   if (!Object.values(out.mix.mods).some(Boolean)) out.mix.mods.addsub = true;
 
+  for (const M of STRAND_IDS) {
+
+    const o = out[M]; o.level = inEnum(+o.level, [1, 2, 3], 2);
+
+    for (const k of Object.keys(o.types)) if (!STRAND_REFS[M].includes(k)) delete o.types[k];
+
+    if (!Object.values(o.types).some(Boolean)) o.types[STRAND_META[M].def] = true;
+
+  }
+
+  out.geom.unit = inEnum(out.geom.unit, Object.keys(UNITS), 'units'); out.geom.shade = out.geom.shade !== false;
+
   if (!Object.values(out.tm.types).some(Boolean)) out.tm.types.coins = true;
 
   if (!out.as.add && !out.as.sub) out.as.add = true;
@@ -6134,6 +6280,8 @@ function normPart(part) {
   else if (m === 'muldiv') s.md = Object.assign(tmp.md, given);
 
   else if (m === 'area') s.area = { types: list(given.types), level: given.level, unit: given.unit, shade: given.shade };
+
+  else if (m === 'geom') s.geom = { types: list(given.types), level: given.level, unit: given.unit, shade: given.shade };
 
   else if (m === 'mix') s.mix = { mods: list(given.mods) };
 
@@ -6304,11 +6452,11 @@ const TYPE_HOME = {
   "vis.angc": ["geom", "Lines and angles"],
   "vis.protr": ["geom", "Lines and angles"],
   "vis.angadd": ["geom", "Lines and angles"],
-  "area.count": ["geom", "Area and perimeter"],
-  "area.mult": ["geom", "Area and perimeter"],
-  "area.draw": ["geom", "Area and perimeter"],
-  "area.cmp": ["geom", "Area and perimeter"],
-  "area.lsh": ["geom", "Area and perimeter"],
+  "vis.acount": ["geom", "Area and perimeter"],
+  "vis.amult": ["geom", "Area and perimeter"],
+  "vis.adraw": ["geom", "Area and perimeter"],
+  "vis.acmp": ["geom", "Area and perimeter"],
+  "vis.alsh": ["geom", "Area and perimeter"],
   "vis.acon": ["geom", "Area and perimeter"],
   "vis.pera": ["geom", "Area and perimeter"],
   "ns.perim": ["geom", "Area and perimeter"],
@@ -6326,35 +6474,158 @@ function typeTags(mod, d) {
   return t;
 }
 const gradeNum = c => { const g = String(c).split('.')[0]; return g === 'K' ? 0 : +g; };
-let TYPE_GRADES_CACHE = null;
-/* { "<module>.<id>": [lo, hi] } from every preset and every part of a bundled preset. */
-function typeGradeRanges() {
-  if (TYPE_GRADES_CACHE) return TYPE_GRADES_CACHE;
-  const out = {};
-  const add = (m, s, g) => { const ty = s && s.types; if (!ty) return; for (const id of ty) { const k = m + '.' + id, r = out[k]; if (!r) out[k] = [g, g]; else { r[0] = Math.min(r[0], g); r[1] = Math.max(r[1], g); } } };
-  for (const s of STANDARDS) {
-    const g = gradeNum(s.c);
-    if (s.m === 'parts') for (const p of s.parts) add(p.m, p[p.m], g); else add(s.m, s[s.m], g);
+/* ---------- Strand modules: the worksheet topics the person picks (notes/roadmap.md, Phase 5.2) ----------
+   num (Number Sense), oa (Operations and Algebraic Thinking), frac (Fractions, Decimals and Percents), time (Time and Money),
+   meas (Measurement and Data) and geom (Geometry, Area and Volume), next to addsub and muldiv.
+   A strand module is a list of problem types taken from the generators that already exist. A type is named by a ref "<origin>.<id>":
+   origin ns and vis are the type registry (types.js), fdp and tm are the Fractions and Time and Money generators.
+   TYPE_HOME (typemeta.js) says which strand and group each ref belongs to. Settings: st[M] = { types: { ref: bool }, level }, plus unit and shade for geom.
+   The older modules (ns, vis, area, fdp, tm) stay as legacy modules: they still generate and render exactly as before, so saved settings keep their sheets.
+   When every checked type of a strand module comes from one origin, the origin's own generator runs with those types, so the problems are the ones
+   the legacy module made for the same types, level and seed. */
+const STRAND_IDS = ['num', 'oa', 'frac', 'time', 'meas', 'geom'];
+const LEGACY_IDS = ['ns', 'vis', 'area', 'fdp', 'tm'];
+const STRAND_OF_PLAN = { ns: 'num', oa: 'oa', fdp: 'frac', tm: 'time', meas: 'meas', geom: 'geom' };
+const isStrand = m => STRAND_IDS.includes(m);
+const refOrigin = r => r.slice(0, r.indexOf('.')), refId = r => r.slice(r.indexOf('.') + 1);
+const STRAND_META = {
+  num: { name: 'Number Sense', blurb: 'Counting, place value, comparing, rounding, factors and word problems.', counts: [5, 10, 15, 20, 30], n0: 10, def: 'ns.place', note: 'Number Sense' },
+  oa: { name: 'Operations and Algebraic Thinking', blurb: 'Number bonds, equations, properties, order of operations and patterns.', counts: [5, 10, 15, 20, 30], n0: 10, def: 'ns.bond' },
+  frac: { name: 'Fractions, Decimals and Percents', blurb: 'Models, comparing, operations, decimals and percents.', counts: [5, 10, 15, 20, 30], n0: 10, def: 'fdp.simp' },
+  time: { name: 'Time and Money', blurb: 'Coins, change, clocks, elapsed time and conversions.', counts: [5, 10, 15, 20, 30], n0: 10, def: 'tm.coins' },
+  meas: { name: 'Measurement and Data', blurb: 'Measuring, units, graphs, tallies and line plots.', counts: [4, 6, 8, 12], n0: 6, def: 'vis.cmpm' },
+  geom: { name: 'Geometry, Area and Volume', blurb: 'Shapes, solids, angles, area and perimeter, volume and the coordinate plane.', counts: [4, 6, 8, 12], n0: 6, def: 'vis.shname' }
+};
+/* Groups whose cells are large drawings: they are left out of Mixed Practice (a part that has one of their types checked is sections only). */
+const STRAND_NOMIX = new Set(['Shapes, solids and symmetry', 'Space and coordinates', 'Graphs and line plots']);
+/* Labels of the types that are written into the Fractions and Time and Money panels rather than registered with defTypes. */
+const HARD_TYPES = {
+  'fdp.simp': ['Simplify fractions', 'Write a fraction in lowest terms.'], 'fdp.equiv': ['Equivalent fractions', 'Fill in the missing numerator or denominator.'],
+  'fdp.cmp': ['Compare fractions', 'Write <, > or = between two fractions.'], 'fdp.fadd': ['Add and subtract fractions', 'Like and unlike denominators.'],
+  'fdp.fmul': ['Multiply and divide fractions', 'Fraction of a number, products and quotients.'], 'fdp.decadd': ['Add and subtract decimals', 'Stacked with the decimal points lined up.'],
+  'fdp.decmul': ['Multiply and divide decimals', 'Whole-number factors, decimal factors, powers of ten.'], 'fdp.conv': ['Convert fractions, decimals, percents', 'Six conversions between the three forms.'],
+  'fdp.pct': ['Percent of a number', 'Such as 25% of 80.'],
+  'tm.coins': ['Count the money', 'Add up coins and bills.'], 'tm.madd': ['Add and subtract money', 'Cents or dollars and cents.'], 'tm.change': ['Making change', 'Cost and amount paid, find the change.'],
+  'tm.clock': ['Read the clock', 'Analog clock face, write the time.'], 'tm.dclock': ['Digital time', 'Draw the hands for a digital time, or write it in words.'],
+  'tm.ampm': ['a.m. and p.m.', 'Choose a.m. or p.m. for an everyday event.'], 'tm.like': ['Count like coins', 'Pictured pennies, nickels, dimes or quarters.'],
+  'tm.cpic': ['Count pictured money', 'Pictured coins, plus bills at Medium and Hard.'], 'tm.cstory': ['Money word problems', 'Money left, how much more, together, enough?'],
+  'tm.elapsed': ['Elapsed time', 'Start and end time, find the time that passes.'], 'tm.conv': ['Time conversions', 'Seconds, minutes, hours, days and weeks.']
+};
+/* STRAND_GROUPS[M] = [{ family, defs: [{ id: ref, ref, origin, label, blurb, tags }] }] in TYPE_HOME order; STRAND_REFS[M] = every ref of M. */
+const STRAND_GROUPS = {}, STRAND_REFS = {};
+(function buildStrands() {
+  const byRef = {};
+  for (const o of ['ns', 'vis']) for (const d of TYPE_DEFS[o]) byRef[o + '.' + d.id] = Object.assign({ origin: o }, d);
+  for (const M of STRAND_IDS) { STRAND_GROUPS[M] = []; STRAND_REFS[M] = []; }
+  for (const [ref, [planMod, group]] of Object.entries(TYPE_HOME)) {
+    const M = STRAND_OF_PLAN[planMod], h = HARD_TYPES[ref], o = refOrigin(ref);
+    const d = byRef[ref] ? { id: ref, ref, origin: o, label: byRef[ref].label, blurb: byRef[ref].blurb, tags: typeTags(o, byRef[ref]) }
+      : { id: ref, ref, origin: o, label: h[0], blurb: h[1], tags: typeTags(o, { id: refId(ref), label: h[0] }) };
+    let g = STRAND_GROUPS[M].find(x => x.family === group); if (!g) STRAND_GROUPS[M].push(g = { family: group, defs: [] });
+    g.defs.push(d); STRAND_REFS[M].push(ref);
   }
-  return (TYPE_GRADES_CACHE = out);
+})();
+const strandDefaults = M => ({ types: Object.fromEntries(STRAND_REFS[M].map(r => [r, r === STRAND_META[M].def])), level: 2 });
+
+/* Problems for a strand module. */
+const ORIGIN_STORE = { ns: 'ns', vis: 'vis', fdp: 'fd', tm: 'tm' };
+function strandRefs(st, M) {
+  const t = st[M].types, on = STRAND_REFS[M].filter(r => t[r]);
+  return on.length ? on : [STRAND_META[M].def];
 }
-/* Grade bands: the framework's own divisions of the grades (framework.js). Without bands, one band per grade. */
-function frameworkBands() {
-  if (FRAMEWORK.bands && FRAMEWORK.bands.length) return FRAMEWORK.bands;
-  return STD_GRADE_IDS.map(id => ({ id, label: id, grades: [id === 'K' ? 0 : +id] }));
+function genStrandN(rng, st, M, n, chunk) {
+  const refs = strandRefs(st, M), s = st[M], L = s.level, origins = [...new Set(refs.map(refOrigin))];
+  const unit = M === 'geom' && s.unit ? s.unit : 'units', shade = M === 'geom' ? s.shade !== false : true;
+  if (origins.length === 1) {
+    const o = origins[0], N = { ns: genNsN, vis: genVisN, fdp: genFdpN, tm: genTmN }[o];
+    const s2 = Object.assign({}, st, { module: o, unit, shade, [ORIGIN_STORE[o]]: { types: Object.fromEntries(refs.map(r => [refId(r), true])), level: L } });
+    return N(rng, s2, n, chunk);
+  }
+  GRID_CTX.unit = unit; GRID_CTX.shade = shade;
+  const G = { ns: NGEN, vis: VGEN, fdp: FGEN, tm: TGEN };
+  return genMixed(rng, refs, n, chunk, (r, rr) => G[refOrigin(r)][refId(r)](rr, L), p => p.sig);
 }
-const bandById = id => frameworkBands().find(b => b.id === id) || null;
-/* A type shows in a band when its grade range overlaps the band; a type with no range, or no band chosen, always shows. */
-function typeInBand(mod, id, band) {
-  if (!band) return true;
-  const r = typeGradeRanges()[mod + '.' + id];
-  if (!r) return true;
-  return band.grades.some(g => g >= r[0] && g <= r[1]);
+for (const M of STRAND_IDS) {
+  const m = STRAND_META[M];
+  REG[M] = { name: m.name, counts: m.counts, n0: m.n0, on0: false, plan(st, n, seed) { return arithPlan(st, M, genStrandN(rngFrom(seed), st, M, n, n)); } };
 }
-/* A standard shows in a band when its grade is one of the band's grades. */
-const stdInBand = (code, band) => !band || band.grades.includes(gradeNum(code));
+CELL_MODS.push(...STRAND_IDS);
+/* The module list: Mixed and Combined first (they are filtered out of the single-topic list), then the picker order, then the legacy modules, which the picker hides. */
+(function orderModules() {
+  const old = Object.assign({}, MODULES); for (const k of Object.keys(MODULES)) delete MODULES[k];
+  const strands = Object.fromEntries(STRAND_IDS.map(M => [M, { name: STRAND_META[M].name, blurb: STRAND_META[M].blurb }]));
+  const legacy = Object.fromEntries(LEGACY_IDS.map(k => [k, Object.assign({ legacy: true }, old[k])]));
+  Object.assign(MODULES, { mix: old.mix, combo: old.combo, addsub: old.addsub, muldiv: old.muldiv }, strands, legacy);
+})();
+
+/* ---------- legacy settings to strand settings ----------
+   A preset-shaped legacy setting { m, ns|vis|fd|tm|area: { types, level } } becomes one entry per strand module the types belong to:
+   [{ m: <strand>, <strand>: { types: [refs], level, (unit, shade) } }]. Used for the standards presets, for saved worksheets and for saved parts. */
+function legacyRefs(m, s) {
+  const o = { ns: 'ns', vis: 'vis', fdp: 'fdp', tm: 'tm' }[m];
+  if (o) return (s[{ ns: 'ns', vis: 'vis', fdp: 'fd', tm: 'tm' }[m]].types || []).map(i => o + '.' + i);
+  if (m === 'area') return (s.area.types || []).map(i => 'vis.a' + i);
+  return null;
+}
+function strandsFromLegacy(m, s) {
+  const refs = legacyRefs(m, s); if (!refs) return null;
+  const level = m === 'area' ? s.area.level : s[{ ns: 'ns', vis: 'vis', fdp: 'fd', tm: 'tm' }[m]].level, out = [];
+  for (const r of refs) {
+    const M = STRAND_OF_PLAN[TYPE_HOME[r][0]];
+    let e = out.find(x => x.m === M);
+    if (!e) { e = { m: M, [M]: { types: [], level } }; if (m === 'area') { if (s.area.unit) e[M].unit = s.area.unit; if (s.area.shade != null) e[M].shade = !!s.area.shade; } out.push(e); }
+    e[M].types.push(r);
+  }
+  return out;
+}
+/* A whole worksheet state with a legacy module, turned into the strand module it belongs to. Returns false when nothing changed.
+   When the checked types span several strand modules, the sheet becomes a Combined Worksheet with one part for each. */
+function migrateLegacyState(st) {
+  const m = st.module;
+  if (!LEGACY_IDS.includes(m)) return false;
+  const s = m === 'area' ? { area: { types: Object.keys(st.types).filter(k => st.types[k]), level: st.level, unit: st.unit, shade: st.shade } }
+    : { [{ ns: 'ns', vis: 'vis', fdp: 'fd', tm: 'tm' }[m]]: { types: Object.keys(st[{ ns: 'ns', vis: 'vis', fdp: 'fd', tm: 'tm' }[m]].types).filter(k => st[{ ns: 'ns', vis: 'vis', fdp: 'fd', tm: 'tm' }[m]].types[k]), level: st[{ ns: 'ns', vis: 'vis', fdp: 'fd', tm: 'tm' }[m]].level } };
+  const list = strandsFromLegacy(m, s);
+  if (!list || !list.length) return false;
+  const title = st.titles && st.titles[m];
+  if (list.length === 1) {
+    const M = list[0].m; st[M] = Object.assign(strandDefaults(M), { types: stdMap(list[0][M].types, STRAND_REFS[M]), level: list[0][M].level });
+    if (M === 'geom') { st.geom.unit = list[0].geom.unit || st.unit; st.geom.shade = list[0].geom.shade != null ? list[0].geom.shade : st.shade; }
+    st.module = M; if (title && st.titles) st.titles[M] = title;
+    return true;
+  }
+  st.parts = list.map(e => Object.assign({ m: e.m, n: REG[e.m].n0, label: '' }, { [e.m]: e[e.m] }));
+  st.module = 'combo'; return true;
+}
+/* Saved parts that use a legacy module become parts of the strand modules their types belong to (one part, or several when the types span strands).
+   A part without its own settings takes the legacy module's current settings from st. */
+function migrateParts(st, parts) {
+  const out = [];
+  for (const p of parts) {
+    if (!LEGACY_IDS.includes(p.m)) { out.push(p); continue; }
+    const key = PART_KEY[p.m], s = p[key] ? p : captureSettings(st, p.m);
+    const list = strandsFromLegacy(p.m, s);
+    if (!list || !list.length) { out.push(p); continue; }
+    list.forEach((e, i) => {
+      const counts = REG[e.m].counts, want = p.n / list.length;
+      const n = list.length === 1 && counts.includes(p.n) ? p.n : counts.reduce((a, c) => Math.abs(c - want) < Math.abs(a - want) ? c : a, counts[0]);
+      const np = { m: e.m, n, label: p.label || '', [e.m]: e[e.m] };
+      if (p.mix && i === 0) np.mix = true;
+      out.push(np);
+    });
+  }
+  return out;
+}
+/* A part can join a Mixed Practice flow when its module is mixable and none of its checked types is in a group of large drawings. */
+function partMixable(st, p) {
+  if (!MIX_MODS.includes(p.m)) return false;
+  if (!isStrand(p.m)) return true;
+  const own = p[p.m] && p[p.m].types, refs = Array.isArray(own) ? own : (st && st[p.m] ? STRAND_REFS[p.m].filter(r => st[p.m].types[r]) : []);
+  return !refs.some(r => STRAND_NOMIX.has(TYPE_HOME[r][1]));
+}
 function generateSet(st) {
   if (st.module === 'mix') return mixItems(st).map(it => it.p);
+  if (isStrand(st.module)) return genStrandN(rngFrom(st.seed), st, st.module, st.arPerPage * st.pages, st.arPerPage);
   if (st.module === 'fdp') return genFdpN(rngFrom(st.seed), st, st.arPerPage * st.pages, st.arPerPage);
   if (st.module === 'tm') return genTmN(rngFrom(st.seed), st, st.arPerPage * st.pages, st.arPerPage);
   if (st.module === 'vis') return genVisN(rngFrom(st.seed), st, st.arPerPage * st.pages, st.arPerPage);
@@ -6379,7 +6650,7 @@ function defaults() {
   const combo = {}; for (const id of Object.keys(REG)) combo[id] = { on: REG[id].on0 !== false, n: REG[id].n0 };
   return {
     module: 'area',
-    titles: { area: 'Area Squares', addsub: 'Addition and Subtraction', muldiv: 'Multiplication and Division', fdp: 'Fractions, Decimals and Percents', ns: 'Number Sense', tm: 'Time and Money', vis: 'Shapes, Measures and Data', mix: 'Mixed Practice', combo: 'Math Practice' },
+    titles: { area: 'Area Squares', addsub: 'Addition and Subtraction', muldiv: 'Multiplication and Division', fdp: 'Fractions, Decimals and Percents', ns: 'Number Sense', tm: 'Time and Money', vis: 'Shapes, Measures and Data', mix: 'Mixed Practice', combo: 'Math Practice', num: 'Number Sense', oa: 'Operations and Algebraic Thinking', frac: 'Fractions, Decimals and Percents', time: 'Time and Money', meas: 'Measurement and Data', geom: 'Geometry, Area and Volume' },
     types: { count: true, mult: true, draw: true, cmp: true, lsh: false }, level: 2, perPage: 6, unit: 'units', shade: true,
     arPerPage: 20,
     as: { add: true, sub: true, d1: 2, d2: 2, addends: 2, regroup: 'any', format: 'vertical', cap: 0, second: 'digits' },
@@ -6389,6 +6660,8 @@ function defaults() {
     vis: { types: typeDefaults('vis'), level: 2 },
     tm: { types: { coins: true, madd: true, change: true, clock: false, elapsed: true, conv: true, dclock: false, ampm: false, like: false, cpic: false, cstory: false }, level: 2 },
     mix: { mods: { addsub: true, muldiv: true, fdp: false, ns: true, tm: true } },
+    num: strandDefaults('num'), oa: strandDefaults('oa'), frac: strandDefaults('frac'), time: strandDefaults('time'), meas: strandDefaults('meas'),
+    geom: Object.assign(strandDefaults('geom'), { unit: 'units', shade: true }),
     combo,
     std: { g: 'K', c: '' },
     parts: null,
@@ -6398,9 +6671,15 @@ function defaults() {
 /* Pre-filled GitHub issue for the current worksheet: set code, module and every setting needed to rebuild the same problems.
    Opens the issue form (.github/ISSUE_TEMPLATE/bug.yml); the person reviews and submits it. Falls back to the basics if the URL would be too long. */
 const ISSUES_URL = 'https://github.com/calebghall/WWWorksheet-maker-2000/issues/new';
+/* Saved type lists are { id: bool } maps; the bug report sends the checked ids only, so both forms load. */
+function mergeTypes(base, t) { return Array.isArray(t) ? stdMap(t, Object.keys(base)) : Object.assign(base, t || {}); }
+const checkedIds = o => Object.keys(o).filter(k => o[k]);
 function bugReportUrl(st, agent) {
   const mod = (typeof MODULES !== 'undefined' && MODULES[st.module]) ? MODULES[st.module].name : st.module;
   const full = Object.assign({}, st); delete full.titles;
+  /* The type lists are long; send only the checked ids (normalize reads either form). */
+  for (const M of STRAND_IDS.concat(['fd', 'ns', 'tm', 'vis'])) full[M] = Object.assign({}, st[M], { types: checkedIds(st[M].types) });
+  full.types = checkedIds(st.types);
   const q = settings => ISSUES_URL + '?' + [['template', 'bug.yml'], ['title', `Problem with ${mod} worksheet (set ${st.seed})`], ['set_code', st.seed], ['settings', settings], ['browser', agent || '']]
     .map(([k, v]) => k + '=' + encodeURIComponent(v)).join('&');
   const url = q(JSON.stringify(full));
@@ -6408,7 +6687,7 @@ function bugReportUrl(st, agent) {
   const withParts = q(JSON.stringify({ module: st.module, seed: st.seed, level: st.level, std: st.std, parts: st.parts, combo: st.combo }));
   return withParts.length <= 6000 ? withParts : q(JSON.stringify({ module: st.module, seed: st.seed, level: st.level, std: st.std }));
 }
-globalThis.__SP = { bugReportUrl, FGEN, NGEN, generateSet, renderAll, defaults, rngFrom, LEVELS, UNITS, TYPE_IDS, geom, svg, carries, borrows, arLayout, needSize, REG, META, comboSections, comboPages, genArithN, genAreaN, TGEN, flowPack, mixLayout, mixItems, STANDARDS, applyStandard, stdList, VGEN, VIS_TYPES, genVisN, partsOf, makePart, normPart, normParts, partState, captureSettings, applyModSettings, TYPE_DEFS, TYPE_HOME, typeTags, typeGradeRanges, frameworkBands, typeInBand, stdInBand, FRAMEWORK };
+globalThis.__SP = { applyGradeStandards, gradeStandardParts, bugReportUrl, FGEN, NGEN, generateSet, renderAll, defaults, rngFrom, LEVELS, UNITS, TYPE_IDS, geom, svg, carries, borrows, arLayout, needSize, REG, META, comboSections, comboPages, genArithN, genAreaN, TGEN, flowPack, mixLayout, mixItems, STANDARDS, applyStandard, stdList, VGEN, VIS_TYPES, genVisN, partsOf, makePart, normPart, normParts, partState, captureSettings, applyModSettings, TYPE_DEFS, TYPE_HOME, STRAND_IDS, STRAND_REFS, STRAND_META, STRAND_GROUPS, genStrandN, migrateLegacyState, migrateParts, partMixable, strandsFromLegacy, genNsN, genVisN, genFdpN, genTmN, mixItems, typeTags, FRAMEWORK };
 
 /*==DOM==*/
 const $ = s => document.querySelector(s);
@@ -6416,38 +6695,47 @@ const STORE = 'wwwm2000.v1';
 const form = $('#form'), sheetsEl = $('#sheets'), stageEl = $('#stage');
 /* The Number Sense and Shapes, Measures and Data checkboxes are built from the type registry (core/types.js), grouped by family.
    Each family is a collapsible group that shows how many of its types are checked. A search box and a "Word problems only" toggle filter the
-   types, and the standards panel's grade band hides types outside the band. A checked type is never hidden by a filter. */
+   types. A checked type is never hidden by a filter. */
 const GROUPS_KEY = 'wwwm2000.groups';
 let openGroups = {};
 try { openGroups = JSON.parse(localStorage.getItem(GROUPS_KEY)) || {}; } catch (e) { openGroups = {}; }
 function saveOpenGroups() { try { localStorage.setItem(GROUPS_KEY, JSON.stringify(openGroups)); } catch (e) { /* ignore */ } }
-const bandNow = () => (state && state.band ? bandById(state.band.id) : null);
+const TYPE_PANEL_MODS = ['ns', 'vis'].concat(STRAND_IDS);
+/* The strand modules' panels (problem types, difficulty, and the grid-area options for geometry) are built here; the type lists are filled in by buildTypePanels. */
+function buildStrandPanels() {
+  const host = document.querySelector('#strandPanels'); if (!host) return;
+  host.innerHTML = STRAND_IDS.map(M => `<fieldset data-mod="${M}"><legend>Problem types</legend><div data-types="${M}"></div></fieldset>
+    <fieldset data-mod="${M}"><legend>Difficulty</legend><div class="seg" role="radiogroup" aria-label="Difficulty">${[1, 2, 3].map(L => `<label><input type="radio" name="${M}_level" value="${L}"><span>${['Easy', 'Medium', 'Hard'][L - 1]}</span></label>`).join('')}</div>
+    <p class="note">Difficulty sets the number sizes and the number of steps in each type.</p></fieldset>`).join('')
+    + `<fieldset data-mod="geom"><legend>Area on grids</legend><label class="tword" style="display:flex;margin-bottom:6px">Units <select id="geom_unit" name="geom_unit" aria-label="Units" style="margin-left:8px">${Object.keys(UNITS).map(k => `<option value="${k}">${UNITS[k].name}</option>`).join('')}</select></label>
+    <label class="tword"><input type="checkbox" name="geom_shade"> Shade the squares</label><p class="note">For the Area on grids types.</p></fieldset>`;
+}
+buildStrandPanels();
 function buildTypePanels() {
-  for (const mod of ['ns', 'vis']) {
+  for (const mod of TYPE_PANEL_MODS) {
     const host = document.querySelector(`[data-types="${mod}"]`); if (!host) continue;
     const groups = [];
-    for (const d of TYPE_DEFS[mod]) { let g = groups.find(h => h.family === d.family); if (!g) groups.push(g = { family: d.family, defs: [] }); g.defs.push(d); }
-    const lbl = d => `<label class="chk" data-id="${d.id}" data-q="${esc((d.label + ' ' + d.blurb + ' ' + d.id).toLowerCase())}"${typeTags(mod, d).includes('word') ? ' data-word="1"' : ''}><input type="checkbox" name="${mod}_type" value="${d.id}"><b>${d.label}</b><small>${d.blurb}</small></label>`;
+    if (isStrand(mod)) for (const g of STRAND_GROUPS[mod]) groups.push(g);
+    else for (const d of TYPE_DEFS[mod]) { let g = groups.find(h => h.family === d.family); if (!g) groups.push(g = { family: d.family, defs: [] }); g.defs.push(d); }
+    const lbl = d => `<label class="chk" data-origin="${d.origin || mod}" data-id="${d.origin ? refId(d.id) : d.id}" data-q="${esc((d.label + ' ' + d.blurb + ' ' + d.id).toLowerCase())}"${(d.tags || typeTags(mod, d)).includes('word') ? ' data-word="1"' : ''}><input type="checkbox" name="${mod}_type" value="${d.id}"><b>${d.label}</b><small>${d.blurb}</small></label>`;
     host.innerHTML = `<div class="tfilter"><input type="search" name="tq" class="stdq" placeholder="Search types" aria-label="Search problem types"><label class="tword"><input type="checkbox" name="tword"> Word problems only</label></div>`
-      + '<p class="note tband" hidden><span class="tband-t"></span> <button type="button" class="linkbtn" data-band-all>Show all grades</button></p>'
       + groups.map(g => `<details class="tgroup" data-fam="${esc(g.family)}" data-total="${g.defs.length}"><summary class="tgroup-h"><span>${g.family}</span><span class="tcount"></span></summary>${g.defs.map(lbl).join('')}</details>`).join('')
       + '<p class="note tnone" hidden>No problem types match.</p>';
   }
 }
 /* Applies the filters and updates every group's count. openChecked opens groups that hold a checked type (after a preset or a reload). */
 function refreshTypePanels(openChecked) {
-  const band = bandNow();
-  for (const mod of ['ns', 'vis']) {
+  for (const mod of TYPE_PANEL_MODS) {
     const host = document.querySelector(`[data-types="${mod}"]`); if (!host) continue;
     const q = host.querySelector('[name=tq]').value.trim().toLowerCase(), wordOnly = host.querySelector('[name=tword]').checked;
-    const filtering = !!(q || wordOnly || band);
+    const filtering = !!(q || wordOnly);
     let shown = 0;
     host.querySelectorAll('details.tgroup').forEach(g => {
       const labels = [...g.querySelectorAll('label.chk')];
       const checked = labels.filter(l => l.querySelector('input').checked).length;
       let vis = 0;
       for (const l of labels) {
-        const on = l.querySelector('input').checked || ((!q || l.dataset.q.includes(q)) && (!wordOnly || l.dataset.word) && typeInBand(mod, l.dataset.id, band));
+        const on = l.querySelector('input').checked || ((!q || l.dataset.q.includes(q)) && (!wordOnly || l.dataset.word));
         l.hidden = !on; if (on) vis++;
       }
       g.hidden = vis === 0; shown += vis;
@@ -6458,8 +6746,6 @@ function refreshTypePanels(openChecked) {
       if ((q || wordOnly) && vis > 0 && !g.open) { g.dataset.auto = '1'; g.open = true; g.dataset.auto = ''; }
     });
     host.querySelector('.tnone').hidden = shown > 0;
-    const bn = host.querySelector('.tband'); bn.hidden = !band;
-    if (band) bn.querySelector('.tband-t').textContent = `Showing types for grades ${band.label}.`;
   }
 }
 buildTypePanels();
@@ -6472,26 +6758,32 @@ function normalize(s) {
   const out = Object.assign(d, s, {
     titles: Object.assign(d.titles, s.titles || {}),
     std: { g: inEnum(String((s.std || {}).g), STD_GRADE_IDS, 'K'), c: STD_BY_CODE[(s.std || {}).c] ? s.std.c : '' },
-    types: Object.assign(d.types, s.types || {}),
+    types: mergeTypes(d.types, s.types),
     as: Object.assign(d.as, s.as || {}),
     md: Object.assign(d.md, s.md || {}),
-    fd: Object.assign(d.fd, s.fd || {}, { types: Object.assign(d.fd.types, (s.fd || {}).types || {}) }),
-    ns: Object.assign(d.ns, s.ns || {}, { types: Object.assign(d.ns.types, (s.ns || {}).types || {}) }),
-    tm: Object.assign(d.tm, s.tm || {}, { types: Object.assign(d.tm.types, (s.tm || {}).types || {}) }),
-    vis: Object.assign(d.vis, s.vis || {}, { types: Object.assign(d.vis.types, (s.vis || {}).types || {}) }),
+    fd: Object.assign(d.fd, s.fd || {}, { types: mergeTypes(d.fd.types, (s.fd || {}).types) }),
+    ns: Object.assign(d.ns, s.ns || {}, { types: mergeTypes(d.ns.types, (s.ns || {}).types) }),
+    tm: Object.assign(d.tm, s.tm || {}, { types: mergeTypes(d.tm.types, (s.tm || {}).types) }),
+    vis: Object.assign(d.vis, s.vis || {}, { types: mergeTypes(d.vis.types, (s.vis || {}).types) }),
     mix: { mods: Object.assign(d.mix.mods, (s.mix || {}).mods || {}) },
     combo
   });
+  for (const M of STRAND_IDS) {
+    const t = (s[M] || {}).types;
+    out[M] = Object.assign(d[M], s[M] || {}, { types: mergeTypes(d[M].types, t) });
+  }
   out.module = inEnum(out.module, Object.keys(MODULES), 'area');
   out.perPage = inEnum(+out.perPage, [4, 6, 8], 6);
   out.arPerPage = inEnum(+out.arPerPage, [12, 20, 30], 20);
   out.pages = inEnum(+out.pages, [1, 2, 3], 1);
   out.paper = inEnum(out.paper, Object.keys(PAPER), 'letter');
   clampMod(out);
-  if (s.band && s.band.fw === FRAMEWORK.id && bandById(s.band.id)) out.band = { fw: FRAMEWORK.id, id: s.band.id }; else delete out.band;
+  delete out.band;
   for (const id of Object.keys(REG)) { const c = out.combo[id]; c.on = !!c.on; c.n = inEnum(+c.n, REG[id].counts, REG[id].n0); }
   if (!Object.values(out.combo).some(c => c.on)) out.combo[Object.keys(REG)[0]].on = true;
   out.parts = normParts(s.parts);
+  migrateLegacyState(out);
+  if (out.parts) out.parts = migrateParts(out, out.parts);
   out.grey = !!out.grey;
   if (!out.seed) out.seed = newSeed();
   return out;
@@ -6499,7 +6791,7 @@ function normalize(s) {
 let state;
 try { state = normalize(JSON.parse(localStorage.getItem(STORE) || 'null')); } catch (e) { state = normalize(null); }
 
-const SINGLE_MODS = Object.keys(MODULES).filter(id => id !== 'combo' && id !== 'mix');
+const SINGLE_MODS = Object.keys(MODULES).filter(id => id !== 'combo' && id !== 'mix' && !MODULES[id].legacy);
 $('#mods').innerHTML = SINGLE_MODS.map(id => `<label class="mod"><input type="radio" name="module" value="${id}"><b>${esc(MODULES[id].name)}</b><small>${esc(MODULES[id].blurb)}</small></label>`).join('');
 $('#addPartMod').innerHTML = SINGLE_MODS.map(id => `<option value="${id}">${esc(MODULES[id].name)}</option>`).join('');
 $('#addPartMod').value = 'addsub';
@@ -6540,28 +6832,23 @@ const NS_NOTES = {
 let stdQuery = '';
 function writeStdList() {
   const q = stdQuery.trim().toLowerCase();
-  const band = bandNow();
-  const rows = STD_ALL.filter(r => stdInBand(r[0], band) && (q ? (r[0] + ' ' + r[1] + ' ' + r[2]).toLowerCase().includes(q) : stdGrade(r[0]) === state.std.g));
+  const rows = STD_ALL.filter(r => (q ? (r[0] + ' ' + r[1] + ' ' + r[2]).toLowerCase().includes(q) : stdGrade(r[0]) === state.std.g));
   const badge = p => !p ? ['gap', 'Not yet'] : p.n ? ['part', 'Partial'] : ['ok', ''];
   $('#stdList').innerHTML = rows.length ? rows.map(r => {
     const p = STD_BY_CODE[r[0]], b = badge(p), on = r[0] === state.std.c;
     const left = `<span class="sl"><span class="sc">${r[0]}</span>${b[1] ? `<span class="sb">${b[1]}</span>` : ''}</span>`;
     return `<button type="button" class="std ${b[0]}${on ? ' on' : ''}" data-std="${r[0]}"${p ? '' : ' disabled'}${on ? ' aria-pressed="true"' : ''}>${left}<span class="st">${esc(r[1])}</span></button>`;
-  }).join('') : '<p class="note">No standards match.</p>';
+  }).join('') + (!q && rows.length ? `<button type="button" class="std all" data-std-all="${state.std.g}"><span class="sl"><span class="sc">All</span></span><span class="st">All standards for this grade</span></button>` : '') : '<p class="note">No standards match.</p>';
 }
 function writeStd() {
-  const band = bandNow(), bands = frameworkBands();
-  if (band && !band.grades.includes(gradeNum(state.std.g))) state.std.g = band.grades[0] === 0 ? 'K' : String(band.grades[0]);
-  $('#stdBands').hidden = bands.length < 2 || bands.every(b => b.grades.length === 1);
-  $('#stdBands').innerHTML = [{ id: 'all', label: 'All grades' }].concat(bands).map(b => `<label><input type="radio" name="stdBand" value="${b.id}"${(band ? band.id : 'all') === b.id ? ' checked' : ''}><span>${b.label}</span></label>`).join('');
-  $('#stdGrades').innerHTML = STD_GRADE_IDS.filter(id => !band || band.grades.includes(gradeNum(id))).map(id => `<label><input type="radio" name="stdGrade" value="${id}"${state.std.g === id ? ' checked' : ''}><span title="${STD_GRADES[id]}">${id}</span></label>`).join('');
+  $('#stdGrades').innerHTML = STD_GRADE_IDS.map(id => `<label><input type="radio" name="stdGrade" value="${id}"${state.std.g === id ? ' checked' : ''}><span title="${STD_GRADES[id]}">${id}</span></label>`).join('');
   $('#stdFw').textContent = FRAMEWORK.name;
   writeStdList();
   const s = STD_BY_CODE[state.std.c];
   $('#stdCur').textContent = s ? s.c : '';
   $('#stdNote').textContent = s ? `${s.c}: ${s.n ? 'Partial match. ' + s.n : 'The settings match this standard.'}` : 'Pick a standard to set the module, problem types and level. "Not yet" standards need a problem type this maker does not have.';
 }
-let lastSingleMod = (state.module === 'combo' || state.module === 'mix') ? 'area' : state.module;
+let lastSingleMod = (state.module === 'combo' || state.module === 'mix') ? 'geom' : state.module;
 let lastMultiMod = state.module === 'mix' ? 'mix' : 'combo';
 let editIdx = null;
 let addCardIdx = null;
@@ -6569,10 +6856,10 @@ function ensureMultiParts() {
   if (state.parts && state.parts.length) return;
   if (state.module === 'mix') {
     const ms = MIX_MODS.filter(id => state.mix.mods[id]);
-    state.parts = (ms.length ? ms : ['addsub']).map(m => makePart(state, m, REG[m].n0));
+    state.parts = migrateParts(state, (ms.length ? ms : ['addsub']).map(m => makePart(state, m, REG[m].n0)));
   } else {
     const ps = partsOf(state);
-    state.parts = (ps.length ? ps : [makePart(state, lastSingleMod)]).map(p => makePart(state, p.m, p.n));
+    state.parts = migrateParts(state, (ps.length ? ps : [makePart(state, lastSingleMod)]).map(p => makePart(state, p.m, p.n)));
   }
 }
 if (state.module === 'combo' || state.module === 'mix') ensureMultiParts();
@@ -6600,6 +6887,8 @@ function writeForm() {
   setChecks('ns_type', fsState.ns.types); setRadio('ns_level', fsState.ns.level);
   setChecks('tm_type', fsState.tm.types); setRadio('tm_level', fsState.tm.level);
   setChecks('vis_type', fsState.vis.types); setRadio('vis_level', fsState.vis.level);
+  for (const M of STRAND_IDS) { setChecks(M + '_type', fsState[M].types); setRadio(M + '_level', fsState[M].level); }
+  $('#geom_unit').value = fsState.geom.unit; form.elements.geom_shade.checked = !!fsState.geom.shade;
   setRadio('perPage', state.perPage); setRadio('arPerPage', state.arPerPage); setRadio('pages', state.pages); setRadio('paper', state.paper);
   for (const n of ['nameLine', 'shade', 'key', 'grey']) form.elements[n].checked = !!state[n];
   form.elements.seed.value = state.seed;
@@ -6609,7 +6898,7 @@ function writeForm() {
 
 function cleanPartMix(parts) {
   parts.forEach((p, idx) => {
-    if (idx === 0 || !MIX_MODS.includes(p.m) || !MIX_MODS.includes(parts[idx - 1].m)) delete p.mix;
+    if (idx === 0 || !partMixable(state, p) || !partMixable(state, parts[idx - 1])) delete p.mix;
   });
 }
 
@@ -6618,11 +6907,11 @@ function groupPartCards(parts) {
   const cards = [];
   for (let i = 0; i < parts.length; i++) {
     const start = i, items = [{ p: parts[i], i }];
-    while (i + 1 < parts.length && parts[i + 1].mix && MIX_MODS.includes(parts[i].m) && MIX_MODS.includes(parts[i + 1].m)) {
+    while (i + 1 < parts.length && parts[i + 1].mix && partMixable(state, parts[i]) && partMixable(state, parts[i + 1])) {
       i++;
       items.push({ p: parts[i], i });
     }
-    cards.push({ start, end: i, items, mixable: MIX_MODS.includes(items[0].p.m) });
+    cards.push({ start, end: i, items, mixable: partMixable(state, items[0].p) });
   }
   return cards;
 }
@@ -6630,8 +6919,8 @@ function groupPartCards(parts) {
 function writeParts() {
   const parts = state.parts || [], isMix = state.module === 'mix';
   const cards = groupPartCards(parts);
-  const mixSum = isMix ? parts.filter(p => MIX_MODS.includes(p.m)).reduce((a, p) => a + p.n, 0) : 0;
-  const canMix = parts.some(p => MIX_MODS.includes(p.m));
+  const mixSum = isMix ? parts.filter(p => partMixable(state, p)).reduce((a, p) => a + p.n, 0) : 0;
+  const canMix = parts.some(p => partMixable(state, p));
   const mixR = form.querySelector('input[name="multi_view"][value="mix"]');
   if (mixR) mixR.disabled = !canMix;
   const heading = $('#partsHeading');
@@ -6640,7 +6929,7 @@ function writeParts() {
 
   if (isMix) {
     $('#partsList').innerHTML = parts.map((p, i) => {
-      const mixable = MIX_MODS.includes(p.m);
+      const mixable = partMixable(state, p);
       const badge = mixable && mixSum ? `${Math.round(100 * p.n / mixSum)}%` : '—';
       const sel = `<select name="partRowN" aria-label="Share weight for ${esc(REG[p.m].name)}">${REG[p.m].counts.map(n => `<option value="${n}"${n === p.n ? ' selected' : ''}>Share ${n}</option>`).join('')}</select>`;
       const sub = `${esc(REG[p.m].name)}${!mixable ? ' · <em>Sections only</em>' : ''}`;
@@ -6668,7 +6957,7 @@ function writeParts() {
   }
 
   $('#partAdd').disabled = parts.length >= PART_MAX;
-  const hasBlocked = isMix && parts.some(p => !MIX_MODS.includes(p.m));
+  const hasBlocked = isMix && parts.some(p => !partMixable(state, p));
   $('#multiNote').textContent = !canMix
     ? 'Area Squares and Shapes, Measures and Data only print in sections.'
     : isMix
@@ -6743,6 +7032,8 @@ function readModFields(target, changed) {
   target.ns = { types: ensureOne(checksOf('ns_type'), changed, 'ns_type', 'place'), level: +val('ns_level') || target.ns.level };
   target.tm = { types: ensureOne(checksOf('tm_type'), changed, 'tm_type', 'coins'), level: +val('tm_level') || target.tm.level };
   target.vis = { types: ensureOne(checksOf('vis_type'), changed, 'vis_type', 'cnt'), level: +val('vis_level') || target.vis.level };
+  for (const M of STRAND_IDS) target[M] = { types: ensureOne(checksOf(M + '_type'), changed, M + '_type', STRAND_META[M].def), level: +val(M + '_level') || target[M].level };
+  target.geom.unit = $('#geom_unit').value; target.geom.shade = form.elements.geom_shade.checked;
 }
 
 function readForm(changed) {
@@ -6779,7 +7070,7 @@ function render() {
 function save() { try { localStorage.setItem(STORE, JSON.stringify(state)); } catch (e) { /* ignore */ } }
 
 form.addEventListener('submit', e => e.preventDefault());
-const CLEARS_STD = /^(module|type|level|as_|md_|fd_|ns_|tm_|vis_)/;
+const CLEARS_STD = /^(module|type|level|as_|md_|fd_|ns_|tm_|vis_|num_|oa_|frac_|time_|meas_|geom_)/;
 form.addEventListener('input', e => {
   const nm = e.target.name || '';
   if (nm === 'addPartMod' || nm === 'secAddMod') return;
@@ -6787,7 +7078,7 @@ form.addEventListener('input', e => {
     editIdx = null;
     if (e.target.value === 'multi') {
       ensureMultiParts();
-      state.module = (lastMultiMod === 'mix' && state.parts.some(p => MIX_MODS.includes(p.m))) ? 'mix' : 'combo';
+      state.module = (lastMultiMod === 'mix' && state.parts.some(p => partMixable(state, p))) ? 'mix' : 'combo';
     } else {
       if (state.module === 'combo' || state.module === 'mix') lastMultiMod = state.module;
       state.module = lastSingleMod;
@@ -6805,7 +7096,7 @@ form.addEventListener('input', e => {
   if (nm === 'multi_view') {
     editIdx = null;
     const v = val('multi_view');
-    if (v === 'mix' && !(state.parts || []).some(p => MIX_MODS.includes(p.m))) { writeForm(); return; }
+    if (v === 'mix' && !(state.parts || []).some(p => partMixable(state, p))) { writeForm(); return; }
     state.module = lastMultiMod = v || 'combo';
     if (state.std.c) state.std.c = '';
     save(); writeForm(); render(); return;
@@ -6832,10 +7123,6 @@ form.addEventListener('input', e => {
     save(); if (state.module === 'mix' && nm === 'partRowN') writeParts(); render(); return;
   }
   if (nm === 'tq' || nm === 'tword') { refreshTypePanels(); return; }
-  if (nm === 'stdBand') {
-    if (e.target.value === 'all') delete state.band; else state.band = { fw: FRAMEWORK.id, id: e.target.value };
-    save(); writeStd(); refreshTypePanels(); return;
-  }
   if (nm === 'stdGrade') { state.std.g = e.target.value; stdQuery = ''; $('#stdQ').value = ''; save(); writeStdList(); return; }
   if (nm === 'stdQ') { stdQuery = e.target.value; writeStdList(); return; }
   if (CLEARS_STD.test(nm) && state.std.c) { state.std.c = ''; writeStd(); }
@@ -6892,13 +7179,14 @@ function partAction(e) {
   editIdx = null;
   cleanPartMix(parts);
   state.parts = parts;
-  if (state.module === 'mix' && !parts.some(p => MIX_MODS.includes(p.m))) state.module = lastMultiMod = 'combo';
+  if (state.module === 'mix' && !parts.some(p => partMixable(state, p))) state.module = lastMultiMod = 'combo';
   after(); return true;
 }
 
 form.addEventListener('click', e => {
-  if (e.target.closest('[data-band-all]')) { delete state.band; save(); writeStd(); refreshTypePanels(); return; }
   if (partAction(e)) return;
+  const ra = e.target.closest('[data-std-all]');
+  if (ra && applyGradeStandards(state, ra.dataset.stdAll)) { editIdx = null; lastMultiMod = 'combo'; save(); writeForm(); render(); return; }
   const r = e.target.closest('[data-std]');
   if (r && !r.disabled) {
     editIdx = null;
