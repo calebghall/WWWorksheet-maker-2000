@@ -9,11 +9,11 @@ const gaUnit = p => UNITS[p.unit || 'units'];
 function gaBase(id, raw, prompt, o) {
   const pads = padsFor(o.labels || []), cpx = fitCell(o.cols, o.rows, o.fw || GA_W, o.fh || GA_H, pads, o.cap);
   const w = (o.cols * cpx + pads.l + pads.r) / 96, h = (o.rows * cpx + pads.t + pads.b) / 96;
-  return Object.assign({ mod: 'vis', prompt, win: o.win || w, hin: o.hin || h + (o.extra || 0), hfs: 0, bw: 0, unit: GRID_CTX.unit, shade: GRID_CTX.shade, cpx, sig: sig(raw) + GRID_CTX.unit }, raw, { type: id });
+  return Object.assign({ mod: 'vis', prompt, win: o.win || w, hin: o.hin || h + (o.extra || 0), hfs: 0, bw: o.bw || 0, unit: GRID_CTX.unit, shade: GRID_CTX.shade, cpx, sig: sig(raw) + GRID_CTX.unit }, raw, { type: id });
 }
 function gaCount(rng, L) {
   const r = genCount(rng, L), s = r.shape;
-  return gaBase('acount', r, 'Count the squares to find the area.', { cols: s.cols, rows: s.rows, extra: 0.46 });
+  return gaBase('acount', r, 'Count the squares to find the area.', { cols: s.cols, rows: s.rows, bw: 17, extra: 0.46 });
 }
 function gaCountHtml(p, key, x) {
   const s = p.shape, U = gaUnit(p);
@@ -22,7 +22,7 @@ function gaCountHtml(p, key, x) {
 const gaMultLabels = (p, U) => [{ side: 'top', text: `${p.w} ${U.len}` }, { side: 'left', text: `${p.h} ${U.len}` }];
 function gaMult(rng, L) {
   const r = genMult(rng, L), U = UNITS[GRID_CTX.unit];
-  return gaBase('amult', r, 'Find the area of this rectangle.', { cols: r.w, rows: r.h, labels: gaMultLabels(r, U), fh: GA_H - 0.1, extra: 0.46 });
+  return gaBase('amult', r, 'Find the area of this rectangle.', { cols: r.w, rows: r.h, labels: gaMultLabels(r, U), fh: GA_H - 0.1, bw: 19, extra: 0.46 });
 }
 function gaMultHtml(p, key, x) {
   const U = gaUnit(p), labels = gaMultLabels(p, U);
@@ -34,7 +34,7 @@ function gaDraw(rng, L) {
   /* The blank grid varies a little in size (one column or row fewer when the sample rectangle still fits), so the same area is not always the same drawing. */
   if (ri(rng, 0, 1) && sm.ox + sm.w <= r.cols - 1) r.cols--;
   if (ri(rng, 0, 1) && sm.oy + sm.h <= r.rows - 1) r.rows--;
-  const p = gaBase('adraw', r, `Draw a rectangle of area ${r.area} ${U.area}.`, { cols: r.cols, rows: r.rows, extra: 0.46 });
+  const p = gaBase('adraw', r, `Draw a rectangle of area ${r.area} ${U.area}.`, { cols: r.cols, rows: r.rows, bw: 14, extra: 0.46 });
   p.sig = `d${r.area}${GRID_CTX.unit}${r.cols}x${r.rows}`; return p;
 }
 function gaDrawHtml(p, key, x) {
@@ -47,7 +47,7 @@ function gaCmp(rng, L) {
   const r = genCmp(rng, L), fw = (GA_W - 0.25) / 2, fh = GA_H - 0.26, pads = padsFor([]);
   const cpx = Math.min(fitCell(r.a.shape.cols, r.a.shape.rows, fw, fh, pads, 0.3), fitCell(r.b.shape.cols, r.b.shape.rows, fw, fh, pads, 0.3));
   const wa = (r.a.shape.cols * cpx + 10) / 96, wb = (r.b.shape.cols * cpx + 10) / 96, hh = (Math.max(r.a.shape.rows, r.b.shape.rows) * cpx + 10) / 96;
-  const p = gaBase('acmp', r, 'Which shape has the greater area?', { cols: 1, rows: 1, win: wa + wb + 0.25, hin: hh + 0.3 + 0.82 });
+  const p = gaBase('acmp', r, 'Which shape has the greater area?', { cols: 1, rows: 1, win: wa + wb + 0.25, hin: hh + 0.3 + 0.82, bw: 19 });
   p.cpx = cpx; return p;
 }
 function gaCmpHtml(p, key, x) {
@@ -59,7 +59,7 @@ function gaCmpHtml(p, key, x) {
 function gaLsh(rng, L) {
   const r = genLsh(rng, L), U = UNITS[GRID_CTX.unit], g = gaLshParts(r, U);
   return gaBase('alsh', r, 'Find the area of this L-shaped figure.',
-    { cols: r.shape.cols, rows: r.shape.rows, labels: g.labels, fh: GA_H - 0.1, extra: 0.74 });
+    { cols: r.shape.cols, rows: r.shape.rows, labels: g.labels, fh: GA_H - 0.1, bw: 17, extra: 0.74 });
 }
 function gaLshParts(p, U) {
   let labels = [], notes = [];
