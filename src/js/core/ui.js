@@ -39,7 +39,7 @@ function bugReportUrl(st, agent) {
   const withParts = q(JSON.stringify({ module: st.module, seed: st.seed, level: st.level, std: st.std, parts: st.parts, combo: st.combo }));
   return withParts.length <= 6000 ? withParts : q(JSON.stringify({ module: st.module, seed: st.seed, level: st.level, std: st.std }));
 }
-globalThis.__SP = { applyGradeStandards, gradeStandardParts, bugReportUrl, FGEN, NGEN, generateSet, renderAll, defaults, rngFrom, LEVELS, UNITS, TYPE_IDS, geom, svg, carries, borrows, arLayout, needSize, REG, META, comboSections, comboPages, genArithN, genAreaN, TGEN, flowPack, mixLayout, mixItems, STANDARDS, applyStandard, stdList, VGEN, VIS_TYPES, genVisN, partsOf, makePart, normPart, normParts, partState, captureSettings, applyModSettings, TYPE_DEFS, TYPE_HOME, STRAND_IDS, STRAND_REFS, STRAND_META, STRAND_GROUPS, genStrandN, migrateLegacyState, migrateParts, partMixable, strandsFromLegacy, genNsN, genVisN, genFdpN, genTmN, mixItems, typeTags, FRAMEWORK };
+globalThis.__SP = { applyGradeStandards, gradeStandardParts, bugReportUrl, FGEN, NGEN, generateSet, renderAll, defaults, rngFrom, LEVELS, UNITS, TYPE_IDS, geom, svg, carries, borrows, arLayout, needSize, REG, META, comboSections, comboPages, genArithN, genAreaN, TGEN, flowPack, mixLayout, mixItems, STANDARDS, applyStandard, stdList, stdPreset, stdInfo, STD_XW, STD_BY_ID, VGEN, VIS_TYPES, genVisN, partsOf, makePart, normPart, normParts, partState, captureSettings, applyModSettings, TYPE_DEFS, TYPE_HOME, STRAND_IDS, STRAND_REFS, STRAND_META, STRAND_GROUPS, genStrandN, migrateLegacyState, migrateParts, partMixable, strandsFromLegacy, genNsN, genVisN, genFdpN, genTmN, mixItems, typeTags, FRAMEWORK };
 
 /*==DOM==*/
 const $ = s => document.querySelector(s);
@@ -109,7 +109,7 @@ function normalize(s) {
   for (const id of Object.keys(REG)) combo[id] = Object.assign(d.combo[id], (s.combo || {})[id] || {});
   const out = Object.assign(d, s, {
     titles: Object.assign(d.titles, s.titles || {}),
-    std: { g: inEnum(String((s.std || {}).g), STD_GRADE_IDS, 'K'), c: STD_BY_CODE[(s.std || {}).c] ? s.std.c : '' },
+    std: { g: inEnum(String((s.std || {}).g), STD_GRADE_IDS, 'K'), c: stdPreset((s.std || {}).c) ? s.std.c : '' },
     types: mergeTypes(d.types, s.types),
     as: Object.assign(d.as, s.as || {}),
     md: Object.assign(d.md, s.md || {}),
@@ -185,9 +185,9 @@ let stdQuery = '';
 function writeStdList() {
   const q = stdQuery.trim().toLowerCase();
   const rows = STD_ALL.filter(r => (q ? (r[0] + ' ' + r[1] + ' ' + r[2]).toLowerCase().includes(q) : stdGrade(r[0]) === state.std.g));
-  const badge = p => !p ? ['gap', 'Not yet'] : p.n ? ['part', 'Partial'] : ['ok', ''];
+  const badge = i => i.status === 'gap' ? ['gap', 'Not yet'] : i.status === 'partial' ? ['part', 'Partial'] : ['ok', ''];
   $('#stdList').innerHTML = rows.length ? rows.map(r => {
-    const p = STD_BY_CODE[r[0]], b = badge(p), on = r[0] === state.std.c;
+    const p = stdPreset(r[0]), b = badge(stdInfo(r[0])), on = r[0] === state.std.c;
     const left = `<span class="sl"><span class="sc">${r[0]}</span>${b[1] ? `<span class="sb">${b[1]}</span>` : ''}</span>`;
     return `<button type="button" class="std ${b[0]}${on ? ' on' : ''}" data-std="${r[0]}"${p ? '' : ' disabled'}${on ? ' aria-pressed="true"' : ''}>${left}<span class="st">${esc(r[1])}</span></button>`;
   }).join('') + (!q && rows.length ? `<button type="button" class="std all" data-std-all="${state.std.g}"><span class="sl"><span class="sc">All</span></span><span class="st">All standards for this grade</span></button>` : '') : '<p class="note">No standards match.</p>';
@@ -196,9 +196,9 @@ function writeStd() {
   $('#stdGrades').innerHTML = STD_GRADE_IDS.map(id => `<label><input type="radio" name="stdGrade" value="${id}"${state.std.g === id ? ' checked' : ''}><span title="${STD_GRADES[id]}">${id}</span></label>`).join('');
   $('#stdFw').textContent = FRAMEWORK.name;
   writeStdList();
-  const s = STD_BY_CODE[state.std.c];
-  $('#stdCur').textContent = s ? s.c : '';
-  $('#stdNote').textContent = s ? `${s.c}: ${s.n ? 'Partial match. ' + s.n : 'The settings match this standard.'}` : 'Pick a standard to set the module, problem types and level. "Not yet" standards need a problem type this maker does not have.';
+  const s = state.std.c ? stdInfo(state.std.c) : null;
+  $('#stdCur').textContent = s && s.preset ? state.std.c : '';
+  $('#stdNote').textContent = s && s.preset ? `${state.std.c}: ${s.status === 'partial' ? 'Partial match. ' + s.note : 'The settings match this standard.'}` : 'Pick a standard to set the module, problem types and level. "Not yet" standards need a problem type this maker does not have.';
 }
 let lastSingleMod = (state.module === 'combo' || state.module === 'mix') ? 'geom' : state.module;
 let lastMultiMod = state.module === 'mix' ? 'mix' : 'combo';

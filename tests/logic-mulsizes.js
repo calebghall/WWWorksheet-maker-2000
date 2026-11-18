@@ -25,5 +25,5 @@ for(const [da,db,da2,db2] of [[4,1,2,2],[3,1,2,2],[2,1,3,2],[4,2,1,1]]){
 {const s=SP.defaults();SP.applyStandard(s,'4.NBT.B.5');const P=s.parts||[];
   /* the preset is two Multiplication and Division parts; the alt setting stays in the generator for saved settings */
   if(!(P.length===2&&P.every(q=>q.m==='muldiv'&&q.md.mode==='digits'&&!q.md.div&&!q.md.alt)&&P[0].md.da===4&&P[0].md.db===1&&P[1].md.da===2&&P[1].md.db===2))issues.push('preset parts '+JSON.stringify(P));
-  const st=SP.STANDARDS.find(x=>x.c==='4.NBT.B.5');if(st.n)issues.push('preset still carries a partial note');}console.log('multiplication sizes checked',checked,'problems; issues',JSON.stringify(issues.slice(0,10)));
+  const st=SP.stdPreset('4.NBT.B.5');if(st.n)issues.push('preset still carries a partial note');}console.log('multiplication sizes checked',checked,'problems; issues',JSON.stringify(issues.slice(0,10)));
 process.exit(issues.length?1:0);

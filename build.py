@@ -13,6 +13,8 @@ def inc(m):
     return open(root + 'src/' + m.group(1), encoding='utf-8').read().rstrip('\n')
 
 
+import subprocess
+subprocess.run([sys.executable, root + 'tools/build_xw.py'], check=True, stdout=subprocess.DEVNULL)   # crosswalks -> src/js/core/standards-xw.js
 src = open(root + 'src/index.html', encoding='utf-8').read()
 if site:
     src = src.replace('js/modules/coin-images.js', 'js/modules/coin-paths.js')   # coins as files, not embedded

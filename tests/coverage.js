@@ -4,7 +4,7 @@ const root=path.join(__dirname,'..');
 const html=fs.readFileSync(path.join(root,'WWWorksheet-maker-2000.html'),'utf8');
 const js=html.split('<script>')[1].split('</script>')[0].split('/*==DOM==*/')[0];
 const ctx={Math,console,globalThis:null};ctx.globalThis=ctx;vm.createContext(ctx);vm.runInContext(js,ctx);
-const P={};ctx.__SP.STANDARDS.forEach(s=>{P[s.c]=s;});
+const SPX=ctx.__SP,FWID=(ctx.FRAMEWORK||vm.runInContext('FRAMEWORK',ctx)).id,P={};for(const c of Object.keys(SPX.STD_XW[FWID]||{})){const i=SPX.stdInfo(c,FWID);if(i.preset)P[c]=Object.assign({},i.preset,{n:i.status==='partial'?i.note:undefined});}
 const FW=ctx.FRAMEWORK||vm.runInContext('FRAMEWORK',ctx);
 const std=JSON.parse(fs.readFileSync(path.join(__dirname,'..','standards','tn.json'),'utf8')).rows;
 const G={K:'Kindergarten',1:'Grade 1',2:'Grade 2',3:'Grade 3',4:'Grade 4',5:'Grade 5'},MN={num:'Number Sense',oa:'Operations and Algebraic Thinking',frac:'Fractions, Decimals and Percents',time:'Time and Money',meas:'Measurement and Data',geom:'Geometry, Area and Volume',addsub:'Addition and Subtraction',muldiv:'Multiplication and Division',fdp:'Fractions, Decimals and Percents',ns:'Number Sense',tm:'Time and Money',area:'Area Squares',vis:'Shapes, Measures and Data'};

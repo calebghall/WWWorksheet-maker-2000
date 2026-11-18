@@ -51,9 +51,10 @@ for (const mods of [['addsub'], ['muldiv', 'fdp'], ['addsub', 'muldiv', 'fdp', '
   put(`mix|${mods.join('+')}`, st);
 }
 /* every standards preset */
-for (const s of SP.STANDARDS) for (const seed of ['A', 'B']) {
-  const st = SP.defaults(); Object.assign(st, { seed, pages: 2 }); SP.applyStandard(st, s.c);
-  put(`std|${s.c}|${seed}`, st);
+/* keyed by the Tennessee code, through the crosswalk, as before the canonical ids */
+for (const code of Object.keys(SP.STD_XW.tn)) if (SP.stdPreset(code)) for (const seed of ['A', 'B']) {
+  const st = SP.defaults(); Object.assign(st, { seed, pages: 2 }); SP.applyStandard(st, code);
+  put(`std|${code}|${seed}`, st);
 }
 
 if (process.argv.includes('--update')) {

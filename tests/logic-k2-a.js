@@ -30,6 +30,6 @@ for(const cap of [0,10,20,30,100,1000])for(const addends of [2,3,4])for(const se
 }
 /* presets: every K-2 addsub standard now has no note and uses a cap that matches its title */
 const want={'K.OA.A.2':10,'K.OA.A.5':10,'1.OA.A.2':20,'1.OA.C.5':20,'1.OA.C.6':20,'1.NBT.C.5':100,'2.OA.B.2':30,'2.NBT.B.5':100,'2.NBT.B.7':1000};
-for(const s of vm.runInContext("STANDARDS",ctx)){if(want[s.c]!==undefined){if(s.n)bad.push(s.c+' still has a note');if(s.as.cap!==want[s.c])bad.push(`${s.c} cap ${s.as.cap}, expected ${want[s.c]}`);}if(s.c==='2.NBT.B.6'&&(s.as.addends!==4||s.n))bad.push('2.NBT.B.6 should allow four addends with no note');}
+for(const code of Object.keys(vm.runInContext("STD_XW",ctx).tn)){const s=vm.runInContext("stdPreset",ctx)(code);if(!s)continue;if(want[code]!==undefined){if(s.n)bad.push(code+' still has a note');if(s.as.cap!==want[code])bad.push(`${code} cap ${s.as.cap}, expected ${want[code]}`);}if(code==='2.NBT.B.6'&&(s.as.addends!==4||s.n))bad.push('2.NBT.B.6 should allow four addends with no note');}
 console.log(`k2-a: ${n} problems checked; issues`,bad.slice(0,12),bad.length);
 process.exit(bad.length?1:0);

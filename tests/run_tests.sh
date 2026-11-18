@@ -10,6 +10,7 @@ node tests/logic-tm.js | tail -1
 node tests/logic-mix.js
 node tests/logic-gap.js
 node tests/logic-standards.js
+node tests/logic-crosswalk.js
 node tests/logic-vis.js
 node tests/logic-grey.js
 node tests/logic-dups.js
