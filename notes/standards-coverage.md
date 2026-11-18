@@ -1,12 +1,12 @@
 # Standards coverage
 
-Source: Tennessee Instructional Focus Documents, Kindergarten to Grade 5 (July 2025 binders). 150 standards.
+Source: Tennessee Instructional Focus Documents, Kindergarten to Grade 5 (July 2025 binders). 153 standards.
 
 - Supported: 150
 - Partial: 0
-- Gap: 0
+- Gap: 3
 
-Supported and Partial standards have a preset in the Tennessee standard panel of the worksheet maker. Partial presets list what differs from the standard. Gaps by grade: none. Kindergarten, Grade 1, Grade 2, Grade 3, Grade 4, Grade 5 have no gaps. Grade 4 gaps need new problem types for angles and for geometry classification and symmetry.
+Supported and Partial standards have a preset in the Tennessee standard panel of the worksheet maker. Partial presets list what differs from the standard. Gaps by grade: Grade 2 (1), Kindergarten (2). Grade 1, Grade 3, Grade 4, Grade 5 have no gaps. Grade 4 gaps need new problem types for angles and for geometry classification and symmetry.
 
 ## Kindergarten
 
@@ -14,10 +14,12 @@ Supported and Partial standards have a preset in the Tennessee standard panel of
 |---|---|---|---|
 | K.CC.A.1 | Count to 100 by ones, fives, and tens. Count backward from 10. | Supported | Number Sense: Count by fives and tens. |
 | K.CC.A.2 | Count forward by ones beginning from any given number within the known sequence (instead of having to... | Supported | Number Sense: Count on from any number. |
-| K.CC.A.3 | Write numbers from 0 to 20. Represent a quantity of objects with a written numeral 0-20. | Supported | Number Sense: Write numbers 0 to 20 and show quantities. |
+| K.CC.A.3 | Write numbers from 0 to 20. Represent a quantity of objects with a written number 0-20. | Supported | Number Sense: Write numbers 0 to 20 and show quantities. |
 | K.CC.A.4 | Recognize, describe, extend, and create patterns and explain a simple rule for a pattern using concrete... | Supported | Operations and Algebraic Thinking: Repeating patterns and the core. |
-| K.CC.B.5 | Understand the relationship between numbers and quantities; connect counting to cardinality. K.CC.B.5a.... | Supported | Number Sense: Count to tell how many. |
-| K.CC.B.6 | Count to answer “how many?” questions about as many as 20 things arranged in a line, a rectangular array,... | Supported | Number Sense: Count up to 20 in lines, arrays and circles. |
+| K.CC.B.5 | Understand the relationship between numbers and quantities; connect counting to cardinality. | Supported | Number Sense: Count to tell how many. |
+| K.CC.B.6 | Count to answer "how many?" questions about as many as 20 things arranged in a line, a rectangular array,... | Supported | Number Sense: Count up to 20 in lines, arrays and circles. |
+| K.CC.C.7 | Identify whether the number of objects in one group is greater than, less than, or equal to the number of... | Gap | No matching generator. |
+| K.CC.C.8 | Compare two given numbers up to 10, when written as numerals, using the terms greater than, less than, or... | Gap | No matching generator. |
 | K.OA.A.1 | Represent addition and subtraction with objects, fingers, drawings, acting out situations, verbal... | Supported | Number Sense: Show addition and subtraction with pictures. |
 | K.OA.A.2 | Add and subtract within 10 to solve contextual problems with result/total unknown involving situations of... | Supported | Addition and Subtraction: Add and subtract within 10. |
 | K.OA.A.3 | Decompose numbers less than or equal to 10 into addend pairs in more than one way (e.g., 5 = 2 + 3 and 5 =... | Supported | Operations and Algebraic Thinking: Decompose numbers to 10. |
@@ -41,8 +43,8 @@ Supported and Partial standards have a preset in the Tennessee standard panel of
 |---|---|---|---|
 | 1.OA.A.1 | Add and subtract within 20 to solve contextual problems, with unknowns in all positions, involving... | Supported | Number Sense: Add and subtract word problems within 20. |
 | 1.OA.A.2 | Add three whole numbers whose sum is within 20 to solve contextual problems using objects, drawings, and... | Supported | Addition and Subtraction: Add three numbers. |
-| 1.OA.B.3 | subtraction. Apply properties of operations (additive identity, commutative, and associative) as... | Supported | Operations and Algebraic Thinking: Properties of addition. |
-| 1.OA.B.4 | subtraction. Understand the relationship between addition and subtraction by representing subtraction as... | Supported | Operations and Algebraic Thinking: Subtraction as an unknown addend. |
+| 1.OA.B.3 | Apply properties of operations (additive identity, commutative, and associative) as strategies to add and... | Supported | Operations and Algebraic Thinking: Properties of addition. |
+| 1.OA.B.4 | Understand the relationship between addition and subtraction by representing subtraction as an... | Supported | Operations and Algebraic Thinking: Subtraction as an unknown addend. |
 | 1.OA.C.5 | Add and subtract within 20 using strategies such as counting on, counting back, making 10, related known... | Supported | Addition and Subtraction: Add and subtract within 20. |
 | 1.OA.C.6 | Use mental strategies flexibly and efficiently to develop fluency in addition and subtraction within 20.... | Supported | Addition and Subtraction: Addition and subtraction fluency within 20. |
 | 1.OA.D.7 | Understand the meaning of the equal sign (e.g., 6 = 6; 5 + 2 = 4 + 3; 7 = 8 – 1). Determine if equations... | Supported | Operations and Algebraic Thinking: Meaning of the equal sign. |
@@ -54,8 +56,8 @@ Supported and Partial standards have a preset in the Tennessee standard panel of
 | 1.NBT.C.5 | Add a two-digit number to a one-digit number and a two-digit number to a multiple of ten (within 100). Use... | Supported | Addition and Subtraction: Add a two-digit and a one-digit number. |
 | 1.NBT.C.6 | Mentally find 10 more or 10 less than a given two-digit number without having to count by ones and explain... | Supported | Number Sense: 10 more and 10 less. |
 | 1.NBT.C.7 | Subtract multiples of 10 from any number in the range of 10-99 using concrete models, drawings, strategies... | Supported | Operations and Algebraic Thinking: Subtract multiples of 10. |
-| 1.MD.A.1 | Order three objects by length. Compare the lengths of two objects indirectly by using a third object. For... | Supported | Measurement and Data: Order three objects by length. |
-| 1.MD.A.2 | Measure the length of an object using non-standard units (paper clips, cubes, etc.) and express this... | Supported | Measurement and Data: Measure with non-standard units. |
+| 1.MD.A.1 | Order three objects by length. Compare the lengths of two objects indirectly by using a third object. | Supported | Measurement and Data: Order three objects by length. |
+| 1.MD.A.2 | Measure the length of an object using nonstandard units (paper clips, cubes, etc.) and express this length... | Supported | Measurement and Data: Measure with non-standard units. |
 | 1.MD.B.3 | Recognize a clock as a measurement tool. Tell and write time in hours and half-hours using analog and... | Supported | Time and Money: Tell time to the hour and half hour. |
 | 1.MD.B.4 | Count the value of a set of like coins less than one dollar using the  symbol only. | Supported | Time and Money: Count coins under one dollar. |
 | 1.MD.C.5 | Organize, represent, and interpret data with up to three categories using pictographs, bar graphs, and... | Supported | Measurement and Data: Tally charts, pictographs and bar graphs. |
@@ -71,9 +73,10 @@ Supported and Partial standards have a preset in the Tennessee standard panel of
 | 2.OA.B.2 | Fluently add and subtract within 30 using mental strategies. By the end of 2nd grade, know all sums of two... | Supported | Addition and Subtraction: Fluently add and subtract within 30. |
 | 2.OA.C.3 | Determine whether a group of objects (up to 20) has an odd or even number of members by pairing objects or... | Supported | Number Sense: Odd and even. |
 | 2.OA.C.4 | Use repeated addition to find the total number of objects arranged in rectangular arrays with up to 5 rows... | Supported | Number Sense: Arrays and repeated addition. |
-| 2.OA.D.5 | Identify arithmetic patterns in an addition or hundreds chart and explain them using properties of... | Supported | Operations and Algebraic Thinking: Patterns in hundreds and addition charts. |
+| 2.OA.D.5 | Identify arithmetic patterns in an addition or hundreds chart and explain them using properties of operations. | Supported | Operations and Algebraic Thinking: Patterns in hundreds and addition charts. |
 | 2.NBT.A.1 | Know that the three digits of a three-digit number represent amounts of hundreds, tens, and ones (e.g.,... | Supported | Number Sense: Place value to hundreds. |
 | 2.NBT.A.2 | Recognize, describe, extend, and create patterns when counting by ones, twos, fives, tens, and hundreds... | Supported | Number Sense: Counting patterns. |
+| 2.NBT.A.3 | Read and write numbers to 1000 using standard form, word form, and expanded form. | Gap | No matching generator. |
 | 2.NBT.A.4 | Compare two three-digit numbers based on the meanings of the digits in each place and use the symbols >,... | Supported | Number Sense: Compare three-digit numbers. |
 | 2.NBT.B.5 | Fluently add and subtract within 100 using properties of operations, strategies based on place value,... | Supported | Addition and Subtraction: Add and subtract within 100. |
 | 2.NBT.B.6 | Add up to four two-digit numbers using properties of operations and strategies based on place value. | Supported | Addition and Subtraction: Add two-digit numbers. |
@@ -87,7 +90,7 @@ Supported and Partial standards have a preset in the Tennessee standard panel of
 | 2.MD.B.6 | Represent whole numbers as lengths from 0 on a number line and know that the points corresponding to the... | Supported | Number Sense: Number line sums and differences. |
 | 2.MD.C.7 | Tell and write time in quarter hours and to the nearest five minutes (in a.m. and p.m.) using analog and... | Supported | Time and Money: Tell time to five minutes. |
 | 2.MD.C.8 | Solve contextual problems involving amounts less than one dollar including quarters, dimes, nickels, and... | Supported | Time and Money: Coins under one dollar. |
-| 2.MD.D.9 | Given a set of data, create a line plot, where the horizonal scale is marked off in whole-number units. | Supported | Measurement and Data: Line plots. |
+| 2.MD.D.9 | Given a set of data, create a line plot, where the horizontal scale is marked off in whole-number units. | Supported | Measurement and Data: Line plots. |
 | 2.MD.D.10 | Draw a pictograph (with a key of values of 1, 2, 5, or 10) and a bar graph (with intervals of one) to... | Supported | Measurement and Data: Draw pictographs and bar graphs. |
 | 2.G.A.1 | Identify triangles, quadrilaterals, pentagons, and hexagons. Draw two-dimensional shapes having specified... | Supported | Geometry, Area and Volume: Name and draw polygons. |
 | 2.G.A.2 | Partition a rectangle into rows and columns of same-sized squares and find the total number of squares. | Supported | Geometry, Area and Volume: Count unit squares in a rectangle. |
@@ -101,26 +104,26 @@ Supported and Partial standards have a preset in the Tennessee standard panel of
 | 3.OA.A.2 | Interpret the dividend, divisor, and quotient in whole number division equations (e.g., 28 ÷ 7 can be... | Supported | Number Sense: Interpret dividend, divisor and quotient. |
 | 3.OA.A.3 | Multiply and divide within 100 to solve contextual problems, with the unknown in any positions, in... | Supported | Number Sense: Multiply and divide word problems. |
 | 3.OA.A.4 | Determine the unknown whole number in a multiplication or division equation relating three whole numbers... | Supported | Operations and Algebraic Thinking: Unknown number in a multiplication or division equation. |
-| 3.OA.B.5 | Apply properties of operations as strategies to multiply and divide. (Students do not need to use formal... | Supported | Operations and Algebraic Thinking: Properties of multiplication. |
-| 3.OA.B.6 | Understand division as an unknown-factor problem. For example, find 32 ÷ 8 by finding the number that... | Supported | Operations and Algebraic Thinking: Division as an unknown factor. |
+| 3.OA.B.5 | Apply properties of operations as strategies to multiply and divide. (Students need not use formal terms... | Supported | Operations and Algebraic Thinking: Properties of multiplication. |
+| 3.OA.B.6 | Understand division as an unknown-factor problem. | Supported | Operations and Algebraic Thinking: Division as an unknown factor. |
 | 3.OA.C.7 | Fluently multiply and divide within 100, using strategies such as the properties of operations or the... | Supported | Multiplication and Division: Multiply and divide within 100. |
 | 3.OA.D.8 | Solve two-step contextual problems using the four operations. Represent these problems using equations... | Supported | Number Sense: Two-step word problems. |
-| 3.OA.D.9 | Identify patterns in a multiplication chart and explain them using properties of operations. For example,... | Supported | Operations and Algebraic Thinking: Patterns in the multiplication chart. |
+| 3.OA.D.9 | Identify patterns in a multiplication chart and explain them using properties of operations. | Supported | Operations and Algebraic Thinking: Patterns in the multiplication chart. |
 | 3.NBT.A.1 | Round whole numbers to the nearest 10 or 100 using understanding of place value and use a number line to... | Supported | Number Sense: Round to the nearest 10 or 100. |
 | 3.NBT.A.2 | Fluently add and subtract within 1000 using strategies and algorithms based on place value, properties of... | Supported | Addition and Subtraction: Add and subtract within 1000. |
 | 3.NBT.A.3 | Multiply one-digit whole numbers by multiples of 10 in the range 10–90 (e.g., 9 x 80, 5 x 60) using... | Supported | Operations and Algebraic Thinking: Multiply by multiples of 10. |
 | 3.NBT.A.4 | Read and write multi-digit whole numbers (less than or equal to 100,000) using standard form, word form,... | Supported | Number Sense: Read and write numbers. |
-| 3.NF.A.1 | 1  Understand a fraction, , as the quantity formed by 1 part when a whole is partitioned into b equal... | Supported | Fractions, Decimals and Percents: Fractions as parts of a whole. |
-| 3.NF.A.2 | Understand a fraction as a number on the number line. Represent fractions on a number line. 1 3.NF.A.2a... | Supported | Fractions, Decimals and Percents: Fractions on a number line. |
-| 3.NF.A.3 | Explain equivalence of fractions and compare fractions by reasoning about their size. 3.NF.A.3a Understand... | Supported | Fractions, Decimals and Percents: Equivalent fractions and comparing fractions. |
-| 3.MD.A.1 | masses of objects. Solve contextual problems in time and money. 3.MD.A.1.a Tell and write time to the... | Supported | Time and Money: Time to the minute and elapsed time. |
-| 3.MD.A.2 | masses of objects. Measure the mass of objects and liquid volume using standard units of grams (g),... | Supported | Measurement and Data: Mass and liquid volume. |
+| 3.NF.A.1 | Understand a unit fraction, 1/b, as the quantity formed by 1 part when a whole is partitioned into b equal... | Supported | Fractions, Decimals and Percents: Fractions as parts of a whole. |
+| 3.NF.A.2 | Understand a fraction as a number on the number line. Represent fractions on a number line. | Supported | Fractions, Decimals and Percents: Fractions on a number line. |
+| 3.NF.A.3 | Explain equivalence of fractions and compare fractions by reasoning about their size. | Supported | Fractions, Decimals and Percents: Equivalent fractions and comparing fractions. |
+| 3.MD.A.1 | Solve contextual problems in time and money. | Supported | Time and Money: Time to the minute and elapsed time. |
+| 3.MD.A.2 | Measure the mass of objects and liquid volume using standard units of grams (g), kilograms (kg),... | Supported | Measurement and Data: Mass and liquid volume. |
 | 3.MD.B.3 | Draw a pictograph and a scaled bar graph to represent a data set with several categories. Solve one- and... | Supported | Measurement and Data: Scaled pictographs and bar graphs. |
 | 3.MD.B.4 | Generate measurement data by measuring lengths using rulers marked with halves and fourths of an inch.... | Supported | Measurement and Data: Measure to halves and fourths; line plots. |
-| 3.MD.C.5 | to addition. Recognize that plane figures have an area and understand concepts of area measurement.... | Supported | Geometry, Area and Volume: Area concepts. |
-| 3.MD.C.6 | to addition. Measure areas by counting unit squares (square centimeters, square meters, square inches,... | Supported | Geometry, Area and Volume: Measure area by counting unit squares. |
-| 3.MD.C.7 | to addition. Relate area of rectangles to the operations of multiplication and addition. 3.MD.C.7.a Find... | Supported | Geometry, Area and Volume: Area of rectangles. |
-| 3.MD.D.8 | between linear and area measures. Solve real-world and mathematical problems involving perimeters of... | Supported | Geometry, Area and Volume: Perimeter. |
+| 3.MD.C.5 | Recognize that plane figures have an area and understand concepts of area measurement. | Supported | Geometry, Area and Volume: Area concepts. |
+| 3.MD.C.6 | Measure areas by counting unit squares (square centimeters, square meters, square inches, square feet, and... | Supported | Geometry, Area and Volume: Measure area by counting unit squares. |
+| 3.MD.C.7 | Relate area of rectangles to the operations of multiplication and addition. | Supported | Geometry, Area and Volume: Area of rectangles. |
+| 3.MD.D.8 | Solve real-world and mathematical problems involving perimeters of polygons, including finding the... | Supported | Geometry, Area and Volume: Perimeter. |
 | 3.G.A.1 | Understand that shapes in different categories may share attributes and that the shared attributes can... | Supported | Geometry, Area and Volume: Quadrilateral categories. |
 | 3.G.A.2 | Partition shapes into parts with equal areas. Recognize that equal shares of identical wholes need not... | Supported | Fractions, Decimals and Percents: Equal areas and unit fractions. |
 | 3.G.A.3 | Determine if a figure is a polygon. | Supported | Geometry, Area and Volume: Is it a polygon?. |
@@ -130,8 +133,8 @@ Supported and Partial standards have a preset in the Tennessee standard panel of
 | Standard | Focus | Status | Module and notes |
 |---|---|---|---|
 | 4.OA.A.1 | Interpret a multiplication equation as a comparison (e.g., interpret 35 = 5 x 7 as a statement that 35 is... | Supported | Operations and Algebraic Thinking: Multiplicative comparison statements. |
-| 4.OA.A.2 | Multiply or divide to solve contextual problems involving multiplicative comparison and distinguish... | Supported | Number Sense: Multiplicative comparison word problems. |
-| 4.OA.A.3 | Solve multi-step contextual problems (posed with whole numbers and having whole number answers using the... | Supported | Number Sense: Multi-step word problems. |
+| 4.OA.A.2 | Multiply or divide to solve contextual problems involving multiplicative comparison, and distinguish... | Supported | Number Sense: Multiplicative comparison word problems. |
+| 4.OA.A.3 | Solve multi-step contextual problems (posed with whole numbers and having whole-number answers using the... | Supported | Number Sense: Multi-step word problems. |
 | 4.OA.B.4 | Find factor pairs for whole numbers in the range 1–100 using models. Recognize that a whole number is a... | Supported | Number Sense: Factors, multiples, prime and composite. |
 | 4.OA.C.5 | Generate a number or shape pattern that follows a given rule. Identify apparent features of the pattern... | Supported | Operations and Algebraic Thinking: Number and shape patterns. |
 | 4.NBT.A.1 | Recognize that in a multi-digit whole number (less than or equal to 1,000,000), a digit in one place... | Supported | Number Sense: Place value. |
@@ -140,17 +143,17 @@ Supported and Partial standards have a preset in the Tennessee standard panel of
 | 4.NBT.B.4 | Fluently add and subtract within 1,000,000 using efficient strategies and algorithms. | Supported | Addition and Subtraction: Add and subtract within 1,000,000. |
 | 4.NBT.B.5 | Multiply a whole number of up to four digits by a one-digit whole number and multiply two two-digit... | Supported | Multiplication and Division: Multiply four digits by one digit and two digits by two digits. |
 | 4.NBT.B.6 | Find whole-number quotients and remainders with up to four-digit dividends and one-digit divisors, using... | Supported | Multiplication and Division: Divide with remainders. |
-| 4.NF.A.1 | ÷ Explain why a fraction  is equivalent to a fraction or by using visual fraction models, with attention... | Supported | Fractions, Decimals and Percents: Equivalent fractions. |
+| 4.NF.A.1 | Explain why a fraction a/b is equivalent to a fraction (a x n)/(b x n) or (a ÷ n)/(b ÷ n) using visual... | Supported | Fractions, Decimals and Percents: Equivalent fractions. |
 | 4.NF.A.2 | Compare two fractions with different numerators and different denominators by creating common denominators... | Supported | Fractions, Decimals and Percents: Compare fractions. |
-| 4.NF.B.3 | on whole numbers.  1 4 1 1 1 1 Understand a fraction with a > 1 as a sum of fractions . For example, = + +... | Supported | Fractions, Decimals and Percents: Add and subtract fractions with like denominators. |
-| 4.NF.B.4 | on whole numbers. Apply and extend previous understandings of multiplication as repeated addition to... | Supported | Fractions, Decimals and Percents: Multiply a whole number by a fraction. |
-| 4.NF.C.5 | Express a fraction with denominator 10 as an equivalent fraction with denominator 100 and use this... | Supported | Fractions, Decimals and Percents: Tenths and hundredths. |
+| 4.NF.B.3 | Understand a fraction a/b with a > 1 as a sum of fractions 1/b. | Supported | Fractions, Decimals and Percents: Add and subtract fractions with like denominators. |
+| 4.NF.B.4 | Apply and extend understanding of multiplication as repeated addition to multiply a whole number by a... | Supported | Fractions, Decimals and Percents: Multiply a whole number by a fraction. |
+| 4.NF.C.5 | Express a fraction with denominator 10 as an equivalent fraction with denominator 100, and use this... | Supported | Fractions, Decimals and Percents: Tenths and hundredths. |
 | 4.NF.C.6 | Read and write decimal notation for fractions with denominators 10 or 100. Locate these decimals on a... | Supported | Fractions, Decimals and Percents: Fractions and decimals. |
 | 4.NF.C.7 | Compare two decimals to hundredths by reasoning about their size. Recognize that comparisons are valid... | Supported | Number Sense: Compare decimals. |
 | 4.MD.A.1 | Measure and estimate to determine relative sizes of measurement units within a single system of... | Supported | Measurement and Data: Convert measurement units. |
 | 4.MD.A.2 | Solve one- or two-step real-world problems involving whole number measurements (including length, liquid... | Supported | Number Sense: Measurement word problems. |
-| 4.MD.A.3 | Know and apply the area and perimeter formulas for rectangles in real- world and mathematical contexts.... | Supported | Geometry, Area and Volume: Area and perimeter of rectangles. |
-| 4.MD.B.4 | 1 1 1 Make a line plot to display a data set of measurements in fractions of the same unit ( or or ). Use... | Supported | Measurement and Data: Line plots with fractional units. |
+| 4.MD.A.3 | Know and apply the area and perimeter formulas for rectangles in real world and mathematical contexts. | Supported | Geometry, Area and Volume: Area and perimeter of rectangles. |
+| 4.MD.B.4 | Make a line plot to display a data set of measurements in fractions of the same unit ( or  or 1/8). Use... | Supported | Measurement and Data: Line plots with fractional units. |
 | 4.MD.C.5 | Recognize angles as geometric shapes that are formed wherever two rays share a common endpoint; and... | Supported | Geometry, Area and Volume: Angles and parts of a circle. |
 | 4.MD.C.6 | Measure angles in whole-number degrees using a protractor. Sketch angles of specified measure. | Supported | Geometry, Area and Volume: Measure and draw angles with a protractor. |
 | 4.MD.C.7 | Recognize angle measure as additive. When an angle is decomposed into non-overlapping parts, the angle... | Supported | Geometry, Area and Volume: Angle measure is additive. |
@@ -164,9 +167,9 @@ Supported and Partial standards have a preset in the Tennessee standard panel of
 |---|---|---|---|
 | 5.OA.A.1 | Use parentheses and/or brackets in numerical expressions involving whole numbers and evaluate expressions... | Supported | Operations and Algebraic Thinking: Evaluate expressions with grouping symbols. |
 | 5.OA.A.2 | Write numerical expressions that record calculations with numbers and interpret numerical expressions... | Supported | Operations and Algebraic Thinking: Write and interpret expressions. |
-| 5.OA.B.3 | Generate two numerical patterns using two given rules. For example, given the rule "Add 3" and the... | Supported | Operations and Algebraic Thinking: Two patterns from two rules. |
+| 5.OA.B.3 | Generate two numerical patterns using two given rules. | Supported | Operations and Algebraic Thinking: Two patterns from two rules. |
 | 5.NBT.A.1 | Recognize that in a multi-digit number, a digit in one place represents 10 times as much as it represents... | Supported | Fractions, Decimals and Percents: Ten times and one tenth. |
-| 5.NBT.A.2 | Explain patterns in the number of zeros of the product when multiplying a number by powers of 10 and... | Supported | Fractions, Decimals and Percents: Powers of 10. |
+| 5.NBT.A.2 | Explain patterns in the number of zeros of the product when multiplying a number by powers of 10, and... | Supported | Fractions, Decimals and Percents: Powers of 10. |
 | 5.NBT.A.3 | Read and write decimals to thousandths using standard form, word form, and expanded notation (e.g., the... | Supported | Fractions, Decimals and Percents and Number Sense: Read, write and compare decimals. |
 | 5.NBT.A.4 | Round decimals to the nearest hundredth, tenth, or whole number using understanding of place value, and... | Supported | Fractions, Decimals and Percents: Round decimals. |
 | 5.NBT.B.5 | Fluently multiply multi-digit whole numbers (up to three-digit by four-digit factors) using efficient... | Supported | Multiplication and Division: Multiply up to three digits by four digits. |
@@ -174,14 +177,14 @@ Supported and Partial standards have a preset in the Tennessee standard panel of
 | 5.NBT.B.7 | Add, subtract, multiply, and divide decimals to hundredths, using concrete models or drawings and... | Supported | Fractions, Decimals and Percents: Add, subtract, multiply and divide decimals. |
 | 5.NF.A.1 | Add and subtract fractions with unlike denominators (including mixed numbers) by replacing given fractions... | Supported | Fractions, Decimals and Percents: Add and subtract fractions and mixed numbers. |
 | 5.NF.A.2 | Solve contextual problems involving addition and subtraction of fractions referring to the same whole,... | Supported | Fractions, Decimals and Percents: Fraction addition and subtraction problems. |
-| 5.NF.B.3 | Interpret a fraction as division of the numerator by the denominator ( = a ÷ b). For example, = 3 ÷ 4 so... | Supported | Fractions, Decimals and Percents: A fraction is a division. |
+| 5.NF.B.3 | Interpret a fraction as division of the numerator by the denominator (a/b = a ÷ b). | Supported | Fractions, Decimals and Percents: A fraction is a division. |
 | 5.NF.B.4 | Apply and extend previous understandings of multiplication to multiply a fraction by a whole number or a... | Supported | Fractions, Decimals and Percents: Multiply fractions. |
-| 5.NF.B.5 | Interpret multiplication as scaling (resizing). 5.NF.B.5.a Compare the size of a product to the size of... | Supported | Fractions, Decimals and Percents: Multiplication as scaling. |
+| 5.NF.B.5 | Interpret multiplication as scaling (resizing). | Supported | Fractions, Decimals and Percents: Multiplication as scaling. |
 | 5.NF.B.6 | Solve real-world problems involving multiplication of fractions and mixed numbers by using visual fraction... | Supported | Fractions, Decimals and Percents: Fraction multiplication problems. |
 | 5.NF.B.7 | Apply and extend previous understandings of division to divide unit fractions by whole numbers and whole... | Supported | Fractions, Decimals and Percents: Divide unit fractions. |
 | 5.MD.A.1 | Convert customary and metric measurement units within a single system by expressing measurements of a... | Supported | Measurement and Data: Convert units, decimals and fractions. |
-| 5.MD.B.2 | Make a line plot to display a data set of measurements in fractions of a unit (1/2, 1/4, 1/8). Use... | Supported | Measurement and Data: Line plots and operations. |
-| 5.MD.C.3 | Recognize volume as an attribute of solid figures and understand concepts of volume measurement.... | Supported | Geometry, Area and Volume: Volume and unit cubes. |
+| 5.MD.B.2 | Make a line plot to display a data set of measurements in fractions of a unit (, , 1/8). Use operations on... | Supported | Measurement and Data: Line plots and operations. |
+| 5.MD.C.3 | Recognize volume as an attribute of solid figures and understand concepts of volume measurement. | Supported | Geometry, Area and Volume: Volume and unit cubes. |
 | 5.MD.C.4 | Measure volume by counting unit cubes, using cubic centimeters, cubic inches, cubic feet, and improvised... | Supported | Geometry, Area and Volume: Measure volume by counting unit cubes. |
 | 5.MD.C.5 | Relate volume to the operations of multiplication and addition and solve real-world and mathematical... | Supported | Geometry, Area and Volume: Volume of rectangular prisms. |
 | 5.G.A.1 | Graph ordered pairs and label points using the first quadrant of the coordinate plane. Understand in the... | Supported | Geometry, Area and Volume: Graph and name points in the first quadrant. |

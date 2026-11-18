@@ -31,9 +31,10 @@ def rows_from(path):
         for a in reversed(v.get('ancestorIds', [])):
             if s.get(a, {}).get('statementLabel') == 'Cluster':
                 cl = s[a]; break
+        dom = s.get(cl.get('parentId'), {}).get('description', '')
         comps = [c['description'].strip() for c in sorted(kids.get(v['id'], []), key=lambda x: x['position'])]
         out[code] = {'practice': practice, 'grade': g, 'cluster': cl.get('description', ''),
-            'clusterCode': cl.get('statementNotation', ''), 'text': v['description'].strip(),
+            'clusterCode': cl.get('statementNotation', ''), 'domain': dom, 'text': v['description'].strip(),
             'components': comps, 'guid': v['id'], 'asn': v.get('asnIdentifier', '')}
     meta = {k: d['document'].get(k) for k in ('title', 'valid', 'publicationStatus', 'sourceURL')}
     meta['license'] = d.get('license')

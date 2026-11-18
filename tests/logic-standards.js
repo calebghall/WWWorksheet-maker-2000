@@ -3,7 +3,7 @@ const html=fs.readFileSync(path.join(__dirname,'..','WWWorksheet-maker-2000.html
 const js=html.split('<script>')[1].split('</script>')[0].split('/*==DOM==*/')[0];
 const ctx={Math,console,globalThis:null};ctx.globalThis=ctx;vm.createContext(ctx);vm.runInContext(js,ctx);
 const SP=ctx.__SP,bad=[];
-const std=JSON.parse(fs.readFileSync(path.join(__dirname,'standards.json'),'utf8'));
+const std=JSON.parse(fs.readFileSync(path.join(__dirname,'..','standards','tn.json'),'utf8')).rows;
 const seen=new Set();
 /* Checks the problems of one module configuration against the preset (or part) that set it. */
 function checkUnit(code,m,spec,st,p,fix){

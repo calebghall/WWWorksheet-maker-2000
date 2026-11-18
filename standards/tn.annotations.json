@@ -1,0 +1,385 @@
+{
+ "K.MD.A.2": {
+  "guid": "C964F1FC57E247E09EF54A24E19609D9",
+  "status": "ok",
+  "kinds": [
+   "example"
+  ],
+  "text": "For example, directly compare the heights of two children and describe one child as taller/shorter.",
+  "savedRaw": null
+ },
+ "1.OA.A.1": {
+  "guid": "9D19CA7F583E45408CB655BDBE9AEF14",
+  "status": "ok",
+  "kinds": [
+   "note",
+   "table"
+  ],
+  "text": "NOTE: While start unknown situations may be introduced in first grade, they are not expected to be mastered until second grade. (See Table 1-Addition and Subtraction Situations)",
+  "savedRaw": null
+ },
+ "1.OA.B.3": {
+  "guid": "F57FC6A02A0C4FDBBA4324F9F0335DDC",
+  "status": "ok",
+  "kinds": [
+   "table"
+  ],
+  "text": "(See Table 3-Properties of Operations)",
+  "savedRaw": null
+ },
+ "1.OA.B.4": {
+  "guid": "8D3053CD58074A7E9CEF7A8636D44C38",
+  "status": "ok",
+  "kinds": [
+   "example",
+   "table"
+  ],
+  "text": "For example, to solve 10 – 8 = __, a student can use 8 + __ = 10. (See Table 3-Properties of Operations)",
+  "savedRaw": null
+ },
+ "1.OA.D.8": {
+  "guid": "97D1A322B2DB4034AFC0C431D8269D37",
+  "status": "ok",
+  "kinds": [
+   "table"
+  ],
+  "text": "(See Table 3-Properties of Operations)",
+  "savedRaw": null
+ },
+ "1.NBT.A.2": {
+  "guid": "F704A76EB3504FC899D31DC3DCDE310D",
+  "status": "ok",
+  "kinds": [
+   "example"
+  ],
+  "text": "For example: 1, 3, 5, ...; 2, 4, 6, ...; 5, 10, 15, ...; etc.",
+  "savedRaw": null
+ },
+ "1.MD.A.1": {
+  "guid": "5FD96647DFC340BC8A2C6B7AAFB276C1",
+  "status": "ok",
+  "kinds": [
+   "example"
+  ],
+  "text": "For example, to compare indirectly the heights of Bill and Susan: if Bill is taller than mother and mother is taller than Susan, then Bill is taller than Susan.",
+  "savedRaw": null
+ },
+ "2.OA.A.1": {
+  "guid": "5F08EE36602942C9804333E83E4BA9E1",
+  "status": "ok",
+  "kinds": [
+   "table"
+  ],
+  "text": "(See Table 1 - Addition and Subtraction Situations)",
+  "savedRaw": null
+ },
+ "2.OA.C.4": {
+  "guid": "36EF31978BA743449A0D71D1890559F5",
+  "status": "ok",
+  "kinds": [
+   "example"
+  ],
+  "text": "For example, a 3 by 4 array can be expressed as 3 + 3 + 3 + 3 = 12 or 4 + 4 + 4 = 12.",
+  "savedRaw": null
+ },
+ "2.OA.D.5": {
+  "guid": "AB672CB9518D4518B070383C7F922C05",
+  "status": "ok",
+  "kinds": [
+   "example",
+   "table"
+  ],
+  "text": "For example, analyze patterns in the addition chart and observe an alternating pattern of even and odd numbers (because each time we move to the right one box or down one box, we are adding one more to our sum: (2 + 3) + 1 = 2 + (3 + 1) = 2 + 4 which uses the associative property of addition). (See Table 3 - Properties of Operations)",
+  "savedRaw": null
+ },
+ "2.NBT.A.2": {
+  "guid": "F70C64E5B32E4B838F0EBDD99D618522",
+  "status": "ok",
+  "kinds": [
+   "example"
+  ],
+  "text": "For example: 111, 113, 115, ...; 82, 84, 86, ...; 370, 380, 390, ...; 100, 200, 300, …; etc.",
+  "savedRaw": null
+ },
+ "2.MD.B.5": {
+  "guid": "1475FE4E1DF64A61BED3D3AA31D6E21A",
+  "status": "ok",
+  "kinds": [
+   "table"
+  ],
+  "text": "(See Table 1 – Addition and Subtraction Situations)",
+  "savedRaw": null
+ },
+ "3.OA.A.3": {
+  "guid": "C932BD60154F4B8A9FC1F89E13F8D205",
+  "status": "ok",
+  "kinds": [
+   "table"
+  ],
+  "text": "(See Table 2 - Multiplication and Division Situations).",
+  "savedRaw": null
+ },
+ "3.OA.A.4": {
+  "guid": "8B3676706B994289A99E782AD6C585A5",
+  "status": "ok",
+  "kinds": [
+   "example"
+  ],
+  "text": "For example, determine the unknown number that makes the equation true in each of the equations: 8 x ? = 48, 5 = ? ÷ 3, 6 x 6 =?.",
+  "savedRaw": null
+ },
+ "3.OA.B.5": {
+  "guid": "969231C309B74B86936EC10534FB3281",
+  "status": "ok",
+  "kinds": [
+   "example"
+  ],
+  "text": "Examples: If 6 x 4 = 24 is known, then 4 x 6 = 24 is also known (commutative property of multiplication). 3 x 5 x 2 can be solved by (3 x 5) x 2 or 3 x (5 x 2) (associative property of multiplication). One way to find 8 x 7 is by using 8 x (5 + 2) = (8 x 5) + (8 x 2). By knowing that 8 x 5 = 40 and 8 x 2 = 16, then 8 x 7 = 40 + 16 = 56 (distributive property of multiplication over addition).",
+  "savedRaw": null
+ },
+ "3.OA.B.6": {
+  "guid": "1DCC0531AFE14941BA681C55D5D37CCE",
+  "status": "ok",
+  "kinds": [
+   "example"
+  ],
+  "text": "For example, find 32 ÷ 8 by finding the number that makes 32 when multiplied by 8.",
+  "savedRaw": null
+ },
+ "3.OA.D.8": {
+  "guid": "B77E6D3E5EE542B4A36FA9C6CDB0C8C2",
+  "status": "ok",
+  "kinds": [
+   "table"
+  ],
+  "text": "(See Table 1 - Addition and Subtraction Situations and Table 2 - Multiplication and Division Situations).",
+  "savedRaw": null
+ },
+ "3.OA.D.9": {
+  "guid": "A866486B699542AD8EE2AC411C8162D0",
+  "status": "ok",
+  "kinds": [
+   "example",
+   "table"
+  ],
+  "text": "For example, in the multiplication chart, observe that 4 times a number is always even (because 4 x 6 = (2 x 2) x 6 = 2 x (2 x 6), which uses the associative property of multiplication) or, for example, observe that 6 times 7 is one more group of 7 than 5 times 7 (because 6 x 7 = (5 + 1) x 7 = (5 x 7) + (1 x 7), which uses the distributive property of multiplication over addition). (See Table 3 - Properties of Operations)",
+  "savedRaw": null
+ },
+ "3.NF.A.1": {
+  "guid": "AE2B47432233467082D9DA79715973A3",
+  "status": "retype",
+  "kinds": [
+   "example"
+  ],
+  "text": null,
+  "savedRaw": "For example, represents a quantity formed by 3 parts of size . 𝑏𝑏 4 4"
+ },
+ "3.NF.A.2": {
+  "guid": "91A33C2234E94E45BB33ED6B602EFA63",
+  "status": "retype",
+  "kinds": [
+   "example"
+  ],
+  "text": null,
+  "savedRaw": "For example, on a number line from 0 to 1, students can 𝑏𝑏 𝑏𝑏 1 1 partition it into 4 equal parts and recognize that each part represents a length of and the first part has an endpoint at on the number line. 4 4 𝑛𝑛 𝑛𝑛 𝑛𝑛 3.NF.A.2b Represent a fraction on a number line diagram by marking off n lengths from 0. Recognize that the resulting interval has size and that its 𝑏𝑏 𝑏𝑏 𝑏𝑏 𝑛𝑛 5 1 endpoint locates the number on the number line. For example, is the distance from 0 when there are 5 iterations of . 𝑏𝑏 3 3"
+ },
+ "3.NF.A.3": {
+  "guid": "58BFEC9F26B6409EA921EA2339F49CB1",
+  "status": "retype",
+  "kinds": [
+   "example"
+  ],
+  "text": null,
+  "savedRaw": "For example, express 3 in the form 3 = ; 1 6 4 recognize that = 6; locate and 1 at the same point on a number line diagram. 1 4 3.NF.A.3d Compare two fractions with the same numerator or the same denominator by reasoning about their size. Recognize that comparisons are valid only when the two fractions refer to the same whole. Use the symbols >, =, or < to show the relationship and justify the conclusions."
+ },
+ "3.MD.A.2": {
+  "guid": "13D247F05DC64E05899817D4A62FAC30",
+  "status": "ok",
+  "kinds": [
+   "example"
+  ],
+  "text": "For example, a large paper clip is about one gram, so a box of about 100 large clips is about 100 grams.",
+  "savedRaw": null
+ },
+ "3.MD.C.7": {
+  "guid": "3D1EF273CBF44DF2999FD3651F3B1874",
+  "status": "retype",
+  "kinds": [
+   "example",
+   "table"
+  ],
+  "text": null,
+  "savedRaw": "For example, in a rectangle with dimensions 4 by 6, students can decompose the rectangle into 4 x 3 and 4 x 3 to find the total area of 4 x 6. (See Table 3 - Properties of Operations) 3.MD.C.7.d Recognize area as additive. Find areas of rectilinear figures by decomposing them into non-overlapping rectangles and adding the areas of the non-overlapping parts, applying this technique to solve real-world problems."
+ },
+ "4.OA.A.2": {
+  "guid": "C77336515A944ADEABE72B3AEA092C03",
+  "status": "ok",
+  "kinds": [
+   "example"
+  ],
+  "text": "For example, school A has 300 students and school B has 600 students: to say that school B has two times as many students is an example of multiplicative comparison; to say that school B has 300 more students is an example of additive comparison.",
+  "savedRaw": null
+ },
+ "4.OA.C.5": {
+  "guid": "1B7CA1A0B00E4DF0A49681964419F90F",
+  "status": "ok",
+  "kinds": [
+   "example"
+  ],
+  "text": "For example, given the rule \"Add 3\" and the starting number 1, generate terms in the resulting sequence and observe that the terms appear to alternate between odd and even numbers. Explain informally why the numbers will continue to alternate in this way.",
+  "savedRaw": null
+ },
+ "4.NBT.A.1": {
+  "guid": "CBD2E3EFB4D14E3CA71958E14C5B6BED",
+  "status": "ok",
+  "kinds": [
+   "example"
+  ],
+  "text": "For example, recognize that 7 in 700 is 10 times bigger than the 7 in 70 because 700 ÷ 70 = 10 and 70 x 10 = 700.",
+  "savedRaw": null
+ },
+ "4.NF.A.1": {
+  "guid": "5592A38A4CDB4C3DB30C0030079EBC76",
+  "status": "retype",
+  "kinds": [
+   "example"
+  ],
+  "text": null,
+  "savedRaw": "For example, = = . 4 4𝑥𝑥2 8"
+ },
+ "4.NF.B.3": {
+  "guid": "8D10A691C1CF42B9B22EAE1050AECE8E",
+  "status": "retype",
+  "kinds": [
+   "example"
+  ],
+  "text": null,
+  "savedRaw": "For example, = + + + . 𝑏𝑏 𝑏𝑏 5 5 5 5 5 4.NF.B.3a Understand addition and subtraction of fractions as joining and separating parts referring to the same whole. 3 1 1 1 3 1 2 1 1 8 8 4.NF.B.3b Decompose a fraction into a sum of fractions with the same denominator in more than one way (e.g., = + + ; = + ; 2 = 1 + 1 + = + 8 8 8 8 8 8 8 8 8 8 8 1 + ), recording each decomposition by an equation. Justify decompositions by using a visual fraction model. 8 4.NF.B.3c Add and subtract mixed numbers with like denominators by replacing each mixed number with an equivalent fraction and/or by using properties of operations and the relationship between addition and subtraction. 4.NF.B.3d Solve contextual problems involving addition and subtraction referring to the same whole and having like denominators."
+ },
+ "4.NF.B.4": {
+  "guid": "E3ED38E44A9A45188446497591EF73A1",
+  "status": "retype",
+  "kinds": [
+   "example"
+  ],
+  "text": null,
+  "savedRaw": "For example, use a visual fraction model to represent as the product 5 × , recording the conclusion by 𝑏𝑏 𝑏𝑏 4 4 5 the equation = 5 x 14. 4 𝑎𝑎 1 4.NF.B.4b Understand a multiple of as a multiple of and use this understanding to multiply a whole number by a fraction. For example, use a visual 𝑏𝑏 𝑏𝑏 2 1 6 𝑎𝑎 𝑛𝑛 ×𝑎𝑎 1 fraction model to express 3 × as 6 × , recognizing this product as . (In general, 𝑛𝑛 x = = (𝑛𝑛 x 𝑎𝑎) x .) 5 5 5 𝑏𝑏 𝑏𝑏 𝑏𝑏 4.NF.B.4c Solve contextual problems involving multiplication of a whole number by a fraction (e.g., by using visual fraction models and equations to represent 3 the problem). For example, if each person at a party will eat of a pound of roast beef, and there will be 4 people at the party, how many pounds of roast beef will 8 be needed? Between what two whole numbers does your answer lie?"
+ },
+ "4.MD.A.3": {
+  "guid": "8C3383B315E0455391AC8A1125404CC1",
+  "status": "ok",
+  "kinds": [
+   "example"
+  ],
+  "text": "For example, find the width of a rectangular room given the area of the flooring and the length, by viewing the area formula as a multiplication equation with an unknown factor.",
+  "savedRaw": null
+ },
+ "4.MD.B.4": {
+  "guid": "9BCC4F05859E4EC8AA5555011D1C848F",
+  "status": "retype",
+  "kinds": [
+   "example"
+  ],
+  "text": null,
+  "savedRaw": "For example, from a line plot find and interpret the difference in length between the longest and shortest specimens in an insect collection."
+ },
+ "5.OA.A.2": {
+  "guid": "27783B694DA543F6A0B2651D2A6E85BC",
+  "status": "ok",
+  "kinds": [
+   "example"
+  ],
+  "text": "For example, express the calculation \"add 8 and 7, then multiply by 2\" as 2 x (8 + 7). Recognize that 3 x (18,932 + 921) is three times as large as 18,932 + 921, without having to calculate the indicated sum or product.",
+  "savedRaw": null
+ },
+ "5.OA.B.3": {
+  "guid": "0F914A9A8FDB43A3B08EBB9F3CD1B7BD",
+  "status": "retype",
+  "kinds": [
+   "example"
+  ],
+  "text": null,
+  "savedRaw": "For example, given the rule \"Add 3\" and the starting number 0, and given the rule \"Add 6\" and the starting number 0, generate terms in the resulting sequences. 5.OA.B.3.a Identify relationships between corresponding terms in two numerical patterns. 5.OA.B.3.b Form ordered pairs (limited to first quadrant) consisting of corresponding terms from two numerical patterns and graph the ordered pairs on a coordinate plane."
+ },
+ "5.NF.A.1": {
+  "guid": "4DB6479EDFEB4AA5A9E5281E107C32CA",
+  "status": "retype",
+  "kinds": [
+   "example"
+  ],
+  "text": null,
+  "savedRaw": "For example, + + or + + . 3 12 2 2 10 0 0 0"
+ },
+ "5.NF.A.2": {
+  "guid": "FD3F6653E7764EBB98F02EBAEA97391B",
+  "status": "retype",
+  "kinds": [
+   "example"
+  ],
+  "text": null,
+  "savedRaw": "For example, recognize an incorrect 2 3 1 result + , by observing that < . 5 7 2"
+ },
+ "5.NF.B.3": {
+  "guid": "E5165F602AF04B6E89639A8420FA594D",
+  "status": "retype",
+  "kinds": [
+   "example"
+  ],
+  "text": null,
+  "savedRaw": "For example, = 3 ÷ 4 so when 3 wholes are shared equally among 4 people, 3 each person has a share of size . Solve contextual problems involving division of whole numbers leading to answers in the form of fractions or mixed 4 numbers by using visual fraction models or equations to represent the problem. For example, if 8 people want to share 49 sheets of construction paper equally, how many sheets will each person receive? Between what two whole numbers does your answer lie?"
+ },
+ "5.NF.B.4": {
+  "guid": "9A5FDAC2F51D482FA096A545D6A8F381",
+  "status": "retype",
+  "kinds": [
+   "example"
+  ],
+  "text": null,
+  "savedRaw": "For example, use a visual fraction model or write a story context to 2 4 show that x 6 can be interpreted as 2 x (6 ÷ 3) or (2 x 6) ÷ 3. Do the same with . (In general, .) 3 5 5 .NF.B.4.b Find the area of a rectangle with fractional side lengths by tiling it with unit squares of the appropriate unit fraction side lengths, and show that the area is the same as would be found by multiplying the side lengths. Multiply fractional side lengths to find areas of rectangles and represent fraction products as rectangular areas."
+ },
+ "5.NF.B.5": {
+  "guid": "245577A2796748BBA6A66DA101352756",
+  "status": "retype",
+  "kinds": [
+   "example"
+  ],
+  "text": null,
+  "savedRaw": "For example, know if the product will be greater than, less than, or equal to the factors. 5.NF.B.5.b Explain why multiplying a given number by a fraction greater than 1 results in a product greater than the given number (recognizing multiplication by whole numbers greater than 1 as a familiar case); explain why multiplying a given number by a fraction between 0 and 1 results in a roduct less than the given number; and relate the principle of fraction equivalence = o the effect of multiplying by 1."
+ },
+ "5.NF.B.7": {
+  "guid": "AF7560435DA94220B0F1817CBACBD42D",
+  "status": "retype",
+  "kinds": [
+   "example"
+  ],
+  "text": null,
+  "savedRaw": "For example, use visual models and the relationship 1 1 between multiplication and division to explain that ÷ 4 = because ( ) × 4 = . In other words, when thirds are partitioned into 4 equal groups, they become 3 2 2 twelfths. 5.NF.B.7.b Interpret division of a whole number by a unit fraction and compute such quotients. For example, use visual models and the relationship between 1 1 multiplication and division to explain that 4 ÷ = 20 because 20 x ( ) = 4 (i.e., there are 20 groups of inside 4 wholes and connect this to × 4. ) 5 5 5.NF.B.7.c Solve real-world problems involving division of unit fractions by non-zero whole numbers and division of whole numbers by unit fractions and non-unit fractions by using visual fraction models and equations to represent the problem. For example, how much chocolate will each person get if 3 people 1 share lb of chocolate equally? How many cup servings are in 2 cups of raisins? 2"
+ },
+ "5.MD.A.1": {
+  "guid": "B0FFF49751884302A184A741A361F53C",
+  "status": "ok",
+  "kinds": [
+   "example"
+  ],
+  "text": "For example, 3.6 liters and 4.1 liters can be combined as 7.7 liters or 7700 milliliters.",
+  "savedRaw": null
+ },
+ "5.MD.B.2": {
+  "guid": "E8C03E7F305F42C88A7E5CCE292D8059",
+  "status": "ok",
+  "kinds": [
+   "example"
+  ],
+  "text": "For example, given different measurements of liquid in identical beakers, find the amount of liquid each beaker would contain if the total amount in all the beakers were redistributed equally.",
+  "savedRaw": null
+ },
+ "5.G.B.3": {
+  "guid": "7DFCE9D91B244908BEE6342FD2C951F0",
+  "status": "ok",
+  "kinds": [
+   "example"
+  ],
+  "text": "For example, all rectangles have four right angles and squares are rectangles, so all squares have four right angles.",
+  "savedRaw": null
+ }
+}

@@ -3,5 +3,5 @@
 const FRAMEWORK = {
   id: 'tn',
   name: 'Tennessee',
-  source: 'Tennessee Instructional Focus Documents, Kindergarten to Grade 5 (July 2025 binders)'
+  source: 'Tennessee Academic Standards: Mathematics K-4th Year (2023), imported from the Common Standards Project'
 };
