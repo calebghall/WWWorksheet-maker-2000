@@ -225,6 +225,14 @@ Steps:
 
 Exit per state: every row in the state's K to 5 standards is Supported, Partial with a note, or an explicit Gap in its coverage note.
 
+## Standards panel enhancements
+
+Requested 2026-11-18. Not started; none of these depends on another phase. They apply to every framework.
+
+- **Multi-select.** Select several standards in the list and build one worksheet from them. Each selected standard resolves through its crosswalk row (`stdPreset`), and the result is a Combined Worksheet with one part per standard, flattened like a multi-target row (`stdPreset` already builds that for a row with several targets). To decide: how selection looks in the list (checkbox or toggle), whether it survives a grade change and a framework change, a limit that matches the part limit (16), and whether Gap standards are skipped with a message.
+- **Full standard text.** The list shows a one-line focus that is cut off. Show the full text somewhere: for example expanding a row, a detail area under the list for the highlighted standard, or a tooltip. The text is in `standards/<fw>.json` (`text`, `components`) but the page payload carries only the short focus, so the payload would need the full text, with a size check on the site build. Annotations (examples, notes) could appear with it.
+- **All standards includes every standard.** The "All standards for this grade" option must cover all the standards of the grade. See [issue 6](https://github.com/calebghall/WWWorksheet-maker-2000/issues/6) (the issue text was not read when this note was written). Today `gradeStandardParts` keeps the hardest preset for Add and Subtract and for Multiply and Divide, merges the types of each other family into one section, and drops a standard's own level and wording. `logic-standards.js` checks that every preset type of the grade appears, not that every standard does. A coverage test should check each supported or partial standard of the grade by its crosswalk row, including standards that map to the same preset.
+
 ## Additional items
 
 Small pieces that the phases above depend on or that are easy to miss:
