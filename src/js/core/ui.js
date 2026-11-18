@@ -15,7 +15,7 @@ function defaults() {
     num: strandDefaults('num'), oa: strandDefaults('oa'), frac: strandDefaults('frac'), time: strandDefaults('time'), meas: strandDefaults('meas'),
     geom: Object.assign(strandDefaults('geom'), { unit: 'units', shade: true }),
     combo,
-    std: { g: 'K', c: '' },
+    std: { f: FRAMEWORK.id, g: 'K', c: '' },
     parts: null,
     pages: 1, paper: 'letter', nameLine: true, key: true, grey: false, seed: newSeed()
   };
@@ -39,7 +39,7 @@ function bugReportUrl(st, agent) {
   const withParts = q(JSON.stringify({ module: st.module, seed: st.seed, level: st.level, std: st.std, parts: st.parts, combo: st.combo }));
   return withParts.length <= 6000 ? withParts : q(JSON.stringify({ module: st.module, seed: st.seed, level: st.level, std: st.std }));
 }
-globalThis.__SP = { applyGradeStandards, gradeStandardParts, bugReportUrl, FGEN, NGEN, generateSet, renderAll, defaults, rngFrom, LEVELS, UNITS, TYPE_IDS, geom, svg, carries, borrows, arLayout, needSize, REG, META, comboSections, comboPages, genArithN, genAreaN, TGEN, flowPack, mixLayout, mixItems, STANDARDS, applyStandard, stdList, stdPreset, stdInfo, STD_XW, STD_BY_ID, VGEN, VIS_TYPES, genVisN, partsOf, makePart, normPart, normParts, partState, captureSettings, applyModSettings, TYPE_DEFS, TYPE_HOME, STRAND_IDS, STRAND_REFS, STRAND_META, STRAND_GROUPS, genStrandN, migrateLegacyState, migrateParts, partMixable, strandsFromLegacy, genNsN, genVisN, genFdpN, genTmN, mixItems, typeTags, FRAMEWORK };
+globalThis.__SP = { applyGradeStandards, gradeStandardParts, bugReportUrl, FGEN, NGEN, generateSet, renderAll, defaults, rngFrom, LEVELS, UNITS, TYPE_IDS, geom, svg, carries, borrows, arLayout, needSize, REG, META, comboSections, comboPages, genArithN, genAreaN, TGEN, flowPack, mixLayout, mixItems, STANDARDS, applyStandard, stdList, stdPreset, stdInfo, stdLoad, STD_FW, STD_MANIFEST, STD_BY_ID, VGEN, VIS_TYPES, genVisN, partsOf, makePart, normPart, normParts, partState, captureSettings, applyModSettings, TYPE_DEFS, TYPE_HOME, STRAND_IDS, STRAND_REFS, STRAND_META, STRAND_GROUPS, genStrandN, migrateLegacyState, migrateParts, partMixable, strandsFromLegacy, genNsN, genVisN, genFdpN, genTmN, mixItems, typeTags, FRAMEWORK };
 
 /*==DOM==*/
 const $ = s => document.querySelector(s);
@@ -102,6 +102,12 @@ function refreshTypePanels(openChecked) {
 }
 buildTypePanels();
 
+/* Saved standards settings: the framework (a known id, else the default), the grade, and the standard code (kept without a check while its framework is still loading). */
+function stdNorm(x) {
+  x = x || {};
+  const f = STD_MANIFEST.some(m => m.id === x.f) ? x.f : FRAMEWORK.id, c = typeof x.c === 'string' ? x.c : '';
+  return { f, g: inEnum(String(x.g), STD_GRADE_IDS, 'K'), c: STD_FW[f] && !stdPreset(c, f) ? '' : c };
+}
 function normalize(s) {
   const d = defaults();
   s = s && typeof s === 'object' ? s : {};
@@ -109,7 +115,7 @@ function normalize(s) {
   for (const id of Object.keys(REG)) combo[id] = Object.assign(d.combo[id], (s.combo || {})[id] || {});
   const out = Object.assign(d, s, {
     titles: Object.assign(d.titles, s.titles || {}),
-    std: { g: inEnum(String((s.std || {}).g), STD_GRADE_IDS, 'K'), c: stdPreset((s.std || {}).c) ? s.std.c : '' },
+    std: stdNorm(s.std),
     types: mergeTypes(d.types, s.types),
     as: Object.assign(d.as, s.as || {}),
     md: Object.assign(d.md, s.md || {}),
@@ -182,21 +188,32 @@ const NS_NOTES = {
 };
 
 let stdQuery = '';
+const stdFailed = {};
+/* The picked framework's data, or null while it loads (stdLoad adds the file of a framework that is not embedded; a failure is shown in the list). */
+function stdData() {
+  const f = state.std.f;
+  if (STD_FW[f]) return STD_FW[f];
+  if (!stdFailed[f]) stdLoad(f).then(() => { writeStd(); }, () => { stdFailed[f] = true; writeStd(); });
+  return null;
+}
 function writeStdList() {
-  const q = stdQuery.trim().toLowerCase();
-  const rows = STD_ALL.filter(r => (q ? (r[0] + ' ' + r[1] + ' ' + r[2]).toLowerCase().includes(q) : stdGrade(r[0]) === state.std.g));
+  const q = stdQuery.trim().toLowerCase(), f = state.std.f, D = stdData();
+  if (!D) { $('#stdList').innerHTML = `<p class="note">${stdFailed[f] ? `Could not load the ${esc(stdFwName(f))} standards. Check the connection and reload the page.` : `Loading the ${esc(stdFwName(f))} standards...`}</p>`; return; }
+  const rows = D.list.filter(r => (q ? (r[0] + ' ' + r[1] + ' ' + r[2]).toLowerCase().includes(q) : r[3] === state.std.g));
   const badge = i => i.status === 'gap' ? ['gap', 'Not yet'] : i.status === 'partial' ? ['part', 'Partial'] : ['ok', ''];
   $('#stdList').innerHTML = rows.length ? rows.map(r => {
-    const p = stdPreset(r[0]), b = badge(stdInfo(r[0])), on = r[0] === state.std.c;
+    const p = stdPreset(r[0], f), b = badge(stdInfo(r[0], f)), on = r[0] === state.std.c;
     const left = `<span class="sl"><span class="sc">${r[0]}</span>${b[1] ? `<span class="sb">${b[1]}</span>` : ''}</span>`;
     return `<button type="button" class="std ${b[0]}${on ? ' on' : ''}" data-std="${r[0]}"${p ? '' : ' disabled'}${on ? ' aria-pressed="true"' : ''}>${left}<span class="st">${esc(r[1])}</span></button>`;
   }).join('') + (!q && rows.length ? `<button type="button" class="std all" data-std-all="${state.std.g}"><span class="sl"><span class="sc">All</span></span><span class="st">All standards for this grade</span></button>` : '') : '<p class="note">No standards match.</p>';
 }
 function writeStd() {
   $('#stdGrades').innerHTML = STD_GRADE_IDS.map(id => `<label><input type="radio" name="stdGrade" value="${id}"${state.std.g === id ? ' checked' : ''}><span title="${STD_GRADES[id]}">${id}</span></label>`).join('');
-  $('#stdFw').textContent = FRAMEWORK.name;
+  $('#stdFw').textContent = stdFwName(state.std.f);
+  $('#stdFwRow').hidden = STD_MANIFEST.length < 2;
+  $('#stdFwSel').innerHTML = STD_MANIFEST.map(m => `<option value="${m.id}"${m.id === state.std.f ? ' selected' : ''}>${esc(m.name)}</option>`).join('');
   writeStdList();
-  const s = state.std.c ? stdInfo(state.std.c) : null;
+  const s = state.std.c ? stdInfo(state.std.c, state.std.f) : null;
   $('#stdCur').textContent = s && s.preset ? state.std.c : '';
   $('#stdNote').textContent = s && s.preset ? `${state.std.c}: ${s.status === 'partial' ? 'Partial match. ' + s.note : 'The settings match this standard.'}` : 'Pick a standard to set the module, problem types and level. "Not yet" standards need a problem type this maker does not have.';
 }
@@ -475,6 +492,7 @@ form.addEventListener('input', e => {
     save(); if (state.module === 'mix' && nm === 'partRowN') writeParts(); render(); return;
   }
   if (nm === 'tq' || nm === 'tword') { refreshTypePanels(); return; }
+  if (nm === 'stdFwSel') { state.std = { f: e.target.value, g: state.std.g, c: '' }; stdQuery = ''; $('#stdQ').value = ''; save(); writeStd(); return; }
   if (nm === 'stdGrade') { state.std.g = e.target.value; stdQuery = ''; $('#stdQ').value = ''; save(); writeStdList(); return; }
   if (nm === 'stdQ') { stdQuery = e.target.value; writeStdList(); return; }
   if (CLEARS_STD.test(nm) && state.std.c) { state.std.c = ''; writeStd(); }
@@ -542,7 +560,7 @@ form.addEventListener('click', e => {
   const r = e.target.closest('[data-std]');
   if (r && !r.disabled) {
     editIdx = null;
-    state.std = { g: stdGrade(r.dataset.std), c: r.dataset.std };
+    state.std = { f: state.std.f, g: stdGrade(r.dataset.std, state.std.f), c: r.dataset.std };
     applyStandard(state, state.std.c);
     if (state.module === 'combo' || state.module === 'mix') lastMultiMod = state.module;
     else lastSingleMod = state.module;

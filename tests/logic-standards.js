@@ -18,7 +18,7 @@ function checkUnit(code,m,spec,st,p,fix){
   if(types&&types.types){const allowed=new Set(types.types.map(r=>r.replace(/^[a-z]+\./,'')));if(allowed.has('cmp2'))allowed.add('compare');if(allowed.has('par20'))allowed.add('parity');if(allowed.has('placew'))allowed.add('place');if(allowed.has('roundw'))allowed.add('round');const got=new Set(p.map(q=>q.type));
     for(const t of got)if(!allowed.has(t)&&!(code==='4.NF.B.4'&&t==='fmulw'))bad.push(code+' unexpected type '+t);}
 }
-const XW=SP.STD_XW.tn,used=new Set();
+const XW=SP.STD_FW.tn.xw,used=new Set();
 for(const s of SP.STANDARDS){if(seen.has(s.id))bad.push('duplicate preset id '+s.id);seen.add(s.id);if(!/^[a-z]+\.[a-z0-9-]+$/.test(s.id))bad.push('bad preset id '+s.id);}
 for(const code of Object.keys(XW)){const s=SP.stdPreset(code),x=XW[code];
   if(!std[code])bad.push('unknown code '+code);

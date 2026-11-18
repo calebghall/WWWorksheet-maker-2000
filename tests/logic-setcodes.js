@@ -52,7 +52,7 @@ for (const mods of [['addsub'], ['muldiv', 'fdp'], ['addsub', 'muldiv', 'fdp', '
 }
 /* every standards preset */
 /* keyed by the Tennessee code, through the crosswalk, as before the canonical ids */
-for (const code of Object.keys(SP.STD_XW.tn)) if (SP.stdPreset(code)) for (const seed of ['A', 'B']) {
+for (const code of Object.keys(SP.STD_FW.tn.xw)) if (SP.stdPreset(code)) for (const seed of ['A', 'B']) {
   const st = SP.defaults(); Object.assign(st, { seed, pages: 2 }); SP.applyStandard(st, code);
   put(`std|${code}|${seed}`, st);
 }

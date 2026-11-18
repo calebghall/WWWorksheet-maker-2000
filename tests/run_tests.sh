@@ -34,6 +34,8 @@ node tests/logic-strands.js
 "$PY" tests/clip.py
 "$PY" tests/parts_ui.py
 "$PY" tests/types_ui.py
+"$PY" build.py --target site --embed none
+"$PY" tests/frameworks_ui.py
 "$PY" build.py --target site
 node tests/site-check.js
 DIST_URL=$("$PY" -c 'import pathlib; print(pathlib.Path("dist/index.html").resolve().as_uri())')

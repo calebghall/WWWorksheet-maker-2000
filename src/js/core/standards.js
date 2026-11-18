@@ -169,9 +169,9 @@ const STANDARDS = [
   { id: 'geom.hierarchy-two-dimensional-figures', t: 'Hierarchy of two-dimensional figures', m: 'geom', geom: { types: ['vis.ghier'], level: 3 } }
 ];
 const STD_BY_ID = {}; STANDARDS.forEach(s => { STD_BY_ID[s.id] = s; });
-const stdGrade = c => c.split('.')[0];
-/* The crosswalk row of a standard code (standards/<fw>.crosswalk.json, embedded as STD_XW), or null. fw defaults to the picked framework. */
-const stdRow = (code, fw) => (STD_XW[fw || FRAMEWORK.id] || {})[code] || null;
+/* Framework data is in STD_FW (framework.js); fw defaults to the default framework. A framework that is not loaded yet has no rows. */
+const stdGrade = (code, fw) => ((STD_FW[fw || FRAMEWORK.id] || {}).grade || {})[code];
+const stdRow = (code, fw) => ((STD_FW[fw || FRAMEWORK.id] || {}).xw || {})[code] || null;
 const STD_RANK = { supported: 0, partial: 1, gap: 2 };
 /* The preset a standard builds, or null for a Gap. One target is that preset; several targets build a Combined worksheet with one part
    per target (a target that is itself a parts preset is flattened). */
@@ -198,14 +198,14 @@ function stdInfo(code, fw) {
   }
   return { preset: stdPreset(code, fw), status, note };
 }
-/* The presets of one grade of the picked framework, in preset-file order (so the all-standards worksheet keeps its section order); presets built from several targets come last. */
+/* The presets of one grade of a framework, in preset-file order (so the all-standards worksheet keeps its section order); presets built from several targets come last. */
 const stdPos = p => { const i = STANDARDS.indexOf(p); return i < 0 ? STANDARDS.length : i; };
-const stdList = g => STD_ALL.filter(r => stdGrade(r[0]) === String(g)).map(r => stdPreset(r[0])).filter(Boolean).sort((a, b) => stdPos(a) - stdPos(b));
+const stdList = (g, fw) => ((STD_FW[fw || FRAMEWORK.id] || {}).list || []).filter(r => r[3] === String(g)).map(r => stdPreset(r[0], fw)).filter(Boolean).sort((a, b) => stdPos(a) - stdPos(b));
 const stdMap = (ids, all) => { const o = {}; all.forEach(id => { o[id] = ids.includes(id); }); return o; };
 
 /* Applies a preset to a settings object in place: sets the module and the module's settings, leaves everything else (paper, pages, seed) alone. */
 function applyStandard(st, code) {
-  const s = stdPreset(code);
+  const s = stdPreset(code, st.std.f);
   if (!s) return st;
   if (s.m === 'parts') {
     /* Bundled skills: the parts carry their own settings, so the module panels are left as they are. */
@@ -225,7 +225,7 @@ function applyStandard(st, code) {
    are similar in size: Add and Subtract and Multiply and Divide (the hardest preset of the grade each), then one section per strand module
    and problem family, holding every preset type of that family with the average level and a size that follows the number of types.
    Returns the parts, or [] for a grade with no presets. */
-function gradeStandardParts(g) {
+function gradeStandardParts(g, fw) {
   const groups = {}, hard = {};
   const take = (m, s) => {
     if (!isStrand(m)) { hard[m] = { m, [PART_KEY[m]]: s }; return; }
@@ -234,7 +234,7 @@ function gradeStandardParts(g) {
       if (!a.types.includes(t)) { a.types.push(t); a.levels.push(s.level); }
     }
   };
-  for (const s of stdList(g)) {
+  for (const s of stdList(g, fw)) {
     if (s.m === 'parts') s.parts.forEach(p => take(p.m, p[p.m])); else take(s.m, s[s.m]);
   }
   const nearest = (counts, want) => counts.reduce((a, c) => Math.abs(c - want) < Math.abs(a - want) ? c : a);
@@ -245,7 +245,7 @@ function gradeStandardParts(g) {
   return out;
 }
 function applyGradeStandards(st, g) {
-  const parts = normParts(gradeStandardParts(g));
+  const parts = normParts(gradeStandardParts(g, st.std.f));
   if (!parts) return false;
   st.module = 'combo'; st.parts = parts;
   st.titles.combo = `${STD_GRADES[g]}: all standards`;

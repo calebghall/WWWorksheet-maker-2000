@@ -56,6 +56,13 @@ The roadmap requires this note before Phase 6 work starts.
 - No backward compatibility for saved settings (testing only).
 - Standards without a generator are Gap rows; none are added or approximated to fill them.
 
+## 5a. Step 1 as built
+
+- `tools/build_fw.py` builds one payload per framework (`name`, `source`, picker `list` rows `[code, focus, cluster, grade]`, `xw` crosswalk) and checks the crosswalk. `build.py --embed tn,ky|none` registers the listed frameworks in the page; the site build writes every other one to `standards/<fw>.<hash>.js`.
+- The page adds a non-embedded file with a script tag (`stdLoad`), not `fetch`, so it also works from `file://`. A failed load shows a message in the standards list.
+- Grade comes from the list row, not from the code, so codes like `KY.5.NF.1` work. `state.std = { f, g, c }`; picking a framework clears `c`. The framework picker shows only when more than one framework is listed.
+- Per framework coverage: `notes/coverage/<fw>.md`, with the standard's annotation under every Partial or Gap row; `notes/standards-coverage.md` holds the counts and the gaps of all frameworks grouped by `need`.
+
 ## 6. Open: settings from a code
 
 Today the set code (`seed`, six characters) fixes only the random stream. Settings are not in it. Proposed, separate from the seed so existing codes and footers are untouched:

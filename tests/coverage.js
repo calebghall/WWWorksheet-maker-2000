@@ -1,32 +1,47 @@
-/* Writes standards-coverage.md: every K-5 standard in the IFD binders against the presets in src/js/core/standards.js. Usage: node tests/coverage.js (reads standards/tn.json) */
-const fs=require('fs'),vm=require('vm'),path=require('path');
+/* Writes notes/coverage/<fw>.md for every framework in standards/ (each standard against the presets it maps to through
+   standards/<fw>.crosswalk.json) and notes/standards-coverage.md (counts for all frameworks, and the gaps of all frameworks grouped by `need`).
+   Usage: node tests/coverage.js (after python3 build.py; reads standards/*.json, *.crosswalk.json, *.annotations.json) */
+const fs=require('fs'),vm=require('vm'),path=require('path'),cp=require('child_process');
 const root=path.join(__dirname,'..');
 const html=fs.readFileSync(path.join(root,'WWWorksheet-maker-2000.html'),'utf8');
 const js=html.split('<script>')[1].split('</script>')[0].split('/*==DOM==*/')[0];
 const ctx={Math,console,globalThis:null};ctx.globalThis=ctx;vm.createContext(ctx);vm.runInContext(js,ctx);
-const SPX=ctx.__SP,FWID=(ctx.FRAMEWORK||vm.runInContext('FRAMEWORK',ctx)).id,P={};for(const c of Object.keys(SPX.STD_XW[FWID]||{})){const i=SPX.stdInfo(c,FWID);if(i.preset)P[c]=Object.assign({},i.preset,{n:i.status==='partial'?i.note:undefined});}
-const FW=ctx.FRAMEWORK||vm.runInContext('FRAMEWORK',ctx);
-const std=JSON.parse(fs.readFileSync(path.join(__dirname,'..','standards','tn.json'),'utf8')).rows;
+/* every framework, not only the embedded ones: the build tool writes each one's payload file, which registers itself */
+cp.execFileSync('python3',[path.join(root,'tools','build_fw.py')],{stdio:'ignore'});
+const dist=path.join(root,'standards','dist');
+for(const f of fs.readdirSync(dist).filter(f=>f.endsWith('.js')))vm.runInContext(fs.readFileSync(path.join(dist,f),'utf8'),ctx);
+const SP=ctx.__SP;
 const G={K:'Kindergarten',1:'Grade 1',2:'Grade 2',3:'Grade 3',4:'Grade 4',5:'Grade 5'},MN={num:'Number Sense',oa:'Operations and Algebraic Thinking',frac:'Fractions, Decimals and Percents',time:'Time and Money',meas:'Measurement and Data',geom:'Geometry, Area and Volume',addsub:'Addition and Subtraction',muldiv:'Multiplication and Division',fdp:'Fractions, Decimals and Percents',ns:'Number Sense',tm:'Time and Money',area:'Area Squares',vis:'Shapes, Measures and Data'};
 const MODS=p=>p.m==='parts'?p.parts.map(q=>MN[q.m]).filter((m,i,a)=>a.indexOf(m)===i).join(' and '):MN[p.m];
 const short=t=>{t=t.replace(/\s+/g,' ').replace(/[^\x00-\x7F‘-”×÷–]/g,'').trim();return t.length>110?t.slice(0,107).replace(/\s+\S*$/,'')+'...':t;};
-let full=0,part=0,gap=0,out='';
-const codes=Object.keys(std);
-for(const g of ['K','1','2','3','4','5']){
-  const rows=codes.filter(c=>std[c].grade===g);
-  out+=`\n## ${G[g]}\n\n| Standard | Focus | Status | Module and notes |\n|---|---|---|---|\n`;
-  for(const c of rows){const p=P[c];let st,note;
-    if(!p){st='Gap';note='No matching generator.';gap++;}
-    else if(p.n){st='Partial';note=`${MODS(p)}: ${p.t}. ${p.n}`;part++;}
-    else{st='Supported';note=`${MODS(p)}: ${p.t}.`;full++;}
-    out+=`| ${c} | ${short(std[c].text).replace(/\|/g,'/')} | ${st} | ${note} |\n`;}
+fs.mkdirSync(path.join(root,'notes','coverage'),{recursive:true});
+const summary=[],needs={};
+for(const fw of Object.keys(SP.STD_FW).sort((a,b)=>(a!=='tn')-(b!=='tn')||a.localeCompare(b))){
+  const D=SP.STD_FW[fw],std=JSON.parse(fs.readFileSync(path.join(root,'standards',fw+'.json'),'utf8')).rows;
+  const annPath=path.join(root,'standards',fw+'.annotations.json'),ann=fs.existsSync(annPath)?JSON.parse(fs.readFileSync(annPath,'utf8')):{};
+  const codes=Object.keys(std),n={supported:0,partial:0,gap:0};let out='';
+  for(const g of ['K','1','2','3','4','5']){
+    const rows=codes.filter(c=>std[c].grade===g);if(!rows.length)continue;
+    out+=`\n## ${G[g]}\n\n| Standard | Focus | Status | Module and notes |\n|---|---|---|---|\n`;
+    const aside=[];
+    for(const c of rows){const i=SP.stdInfo(c,fw),x=D.xw[c];let st,note;
+      if(!i.preset){st='Gap';note=`Needs: ${x.need}.`;n.gap++;(needs[x.need]=needs[x.need]||[]).push(`${fw} ${c}`);}
+      else if(i.status==='partial'){st='Partial';note=`${MODS(i.preset)}: ${i.preset.t}. ${i.note}`;n.partial++;}
+      else{st='Supported';note=`${MODS(i.preset)}: ${i.preset.t}.`;n.supported++;}
+      out+=`| ${c} | ${short(std[c].text).replace(/\|/g,'/')} | ${st} | ${note} |\n`;
+      if(st!=='Supported'&&ann[c]&&ann[c].text)aside.push(`- ${c}: ${ann[c].text.replace(/\s+/g,' ').trim()}`);}
+    if(aside.length)out+=`\nAnnotations on the Partial and Gap standards above:\n\n${aside.join('\n')}\n`;
+  }
+  const gapBy={};for(const c of codes)if(!SP.stdPreset(c,fw))gapBy[std[c].grade]=(gapBy[std[c].grade]||0)+1;
+  const gapGrades=Object.keys(gapBy).map(g=>`${G[g]} (${gapBy[g]})`).join(', ');
+  const head=`# ${D.name} standards coverage\n\nSource: ${D.source}. ${codes.length} standards.\n\n- Supported: ${n.supported}\n- Partial: ${n.partial}\n- Gap: ${n.gap}\n\nSupported and Partial standards build a worksheet from the ${D.name} standard panel of the worksheet maker (standards/${fw}.crosswalk.json maps each standard to its presets). Partial rows list what differs from the standard. Gaps by grade: ${gapGrades||'none'}.\n`;
+  fs.writeFileSync(path.join(root,'notes','coverage',fw+'.md'),head+out);
+  summary.push({fw,name:D.name,total:codes.length,...n});
 }
-const gapBy={};for(const c of codes)if(!P[c])gapBy[std[c].grade]=(gapBy[std[c].grade]||0)+1;
-const gapGrades=Object.keys(gapBy).map(g=>`${G[g]} (${gapBy[g]})`).join(', '),noGap=['K','1','2','3','4','5'].filter(g=>!gapBy[g]).map(g=>G[g]);
-const head=`# Standards coverage\n\nSource: ${FW.source}. ${codes.length} standards.\n\n- Supported: ${full}\n- Partial: ${part}\n- Gap: ${gap}\n\nSupported and Partial standards have a preset in the ${FW.name} standard panel of the worksheet maker. Partial presets list what differs from the standard. Gaps by grade: ${gapGrades || 'none'}. ${noGap.length ? noGap.join(', ') + (noGap.length > 1 ? ' have' : ' has') + ' no gaps. ' : ''}Grade 4 gaps need new problem types for angles and for geometry classification and symmetry.\n`;
-fs.writeFileSync(path.join(root,'notes','standards-coverage.md'),head+out);
-console.log({full,part,gap,total:codes.length});
-
-const clean=t=>{t=t.replace(/^(\d+\s+)+(?=[A-Z])/,'').replace(/ \( or or \)/,'');if(/^[a-z]/.test(t))t=t.replace(/^[^.]*\.\s+/,'');return t.split(/\s+\d\.[A-Z]+\.[A-Z]\.\d+\.[a-z]/)[0];};
-/* Every standard (code and short focus line) for the standard picker in the UI. */
-fs.writeFileSync(path.join(root,'src','js','core','standards-all.js'),'/* Generated by tests/coverage.js from standards/tn.json. Do not edit. */\nconst STD_ALL = '+JSON.stringify(codes.map(c=>[c,short(clean(std[c].text)),std[c].cluster.replace(/^[A-Z]\. /,"")]))+';\n');
+let idx=`# Standards coverage\n\nOne note per framework in notes/coverage/ (generated by node tests/coverage.js from standards/<fw>.json and standards/<fw>.crosswalk.json).\n\n| Framework | Standards | Supported | Partial | Gap |\n|---|---|---|---|---|\n`;
+for(const s of summary)idx+=`| [${s.name}](coverage/${s.fw}.md) | ${s.total} | ${s.supported} | ${s.partial} | ${s.gap} |\n`;
+idx+=`\n## Generator work list\n\nGap standards of all frameworks, grouped by the capability they need.\n\n`;
+const ns=Object.keys(needs).sort();
+idx+=ns.length?ns.map(k=>`- ${k}: ${needs[k].join(', ')}`).join('\n')+'\n':'No gaps.\n';
+fs.writeFileSync(path.join(root,'notes','standards-coverage.md'),idx);
+console.log(summary);
