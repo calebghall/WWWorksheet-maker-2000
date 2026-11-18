@@ -26,9 +26,21 @@ with sync_playwright() as p:
         pg = page(); fresh(pg, url())
         pg.evaluate("document.querySelector('#stdBox').open=true")
         check(pg.evaluate("document.querySelectorAll('#stdList .std').length") > 3, 'lazy tn list renders')
-        check(pg.evaluate("document.querySelector('#stdFwRow').hidden"), 'no picker with one framework')
+        check(not pg.evaluate("document.querySelector('#stdFwRow').hidden"), 'picker shows tn and ky')
         pg.click('#stdList .std:not([disabled])'); pg.wait_for_timeout(200)
         s = state(pg); check(s and s['f'] == 'tn' and s['c'], 'picked standard saved with its framework ' + str(s))
+        # Kentucky loads on first pick and builds a worksheet titled with its own code
+        pg.select_option('#stdFwSel', 'ky'); pg.wait_for_timeout(500)
+        codes = pg.evaluate("[...document.querySelectorAll('#stdList .std[data-std]')].map(e=>e.dataset.std)")
+        check(len(codes) > 10 and all(c.startswith('KY.K.') for c in codes), 'ky kindergarten list ' + str(codes[:3]))
+        gaps = pg.evaluate("[...document.querySelectorAll('#stdList .std[disabled]')].map(e=>e.dataset.std)")
+        check(gaps == ['KY.K.CC.6', 'KY.K.CC.7'], 'ky kindergarten gaps are disabled ' + str(gaps))
+        pg.click('#stdList .std[data-std="KY.K.G.1"]'); pg.wait_for_timeout(300)
+        s = state(pg); check(s == {'f': 'ky', 'g': 'K', 'c': 'KY.K.G.1'}, 'ky pick saved ' + str(s))
+        check('KY.K.G.1' in pg.evaluate("document.querySelector('#sheets').innerText"), 'worksheet title prints the ky code')
+        # the single-file build lists one framework: no picker
+        pg2 = page(); pg2.goto('file://' + os.path.abspath(root + 'WWWorksheet-maker-2000.html')); pg2.wait_for_timeout(300)
+        check(pg2.evaluate("document.querySelector('#stdFwRow').hidden") and pg2.evaluate("STD_MANIFEST.length") == 1, 'single-file build has no picker')
         # 2. the file is blocked: a message, no crash
         os.rename(files[0], files[0] + '.off')
         try:
@@ -43,7 +55,7 @@ with sync_playwright() as p:
         zf = glob.glob(root + 'dist/standards/zz.*.js'); check(len(zf) == 1 and not glob.glob(root + 'dist/standards/tn.*.js'), 'zz is a file, tn stays embedded ' + str(zf))
         pg = page(); fresh(pg, url()); pg.evaluate("document.querySelector('#stdBox').open=true")
         check(not pg.evaluate("document.querySelector('#stdFwRow').hidden"), 'picker shows with two frameworks')
-        check(pg.evaluate("[...document.querySelectorAll('#stdFwSel option')].map(o=>o.value).join()") == 'tn,zz', 'picker lists tn first')
+        check(pg.evaluate("[...document.querySelectorAll('#stdFwSel option')].map(o=>o.value).join()") == 'tn,ky,zz', 'picker lists tn first')
         check(pg.evaluate("typeof STD_FW.zz") == 'undefined', 'zz not loaded before the pick')
         pg.select_option('#stdFwSel', 'zz'); pg.wait_for_timeout(500)
         check(pg.evaluate("typeof STD_FW.zz") == 'object', 'zz loaded after the pick')

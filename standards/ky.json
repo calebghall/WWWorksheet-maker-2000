@@ -1,0 +1,1675 @@
+{
+ "meta": {
+  "title": "Kentucky Academic Standards: Mathematics",
+  "valid": "2019",
+  "publicationStatus": "Published",
+  "sourceURL": "https://education.ky.gov/curriculum/standards/kyacadstand/Documents/Kentucky_Academic_Standards_Mathematics.pdf",
+  "license": {
+   "title": "CC BY 3.0 US",
+   "URL": "http://creativecommons.org/licenses/by/3.0/us/",
+   "rightsHolder": "D2L Corporation"
+  },
+  "framework": "ky",
+  "imported": "2026-11-18",
+  "csp_note": null
+ },
+ "rows": {
+  "KY.K.CC.1": {
+   "grade": "K",
+   "domain": "Counting and Cardinality",
+   "clusterCode": "",
+   "cluster": "Know number names and the count sequence.",
+   "text": "Count",
+   "components": [
+    "Count to 100 by ones and by tens.",
+    "Count backwards from 30 by ones."
+   ],
+   "guid": "A080770BC3B54FAC91AAE14372223016",
+   "asn": "S21018180"
+  },
+  "KY.K.CC.2": {
+   "grade": "K",
+   "domain": "Counting and Cardinality",
+   "clusterCode": "",
+   "cluster": "Know number names and the count sequence.",
+   "text": "Count forward beginning from a given number within the known sequence within 100 (instead of having to begin at 1).",
+   "components": [],
+   "guid": "77C0FB4150BE444DB7BBED32FE27D46D",
+   "asn": "S21018183"
+  },
+  "KY.K.CC.3": {
+   "grade": "K",
+   "domain": "Counting and Cardinality",
+   "clusterCode": "",
+   "cluster": "Know number names and the count sequence.",
+   "text": "Represent numbers.",
+   "components": [
+    "Write numbers from 0 to 20.",
+    "Represent a number of objects with a written numeral 0-20 (with 0 representing a count of no objects)."
+   ],
+   "guid": "062F71519C4F47E3BFB0321F48A35CCD",
+   "asn": "S21018184"
+  },
+  "KY.K.CC.4": {
+   "grade": "K",
+   "domain": "Counting and Cardinality",
+   "clusterCode": "",
+   "cluster": "Count to tell the number of objects.",
+   "text": "Understand the relationship between numbers and quantities; connect counting to cardinality.",
+   "components": [
+    "When counting objects, say the number names in the standard order, pairing each object with one and only one number name and each number name with one and only one object.",
+    "Understand that the last number name said tells the number of objects counted. The number of objects is the same regardless of their arrangement or the order in which they were counted.",
+    "Understand that each successive number name refers to a quantity that is one larger."
+   ],
+   "guid": "F8E0776003FF4C32B34504B452F16AE9",
+   "asn": "S21018188"
+  },
+  "KY.K.CC.5": {
+   "grade": "K",
+   "domain": "Counting and Cardinality",
+   "clusterCode": "",
+   "cluster": "Count to tell the number of objects.",
+   "text": "Given a number from 1-20, count out that many objects.",
+   "components": [
+    "Count to answer \"how many?\" questions with as many as 20 things arranged in a line, a rectangular array, or a circle.",
+    "Count to answer \"how many?\" questions with as many as 10 things in a scattered configuration."
+   ],
+   "guid": "6D6C49A08E284981AD95177F6F5212EE",
+   "asn": "S21018192"
+  },
+  "KY.K.CC.6": {
+   "grade": "K",
+   "domain": "Counting and Cardinality",
+   "clusterCode": "",
+   "cluster": "Compare numbers.",
+   "text": "Identify whether the number of objects in one group is greater than, less than, or equal to the number of objects in another group.",
+   "components": [],
+   "guid": "16F781E98BF8470D813C73FD41F88935",
+   "asn": "S21018196"
+  },
+  "KY.K.CC.7": {
+   "grade": "K",
+   "domain": "Counting and Cardinality",
+   "clusterCode": "",
+   "cluster": "Compare numbers.",
+   "text": "Compare two numbers between 1 and 10 presented as written numerals.",
+   "components": [],
+   "guid": "383F6E5A4EEA40F6823265772FAAE7F4",
+   "asn": "S21018197"
+  },
+  "KY.K.OA.1": {
+   "grade": "K",
+   "domain": "Operations and Algebraic Thinking",
+   "clusterCode": "",
+   "cluster": "Understand addition as putting together and adding to, and understand subtraction as taking apart and taking from.",
+   "text": "Represent addition and subtraction with objects, fingers, mental images, drawings, sounds, acting out situations, verbal explanations, expressions, or equations.",
+   "components": [],
+   "guid": "FF1F2382278747E1B04465FE11C52F66",
+   "asn": "S21018200"
+  },
+  "KY.K.OA.2": {
+   "grade": "K",
+   "domain": "Operations and Algebraic Thinking",
+   "clusterCode": "",
+   "cluster": "Understand addition as putting together and adding to, and understand subtraction as taking apart and taking from.",
+   "text": "Solve addition and subtraction word problems and add and subtract within 10 by using objects or drawings to represent the problem.",
+   "components": [],
+   "guid": "9C85781C84BA49EBB5FC604C27407C9B",
+   "asn": "S21018201"
+  },
+  "KY.K.OA.3": {
+   "grade": "K",
+   "domain": "Operations and Algebraic Thinking",
+   "clusterCode": "",
+   "cluster": "Understand addition as putting together and adding to, and understand subtraction as taking apart and taking from.",
+   "text": "Decompose numbers less than or equal to 10.",
+   "components": [
+    "Decompose numbers into two groups in more than one way by using objects or drawings and record each decomposition by a drawing or equation.",
+    "Use objects or drawings to demonstrate equality as the balancing of quantities."
+   ],
+   "guid": "BC17333251F54AD9BFC6DDF2992F7ED8",
+   "asn": "S21018202"
+  },
+  "KY.K.OA.4": {
+   "grade": "K",
+   "domain": "Operations and Algebraic Thinking",
+   "clusterCode": "",
+   "cluster": "Understand addition as putting together and adding to, and understand subtraction as taking apart and taking from.",
+   "text": "For any number from 1 to 9, find the number that makes 10 when added to the given number by using objects or drawings and record the answer with a drawing or equation.",
+   "components": [],
+   "guid": "CAFA9B7FA11F4E488F786FEFAB40B664",
+   "asn": "S21018205"
+  },
+  "KY.K.OA.5": {
+   "grade": "K",
+   "domain": "Operations and Algebraic Thinking",
+   "clusterCode": "",
+   "cluster": "Understand addition as putting together and adding to, and understand subtraction as taking apart and taking from.",
+   "text": "Fluently add and subtract within 5.",
+   "components": [],
+   "guid": "201B89937B2F4F93805EC152F9799410",
+   "asn": "S21018206"
+  },
+  "KY.K.NBT.1": {
+   "grade": "K",
+   "domain": "Numbers and Operations in Base Ten",
+   "clusterCode": "",
+   "cluster": "Working with numbers 11-19 to gain foundations for place value.",
+   "text": "Compose and decompose numbers from 11 to 19 using quantities (numbers with units) of ten ones and some further ones. Understand that these numbers are composed of ten ones and one, two, three, four, five, six, seven, eight, or nine ones.",
+   "components": [],
+   "guid": "16CC351DF350419FA5785CE970DC1864",
+   "asn": "S21018264"
+  },
+  "KY.K.MD.1": {
+   "grade": "K",
+   "domain": "Measurement and Data",
+   "clusterCode": "",
+   "cluster": "Describe and compare measurable attributes.",
+   "text": "Describe measurable attributes (length, height, weight, width, depth) of an object or a set of objects using appropriate vocabulary.",
+   "components": [],
+   "guid": "4D7213FDD605487E822B1B6727156612",
+   "asn": "S21018382"
+  },
+  "KY.K.MD.2": {
+   "grade": "K",
+   "domain": "Measurement and Data",
+   "clusterCode": "",
+   "cluster": "Describe and compare measurable attributes.",
+   "text": "Directly compare two objects with a measurable attribute in common, to see which object has \"more of\"/ \"less of\" the attribute and describe the difference.",
+   "components": [],
+   "guid": "666267A8161A4D4F99E08F959D049CF7",
+   "asn": "S21018383"
+  },
+  "KY.K.MD.3": {
+   "grade": "K",
+   "domain": "Measurement and Data",
+   "clusterCode": "",
+   "cluster": "Classify objects and count the number of objects in each category.",
+   "text": "Classify and sort objects or people by attributes. Limit objects or people in each category to be less than or equal to 10.",
+   "components": [],
+   "guid": "EEB0A5DFF6E94E3E974E9562D8BBCE19",
+   "asn": "S21018385"
+  },
+  "KY.K.MD.4": {
+   "grade": "K",
+   "domain": "Measurement and Data",
+   "clusterCode": "",
+   "cluster": "Identify coins by name.",
+   "text": "Recognize and identify coins by name (penny, nickel, dime, quarter).",
+   "components": [],
+   "guid": "75B928E1EE344F35BF3C2D9A969DBCFD",
+   "asn": "S21018387"
+  },
+  "KY.K.G.1": {
+   "grade": "K",
+   "domain": "Geometry",
+   "clusterCode": "",
+   "cluster": "Identify and describe shapes (squares, circles, triangles, rectangles, hexagons, cubes, cones, cylinders and spheres).",
+   "text": "Name and describe shapes in the environment.",
+   "components": [
+    "Describe objects in the environment using names of shapes.",
+    "Describe the relative positions of these objects using terms above, below, in front of, behind and next to."
+   ],
+   "guid": "973D596AC8BA46F984C4121B9FA3AB06",
+   "asn": "S21018480"
+  },
+  "KY.K.G.2": {
+   "grade": "K",
+   "domain": "Geometry",
+   "clusterCode": "",
+   "cluster": "Identify and describe shapes (squares, circles, triangles, rectangles, hexagons, cubes, cones, cylinders and spheres).",
+   "text": "Correctly name shapes regardless of orientations or overall size.",
+   "components": [],
+   "guid": "39B2E7D0B761476A96964AE5DC23439B",
+   "asn": "S21018483"
+  },
+  "KY.K.G.3": {
+   "grade": "K",
+   "domain": "Geometry",
+   "clusterCode": "",
+   "cluster": "Identify and describe shapes (squares, circles, triangles, rectangles, hexagons, cubes, cones, cylinders and spheres).",
+   "text": "Identify shapes as two-dimensional or three-dimensional.",
+   "components": [],
+   "guid": "EA5B3E55A75F403D92D60C3957856B05",
+   "asn": "S21018484"
+  },
+  "KY.K.G.4": {
+   "grade": "K",
+   "domain": "Geometry",
+   "clusterCode": "",
+   "cluster": "Analyze, compare, create and compose shapes.",
+   "text": "Describe the similarities, differences and attributes of two and three dimensional shapes using different sizes and orientations.",
+   "components": [],
+   "guid": "729CA4C8A8654D68B2A2A56D16F6C709",
+   "asn": "S21018486"
+  },
+  "KY.K.G.5": {
+   "grade": "K",
+   "domain": "Geometry",
+   "clusterCode": "",
+   "cluster": "Analyze, compare, create and compose shapes.",
+   "text": "Model shapes in the world by building figures from components and drawing shapes.",
+   "components": [],
+   "guid": "743689A8F3994F8C84F3087FD5F18975",
+   "asn": "S21018487"
+  },
+  "KY.K.G.6": {
+   "grade": "K",
+   "domain": "Geometry",
+   "clusterCode": "",
+   "cluster": "Analyze, compare, create and compose shapes.",
+   "text": "Compose simple shapes to form larger shapes.",
+   "components": [],
+   "guid": "21E3E6902CBF42B28798BBCBF22DCB28",
+   "asn": "S21018488"
+  },
+  "KY.1.OA.1": {
+   "grade": "1",
+   "domain": "Operations and Algebraic Thinking",
+   "clusterCode": "",
+   "cluster": "Represent and solve problems using addition and subtraction.",
+   "text": "Use addition and subtraction within 20 to solve word problems involving situations of adding to, taking from, putting together, taking apart and comparing, with unknowns in all positions.",
+   "components": [],
+   "guid": "E5C8159DB7814F63A7D273DCBA92EB90",
+   "asn": "S21018208"
+  },
+  "KY.1.OA.2": {
+   "grade": "1",
+   "domain": "Operations and Algebraic Thinking",
+   "clusterCode": "",
+   "cluster": "Represent and solve problems using addition and subtraction.",
+   "text": "Solve word problems that call for addition of three whole numbers whose sum is less than or equal to 20, by using objects, drawings and equations with a symbol for one unknown number to represent the problem.",
+   "components": [],
+   "guid": "CB31D42A7E8A43A3ABFE53F48628EA2B",
+   "asn": "S21018209"
+  },
+  "KY.1.OA.3": {
+   "grade": "1",
+   "domain": "Operations and Algebraic Thinking",
+   "clusterCode": "",
+   "cluster": "Understand and apply properties of operations and the relationship between addition and subtraction.",
+   "text": "Apply properties of operations as strategies to add and subtract.",
+   "components": [],
+   "guid": "905DB85D26054D13AD5109BA59E68232",
+   "asn": "S21018211"
+  },
+  "KY.1.OA.4": {
+   "grade": "1",
+   "domain": "Operations and Algebraic Thinking",
+   "clusterCode": "",
+   "cluster": "Understand and apply properties of operations and the relationship between addition and subtraction.",
+   "text": "Understand subtraction as an unknown-addend problem.",
+   "components": [],
+   "guid": "927C70A9D67F43B491E1678BC903D351",
+   "asn": "S21018212"
+  },
+  "KY.1.OA.5": {
+   "grade": "1",
+   "domain": "Operations and Algebraic Thinking",
+   "clusterCode": "",
+   "cluster": "Add and subtract within 20.",
+   "text": "Relate counting to addition and subtraction.",
+   "components": [],
+   "guid": "CFD9185C026D4E0EA9831C0842C018D8",
+   "asn": "S21018214"
+  },
+  "KY.1.OA.6": {
+   "grade": "1",
+   "domain": "Operations and Algebraic Thinking",
+   "clusterCode": "",
+   "cluster": "Add and subtract within 20.",
+   "text": "Add and subtract within 20.",
+   "components": [
+    "Fluently add and subtract within 10.",
+    "Add and subtract within 20, demonstrating fluency for addition and subtraction within 10. Use strategies such as counting on; making 10; decomposing a number leading to a 10; using the relationship between addition and subtraction; creating equivalent but easier or known sums."
+   ],
+   "guid": "15D86268F8BC438B8D7D0192999D4156",
+   "asn": "S21018215"
+  },
+  "KY.1.OA.7": {
+   "grade": "1",
+   "domain": "Operations and Algebraic Thinking",
+   "clusterCode": "",
+   "cluster": "Work with addition and subtraction equations.",
+   "text": "Understand the meaning of the equal sign and determine if equations involving addition and subtraction are true or false.",
+   "components": [],
+   "guid": "9D89161E541B4E6595154BF8CDC4468C",
+   "asn": "S21018219"
+  },
+  "KY.1.OA.8": {
+   "grade": "1",
+   "domain": "Operations and Algebraic Thinking",
+   "clusterCode": "",
+   "cluster": "Work with addition and subtraction equations.",
+   "text": "Determine the unknown whole number in an addition or subtraction equation relating three whole numbers.",
+   "components": [],
+   "guid": "8F5F5F4FFE8549C4B3ECD018849E25B3",
+   "asn": "S21018220"
+  },
+  "KY.1.NBT.1": {
+   "grade": "1",
+   "domain": "Numbers and Operations in Base Ten",
+   "clusterCode": "",
+   "cluster": "Extend the counting sequence.",
+   "text": "Count and represent numbers.",
+   "components": [
+    "Count forward to and backward from 120, starting at any number less than 120.",
+    "In this range, read and write numerals and represent a number of objects with a written numeral."
+   ],
+   "guid": "C471FFADB8414F63935B787FED2E19EF",
+   "asn": "S21018266"
+  },
+  "KY.1.NBT.2": {
+   "grade": "1",
+   "domain": "Numbers and Operations in Base Ten",
+   "clusterCode": "",
+   "cluster": "Understand place value.",
+   "text": "Understand the two-digits of a two-digit number represent amounts of tens and ones. Understand the following as special cases:",
+   "components": [
+    "10 can be thought of as a bundle of ten ones — called a \"ten.\"",
+    "The numbers from 11 to 19 are composed of a ten and one, two, three, four, five, six, seven, eight or nine ones.",
+    "The numbers 10, 20, 30, 40, 50, 60, 70, 80, 90 refer to one, two, three, four, five, six, seven, eight or nine tens (and 0 ones)."
+   ],
+   "guid": "3C258078DD2443EF87C957548179BD76",
+   "asn": "S21018270"
+  },
+  "KY.1.NBT.3": {
+   "grade": "1",
+   "domain": "Numbers and Operations in Base Ten",
+   "clusterCode": "",
+   "cluster": "Understand place value.",
+   "text": "Compare two two-digit numbers based on meanings of the tens and ones digits, recording the results of comparisons with the symbols >, =, and <.",
+   "components": [],
+   "guid": "D3D58D86AC2F4D3DAD31FBEA853441BC",
+   "asn": "S21018274"
+  },
+  "KY.1.NBT.4": {
+   "grade": "1",
+   "domain": "Numbers and Operations in Base Ten",
+   "clusterCode": "",
+   "cluster": "Use place value understanding and properties of operations to add and subtract.",
+   "text": "Add within 100 including adding a two-digit number and a one-digit number. Add a two-digit number and a multiple of 10.",
+   "components": [
+    "Add within 100 using<ul><li>concrete models or drawings;</li><li>strategies based on place value;</li><li>properties of operations;</li><li>the relationship between addition and subtraction.</li></ul>",
+    "Relate the addition strategy to a written method and explain the reasoning used. Understand that in adding two-digit numbers, one adds tens and tens, ones and ones; and sometimes it is necessary to compose a ten."
+   ],
+   "guid": "C306DA266BBA4FB6A6E7AEDEF508A899",
+   "asn": "S21018276"
+  },
+  "KY.1.NBT.5": {
+   "grade": "1",
+   "domain": "Numbers and Operations in Base Ten",
+   "clusterCode": "",
+   "cluster": "Use place value understanding and properties of operations to add and subtract.",
+   "text": "Given a two-digit number, mentally find 10 more or 10 less than the number, without having to count; explain the reasoning used.",
+   "components": [],
+   "guid": "EF198BB6D3D34E64A475C098715D193C",
+   "asn": "S21018279"
+  },
+  "KY.1.NBT.6": {
+   "grade": "1",
+   "domain": "Numbers and Operations in Base Ten",
+   "clusterCode": "",
+   "cluster": "Use place value understanding and properties of operations to add and subtract.",
+   "text": "Subtract multiples of 10 in the range 10-90 from multiples of 10 in the range 10-90 (positive or zero differences).",
+   "components": [
+    "Subtract using:<ul><li>concrete models or drawings;</li><li>strategies based on place value;</li><li>properties of operations;</li><li>the relationship between addition and subtraction</li></ul>",
+    "Relate the subtraction strategy to a written method and explain the reasoning used."
+   ],
+   "guid": "67EC69334CDE488599BEA320AF659B06",
+   "asn": "S21018280"
+  },
+  "KY.1.MD.1": {
+   "grade": "1",
+   "domain": "Measurement and Data",
+   "clusterCode": "",
+   "cluster": "Measure lengths indirectly and by iterating length units.",
+   "text": "Order three objects by length; compare the lengths of two objects indirectly by using a third object.",
+   "components": [],
+   "guid": "19DA5A94F72F4FB3BE9F6D077FB8DE1D",
+   "asn": "S21018389"
+  },
+  "KY.1.MD.2": {
+   "grade": "1",
+   "domain": "Measurement and Data",
+   "clusterCode": "",
+   "cluster": "Measure lengths indirectly and by iterating length units.",
+   "text": "Express the length of an object as a whole number of same-size length units, by laying multiple copies of a shorter object (the length unit) end to end with no gaps or overlaps.",
+   "components": [],
+   "guid": "5A61B3858B244DCE90FF3474D6AE47B9",
+   "asn": "S21018390"
+  },
+  "KY.1.MD.3": {
+   "grade": "1",
+   "domain": "Measurement and Data",
+   "clusterCode": "",
+   "cluster": "Work with time and money.",
+   "text": "Assign values to time and money.",
+   "components": [
+    "Tell and write time in hours and half-hours using analog and digital clocks.",
+    "Identify the coins by values (penny, nickel, dime, quarter)."
+   ],
+   "guid": "23D8ABC477BC4DFCB3A22B9A8A97967D",
+   "asn": "S21018392"
+  },
+  "KY.1.MD.4": {
+   "grade": "1",
+   "domain": "Measurement and Data",
+   "clusterCode": "",
+   "cluster": "Understand and apply the statistics process.",
+   "text": "Investigate questions involving categorical data.",
+   "components": [
+    "Pose a question that can be answered by gathering data.",
+    "Determine strategy for gathering data from peers.",
+    "Organize and represent data in a table/chart with up to three categories.",
+    "Interpret data to answer questions about the table/chart that connects to the question posed, including total number of data points, how many in each category and how many more or less are in one category than in another."
+   ],
+   "guid": "FB22D00D20794172B221350DC8622F07",
+   "asn": "S21018396"
+  },
+  "KY.1.G.1": {
+   "grade": "1",
+   "domain": "Geometry",
+   "clusterCode": "",
+   "cluster": "Reason with shapes and their attributes.",
+   "text": "Distinguish between defining attributes versus non-defining attributes; build and draw shapes to possess defining attributes.",
+   "components": [],
+   "guid": "7D048D12C9504E318E6772C9C1F1D40B",
+   "asn": "S21018490"
+  },
+  "KY.1.G.2": {
+   "grade": "1",
+   "domain": "Geometry",
+   "clusterCode": "",
+   "cluster": "Reason with shapes and their attributes.",
+   "text": "Compose shapes.",
+   "components": [
+    "Compose two-dimensional shapes to create rectangles, squares, trapezoids, triangles, half-circles and quarter-circles composite shape and compose new shapes from the composite shapes.",
+    "Use three-dimensional shapes (cubes, right rectangular prisms, right circular cones and right circular cylinders) to create a composite shape and compose new shapes from the composite shapes."
+   ],
+   "guid": "9825C24574FC4F3194CD34E85AE2D3FF",
+   "asn": "S21018491"
+  },
+  "KY.1.G.3": {
+   "grade": "1",
+   "domain": "Geometry",
+   "clusterCode": "",
+   "cluster": "Reason with shapes and their attributes.",
+   "text": "Partition circles and rectangles into two and four equal shares, describe the shares using the words halves, fourths and quarters, and use the phrases half of, fourth of and quarter of. Describe the whole as two of or four of the shares. Understand for these examples that decomposing into more equal shares creates smaller shares.",
+   "components": [],
+   "guid": "E6EA1F6E543E40F78523D35BB16C5F05",
+   "asn": "S21018494"
+  },
+  "KY.2.OA.1": {
+   "grade": "2",
+   "domain": "Operations and Algebraic Thinking",
+   "clusterCode": "",
+   "cluster": "Represent and solve problems involving addition and subtraction.",
+   "text": "Use addition and subtraction within 100 to solve one- and two-step word problems involving situations of adding to, taking from, putting together, taking apart and comparing, with unknowns in all positions, by using drawings and equations with a symbol for the unknown number to represent the problem.",
+   "components": [],
+   "guid": "3F7121E3340A46AFA3620F162B2DFA87",
+   "asn": "S21018222"
+  },
+  "KY.2.OA.2": {
+   "grade": "2",
+   "domain": "Operations and Algebraic Thinking",
+   "clusterCode": "",
+   "cluster": "Add and subtract within 20.",
+   "text": "Fluently add and subtract within 20 using mental strategies.",
+   "components": [],
+   "guid": "3AE98386733A460C9B3F10E6E221CC5D",
+   "asn": "S21018224"
+  },
+  "KY.2.OA.3": {
+   "grade": "2",
+   "domain": "Operations and Algebraic Thinking",
+   "clusterCode": "",
+   "cluster": "Work with equal groups of objects to gain foundation for multiplication.",
+   "text": "Determine whether a group of objects (up to 20) has an odd or even number of members; write an equation to express an even number as a sum of two equal addends.",
+   "components": [],
+   "guid": "D4F5639E6DAB4BCE97C9AD92C8AC6E3F",
+   "asn": "S21018226"
+  },
+  "KY.2.OA.4": {
+   "grade": "2",
+   "domain": "Operations and Algebraic Thinking",
+   "clusterCode": "",
+   "cluster": "Work with equal groups of objects to gain foundation for multiplication.",
+   "text": "Use addition to find the total number of objects arranged in rectangular arrays with up to 5 rows and up to 5 columns; write an equation to express the total as a sum of equal addends.",
+   "components": [],
+   "guid": "31D42948FEBC4DF1B10FB0225C33C4DC",
+   "asn": "S21018227"
+  },
+  "KY.2.NBT.1": {
+   "grade": "2",
+   "domain": "Numbers and Operations in Base Ten",
+   "clusterCode": "",
+   "cluster": "Understand place value.",
+   "text": "Understand that the three digits of a three-digit number represent amounts of hundreds, tens and ones.",
+   "components": [
+    "100 can be thought of as a bundle of ten tens — called a \"hundred.\"",
+    "The numbers 100, 200, 300, 400, 500, 600, 700, 800, 900 refer to one, two, three, four, five, six, seven, eight, or nine hundreds (and 0 tens and 0 ones)."
+   ],
+   "guid": "BAEEF44CD6E74C5FA22FC4E1C37DCB25",
+   "asn": "S21018284"
+  },
+  "KY.2.NBT.2": {
+   "grade": "2",
+   "domain": "Numbers and Operations in Base Ten",
+   "clusterCode": "",
+   "cluster": "Understand place value.",
+   "text": "Count forwards and backwards within 1000; skip-count by 5s, 10s and 100s.",
+   "components": [],
+   "guid": "24CA8A80497D437D9CE079CF1C7FA36D",
+   "asn": "S21018287"
+  },
+  "KY.2.NBT.3": {
+   "grade": "2",
+   "domain": "Numbers and Operations in Base Ten",
+   "clusterCode": "",
+   "cluster": "Understand place value.",
+   "text": "Read and write numbers to 1000 using base-ten numerals, number names and expanded form.",
+   "components": [],
+   "guid": "4436925CA42E4C31B1ABB5C93658DD39",
+   "asn": "S21018288"
+  },
+  "KY.2.NBT.4": {
+   "grade": "2",
+   "domain": "Numbers and Operations in Base Ten",
+   "clusterCode": "",
+   "cluster": "Understand place value.",
+   "text": "Compare two three-digit numbers based on meanings of the hundreds, tens and ones digits, using >, =, and < symbols to record the results of comparisons.",
+   "components": [],
+   "guid": "F75177E92FFB420FA69469F2EFF6B44F",
+   "asn": "S21018289"
+  },
+  "KY.2.NBT.5": {
+   "grade": "2",
+   "domain": "Numbers and Operations in Base Ten",
+   "clusterCode": "",
+   "cluster": "Use place value understanding and properties of operations to add and subtract.",
+   "text": "Fluently add and subtract within 100 using strategies based on place value, properties of operations and/or the relationship between addition and subtraction.",
+   "components": [],
+   "guid": "0C168FA88E444750A62A29CFC63784D1",
+   "asn": "S21018291"
+  },
+  "KY.2.NBT.6": {
+   "grade": "2",
+   "domain": "Numbers and Operations in Base Ten",
+   "clusterCode": "",
+   "cluster": "Use place value understanding and properties of operations to add and subtract.",
+   "text": "Add up to four two-digit numbers using strategies based on place value and properties of operations.",
+   "components": [],
+   "guid": "50B791497B7344519BB418DC46FA4789",
+   "asn": "S21018292"
+  },
+  "KY.2.NBT.7": {
+   "grade": "2",
+   "domain": "Numbers and Operations in Base Ten",
+   "clusterCode": "",
+   "cluster": "Use place value understanding and properties of operations to add and subtract.",
+   "text": "Add and subtract within 1000.",
+   "components": [
+    "Represent and solve addition and subtraction problems using…<ul><li>concrete models or drawings;</li><li>strategies based on place value;</li><li>properties of operations;</li><li>the relationship between addition and subtraction and;</li><li>relate drawings and strategies to expressions or equations.</li></ul>",
+    "Understand that in adding or subtracting three-digit numbers, one adds or subtracts hundreds and hundreds, tens and tens, ones and ones; and sometimes it is necessary to compose or decompose tens or hundreds."
+   ],
+   "guid": "847F605B97554BC4A107D62A458E7596",
+   "asn": "S21018293"
+  },
+  "KY.2.NBT.8": {
+   "grade": "2",
+   "domain": "Numbers and Operations in Base Ten",
+   "clusterCode": "",
+   "cluster": "Use place value understanding and properties of operations to add and subtract.",
+   "text": "Mentally add 10 or 100 to a given number 100–900 and mentally subtract 10 or 100 from a given number 100–900.",
+   "components": [],
+   "guid": "8F13A00D1655485594FFF8540E8C7198",
+   "asn": "S21018296"
+  },
+  "KY.2.NBT.9": {
+   "grade": "2",
+   "domain": "Numbers and Operations in Base Ten",
+   "clusterCode": "",
+   "cluster": "Use place value understanding and properties of operations to add and subtract.",
+   "text": "Explain why addition and subtraction strategies work, using place value and the properties of operations.",
+   "components": [],
+   "guid": "90B49E5406F34D4591FDB25B1E450711",
+   "asn": "S21018297"
+  },
+  "KY.2.MD.1": {
+   "grade": "2",
+   "domain": "Measurement and Data",
+   "clusterCode": "",
+   "cluster": "Measure and estimate lengths in standard unit.",
+   "text": "Measure the length of an object by selecting and using appropriate tools such as rulers, yardsticks, meter sticks and measuring tapes.",
+   "components": [],
+   "guid": "5F1BD7A8B7F74753BB7DACB213A7521D",
+   "asn": "S21018402"
+  },
+  "KY.2.MD.2": {
+   "grade": "2",
+   "domain": "Measurement and Data",
+   "clusterCode": "",
+   "cluster": "Measure and estimate lengths in standard unit.",
+   "text": "Measure the length of an object twice, using length units of different lengths for the two measurements; describe how the two measurements relate to the size of the unit chosen.",
+   "components": [],
+   "guid": "91DCA308768B4D7FA8D83F6917710A58",
+   "asn": "S21018403"
+  },
+  "KY.2.MD.3": {
+   "grade": "2",
+   "domain": "Measurement and Data",
+   "clusterCode": "",
+   "cluster": "Measure and estimate lengths in standard unit.",
+   "text": "Estimate lengths using units of inches, feet, yards, centimeters and meters.",
+   "components": [],
+   "guid": "B73FF58C816B4EC19C323443B3181723",
+   "asn": "S21018404"
+  },
+  "KY.2.MD.4": {
+   "grade": "2",
+   "domain": "Measurement and Data",
+   "clusterCode": "",
+   "cluster": "Measure and estimate lengths in standard unit.",
+   "text": "Measure to determine how much longer one object is than another, expressing the length difference in terms of either a customary or metric standard length unit.",
+   "components": [],
+   "guid": "4DD49E6A76FE491786B19BB6C1E5B9D2",
+   "asn": "S21018405"
+  },
+  "KY.2.MD.5": {
+   "grade": "2",
+   "domain": "Measurement and Data",
+   "clusterCode": "",
+   "cluster": "Relate addition and subtraction to length.",
+   "text": "Use addition and subtraction within 100 to solve word problems involving lengths that are given in the same units by using drawings and equations with a symbol for the unknown number to represent the problem.",
+   "components": [],
+   "guid": "5ADBCEDD6B80401C88EEDE3F96C4EF97",
+   "asn": "S21018407"
+  },
+  "KY.2.MD.6": {
+   "grade": "2",
+   "domain": "Measurement and Data",
+   "clusterCode": "",
+   "cluster": "Relate addition and subtraction to length.",
+   "text": "Represent whole numbers as lengths from 0 on a number line with equally spaced points corresponding to the numbers 0, 1, 2, … and represent whole-number sums and differences within 100 on a number line.",
+   "components": [],
+   "guid": "DDA5E7C85BCC497C86FE45C81D014CC3",
+   "asn": "S21018408"
+  },
+  "KY.2.MD.7": {
+   "grade": "2",
+   "domain": "Measurement and Data",
+   "clusterCode": "",
+   "cluster": "Work with time and money.",
+   "text": "Tell and write time from analog and digital clocks to the nearest five minutes, using a.m. and p.m.",
+   "components": [],
+   "guid": "ABE754F7B3C9446DB8980603E84D5B22",
+   "asn": "S21018410"
+  },
+  "KY.2.MD.8": {
+   "grade": "2",
+   "domain": "Measurement and Data",
+   "clusterCode": "",
+   "cluster": "Work with time and money.",
+   "text": "Solve word problems with adding and subtracting within 100, (not using dollars and cents simultaneously) using the $ and ¢ symbols appropriately (not including decimal notation).",
+   "components": [],
+   "guid": "351EC15360FF495DB84D3E5A8CFF3559",
+   "asn": "S21018411"
+  },
+  "KY.2.MD.9": {
+   "grade": "2",
+   "domain": "Measurement and Data",
+   "clusterCode": "",
+   "cluster": "Understand and apply the statistics process.",
+   "text": "Investigate questions involving measurements.",
+   "components": [
+    "Identify a statistical question focused on measurements.",
+    "Generate measurement data by measuring lengths of several objects to the nearest whole unit, or by making repeated measurements of the same object.",
+    "Show the measurements by making a dot plot, where the horizontal scale is marked off in whole-number units."
+   ],
+   "guid": "30715F3712994F71B24E924D457C1973",
+   "asn": "S21018413"
+  },
+  "KY.2.MD.10": {
+   "grade": "2",
+   "domain": "Measurement and Data",
+   "clusterCode": "",
+   "cluster": "Understand and apply the statistics process.",
+   "text": "Create a pictograph and a bar graph (with single-unit scale) to represent a data set with up to four categories. Solve simple put together, take-apart and compare problems using information presented in a bar graph.",
+   "components": [],
+   "guid": "6AF90684D17644D9BE02F3FD7F68A22F",
+   "asn": "S21018417"
+  },
+  "KY.2.G.1": {
+   "grade": "2",
+   "domain": "Geometry",
+   "clusterCode": "",
+   "cluster": "Reason with shapes and their attributes.",
+   "text": "Recognize and draw shapes having specified attributes, such as a given number of angles or sides. Identify triangles, quadrilaterals, pentagons, hexagons and cubes (identify number of faces).",
+   "components": [],
+   "guid": "0A3B69D3D1FB4566BEB0C02AC4E86100",
+   "asn": "S21018496"
+  },
+  "KY.2.G.2": {
+   "grade": "2",
+   "domain": "Geometry",
+   "clusterCode": "",
+   "cluster": "Reason with shapes and their attributes.",
+   "text": "Partition a rectangle into rows and columns of same-size squares and count to find the total number of them.",
+   "components": [],
+   "guid": "DF1E0A12281A47D6A25B55FFE762A9DC",
+   "asn": "S21018497"
+  },
+  "KY.2.G.3": {
+   "grade": "2",
+   "domain": "Geometry",
+   "clusterCode": "",
+   "cluster": "Reason with shapes and their attributes.",
+   "text": "Partition circles and rectangles into two, three, or four equal shares; describe the shares using the words halves, thirds, half of, a third of, etc.; and describe the whole as two halves, three thirds, four fourths. Recognize that equal shares of identical wholes need not have the same shape.",
+   "components": [],
+   "guid": "2941B82D58C243F8B60EA2084E09265F",
+   "asn": "S21018498"
+  },
+  "KY.3.OA.1": {
+   "grade": "3",
+   "domain": "Operations and Algebraic Thinking",
+   "clusterCode": "",
+   "cluster": "Represent and solve problems involving multiplication and division.",
+   "text": "Interpret and demonstrate products of whole numbers.",
+   "components": [],
+   "guid": "51A77642D5F945DBB4CEE7CFE6565F77",
+   "asn": "S21018229"
+  },
+  "KY.3.OA.2": {
+   "grade": "3",
+   "domain": "Operations and Algebraic Thinking",
+   "clusterCode": "",
+   "cluster": "Represent and solve problems involving multiplication and division.",
+   "text": "Interpret and demonstrate whole-number quotients of whole numbers, where objects are partitioned into equal shares.",
+   "components": [],
+   "guid": "6EC2926CF52147018CAED23693DD8248",
+   "asn": "S21018230"
+  },
+  "KY.3.OA.3": {
+   "grade": "3",
+   "domain": "Operations and Algebraic Thinking",
+   "clusterCode": "",
+   "cluster": "Represent and solve problems involving multiplication and division.",
+   "text": "Use multiplication and division within 100 to solve word problems in situations involving equal groups, arrays and measurement quantities, by using drawings and equations with a symbol for the unknown number to represent the problem.",
+   "components": [],
+   "guid": "4B57B8822DDE4FE5B72C996F76BBDE8A",
+   "asn": "S21018231"
+  },
+  "KY.3.OA.4": {
+   "grade": "3",
+   "domain": "Operations and Algebraic Thinking",
+   "clusterCode": "",
+   "cluster": "Represent and solve problems involving multiplication and division.",
+   "text": "Determine the unknown whole number in a multiplication or division equation relating three whole numbers.",
+   "components": [],
+   "guid": "383F802EA9DE4A2D92A7BED368C248AF",
+   "asn": "S21018232"
+  },
+  "KY.3.OA.5": {
+   "grade": "3",
+   "domain": "Operations and Algebraic Thinking",
+   "clusterCode": "",
+   "cluster": "Understand properties of multiplication and the relationship between multiplication and division.",
+   "text": "Apply properties of operations as strategies to multiply and divide.",
+   "components": [],
+   "guid": "7714C66DA77E482C91077A8AA893725C",
+   "asn": "S21018234"
+  },
+  "KY.3.OA.6": {
+   "grade": "3",
+   "domain": "Operations and Algebraic Thinking",
+   "clusterCode": "",
+   "cluster": "Understand properties of multiplication and the relationship between multiplication and division.",
+   "text": "Understand division as an unknown-factor problem.",
+   "components": [],
+   "guid": "FAB743B10C2C46F080B507423DC3ABC9",
+   "asn": "S21018235"
+  },
+  "KY.3.OA.7": {
+   "grade": "3",
+   "domain": "Operations and Algebraic Thinking",
+   "clusterCode": "",
+   "cluster": "Multiply and divide within 100.",
+   "text": "Fluently multiply and divide within 100, using strategies such as the relationship between multiplication and division or properties of operations.",
+   "components": [],
+   "guid": "EBC30CC28401480EB846AF51830C7DC9",
+   "asn": "S21018237"
+  },
+  "KY.3.OA.8": {
+   "grade": "3",
+   "domain": "Operations and Algebraic Thinking",
+   "clusterCode": "",
+   "cluster": "Solve problems involving the four operations and identify and explain patterns in arithmetic.",
+   "text": "Use various strategies to solve two-step word problems using the four operations (involving only whole numbers with whole number answers). Represent these problems using equations with a letter standing for the unknown quantity. Assess the reasonableness of answers using mental computation and estimation strategies including rounding.",
+   "components": [],
+   "guid": "97A46A3EF2AC47F6814D32F0108D1628",
+   "asn": "S21018239"
+  },
+  "KY.3.OA.9": {
+   "grade": "3",
+   "domain": "Operations and Algebraic Thinking",
+   "clusterCode": "",
+   "cluster": "Solve problems involving the four operations and identify and explain patterns in arithmetic.",
+   "text": "Identify arithmetic patterns (including patterns in the addition table or multiplication table) and explain them using properties of operations.",
+   "components": [],
+   "guid": "64D80EE138BC45D5B8366390DB8EC16D",
+   "asn": "S21018240"
+  },
+  "KY.3.NBT.1": {
+   "grade": "3",
+   "domain": "Numbers and Operations in Base Ten",
+   "clusterCode": "",
+   "cluster": "Use place value understanding and properties of operations to perform multi-digit arithmetic. Note: A range of algorithms may be used.",
+   "text": "Use place value understanding to round whole numbers to the nearest 10 or 100.",
+   "components": [],
+   "guid": "B7AB883C93274EB5ACF6AD3191A05BE8",
+   "asn": "S21018299"
+  },
+  "KY.3.NBT.2": {
+   "grade": "3",
+   "domain": "Numbers and Operations in Base Ten",
+   "clusterCode": "",
+   "cluster": "Use place value understanding and properties of operations to perform multi-digit arithmetic. Note: A range of algorithms may be used.",
+   "text": "Fluently add and subtract within 1000 using strategies and algorithms based on place value, properties of operations and/or the relationship between addition and subtraction.",
+   "components": [],
+   "guid": "31ADD29106774C4483B807F9A461D2D8",
+   "asn": "S21018300"
+  },
+  "KY.3.NBT.3": {
+   "grade": "3",
+   "domain": "Numbers and Operations in Base Ten",
+   "clusterCode": "",
+   "cluster": "Use place value understanding and properties of operations to perform multi-digit arithmetic. Note: A range of algorithms may be used.",
+   "text": "Multiply one-digit whole numbers by multiples of 10 in the range of 10–90 using strategies based on place value and properties of operations.",
+   "components": [],
+   "guid": "C6FA90639BA84388ABE83A282D81663B",
+   "asn": "S21018301"
+  },
+  "KY.3.NF.1": {
+   "grade": "3",
+   "domain": "Numbers and Operations-Fractions",
+   "clusterCode": "",
+   "cluster": "Develop understanding of fractions as numbers. Note: grade 3 expectations in this domain are limited to fractions with denominators 2, 3, 4, 6 and 8.",
+   "text": "Understand a fraction 1/b as the quantity formed by 1 part when a whole is partitioned into b equal parts; understand a fraction a/b as the quantity formed by a parts of size 1/b.",
+   "components": [],
+   "guid": "AC0EED520FC44B7393EFF763F4F0621B",
+   "asn": "S21018329"
+  },
+  "KY.3.NF.2": {
+   "grade": "3",
+   "domain": "Numbers and Operations-Fractions",
+   "clusterCode": "",
+   "cluster": "Develop understanding of fractions as numbers. Note: grade 3 expectations in this domain are limited to fractions with denominators 2, 3, 4, 6 and 8.",
+   "text": "Understand a fraction as a number on the number line; represent fractions on a number line.",
+   "components": [
+    "Represent a fraction 1/b (unit fraction) on a number line by defining the interval from 0 to 1 as the whole and partitioning it into b equal parts.<ul><li>Recognize each part has size 1/b.</li><li>a unit fraction, 1/b is located 1/b of a whole unit from 0 on the number line.</li></ul>",
+    "Represent a non-unit fraction a/b on a number line by marking off lengths of 1/b (unit fractions) from 0. Recognize that the resulting interval has size a/b and that its endpoint locates the non-unit fraction a/b on the number line."
+   ],
+   "guid": "6CBAF293FE64499299607D9218E63241",
+   "asn": "S21018330"
+  },
+  "KY.3.NF.3": {
+   "grade": "3",
+   "domain": "Numbers and Operations-Fractions",
+   "clusterCode": "",
+   "cluster": "Develop understanding of fractions as numbers. Note: grade 3 expectations in this domain are limited to fractions with denominators 2, 3, 4, 6 and 8.",
+   "text": "Explain equivalence of fractions in special cases and compare fractions by reasoning about their size.",
+   "components": [
+    "Understand two fractions as equivalent (equal) if they are the same size, or same point on a number line.",
+    "Recognize and generate simple equivalent fractions. Explain why the fractions are equivalent through writing or drawing.",
+    "Express whole numbers as fractions and recognize fractions that are equivalent to whole numbers.",
+    "Compare two fractions with the same numerator or the same denominator by reasoning about their size. Recognize that comparisons are valid only when the two fractions refer to the same whole. Record the results of comparisons with the symbols >, =, or <, and justify the conclusions."
+   ],
+   "guid": "2892D15D58BA41DFA8DFEE295989D957",
+   "asn": "S21018333"
+  },
+  "KY.3.MD.1": {
+   "grade": "3",
+   "domain": "Measurement and Data",
+   "clusterCode": "",
+   "cluster": "Solve problems involving measurement and estimation of intervals of time, liquid volumes and masses of objects.",
+   "text": "Tell and write time to the nearest minute and measure elapsed time intervals in minutes. Solve word problems involving addition and subtraction of time intervals within and across the hour in minutes.",
+   "components": [],
+   "guid": "5C6159E71FC24B59BEB6260BAABA89EA",
+   "asn": "S21018419"
+  },
+  "KY.3.MD.2": {
+   "grade": "3",
+   "domain": "Measurement and Data",
+   "clusterCode": "",
+   "cluster": "Solve problems involving measurement and estimation of intervals of time, liquid volumes and masses of objects.",
+   "text": "Measure and solve problems involving mass and liquid volume.",
+   "components": [
+    "Measure and estimate masses and liquid volumes of objects using standard units of grams (g), kilograms (kg) and liters (L).",
+    "Add, subtract, multiply, or divide to solve one-step word problems involving masses or volumes that are given in the same units."
+   ],
+   "guid": "11B6A31C3C4B4B9E910F5D3F5ACCF8C3",
+   "asn": "S21018420"
+  },
+  "KY.3.MD.3": {
+   "grade": "3",
+   "domain": "Measurement and Data",
+   "clusterCode": "",
+   "cluster": "Understand and apply the statistics process.",
+   "text": "Investigate questions involving categorical data.",
+   "components": [
+    "Identify a statistical question focused on categorical data and gather data;",
+    "Create a scaled pictograph and a scaled bar graph to represent a data set (using technology or by hand);",
+    "Make observations from the graph about the question posed, including \"how many more\" and \"how many less\" questions."
+   ],
+   "guid": "A4B8B6733CA84916B08A11038656E702",
+   "asn": "S21018424"
+  },
+  "KY.3.MD.4": {
+   "grade": "3",
+   "domain": "Measurement and Data",
+   "clusterCode": "",
+   "cluster": "Understand and apply the statistics process.",
+   "text": "Investigate questions involving numerical data.",
+   "components": [
+    "Identify a statistical question focused on numerical data;",
+    "Generate measurement data by measuring lengths using rulers marked with halves and fourths of an inch.",
+    "Show the data by making a dot plot where the horizontal scale is marked off in appropriate units – whole numbers, halves, or quarters.",
+    "Make observations from the graph about the question posed, including questions about the shape of the data and compare responses."
+   ],
+   "guid": "23FBFDB29C5241E19C8DD2BC12A855A6",
+   "asn": "S21018428"
+  },
+  "KY.3.MD.5": {
+   "grade": "3",
+   "domain": "Measurement and Data",
+   "clusterCode": "",
+   "cluster": "Geometric measurement: understanding concepts of area and relate area to multiplication and to addition.",
+   "text": "Recognize area as an attribute of plane figures and understand concepts of area measurement.",
+   "components": [],
+   "guid": "FCEEE48629704FD788EB77D616E23DEC",
+   "asn": "S21018434"
+  },
+  "KY.3.MD.6": {
+   "grade": "3",
+   "domain": "Measurement and Data",
+   "clusterCode": "",
+   "cluster": "Geometric measurement: understanding concepts of area and relate area to multiplication and to addition.",
+   "text": "Measure areas by counting unit squares (square cm, square m, square in, square ft. and improvised units).",
+   "components": [],
+   "guid": "7C024B9C2A394028BBBAF1E8D01B6710",
+   "asn": "S21018435"
+  },
+  "KY.3.MD.7": {
+   "grade": "3",
+   "domain": "Measurement and Data",
+   "clusterCode": "",
+   "cluster": "Geometric measurement: understanding concepts of area and relate area to multiplication and to addition.",
+   "text": "Relate area to the operations of multiplication and addition.",
+   "components": [
+    "Find the area of a rectangle with whole-number side lengths by tiling it and show the area is the same as would be found by multiplying the side lengths.",
+    "Multiply side lengths to find areas of rectangles with whole-number side lengths in the context of solving real world and mathematical problems and represent whole-number products as rectangular areas in mathematical reasoning.",
+    "Use tiling to show in a concrete case the area of a rectangle with whole-number side lengths a and b + c is the sum of a × b and a × c. Use area models to represent the distributive property in mathematical reasoning.",
+    "Recognize area as additive. Find areas of figures that can be decomposed into non-overlapping rectangles by adding the areas of the non-overlapping parts, applying this technique to solve real world problems."
+   ],
+   "guid": "E10D9EBE3E8C43849792DBEFF6F63E98",
+   "asn": "S21018436"
+  },
+  "KY.3.MD.8": {
+   "grade": "3",
+   "domain": "Measurement and Data",
+   "clusterCode": "",
+   "cluster": "Geometric measurement: Recognize perimeter as an attribute of plane figures and distinguish between linear and area measures.",
+   "text": "Solve real world and mathematical problems involving perimeters of polygons.",
+   "components": [
+    "Find the perimeter given the side lengths of a polygon.",
+    "Find an unknown side length, given the perimeter and some lengths.",
+    "Draw rectangles with the same perimeter and different areas or with the same area and different perimeters."
+   ],
+   "guid": "7258EF949D7A4B87933C4D6D4C3C31EA",
+   "asn": "S21018442"
+  },
+  "KY.3.G.1": {
+   "grade": "3",
+   "domain": "Geometry",
+   "clusterCode": "",
+   "cluster": "Reason with shapes and their attributes.",
+   "text": "Classify polygons by attributes.",
+   "components": [
+    "Recognize and classify polygons based on the number of sides and vertices (triangles, quadrilaterals, pentagons and hexagons).",
+    "Recognize and classify quadrilaterals (rectangles, squares, parallelograms, rhombuses, trapezoids) by side lengths and understanding shapes in different categories may share attributes and the shared attributes can define a larger category.",
+    "Identify shapes that do not belong to a given category or subcategory."
+   ],
+   "guid": "C90B43ED13F8429A806922C7AB0CD852",
+   "asn": "S21018500"
+  },
+  "KY.3.G.2": {
+   "grade": "3",
+   "domain": "Geometry",
+   "clusterCode": "",
+   "cluster": "Reason with shapes and their attributes.",
+   "text": "Partition shapes into parts with equal areas. Express the area of each part as a unit fraction of the whole.",
+   "components": [],
+   "guid": "AE61C7D8E1584916A8A520539427C5A2",
+   "asn": "S21018504"
+  },
+  "KY.4.OA.1": {
+   "grade": "4",
+   "domain": "Operations and Algebraic Thinking",
+   "clusterCode": "",
+   "cluster": "Use the four operations with whole numbers to solve problems.",
+   "text": "Interpret a multiplication equation as a comparison. Represent verbal statements of multiplicative comparisons as multiplication equations.",
+   "components": [],
+   "guid": "942DF60956B34F3ABE5CAE4938896315",
+   "asn": "S21018242"
+  },
+  "KY.4.OA.2": {
+   "grade": "4",
+   "domain": "Operations and Algebraic Thinking",
+   "clusterCode": "",
+   "cluster": "Use the four operations with whole numbers to solve problems.",
+   "text": "Multiply or divide to solve word problems involving multiplicative comparisons by using drawings and equations with a symbol for the unknown number to represent the problem, distinguishing multiplicative comparison from additive comparison.",
+   "components": [],
+   "guid": "E535BCA8ADB4492085A87F4C51B97CC4",
+   "asn": "S21018243"
+  },
+  "KY.4.OA.3": {
+   "grade": "4",
+   "domain": "Operations and Algebraic Thinking",
+   "clusterCode": "",
+   "cluster": "Use the four operations with whole numbers to solve problems.",
+   "text": "Solve multistep problems.",
+   "components": [
+    "Perform operations in the conventional order when there are no parentheses to specify a particular order.",
+    "Solve multistep word problems posed with whole numbers and having whole number answers using the four operations, including problems in which remainders must be interpreted. Represent these problems using equations with a letter standing for the unknown quantity. Assess the reasonableness of answers using mental computations and estimation strategies including rounding."
+   ],
+   "guid": "8803CC40BA6A43ADBB43F4EA309ECECC",
+   "asn": "S21020409"
+  },
+  "KY.4.OA.4": {
+   "grade": "4",
+   "domain": "Operations and Algebraic Thinking",
+   "clusterCode": "",
+   "cluster": "Gain familiarity with factors and multiples.",
+   "text": "Find factors and multiples of numbers in the range 1-100.",
+   "components": [
+    "Find all factor pairs for a given whole number.",
+    "Recognize that a whole number is a multiple of each of its factors.",
+    "Determine whether a given whole number is a multiple of a given one-digit number.",
+    "Determine whether a given whole number is prime or composite."
+   ],
+   "guid": "D6750379F3FB4E98A9CBC74759DF2572",
+   "asn": "S21018247"
+  },
+  "KY.4.OA.5": {
+   "grade": "4",
+   "domain": "Operations and Algebraic Thinking",
+   "clusterCode": "",
+   "cluster": "Generate and analyze patterns.",
+   "text": "Generate a number or shape pattern that follows a given rule. Identify apparent features of the pattern not explicit in the rule itself.",
+   "components": [],
+   "guid": "19CD2F781D7F4FB8859D9E7ABBA8E375",
+   "asn": "S21018253"
+  },
+  "KY.4.NBT.1": {
+   "grade": "4",
+   "domain": "Numbers and Operations in Base Ten",
+   "clusterCode": "",
+   "cluster": "Generalize place value understanding for multi-digit whole numbers.",
+   "text": "Recognize in a multi-digit whole number, a digit in one place represents ten times what it represents in the place to its right.",
+   "components": [],
+   "guid": "33C907DEF7B24270A9D863328B6A1918",
+   "asn": "S21018303"
+  },
+  "KY.4.NBT.2": {
+   "grade": "4",
+   "domain": "Numbers and Operations in Base Ten",
+   "clusterCode": "",
+   "cluster": "Generalize place value understanding for multi-digit whole numbers.",
+   "text": "Represent and compare multi-digit whole numbers.",
+   "components": [
+    "Read and write multi-digit whole numbers using base-ten numerals, number names and expanded form.",
+    "Compare two multi-digit numbers based on meanings of the digit in each place, using >, =, and < symbols to record the results of comparisons."
+   ],
+   "guid": "2A121FE9E8244839A820DA4EF73CFE87",
+   "asn": "S21018304"
+  },
+  "KY.4.NBT.3": {
+   "grade": "4",
+   "domain": "Numbers and Operations in Base Ten",
+   "clusterCode": "",
+   "cluster": "Generalize place value understanding for multi-digit whole numbers.",
+   "text": "Use place value understanding to round multi-digit whole numbers to any place.",
+   "components": [],
+   "guid": "32D2AF1A83724CC288841DD7FA0C7081",
+   "asn": "S21018307"
+  },
+  "KY.4.NBT.4": {
+   "grade": "4",
+   "domain": "Numbers and Operations in Base Ten",
+   "clusterCode": "",
+   "cluster": "Use place value understanding and properties of operations to perform multi-digit arithmetic.",
+   "text": "Fluently add and subtract multi-digit whole numbers using an algorithm.",
+   "components": [],
+   "guid": "60D6AE8BF3ED4750ACC4C64EA5B6C68E",
+   "asn": "S21018309"
+  },
+  "KY.4.NBT.5": {
+   "grade": "4",
+   "domain": "Numbers and Operations in Base Ten",
+   "clusterCode": "",
+   "cluster": "Use place value understanding and properties of operations to perform multi-digit arithmetic.",
+   "text": "Multiply whole numbers<ul><li>Up to four digit number by a one-digit number</li><li>Two-digit number by two-digit number</li></ul>Multiply using strategies based on place value and the properties of operations. Illustrate and explain the calculation by using equations, rectangular arrays and/or area models.",
+   "components": [],
+   "guid": "153D0F2C88D94CF0853C9FA4148DA4FD",
+   "asn": "S21018310"
+  },
+  "KY.4.NBT.6": {
+   "grade": "4",
+   "domain": "Numbers and Operations in Base Ten",
+   "clusterCode": "",
+   "cluster": "Use place value understanding and properties of operations to perform multi-digit arithmetic.",
+   "text": "Divide up to four-digit dividends by one-digit divisors. Find whole number quotients and remainders using<ul><li>strategies based on place value</li><li>the properties of operations</li><li>the relationship between multiplication and division</li></ul>Illustrate and explain the calculation by using equations, rectangular arrays and/or area models.",
+   "components": [],
+   "guid": "07F3892D53544B9AB21C4EAAA46B2BA1",
+   "asn": "S21018311"
+  },
+  "KY.4.NF.1": {
+   "grade": "4",
+   "domain": "Numbers and Operations-Fractions",
+   "clusterCode": "",
+   "cluster": "Extend understanding of fraction equivalence and ordering.",
+   "text": "Understand and generate equivalent fractions.",
+   "components": [
+    "Use visual fraction models to recognize and generate equivalent fractions that have different numerators/denominators even though they are the same size.",
+    "Explain why a fraction a/b is equivalent to a fraction (n × a)/(n × b)."
+   ],
+   "guid": "DE44BED07DCF412391C2AE6ADDC94B5E",
+   "asn": "S21018339"
+  },
+  "KY.4.NF.2": {
+   "grade": "4",
+   "domain": "Numbers and Operations-Fractions",
+   "clusterCode": "",
+   "cluster": "Extend understanding of fraction equivalence and ordering.",
+   "text": "Compare two fractions with different numerators and different denominators using the symbols <, =, or >. Recognize comparisons are valid only when the two fractions refer to the same whole. Justify the conclusions.",
+   "components": [],
+   "guid": "DEB83851F0B94919B5F822A90B179914",
+   "asn": "S21018342"
+  },
+  "KY.4.NF.3": {
+   "grade": "4",
+   "domain": "Numbers and Operations-Fractions",
+   "clusterCode": "",
+   "cluster": "Build fractions from unit fractions by applying and extending previous understandings of operations on whole numbers.",
+   "text": "Understand a fraction a/b with a > 1 as a sum of fractions 1/b.",
+   "components": [
+    "Understand addition and subtraction of fractions as joining and separating parts referring to the same whole.",
+    "Decomposing a fraction into a sum of fractions with the same denominator in more than one way, recording each decomposition by an equation. Justify decompositions.",
+    "Add and subtract mixed numbers with like denominators.",
+    "Solve word problems involving addition and subtraction of fractions referring to the same whole and having like denominators."
+   ],
+   "guid": "547CA3D5B61043119504876E5E4DBAD7",
+   "asn": "S21018344"
+  },
+  "KY.4.NF.4": {
+   "grade": "4",
+   "domain": "Numbers and Operations-Fractions",
+   "clusterCode": "",
+   "cluster": "Build fractions from unit fractions by applying and extending previous understandings of operations on whole numbers.",
+   "text": "Apply and extend previous understandings of multiplication to multiply a fraction by a whole number.",
+   "components": [
+    "Understand a fraction a/b as a multiple of 1/b.",
+    "Understand a multiple of a/b as a multiple of 1/b and use this understanding to multiply a fraction by a whole number.",
+    "Solve word problems involving multiplication of a fraction by a whole number."
+   ],
+   "guid": "81C1AAC0C421437B904A3DEF385D5487",
+   "asn": "S21018349"
+  },
+  "KY.4.NF.5": {
+   "grade": "4",
+   "domain": "Numbers and Operations-Fractions",
+   "clusterCode": "",
+   "cluster": "Understand decimal notation for fractions and compare decimal fractions.",
+   "text": "Convert and add fractions with denominators of 10 and 100.",
+   "components": [
+    "Convert a fraction with a denominator of 10 to an equivalent fraction with a denominator of 100.",
+    "Add two fractions with respective denominators 10 and 100."
+   ],
+   "guid": "6C57E071D81E43D2907BB0E94891BD57",
+   "asn": "S21018354"
+  },
+  "KY.4.NF.6": {
+   "grade": "4",
+   "domain": "Numbers and Operations-Fractions",
+   "clusterCode": "",
+   "cluster": "Understand decimal notation for fractions and compare decimal fractions.",
+   "text": "Use decimal notation for fractions with denominators 10 or 100.",
+   "components": [],
+   "guid": "93E3A6549AC64F978E2840DD39A411C8",
+   "asn": "S21018357"
+  },
+  "KY.4.NF.7": {
+   "grade": "4",
+   "domain": "Numbers and Operations-Fractions",
+   "clusterCode": "",
+   "cluster": "Understand decimal notation for fractions and compare decimal fractions.",
+   "text": "Compare two decimals to hundredths.",
+   "components": [
+    "Compare two decimals to hundredths by reasoning about their size.",
+    "Recognize that comparisons are valid only when the two decimals refer to the same whole.",
+    "Record the results of comparisons with the symbols >, =, or < and justify the conclusions."
+   ],
+   "guid": "F89D999D8DDF41338BF402B4DCAC1892",
+   "asn": "S21018358"
+  },
+  "KY.4.MD.1": {
+   "grade": "4",
+   "domain": "Measurement and Data",
+   "clusterCode": "",
+   "cluster": "Solve problems involving measurement and conversion of measurements from a larger unit to a smaller unit.",
+   "text": "Know relative size of measurement units (mass, weight, liquid volume, length, time) within one system of units (metric system, U.S. standard system and time).",
+   "components": [
+    "Understand the relationship of measurement units within any given measurement system.",
+    "Within any given measurement system, express measurements in a larger unit in terms of a smaller unit.",
+    "Record measurement equivalents in a two-column table."
+   ],
+   "guid": "BC125BB69C6E47C8B13A05511CC9CD6D",
+   "asn": "S21018447"
+  },
+  "KY.4.MD.2": {
+   "grade": "4",
+   "domain": "Measurement and Data",
+   "clusterCode": "",
+   "cluster": "Solve problems involving measurement and conversion of measurements from a larger unit to a smaller unit.",
+   "text": "Use the four operations to solve word problems involving distances, intervals of time, liquid volumes, masses of objects and money.",
+   "components": [
+    "Solve measurement problems involving whole number, simple fractions or decimals.",
+    "Solve problems that require converting a given measurement from a larger unit to a smaller unit within a common measurement system, such as 2 km = 2,000 m.",
+    "Visually display measurement quantities using representations such as number lines that feature a measurement scale."
+   ],
+   "guid": "79BDC83B4C514C90921D406A0A41234F",
+   "asn": "S21018451"
+  },
+  "KY.4.MD.3": {
+   "grade": "4",
+   "domain": "Measurement and Data",
+   "clusterCode": "",
+   "cluster": "Solve problems involving measurement and conversion of measurements from a larger unit to a smaller unit.",
+   "text": "Apply the area and perimeter formulas for rectangles in real world and mathematical problems.",
+   "components": [],
+   "guid": "50C8F201B83F4016AB23FBCC6642227C",
+   "asn": "S21018455"
+  },
+  "KY.4.MD.4": {
+   "grade": "4",
+   "domain": "Measurement and Data",
+   "clusterCode": "",
+   "cluster": "Understand and apply the statistics process.",
+   "text": "Use dot plots to analyze data to a statistical question.",
+   "components": [
+    "Identify a statistical question focused on numerical data.",
+    "Make a dot plot to display a data set of measurements in fractions of a unit (½, ¼, 1/8).",
+    "Solve problems involving addition and subtraction of fractions by using information presented in dot plots."
+   ],
+   "guid": "7527B51960184CB197EE28326B33BA1E",
+   "asn": "S21018457"
+  },
+  "KY.4.MD.5": {
+   "grade": "4",
+   "domain": "Measurement and Data",
+   "clusterCode": "",
+   "cluster": "Geometric measurement: understand concepts of angle and measure angles.",
+   "text": "Recognize angles as geometric shapes that are formed wherever two rays share a common endpoint and understand concepts of angle measurement.",
+   "components": [],
+   "guid": "FBC08CFE50FE4BE4AB9DEBC59A6B7F27",
+   "asn": "S21018462"
+  },
+  "KY.4.MD.6": {
+   "grade": "4",
+   "domain": "Measurement and Data",
+   "clusterCode": "",
+   "cluster": "Geometric measurement: understand concepts of angle and measure angles.",
+   "text": "Measure angles in whole-number degrees using a protractor. Sketch angles of specified measure.",
+   "components": [],
+   "guid": "B1B57A0E8D35433791E6862046161366",
+   "asn": "S21018463"
+  },
+  "KY.4.MD.7": {
+   "grade": "4",
+   "domain": "Measurement and Data",
+   "clusterCode": "",
+   "cluster": "Geometric measurement: understand concepts of angle and measure angles.",
+   "text": "Recognize angle measure as additive. When an angle is into non-overlapping parts, the angle measure of the whole is the sum of the angle measures of the parts. Solve addition and subtraction problems to find unknown angles on a diagram in real world and mathematical problems.",
+   "components": [],
+   "guid": "53D3BFDC2D5C4808BAB9629BFD56C6F0",
+   "asn": "S21018464"
+  },
+  "KY.4.G.1": {
+   "grade": "4",
+   "domain": "Geometry",
+   "clusterCode": "",
+   "cluster": "Draw and identify lines and angles, and classify shapes by properties of their lines and angles.",
+   "text": "Draw points, lines, line segments, rays, angles (right, acute, obtuse) and perpendicular and parallel lines. Identify these in two-dimensional figures.",
+   "components": [],
+   "guid": "B5CA3CB10261413FA8B7F4B29E355F45",
+   "asn": "S21018506"
+  },
+  "KY.4.G.2": {
+   "grade": "4",
+   "domain": "Geometry",
+   "clusterCode": "",
+   "cluster": "Draw and identify lines and angles, and classify shapes by properties of their lines and angles.",
+   "text": "Classify two-dimensional figures based on the presence or absence of parallel or perpendicular lines, or the presence of absence of angles of a specified size. Recognize right triangles as a category and identify right triangles.",
+   "components": [],
+   "guid": "F5B3C449999D411ABA3955B0E2117A9A",
+   "asn": "S21018507"
+  },
+  "KY.4.G.3": {
+   "grade": "4",
+   "domain": "Geometry",
+   "clusterCode": "",
+   "cluster": "Draw and identify lines and angles, and classify shapes by properties of their lines and angles.",
+   "text": "Identify lines of symmetry.",
+   "components": [
+    "Recognize a line of symmetry for a two-dimensional figure.",
+    "Identify line-symmetric figures and draw lines of symmetry."
+   ],
+   "guid": "BB419A5A0E06494FBCEA82A576471115",
+   "asn": "S21018508"
+  },
+  "KY.5.OA.1": {
+   "grade": "5",
+   "domain": "Operations and Algebraic Thinking",
+   "clusterCode": "",
+   "cluster": "Write and interpret numerical expressions.",
+   "text": "Use parentheses, brackets or braces in numerical expressions and evaluate expressions that include symbols.",
+   "components": [],
+   "guid": "94E37774786A4E3DAA5B1899CF360C73",
+   "asn": "S21018255"
+  },
+  "KY.5.OA.2": {
+   "grade": "5",
+   "domain": "Operations and Algebraic Thinking",
+   "clusterCode": "",
+   "cluster": "Write and interpret numerical expressions.",
+   "text": "Write simple expressions with numbers and interpret numerical expressions without evaluating them.",
+   "components": [],
+   "guid": "73E5E2C5A750455396991D2748294313",
+   "asn": "S21018256"
+  },
+  "KY.5.OA.3": {
+   "grade": "5",
+   "domain": "Operations and Algebraic Thinking",
+   "clusterCode": "",
+   "cluster": "Analyze patterns and relationships.",
+   "text": "Generate numerical patterns for situations.",
+   "components": [
+    "Generate a rule for growing patterns, identifying the relationship between corresponding terms (x, y).",
+    "Generate patterns using one or two given rules (x, y).",
+    "Use tables, ordered pairs and graphs to represent the relationship between the quantities."
+   ],
+   "guid": "C1F56B48167B4E0DB2D51770855DF370",
+   "asn": "S21018258"
+  },
+  "KY.5.NBT.1": {
+   "grade": "5",
+   "domain": "Numbers and Operations in Base Ten",
+   "clusterCode": "",
+   "cluster": "Understand the place value system.",
+   "text": "Recognize that in a multi-digit number, a digit in one place represents 10 times as much as it represents in the place to its right and 1/10 of what it represents in the place to its left.",
+   "components": [],
+   "guid": "7A54934CCC1745C48284AB178CEC48B3",
+   "asn": "S21018313"
+  },
+  "KY.5.NBT.2": {
+   "grade": "5",
+   "domain": "Numbers and Operations in Base Ten",
+   "clusterCode": "",
+   "cluster": "Understand the place value system.",
+   "text": "Multiply and divide by powers of 10.<ul><li>Explain patterns in the number of zeros of the product when multiplying a number by powers of 10.</li><li>Explain patterns in the placement of the decimal point when a decimal is multiplied or divided by a power of 10.</li><li>Use whole-number exponents to denote powers of 10.</li></ul>",
+   "components": [],
+   "guid": "0C00C43345A141D293F5C0A39A0D32E4",
+   "asn": "S21018314"
+  },
+  "KY.5.NBT.3": {
+   "grade": "5",
+   "domain": "Numbers and Operations in Base Ten",
+   "clusterCode": "",
+   "cluster": "Understand the place value system.",
+   "text": "Read, write and compare decimals to thousandths.",
+   "components": [
+    "Read and write decimals to thousandths using base-ten numerals, number names and expanded form.",
+    "Compare two decimals to thousandths based on meanings of the digits in each place, using >, =, and < symbols to record the results of comparisons."
+   ],
+   "guid": "7CDFA5530EAD4C11948A9E70F7D9A52A",
+   "asn": "S21018315"
+  },
+  "KY.5.NBT.4": {
+   "grade": "5",
+   "domain": "Numbers and Operations in Base Ten",
+   "clusterCode": "",
+   "cluster": "Understand the place value system.",
+   "text": "Use place value understanding to round decimals to any place.",
+   "components": [],
+   "guid": "47B07C15F05E4578B07F097964F08B35",
+   "asn": "S21018318"
+  },
+  "KY.5.NBT.5": {
+   "grade": "5",
+   "domain": "Numbers and Operations in Base Ten",
+   "clusterCode": "",
+   "cluster": "Perform operations with multi-digit whole numbers and with decimals to hundredths.",
+   "text": "Fluently multiply multi-digit whole numbers (not to exceed four-digit by two-digit multiplication) using an algorithm.",
+   "components": [],
+   "guid": "79716F5C31594637B9222BBCD20C3CA2",
+   "asn": "S21018320"
+  },
+  "KY.5.NBT.6": {
+   "grade": "5",
+   "domain": "Numbers and Operations in Base Ten",
+   "clusterCode": "",
+   "cluster": "Perform operations with multi-digit whole numbers and with decimals to hundredths.",
+   "text": "Divide up to four-digit dividends by two-digit divisors.",
+   "components": [
+    "Find whole-number quotients of whole numbers with up to four-digit dividends and two-digit divisors using<ul><li>strategies based on place value</li><li>the properties of operations</li><li>the relationship between multiplication and division</li></ul>",
+    "Illustrate and explain the calculation by using equations, rectangular arrays and/or area models."
+   ],
+   "guid": "09E2F829B65849D8947486121BE15024",
+   "asn": "S21018321"
+  },
+  "KY.5.NBT.7": {
+   "grade": "5",
+   "domain": "Numbers and Operations in Base Ten",
+   "clusterCode": "",
+   "cluster": "Perform operations with multi-digit whole numbers and with decimals to hundredths.",
+   "text": "Operations with decimals to hundredths.",
+   "components": [
+    "Add, subtract, multiply and divide decimals to hundredths using…<ul><li>concrete models or drawings</li><li>strategies based on place value</li><li>properties of operations</li><li>the relationship between addition and subtraction</li></ul>",
+    "Relate the strategy to a written method and explain the reasoning used."
+   ],
+   "guid": "842FC4AD57CE49399704DCFA33EC8781",
+   "asn": "S21018324"
+  },
+  "KY.5.NF.1": {
+   "grade": "5",
+   "domain": "Numbers and Operations-Fractions",
+   "clusterCode": "",
+   "cluster": "Use equivalent fractions as a strategy to add and subtract fractions.",
+   "text": "Efficiently add and subtract fractions with unlike denominators (including mixed numbers) by<ul><li>using reasoning strategies, such as counting up on a number line or creating visual fraction models</li><li>finding common denominators</li></ul>",
+   "components": [],
+   "guid": "8A86E3C2CEBB41778CBF943BE38244AF",
+   "asn": "S21018363"
+  },
+  "KY.5.NF.2": {
+   "grade": "5",
+   "domain": "Numbers and Operations-Fractions",
+   "clusterCode": "",
+   "cluster": "Use equivalent fractions as a strategy to add and subtract fractions.",
+   "text": "Solve word problems involving addition and subtraction of fractions.",
+   "components": [
+    "Solve word problems involving addition and subtraction of fractions referring to the same whole, including cases of unlike denominators.",
+    "Use benchmark fractions and number sense of fractions to estimate mentally and assess the reasonableness of answers."
+   ],
+   "guid": "68DB163162D2428A9D1C9FF42FAB9492",
+   "asn": "S21018364"
+  },
+  "KY.5.NF.3": {
+   "grade": "5",
+   "domain": "Numbers and Operations-Fractions",
+   "clusterCode": "",
+   "cluster": "Apply and extend previous understandings of multiplication and division to multiply and divide fractions.",
+   "text": "Interpret a fraction as division of the numerator by the denominator (a/b = a ÷ b). Solve word problems involving division of whole numbers leading to answers in the form of fractions or mixed numbers by using visual fraction models or equations to represent the problem.",
+   "components": [],
+   "guid": "AE20E6E363CF43298EAD15AA5235A90D",
+   "asn": "S21018368"
+  },
+  "KY.5.NF.4": {
+   "grade": "5",
+   "domain": "Numbers and Operations-Fractions",
+   "clusterCode": "",
+   "cluster": "Apply and extend previous understandings of multiplication and division to multiply and divide fractions.",
+   "text": "Apply and extend previous understanding of multiplication to multiply a fraction or whole number by a fraction.",
+   "components": [
+    "Interpret the product (a/b) × q as a parts of a partition of q into b equal parts; equivalently, as the result of a sequence of operations a × q ÷ b.",
+    "Find the area of a rectangle with fractional side lengths by tiling it with squares of the appropriate unit fraction side lengths and show that the area is the same as would be found by multiplying the side lengths. Multiply fractional side lengths to find areas of rectangles and represent fraction products as rectangular areas."
+   ],
+   "guid": "A25C44EB1B544D399289543928137D1C",
+   "asn": "S21018369"
+  },
+  "KY.5.NF.5": {
+   "grade": "5",
+   "domain": "Numbers and Operations-Fractions",
+   "clusterCode": "",
+   "cluster": "Apply and extend previous understandings of multiplication and division to multiply and divide fractions.",
+   "text": "Interpret multiplication as scaling (resizing), by:",
+   "components": [
+    "Comparing the size of a product to the size of one factor on the basis of the size of the other factor, without performing the indicated multiplication.",
+    "Explaining why multiplying a given number by a fraction greater than 1 results in a product greater than the given number (recognizing multiplication by whole numbers greater than 1 as a familiar case); explaining why multiplying a given number by a fraction less than 1 results in a product smaller than the given number; and relating the principle of fraction equivalence a/b = (n × a)/(n × b) to the effect of multiplying a/b by 1."
+   ],
+   "guid": "801063DB40664FEE89B076F0863A1937",
+   "asn": "S21018372"
+  },
+  "KY.5.NF.6": {
+   "grade": "5",
+   "domain": "Numbers and Operations-Fractions",
+   "clusterCode": "",
+   "cluster": "Apply and extend previous understandings of multiplication and division to multiply and divide fractions.",
+   "text": "Solve real world problems involving multiplication of fractions and mixed numbers.",
+   "components": [],
+   "guid": "49B1D5D0DFB14B1483F3F07A6CD8859A",
+   "asn": "S21018375"
+  },
+  "KY.5.NF.7": {
+   "grade": "5",
+   "domain": "Numbers and Operations-Fractions",
+   "clusterCode": "",
+   "cluster": "Apply and extend previous understandings of multiplication and division to multiply and divide fractions.",
+   "text": "Apply and extend previous understandings of division to divide unit fractions by whole numbers and whole numbers by unit fractions.",
+   "components": [
+    "Interpret division of a unit fraction by a non-zero whole number and compute such quotients.",
+    "Interpret division of a whole number by a unit fraction and compute such quotients.",
+    "Solve real world problems involving division of unit fractions by non-zero whole numbers and division of whole numbers by unit fractions."
+   ],
+   "guid": "A6FA4DE3F68E40A48BA848059713147B",
+   "asn": "S21018376"
+  },
+  "KY.5.MD.1": {
+   "grade": "5",
+   "domain": "Measurement and Data",
+   "clusterCode": "",
+   "cluster": "Convert like measurement units within a given measurement system.",
+   "text": "Convert among different size measurement units (mass, weight, liquid volume, length, time) within one system of units (metric system, U.S. standard system and time).",
+   "components": [],
+   "guid": "3FCD69DDAF004117ABB0A202A1E64E22",
+   "asn": "S21018466"
+  },
+  "KY.5.MD.2": {
+   "grade": "5",
+   "domain": "Measurement and Data",
+   "clusterCode": "",
+   "cluster": "Understand and apply the statistics process.",
+   "text": "Identify and gather data for statistical questions focused on both categorical and numerical data. Select an appropriate data display (bar graph, pictograph, dot plot). Make observations from the graph about the questions posed.",
+   "components": [],
+   "guid": "78B13C17FB534F1E90C5BA5DB886EBB6",
+   "asn": "S21018468"
+  },
+  "KY.5.MD.3": {
+   "grade": "5",
+   "domain": "Measurement and Data",
+   "clusterCode": "",
+   "cluster": "Geometric measurement: understand concepts of volume and relate volume to multiplication and to addition.",
+   "text": "Recognize volume as an attribute of solid figures and understand concepts of volume measurement.",
+   "components": [
+    "A cube with side length 1 unit, called a \"unit cube,\" is said to have \"one cubic unit\" of volume and can be used to measure volume.",
+    "A solid figure which can be packed without gaps or overlaps using n unit cubes is said to have a volume of n cubic units."
+   ],
+   "guid": "058D8BE60E494615851D64BC905F7F90",
+   "asn": "S21018470"
+  },
+  "KY.5.MD.4": {
+   "grade": "5",
+   "domain": "Measurement and Data",
+   "clusterCode": "",
+   "cluster": "Geometric measurement: understand concepts of volume and relate volume to multiplication and to addition.",
+   "text": "Measure volumes by counting unit cubic cm, cubic in, cubic ft. and improvised units.",
+   "components": [],
+   "guid": "15DCC8C9A5ED4B9FA83B8670FED9D02E",
+   "asn": "S21018473"
+  },
+  "KY.5.MD.5": {
+   "grade": "5",
+   "domain": "Measurement and Data",
+   "clusterCode": "",
+   "cluster": "Geometric measurement: understand concepts of volume and relate volume to multiplication and to addition.",
+   "text": "Relate volume to the operations of multiplication and addition and solve real world and mathematical problems involving volume.",
+   "components": [
+    "Find the volume of a right rectangular prism with whole-number side lengths by packing it with unit cubes and show that the volume is the same as would be found by multiplying the edge lengths, equivalently by multiplying the height by the area of the base. Represent threefold whole-number products as volumes.",
+    "Apply the formulas V= l × w × h and V = B × h for rectangular prisms with whole-number edge lengths in the context of solving real world and mathematical problems.",
+    "Recognize volume as additive. Find volumes of solid figures composed of two non-overlapping right rectangular prisms by adding the volumes of the non-overlapping parts, applying this technique to solve real world problems."
+   ],
+   "guid": "5CE1D76CBAEF4E5EA3E3EF8AB45230D9",
+   "asn": "S21018474"
+  },
+  "KY.5.G.1": {
+   "grade": "5",
+   "domain": "Geometry",
+   "clusterCode": "",
+   "cluster": "Graph points on the coordinate plane to solve real-world and mathematical problems.",
+   "text": "Use a pair perpendicular number lines, called axes, to define a coordinate system, with the intersection of the lines (the origin) arranged to coincide with the 0 on each line and a given point in the plane located by using an ordered pair of numbers, called its coordinates. Understand that the first number indicates how far to travel from the origin in the direction of one axis and the second number indicates how far to travel in the direction of the second.",
+   "components": [],
+   "guid": "6B93BDB65181499FA1FE2293AE2DC547",
+   "asn": "S21018512"
+  },
+  "KY.5.G.2": {
+   "grade": "5",
+   "domain": "Geometry",
+   "clusterCode": "",
+   "cluster": "Graph points on the coordinate plane to solve real-world and mathematical problems.",
+   "text": "Represent real world and mathematical problems by graphing points in the first quadrant of the coordinate plane and interpret coordinate values of points in the context of the situation.",
+   "components": [],
+   "guid": "E231A91F685A4217835D252F2C15B8EF",
+   "asn": "S21018513"
+  },
+  "KY.5.G.3": {
+   "grade": "5",
+   "domain": "Geometry",
+   "clusterCode": "",
+   "cluster": "Classify two-dimensional figures into categories based on their properties.",
+   "text": "Understand that attributes belonging to a category of two-dimensional figures also belong to all subcategories of that category.",
+   "components": [],
+   "guid": "E856522C377147E0A7A24963F5F50972",
+   "asn": "S21018515"
+  },
+  "KY.5.G.4": {
+   "grade": "5",
+   "domain": "Geometry",
+   "clusterCode": "",
+   "cluster": "Classify two-dimensional figures into categories based on their properties.",
+   "text": "Classify two-dimensional figures in a hierarchy based on properties.",
+   "components": [],
+   "guid": "A5A46239FB4D4581830163C7B3065E7B",
+   "asn": "S21018516"
+  }
+ }
+}

@@ -63,6 +63,14 @@ The roadmap requires this note before Phase 6 work starts.
 - Grade comes from the list row, not from the code, so codes like `KY.5.NF.1` work. `state.std = { f, g, c }`; picking a framework clears `c`. The framework picker shows only when more than one framework is listed.
 - Per framework coverage: `notes/coverage/<fw>.md`, with the standard's annotation under every Partial or Gap row; `notes/standards-coverage.md` holds the counts and the gaps of all frameworks grouped by `need`.
 
+## 5b. Step 2 as built
+
+- `standards/ky.json` imported from the CSP Kentucky set (149 standards; codes look like `KY.K.CC.1`, no cluster letter). `standards/ky.annotations.json` is empty.
+- `standards/ky.crosswalk.json`: 149 rows, 135 supported, 11 partial, 3 gap. 5 rows map to several presets (Combined worksheets). Every row was reviewed by reading the Kentucky text against the Tennessee preset titles and text; similarity scores were only a starting point (39 of 149 matched at 0.85 or higher when only the standard text was compared).
+- Kentucky's three gaps use the same `need` phrases as Tennessee's three, so the work list holds three generator needs for both frameworks.
+- Seven of the 11 partial rows are the same pattern: the graph or plot is generated from given data, and posing a statistical question or gathering data is not. Others: counting back from 30 (`KY.K.CC.1`), fluency within 5 (`KY.K.OA.5`), explaining a strategy (`KY.2.NBT.9`), dollar and cent word problems (`KY.2.MD.8`), a four-by-two-digit product limit (`KY.5.NBT.5`).
+- `tests/logic-standards.js` and `tests/logic-crosswalk.js` load every framework payload and check every row, including the multi-target ones.
+
 ## 6. Open: settings from a code
 
 Today the set code (`seed`, six characters) fixes only the random stream. Settings are not in it. Proposed, separate from the seed so existing codes and footers are untouched:
