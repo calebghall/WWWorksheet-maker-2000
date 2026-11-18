@@ -5,6 +5,10 @@ usage: build_framework.py <fw-id> <csp rows.json> <outdir> [--saved standards.js
  <outdir>/<fw>.annotations.json  hand-kept layer: examples, notes, table refs (never overwritten)
 With --saved, examples and notes found in the saved rows seed the annotation layer.
 Rows whose saved text is damaged get status 'retype' (saved text kept as an aid)."""
+# Attribution: the input JSON format and the normalized records come from the Common Standards Project
+# (https://commonstandardsproject.com, D2L Corporation), licensed CC BY 3.0 US
+# (http://creativecommons.org/licenses/by/3.0/us/). The Kentucky Academic Standards text itself is public record;
+# the attribution applies to the CSP data format only.
 import json, os, re, sys, datetime
 fw, cspp, outdir, *rest = sys.argv[1:]
 saved = json.load(open(rest[rest.index('--saved') + 1], encoding='utf-8')) if '--saved' in rest else {}

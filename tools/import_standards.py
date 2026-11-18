@@ -2,6 +2,10 @@
 """Normalize CSP standard-set JSON files into framework rows.
 usage: import_standards.py <fw-id> <out.json> <csp.json> [<csp.json> ...]
 Row: {code: {grade, cluster, text, guid, asn, label}}; leaf standards only."""
+# Attribution: the input JSON format and the normalized records come from the Common Standards Project
+# (https://commonstandardsproject.com, D2L Corporation), licensed CC BY 3.0 US
+# (http://creativecommons.org/licenses/by/3.0/us/). The Kentucky Academic Standards text itself is public record;
+# the attribution applies to the CSP data format only.
 import json, re, sys
 
 GRADE = re.compile(r'grade-(k|\d+)\.json$', re.I)
