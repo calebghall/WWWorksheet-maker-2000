@@ -53,6 +53,8 @@ Types are registered in the `ns-*.js` family files (`defTypes`, `core/types.js`)
 - **Round to 10 or 100** (`rnd3`): Plain problems and number lines.
 - **Estimation** (`est`): Round each number, then add, subtract or multiply.
 - **Read and write numbers** (`numrw`): Number words, tens and ones, and base-ten blocks, to 120.
+- **Read and write numbers to 1000** (`numrw3`): Standard form, word form and expanded form, 100 to 1,000.
+- **Compare numerals to 10 in words** (`cmpw`): Is one numeral greater than, less than or equal to another? Numerals 0 to 10.
 - **Mentally add or subtract 10 or 100** (`more`): 10 more or less, 100 more or less.
 - **10 more or less, explained** (`moreexp`): Write the number and say how you know.
 - **Tens and ones** (`tens`): Write a number as tens and ones.
@@ -156,6 +158,7 @@ Types are registered in the `vis-*.js` family files (`defTypes`, `core/types.js`
 ### Data displays (`vis-data.js`)
 
 - **Sort and compare** (`sort`): Count two groups and say which has more.
+- **Compare two groups** (`cmpg`): Count two groups of objects: greater than, less than or equal to.
 - **Tally chart** (`tally`): Read a tally chart.
 - **Pictograph** (`pict`): Read, or draw from a table.
 - **Bar graph** (`bar`): Read, or draw from a table.

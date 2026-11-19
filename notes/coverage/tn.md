@@ -2,11 +2,11 @@
 
 Source: Tennessee Academic Standards: Mathematics K-4th Year (2023), imported from the Common Standards Project. 153 standards.
 
-- Supported: 150
+- Supported: 153
 - Partial: 0
-- Gap: 3
+- Gap: 0
 
-Supported and Partial standards build a worksheet from the Tennessee standard panel of the worksheet maker (standards/tn.crosswalk.json maps each standard to its presets). Partial rows list what differs from the standard. Gaps by grade: Grade 2 (1), Kindergarten (2).
+Supported and Partial standards build a worksheet from the Tennessee standard panel of the worksheet maker (standards/tn.crosswalk.json maps each standard to its presets). Partial rows list what differs from the standard. Gaps by grade: none.
 
 ## Kindergarten
 
@@ -18,8 +18,8 @@ Supported and Partial standards build a worksheet from the Tennessee standard pa
 | K.CC.A.4 | Recognize, describe, extend, and create patterns and explain a simple rule for a pattern using concrete... | Supported | Operations and Algebraic Thinking: Repeating patterns and the core. |
 | K.CC.B.5 | Understand the relationship between numbers and quantities; connect counting to cardinality. | Supported | Number Sense: Count to tell how many. |
 | K.CC.B.6 | Count to answer "how many?" questions about as many as 20 things arranged in a line, a rectangular array,... | Supported | Number Sense: Count up to 20 in lines, arrays and circles. |
-| K.CC.C.7 | Identify whether the number of objects in one group is greater than, less than, or equal to the number of... | Gap | Needs: compare two groups of objects as greater than, less than or equal. |
-| K.CC.C.8 | Compare two given numbers up to 10, when written as numerals, using the terms greater than, less than, or... | Gap | Needs: compare two numerals as greater than, less than or equal. |
+| K.CC.C.7 | Identify whether the number of objects in one group is greater than, less than, or equal to the number of... | Supported | Number Sense: Compare two groups of objects. |
+| K.CC.C.8 | Compare two given numbers up to 10, when written as numerals, using the terms greater than, less than, or... | Supported | Number Sense: Compare numerals to 10 in words. |
 | K.OA.A.1 | Represent addition and subtraction with objects, fingers, drawings, acting out situations, verbal... | Supported | Number Sense: Show addition and subtraction with pictures. |
 | K.OA.A.2 | Add and subtract within 10 to solve contextual problems with result/total unknown involving situations of... | Supported | Addition and Subtraction: Add and subtract within 10. |
 | K.OA.A.3 | Decompose numbers less than or equal to 10 into addend pairs in more than one way (e.g., 5 = 2 + 3 and 5 =... | Supported | Operations and Algebraic Thinking: Decompose numbers to 10. |
@@ -76,7 +76,7 @@ Supported and Partial standards build a worksheet from the Tennessee standard pa
 | 2.OA.D.5 | Identify arithmetic patterns in an addition or hundreds chart and explain them using properties of operations. | Supported | Operations and Algebraic Thinking: Patterns in hundreds and addition charts. |
 | 2.NBT.A.1 | Know that the three digits of a three-digit number represent amounts of hundreds, tens, and ones (e.g.,... | Supported | Number Sense: Place value to hundreds. |
 | 2.NBT.A.2 | Recognize, describe, extend, and create patterns when counting by ones, twos, fives, tens, and hundreds... | Supported | Number Sense: Counting patterns. |
-| 2.NBT.A.3 | Read and write numbers to 1000 using standard form, word form, and expanded form. | Gap | Needs: read and write numbers to 1000 in standard, word and expanded form. |
+| 2.NBT.A.3 | Read and write numbers to 1000 using standard form, word form, and expanded form. | Supported | Number Sense: Read and write numbers to 1000. |
 | 2.NBT.A.4 | Compare two three-digit numbers based on the meanings of the digits in each place and use the symbols >,... | Supported | Number Sense: Compare three-digit numbers. |
 | 2.NBT.B.5 | Fluently add and subtract within 100 using properties of operations, strategies based on place value,... | Supported | Addition and Subtraction: Add and subtract within 100. |
 | 2.NBT.B.6 | Add up to four two-digit numbers using properties of operations and strategies based on place value. | Supported | Addition and Subtraction: Add two-digit numbers. |
@@ -95,10 +95,6 @@ Supported and Partial standards build a worksheet from the Tennessee standard pa
 | 2.G.A.1 | Identify triangles, quadrilaterals, pentagons, and hexagons. Draw two-dimensional shapes having specified... | Supported | Geometry, Area and Volume: Name and draw polygons. |
 | 2.G.A.2 | Partition a rectangle into rows and columns of same-sized squares and find the total number of squares. | Supported | Geometry, Area and Volume: Count unit squares in a rectangle. |
 | 2.G.A.3 | Partition circles and rectangles into two, three, and four equal shares. Describe the shares using the... | Supported | Fractions, Decimals and Percents: Equal shares. |
-
-Annotations on the Partial and Gap standards above:
-
-- 2.NBT.A.3: For example, write 234 as 200 + 30 + 4.
 
 ## Grade 3
 

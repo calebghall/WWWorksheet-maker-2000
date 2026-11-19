@@ -16,7 +16,7 @@ with sync_playwright() as p:
     groups = lambda: pg.evaluate("(h)=>[...document.querySelectorAll(h+' details.tgroup')].map(g=>[g.dataset.fam,g.open,g.hidden,g.querySelector('.tcount').textContent])", H)
 
     g = groups(); check(len(g) == 4, 'num has 4 groups ' + str(g))
-    check(all(x[3].split('/')[1].isdigit() for x in g) and sum(int(x[3].split('/')[1]) for x in g) == 38, 'group totals sum to 38 ' + str(g))
+    check(all(x[3].split('/')[1].isdigit() for x in g) and sum(int(x[3].split('/')[1]) for x in g) == 41, 'group totals sum to 41 ' + str(g))
     check(sum(int(x[3].split('/')[0]) for x in g) >= 1, 'a default type is checked')
     check(all(x[1] == (x[3].split('/')[0] != '0') for x in g), 'groups open exactly when they hold a checked type ' + str(g))
 
@@ -52,7 +52,7 @@ with sync_playwright() as p:
     pg.fill('#stdQ', ''); pg.wait_for_timeout(100)
     pg.click('#stdList [data-std-all]'); pg.wait_for_timeout(300)
     st = pg.evaluate("()=>JSON.parse(localStorage.getItem('wwwm2000.v1'))")
-    check(st['module'] == 'combo' and 2 <= len(st['parts']) <= 16 and 'Grade 5' in st['titles']['combo'], 'all standards builds a combined worksheet ' + str(st['module']))
+    check(st['module'] == 'combo' and 2 <= len(st['parts']) <= 32 and 'Grade 5' in st['titles']['combo'], 'all standards builds a combined worksheet ' + str(st['module']))
     check(pg.evaluate("()=>document.querySelectorAll('.sec-h').length") >= len(st['parts']), 'every part has a section')
     check(not errs, 'page errors ' + str(errs))
     b.close()

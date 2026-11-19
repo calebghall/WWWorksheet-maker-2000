@@ -29,11 +29,11 @@ for(const file of fs.readdirSync(path.join(root,'standards')).filter(f=>f.endsWi
   }
   for(const c of Object.keys(xw.rows))if(!std[c])bad.push(fw+' '+c+' is not a standard of the framework');
 }
-/* Tennessee is the default framework: the 150 presets map one to one, in order of the presets, with the 3 gap rows. */
+/* Tennessee is the default framework: the 153 presets map one to one, in order of the presets, with no gap rows. */
 const tn=SP.STD_FW.tn.xw,single=Object.values(tn).filter(r=>r.to);
-if(single.length!==150||single.some(r=>r.to.length!==1))bad.push('tn should have 150 single-target rows');
-if(new Set(single.map(r=>r.to[0])).size!==150)bad.push('tn targets should be 150 distinct ids');
-if(Object.values(tn).filter(r=>r.status==='gap').length!==3)bad.push('tn should have 3 gap rows');
+if(single.length!==153||single.some(r=>r.to.length!==1))bad.push('tn should have 153 single-target rows');
+if(new Set(single.map(r=>r.to[0])).size!==153)bad.push('tn targets should be 153 distinct ids');
+if(Object.values(tn).filter(r=>r.status==='gap').length!==0)bad.push('tn should have no gap rows');
 /* lookups, on a temporary framework so the data files stay untouched */
 SP.STD_FW.zz={list:[],grade:{},xw:{A:{to:['addsub.add-subtract-within-10','multi.read-write-compare-decimals'],status:'supported'},B:{to:['num.count-fives-tens'],status:'supported'},C:{status:'gap',need:'x'},D:{to:['frac.equivalent-fractions'],status:'partial',note:'note d'}}};
 const multi=SP.stdPreset('A','zz');

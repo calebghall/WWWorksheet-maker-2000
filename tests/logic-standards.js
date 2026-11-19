@@ -49,15 +49,22 @@ for(const code of Object.keys(std))if(!XW[code])bad.push('no crosswalk row for '
 }
 for(const s of SP.STANDARDS)if(!used.has(s.id))bad.push('preset '+s.id+' is used by no standard');
 const XW=SP.STD_FW.tn.xw;
-/* All standards for a grade: a Combined Worksheet whose sections cover every preset type of the grade. */
+/* All standards for a grade: a Combined Worksheet with a section for every standard of the grade (found by its code in the label),
+   running the standard's own module, types and level. */
 for(const g of ['K','1','2','3','4','5']){
   for(const seed of ['A','B','C']){
     const st=SP.defaults();st.seed=seed;st.pages=2;
     if(!SP.applyGradeStandards(st,g)){bad.push('grade '+g+' no parts');continue;}
-    if(st.module!=='combo'||!st.parts||st.parts.length<2||st.parts.length>16)bad.push('grade '+g+' parts '+(st.parts&&st.parts.length));
+    if(st.module!=='combo'||!st.parts||st.parts.length<2||st.parts.length>32)bad.push('grade '+g+' parts '+(st.parts&&st.parts.length));
     const want=new Set();for(const c of Object.keys(XW))if(c.split('.')[0]===g&&SP.stdPreset(c)){const s=SP.stdPreset(c);for(const p of (s.m==='parts'?s.parts:[s]))if(p.m!=='addsub'&&p.m!=='muldiv')p[p.m].types.forEach(t=>want.add(p.m+'|'+t));}
     const have=new Set();for(const p of st.parts)if(p.m!=='addsub'&&p.m!=='muldiv'){const t=p[p.m].types;(Array.isArray(t)?t:Object.keys(t).filter(k=>t[k])).forEach(x=>have.add(p.m+'|'+x));}
     for(const k of want)if(!have.has(k))bad.push('grade '+g+' misses '+k);
+    const norm=v=>{const t=v.types;return JSON.stringify([(Array.isArray(t)?t:Object.keys(t).filter(k=>t[k])).slice().sort(),v.level]);};
+    for(const c of Object.keys(XW))if(c.split('.')[0]===g&&SP.stdPreset(c)){
+      const sp=SP.stdPreset(c),exp=(sp.m==='parts'?sp.parts:[sp]),mine=st.parts.filter(p=>p.label.split(' ')[0].split(',').length&&p.label.includes(c));
+      if(mine.length!==exp.length){bad.push('grade '+g+' '+c+' has '+mine.length+' sections, wants '+exp.length);continue;}
+      exp.forEach((e,i)=>{const q=mine[i];if(q.m!==e.m)bad.push('grade '+g+' '+c+' module '+q.m);else if(e.m!=='addsub'&&e.m!=='muldiv'){if(norm(q[q.m])!==norm(e[e.m]))bad.push('grade '+g+' '+c+' settings differ');}else{const A=e.as||e.md,B=q.as||q.md;for(const k of Object.keys(A))if(JSON.stringify(A[k])!==JSON.stringify(B[k]))bad.push('grade '+g+' '+c+' '+e.m+' setting '+k);}});
+    }
     try{const out=SP.renderAll(st);if(!out||!out.includes('sheet'))bad.push('grade '+g+' empty render');SP.comboSections(st).forEach(sec=>{if(!sec.plan.probs.length)bad.push('grade '+g+' empty section '+sec.letter);});}catch(e){bad.push('grade '+g+' threw '+e.message);}
   }
 }

@@ -44,6 +44,9 @@ const STANDARDS = [
   { id: 'num.count-on-back', t: 'Count on and back', m: 'num', num: { types: ['ns.cfwd', 'ns.numrw'], level: 3 } },
   { id: 'num.counting-patterns', t: 'Counting patterns', m: 'num', num: { types: ['ns.skip'], level: 1 } },
   { id: 'num.tens-ones', t: 'Tens and ones', m: 'num', num: { types: ['ns.tens'], level: 3 } },
+  { id: 'num.compare-two-groups', t: 'Compare two groups of objects', m: 'num', num: { types: ['vis.cmpg'], level: 2 } },
+  { id: 'num.compare-numerals-words', t: 'Compare numerals to 10 in words', m: 'num', num: { types: ['ns.cmpw'], level: 2 } },
+  { id: 'num.read-write-numbers-1000', t: 'Read and write numbers to 1000', m: 'num', num: { types: ['ns.numrw3'], level: 2 } },
   { id: 'num.compare-numbers', t: 'Compare numbers', m: 'num', num: { types: ['ns.cmp2'], level: 2 } },
   { id: 'addsub.add-two-digit-one-digit-number', t: 'Add a two-digit and a one-digit number', m: 'addsub', as: AS(2, 1, { sub: false, format: 'horizontal', cap: 100, second: 'mix' }) },
   { id: 'num.10-more-10-less', t: '10 more and 10 less', m: 'num', num: { types: ['ns.more', 'ns.moreexp'], level: 1 } },
@@ -221,26 +224,26 @@ function applyStandard(st, code) {
   return st;
 }
 
-/* "All standards for this grade": one Combined Worksheet in sections. Each kind of skill is a section of its own, so the problems in a section
-   are similar in size: Add and Subtract and Multiply and Divide (the hardest preset of the grade each), then one section per strand module
-   and problem family, holding every preset type of that family with the average level and a size that follows the number of types.
+/* "All standards for this grade": one Combined Worksheet with a section for every standard of the grade, in preset-file order. Each section
+   keeps the standard's own module, settings and level, is labeled with its code and has the smallest problem count its module allows.
+   Standards that share a preset share one section (all their codes in the label); a standard that bundles skills gives one section per skill.
    Returns the parts, or [] for a grade with no presets. */
 function gradeStandardParts(g, fw) {
-  const groups = {}, hard = {};
-  const take = (m, s) => {
-    if (!isStrand(m)) { hard[m] = { m, [PART_KEY[m]]: s }; return; }
-    for (const t of s.types) {
-      const key = m + '|' + TYPE_HOME[t][1], a = groups[key] || (groups[key] = { m, fam: TYPE_HOME[t][1], types: [], levels: [] });
-      if (!a.types.includes(t)) { a.types.push(t); a.levels.push(s.level); }
-    }
-  };
-  for (const s of stdList(g, fw)) {
-    if (s.m === 'parts') s.parts.forEach(p => take(p.m, p[p.m])); else take(s.m, s[s.m]);
+  const f = fw || FRAMEWORK.id, by = new Map();
+  for (const r of ((STD_FW[f] || {}).list || []).filter(r => r[3] === String(g))) {
+    const pr = stdPreset(r[0], f); if (!pr) continue;
+    if (!by.has(pr.id)) by.set(pr.id, { pr, codes: [] });
+    by.get(pr.id).codes.push(r[0]);
   }
-  const nearest = (counts, want) => counts.reduce((a, c) => Math.abs(c - want) < Math.abs(a - want) ? c : a);
-  const out = ['addsub', 'muldiv'].filter(m => hard[m]).map(m => Object.assign({ n: nearest(REG[m].counts, 10), label: '' }, JSON.parse(JSON.stringify(hard[m]))));
-  for (const m of STRAND_IDS) for (const a of Object.values(groups).filter(x => x.m === m)) {
-    out.push({ m, n: nearest(REG[m].counts, a.types.length), label: a.fam, [m]: { types: a.types, level: Math.round(a.levels.reduce((x, y) => x + y, 0) / a.levels.length) } });
+  const out = [];
+  for (const { pr, codes } of [...by.values()].sort((a, b) => stdPos(a.pr) - stdPos(b.pr))) {
+    const parts = pr.m === 'parts' ? pr.parts : [{ m: pr.m, label: pr.t, [PART_KEY[pr.m]]: pr[PART_KEY[pr.m]] }];
+    for (const p of parts) {
+      const q = JSON.parse(JSON.stringify(p));
+      q.n = REG[q.m].counts[0];
+      q.label = (codes.join(', ') + ' ' + (q.label || pr.t)).slice(0, 60);
+      out.push(q);
+    }
   }
   return out;
 }

@@ -62,7 +62,7 @@ for (let i = 0; i < 8; i++) {
   ok(n[2].as.d1 === 2 && n[2].as.add === true, 'addsub clamp ' + J(n[2].as));
   ok(n[3].m === 'tm' && !('tm' in n[3]), 'part without settings');
   ok(SP.normParts([]) === null && SP.normParts('x') === null && SP.normParts(null) === null, 'empty parts');
-  ok(SP.normParts(new Array(40).fill({ m: 'fdp', n: 5 })).length === 16, 'part limit');
+  ok(SP.normParts(new Array(50).fill({ m: 'fdp', n: 5 })).length === 32, 'part limit');
   const again = SP.normParts(n); ok(J(again) === J(n), 'normalizing twice changes parts');
 }
 /* 5. every module's captured settings normalize to themselves and apply to a fresh state */

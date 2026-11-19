@@ -142,6 +142,19 @@ function g3Dint(rng, L) {
 
 const g3DintHtml = (p, key, x) => p.variant === 'name' ? `<div>${vopts(p.opts, p.ans, key)}</div>` : `<div class="wt">${esc(p.text)}</div><div>${p.n} ÷ ${p.d} = ${x(p.q, 2.4)}</div>`;
 
+/* Compare two groups of objects: greater than, less than or equal to. L1 groups of up to 5, never equal; L2 up to 8 and L3 up to 10, sometimes equal. */
+function visCmpg(rng, L) {
+  const mx = L === 1 ? 5 : L === 2 ? 8 : 10, a = ri(rng, 1, mx); let b = ri(rng, 1, mx);
+  if (L === 1 || rng() >= 0.25) { while (b === a) b = ri(rng, 1, mx); } else b = a;
+  const kinds = shuffle(rng, ['circle', 'square', 'triangle']).slice(0, 2);
+  return vp('cmpg', 'Count each group. Circle the answer.', { kinds, a, b, ans: a > b ? 'greater than' : a < b ? 'less than' : 'equal to', sig: `cg${kinds}${a}|${b}` }, 3.3, 0.84, 4.8, 24);
+}
+
+function visCmpgHtml(p, key, x) {
+  const row = (n, k, y) => Array.from({ length: n }, (_, i) => vshape(p.kinds[k], 22 + 32 * i, y, 24, VFILL[k], 0)).join('');
+  return vsvg(3.3, 0.84, row(p.a, 0, 22) + row(p.b, 1, 62), 'Two groups') + `<div>The number of ${vpl(p.kinds[0], 2)} is</div><div>${vopts(['greater than', 'less than', 'equal to'], p.ans, key)}</div><div>the number of ${vpl(p.kinds[1], 2)}.</div>`;
+}
+
 defTypes("vis", "Counting and arrays", [
   { id: "cnt", label: "Counting pictures", blurb: "Count objects, draw a number of objects, write number words.", on: true, gen: visCnt, html: visCntHtml },
   { id: "cntn", label: "Count and label", blurb: "Write a number under each object as you count.", on: false, gen: visCntn, html: visCntnHtml },
@@ -149,5 +162,6 @@ defTypes("vis", "Counting and arrays", [
   { id: "showop", label: "Draw to show", blurb: "Draw and write an addition or subtraction.", on: false, gen: visShowop, html: visShowopHtml },
   { id: "array", label: "Arrays", blurb: "Rows and columns as repeated addition.", on: false, gen: visArray, html: visArrayHtml },
   { id: "mfac", label: "Factors and products", blurb: "Groups of objects as multiplication; what each number tells.", on: false, gen: g3Mfac, html: g3MfacHtml },
-  { id: "dint", label: "Dividend, divisor, quotient", blurb: "Name the parts of a division; sharing and grouping.", on: false, gen: g3Dint, html: g3DintHtml }
+  { id: "dint", label: "Dividend, divisor, quotient", blurb: "Name the parts of a division; sharing and grouping.", on: false, gen: g3Dint, html: g3DintHtml },
+  { id: "cmpg", label: "Compare two groups", blurb: "Count two groups of objects: greater than, less than or equal to.", on: false, gen: visCmpg, html: visCmpgHtml }
 ]);

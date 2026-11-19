@@ -34,12 +34,16 @@
    "status": "supported"
   },
   "KY.K.CC.6": {
-   "status": "gap",
-   "need": "compare two groups of objects as greater than, less than or equal"
+   "to": [
+    "num.compare-two-groups"
+   ],
+   "status": "supported"
   },
   "KY.K.CC.7": {
-   "status": "gap",
-   "need": "compare two numerals as greater than, less than or equal"
+   "to": [
+    "num.compare-numerals-words"
+   ],
+   "status": "supported"
   },
   "KY.K.OA.1": {
    "to": [
@@ -304,8 +308,10 @@
    "status": "supported"
   },
   "KY.2.NBT.3": {
-   "status": "gap",
-   "need": "read and write numbers to 1000 in standard, word and expanded form"
+   "to": [
+    "num.read-write-numbers-1000"
+   ],
+   "status": "supported"
   },
   "KY.2.NBT.4": {
    "to": [

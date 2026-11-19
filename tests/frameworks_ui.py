@@ -34,7 +34,7 @@ with sync_playwright() as p:
         codes = pg.evaluate("[...document.querySelectorAll('#stdList .std[data-std]')].map(e=>e.dataset.std)")
         check(len(codes) > 10 and all(c.startswith('KY.K.') for c in codes), 'ky kindergarten list ' + str(codes[:3]))
         gaps = pg.evaluate("[...document.querySelectorAll('#stdList .std[disabled]')].map(e=>e.dataset.std)")
-        check(gaps == ['KY.K.CC.6', 'KY.K.CC.7'], 'ky kindergarten gaps are disabled ' + str(gaps))
+        check(gaps == [] and 'KY.K.CC.6' in codes and 'KY.K.CC.7' in codes, 'ky kindergarten has no disabled gap rows ' + str(gaps))
         pg.click('#stdList .std[data-std="KY.K.G.1"]'); pg.wait_for_timeout(300)
         s = state(pg); check(s == {'f': 'ky', 'g': 'K', 'c': 'KY.K.G.1'}, 'ky pick saved ' + str(s))
         check('KY.K.G.1' in pg.evaluate("document.querySelector('#sheets').innerText"), 'worksheet title prints the ky code')

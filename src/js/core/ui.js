@@ -146,6 +146,19 @@ function normalize(s) {
   if (!out.seed) out.seed = newSeed();
   return out;
 }
+/* Share link: 'v1.' + base64url(deflate(JSON of the settings that differ from the defaults, seed included)). Decoding goes through normalize(). */
+const b64u = u => btoa(String.fromCharCode(...u)).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+const unb64u = s => Uint8Array.from(atob(s.replace(/-/g, '+').replace(/_/g, '/')), c => c.charCodeAt(0));
+const zip = async (u, S) => new Uint8Array(await new Response(new Response(u).body.pipeThrough(new S('deflate'))).arrayBuffer());
+async function encodeShare(st) {
+  const d = defaults(), out = {};
+  for (const k of Object.keys(st)) if (k === 'seed' || JSON.stringify(st[k]) !== JSON.stringify(d[k])) out[k] = st[k];
+  return 'v1.' + b64u(await zip(new TextEncoder().encode(JSON.stringify(out)), CompressionStream));
+}
+async function decodeShare(code) {
+  if (!/^v1\.[\w-]+$/.test(code)) throw new Error('not a v1 share code');
+  return normalize(JSON.parse(new TextDecoder().decode(await zip(unb64u(code.slice(3)), DecompressionStream))));
+}
 let state;
 try { state = normalize(JSON.parse(localStorage.getItem(STORE) || 'null')); } catch (e) { state = normalize(null); }
 
@@ -578,6 +591,12 @@ form.elements.seed.addEventListener('blur', () => { form.elements.seed.value = s
 const reportBtn = $('#reportBug');
 if (reportBtn) reportBtn.addEventListener('click', () => window.open(bugReportUrl(state, navigator.userAgent), '_blank', 'noopener'));
 $('#newSet').addEventListener('click', () => { state.seed = newSeed(); form.elements.seed.value = state.seed; save(); render(); });
+const shareBtn = document.getElementById('shareBtn');
+if (shareBtn) shareBtn.addEventListener('click', async () => {
+  const link = location.href.split('#')[0] + '#s=' + await encodeShare(state);
+  try { await navigator.clipboard.writeText(link); shareBtn.textContent = 'Link copied'; } catch (e) { prompt('Copy this link', link); }
+  setTimeout(() => { shareBtn.textContent = 'Share link'; }, 1800);
+});
 const printBtn = document.getElementById('printBtn');
 /* Coins loaded from files (site build) must be in the browser cache before printing; embedded coins resolve at once. */
 if (printBtn) printBtn.addEventListener('click', () => {
@@ -589,6 +608,11 @@ if (typeof ResizeObserver !== 'undefined') new ResizeObserver(() => requestAnima
 
 writeForm();
 render();
+/* A shared link (#s=...) replaces the saved settings; a bad one keeps them. */
+if (location.hash.startsWith('#s=')) {
+  decodeShare(decodeURIComponent(location.hash.slice(3))).then(s => { state = s; save(); writeForm(); render(); }, () => { alert('This share link could not be read. The saved settings were kept.'); })
+    .finally(() => history.replaceState(null, '', location.pathname + location.search));
+}
 
 /* Theme: light, dark or disco. Stored per browser; falls back to the system setting. */
 const THEME_KEY = 'wm2000-theme';

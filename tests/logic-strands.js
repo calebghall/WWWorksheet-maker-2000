@@ -21,7 +21,7 @@ for (const M of SP.STRAND_IDS) {
   const st = D(); st.module = M; st.seed = 'R1'; st.pages = 2; st[M].level = 2; for (const k of Object.keys(st[M].types)) st[M].types[k] = true;
   try { const out = SP.renderAll(st); ok(out.includes('sheet'), M + ' renders'); } catch (e) { ok(false, M + ' render threw ' + e.message); }
 }
-ok(refs === 3 * 158, 'ref count ' + refs);
+ok(refs === 3 * 161, 'ref count ' + refs);
 
 /* 2. one origin: the strand module makes the legacy module's problems for the same types, level and seed */
 {

@@ -52,6 +52,7 @@ function check(p,tag,L){
   case 'adraw':{const m=p.sample;if(m.w*m.h!==p.area||m.ox<0||m.oy<0||m.ox+m.w>p.cols||m.oy+m.h>p.rows||!p.prompt.includes(String(p.area)))e('adraw');break;}
   case 'acmp':{const A=p.a.shape.cells.length,B=p.b.shape.cells.length;if(A!==p.a.area||B!==p.b.area||p.ans!==(A===B?'S':A>B?'A':'B'))e('acmp');break;}
   case 'alsh':if(p.W*p.H-p.cw*p.ch!==p.area||p.shape.cells.length!==p.area)e('alsh');break;
+  case 'cmpg':{const w=p.a>p.b?'greater than':p.a<p.b?'less than':'equal to';if(p.ans!==w||p.a<1||p.b<1||p.a>10||p.b>10||p.kinds[0]===p.kinds[1]||22+32*(Math.max(p.a,p.b)-1)+12>p.win*100)e('cmpg');break;}
   default:e('unexpected');
   }
 }

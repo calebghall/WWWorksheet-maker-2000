@@ -273,6 +273,37 @@ function nsxTenx(rng, L) {
 
 const nsTenxHtml = (p, key, x) => p.kind === 'dig' ? `${p.shown}&emsp;left = ${x(p.ans, 2.8)} × right` : p.kind === 'x10' ? `10 × ${cnum(p.a)} = ${x(p.ans, 4)}` : `${cnum(p.a)} ÷ 10 = ${x(p.ans, 3.6)}`;
 
+/* Compare two numerals up to 10 in words: greater than, less than or equal to. L1 numerals 1 to 5, never equal; L2 and L3 numerals 0 to 10, sometimes equal. */
+function nsxCmpw(rng, L) {
+  const lo = L === 1 ? 1 : 0, hi = L === 1 ? 5 : 10, a = ri(rng, lo, hi); let b = ri(rng, lo, hi);
+  if (L === 1 || rng() >= 0.2) { while (b === a) b = ri(rng, lo, hi); } else b = a;
+  return { mod: 'ns', type: 'cmpw', prompt: 'Circle the answer.', a, b, ans: a > b ? 'greater than' : a < b ? 'less than' : 'equal to', sig: `cmw${a}|${b}`, ew: 22, eh: 1.1 + 3 * 1.5 };
+}
+
+const nsCmpwHtml = (p, key, x) => `<div>${p.a} is</div><div>${opts(['greater than', 'less than', 'equal to'], p.ans, key)}</div><div>${p.b}</div>`;
+
+/* Read and write numbers to 1000 in standard, word and expanded form. L1 words and numerals only; L2 adds expanded form;
+   L3 adds numbers with zeros in the tens or ones place and 1000. */
+const nsW3 = n => n === 1000 ? 'one thousand' : n < 100 ? numWord(n) : NK_ONES[Math.floor(n / 100)] + ' hundred' + (n % 100 ? ' ' + numWord(n % 100) : '');
+const nsExp3 = n => [Math.floor(n / 100) * 100, Math.floor(n / 10) % 10 * 10, n % 10].filter(v => v > 0).join(' + ');
+
+function nsxNumrw3(rng, L) {
+  let v = pick(rng, L === 1 ? ['w2n', 'n2w'] : ['w2n', 'n2w', 'e2s', 's2e']);
+  let n = ri(rng, 100, 999);
+  if (L === 3) { const r = rng(); if (r < 0.08) { n = 1000; if (v === 'e2s' || v === 's2e') v = rng() < 0.5 ? 'w2n' : 'n2w'; } else if (r < 0.55) n = ri(rng, 1, 9) * 100 + (rng() < 0.5 ? 0 : ri(rng, 1, 9) * 10) + (rng() < 0.5 ? 0 : ri(rng, 1, 9)); }
+  else if (L < 3) { while (n % 10 === 0 || Math.floor(n / 10) % 10 === 0) n = ri(rng, 100, 999); }
+  const base = { mod: 'ns', type: 'numrw3', variant: v, n, sig: `n3${v}${n}` };
+  const w = nsW3(n), e = n === 1000 ? '1,000' : nsExp3(n);
+  if (v === 'w2n') return Object.assign(base, { prompt: 'Write the number.', word: w, ans: cnum(n), ew: w.length * 0.6 + BW + 2, eh: 1.1 + 1.6 });
+  if (v === 'n2w') return Object.assign(base, { prompt: 'Write the number in words.', ans: w, ew: Math.max(14, w.length * 0.6 + 2), eh: 1.1 + 1.6 * 2 });
+  if (v === 'e2s') return Object.assign(base, { prompt: 'Write the number.', exp: e, ans: cnum(n), ew: e.length * 0.62 + BW + 2, eh: 1.1 + 1.6 });
+  return Object.assign(base, { prompt: 'Write the number in expanded form.', ans: n === 1000 ? '1,000' : e, ew: Math.max(14, e.length * 0.62 + 2), eh: 1.1 + 1.6 * 2 });
+}
+
+const nsNumrw3Html = (p, key, x) => p.variant === 'w2n' ? `${esc(p.word)} = ${x(p.ans, 3.4)}`
+  : p.variant === 'e2s' ? `${esc(p.exp)} = ${x(p.ans, 3.4)}`
+  : `<div>${cnum(p.n)}</div><div><span class="blank" style="min-width:${Math.max(12, p.ans.length * 0.6 + 1).toFixed(1)}em">${key ? esc(p.ans) : '&nbsp;'}</span></div>`;
+
 defTypes("ns", "Place value, comparing and rounding", [
   { id: "place", label: "Place value", blurb: "Underlined digit, digit in a place, expanded and standard form.", on: true, gen: nsPlace, html: nsPlaceHtml },
   { id: "compare", label: "Compare numbers", blurb: "Write <, > or = between two numbers.", on: true, gen: nsCompare, html: nsCompareHtml },
@@ -289,5 +320,7 @@ defTypes("ns", "Place value, comparing and rounding", [
 { id: "placew", label: "Place value, whole numbers", blurb: "Place value, expanded form and standard form with whole numbers to 999,999.", on: false, gen: nsxPlaceW },
 { id: "roundw", label: "Round whole numbers", blurb: "To any place from tens to hundred thousands.", on: false, gen: nsxRoundW },
 { id: "fdec", label: "Fractions and decimals", blurb: "Tenths and hundredths: fraction to decimal, decimal to fraction, decimals on a number line.", on: false, gen: nsxFdec, html: nsFdecHtml },
-{ id: "tenx", label: "Ten times as much", blurb: "How much a digit is worth next to the same digit, 10 times and one tenth.", on: false, gen: nsxTenx, html: nsTenxHtml }
+{ id: "tenx", label: "Ten times as much", blurb: "How much a digit is worth next to the same digit, 10 times and one tenth.", on: false, gen: nsxTenx, html: nsTenxHtml },
+{ id: "cmpw", label: "Compare numerals to 10 in words", blurb: "Is one numeral greater than, less than or equal to another? Numerals 0 to 10.", on: false, gen: nsxCmpw, html: nsCmpwHtml },
+{ id: "numrw3", label: "Read and write numbers to 1000", blurb: "Standard form, word form and expanded form, 100 to 1,000.", on: false, gen: nsxNumrw3, html: nsNumrw3Html }
 ]);

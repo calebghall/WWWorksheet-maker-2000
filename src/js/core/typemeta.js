@@ -8,6 +8,7 @@
 const TYPE_HOME = {
   "vis.cnt": ["ns", "Counting and number lines"],
   "vis.cntn": ["ns", "Counting and number lines"],
+  "vis.cmpg": ["ns", "Counting and number lines"],
   "vis.picop": ["ns", "Counting and number lines"],
   "vis.showop": ["ns", "Counting and number lines"],
   "vis.array": ["ns", "Counting and number lines"],
@@ -25,6 +26,8 @@ const TYPE_HOME = {
   "ns.placew": ["ns", "Place value, comparing and rounding"],
   "ns.tens": ["ns", "Place value, comparing and rounding"],
   "ns.numrw": ["ns", "Place value, comparing and rounding"],
+  "ns.numrw3": ["ns", "Place value, comparing and rounding"],
+  "ns.cmpw": ["ns", "Place value, comparing and rounding"],
   "ns.more": ["ns", "Place value, comparing and rounding"],
   "ns.moreexp": ["ns", "Place value, comparing and rounding"],
   "ns.tenx": ["ns", "Place value, comparing and rounding"],

@@ -2,7 +2,7 @@
 
 Goals, in the order the work is sequenced:
 
-1. Tennessee support for kindergarten through Grade 5 is complete (150 standards Supported, 0 Gap). Keep it passing as the modules are regrouped.
+1. Tennessee support for kindergarten through Grade 5 is complete (153 standards Supported, 0 Gap, since the three kindergarten and Grade 2 gaps were closed on 2026-11-18). Keep it passing as the modules are regrouped.
 2. Let one worksheet hold several configurations of the same module (the "parts" design, called Option B in earlier notes).
 3. Add other states' standards.
 
@@ -176,7 +176,7 @@ To combine: wrap `count`, `mult`, `draw`, `cmp` and `lsh` as `defTypes` entries 
 ### All standards for a grade
 
 - The standards list for a selected grade ends with "All standards for this grade" (not shown while searching). It builds a Combined Worksheet in sections (`gradeStandardParts`, `applyGradeStandards` in `standards.js`): Add and Subtract and Multiply and Divide (the hardest preset of the grade each), then one section per strand module and problem family holding every preset type of that family, at the average level, sized by the number of types.
-- The part limit is 16 (was 12) so grades 3 and 4 fit. Sections keep problems of similar size together; a section that mixes very tall and short types still lays out on a uniform grid and can use many pages (grade 3 comes to about 18 pages). That is a layout-engine limit for 5.2g.
+- The part limit was 16 here (now 32, see Standards panel enhancements). Sections keep problems of similar size together; a section that mixes very tall and short types still lays out on a uniform grid and can use many pages (grade 3 comes to about 18 pages). That is a layout-engine limit for 5.2g.
 - **Tests:** `logic-standards.js` (every preset type of each grade appears; every section renders) and `types_ui.py` (no band row; last entry; click builds the worksheet).
 
 ### Sub-phases
@@ -192,6 +192,8 @@ To combine: wrap `count`, `mult`, `draw`, `cmp` and `lsh` as `defTypes` entries 
 Exit: every registered type has a home, a group, tags and a grade range; legacy set codes and saved settings load unchanged; the full suite passes.
 
 ## Phase 6: other states
+
+Status (2026-11-18): step 1 is done (Tennessee is a framework: `standards/tn.json`, crosswalk, annotations, per-framework coverage, state picker `#stdFwSel`, content-hashed payload files). Kentucky is the second framework: 149 standards, 138 Supported, 11 Partial, 0 Gap. The three Gap rows shared by both frameworks (`K.CC.C.7`/`KY.K.CC.6`, `K.CC.C.8`/`KY.K.CC.7`, `2.NBT.A.3`/`KY.2.NBT.3`) were closed with three new types: `vis.cmpg` (compare two groups), `ns.cmpw` (compare numerals to 10 in words) and `ns.numrw3` (read and write numbers to 1000), checked by `tests/logic-k2-e.js` and `tests/logic-vis.js`. The type-map cap for `ns` moved from 38 to 41 types. Remaining below: CSP terms and attribution, import validation, size budget, a third framework.
 
 Data source: [Common Standards Project](https://commonstandardsproject.com/developers) (CSP). Its public description: a database of academic standards from all 50 states plus other organizations, grouped into standard sets by jurisdiction, subject and grade or course, with hierarchy, codes and a GUID per standard returned as normalized JSON. The CSP importer builds on Creative Commons licensed standards from the Achievement Standards Network (ASN).
 
@@ -231,7 +233,7 @@ Requested 2026-11-18. Not started; none of these depends on another phase. They 
 
 - **Multi-select.** Select several standards in the list and build one worksheet from them. Each selected standard resolves through its crosswalk row (`stdPreset`), and the result is a Combined Worksheet with one part per standard, flattened like a multi-target row (`stdPreset` already builds that for a row with several targets). To decide: how selection looks in the list (checkbox or toggle), whether it survives a grade change and a framework change, a limit that matches the part limit (16), and whether Gap standards are skipped with a message.
 - **Full standard text.** The list shows a one-line focus that is cut off. Show the full text somewhere: for example expanding a row, a detail area under the list for the highlighted standard, or a tooltip. The text is in `standards/<fw>.json` (`text`, `components`) but the page payload carries only the short focus, so the payload would need the full text, with a size check on the site build. Annotations (examples, notes) could appear with it.
-- **All standards includes every standard.** The "All standards for this grade" option must cover all the standards of the grade. See [issue 6](https://github.com/calebghall/WWWorksheet-maker-2000/issues/6) (the issue text was not read when this note was written). Today `gradeStandardParts` keeps the hardest preset for Add and Subtract and for Multiply and Divide, merges the types of each other family into one section, and drops a standard's own level and wording. `logic-standards.js` checks that every preset type of the grade appears, not that every standard does. A coverage test should check each supported or partial standard of the grade by its crosswalk row, including standards that map to the same preset.
+- **All standards includes every standard. Done 2026-11-18.** `gradeStandardParts` now builds one section per standard (standards that share a preset share one section; a bundled standard gives one section per skill). Each section keeps the standard's own module, settings and level, is labeled with its code, and has the smallest problem count its module allows (5, or 4 for Measurement and Geometry), so a grade comes to about 110 to 136 problems. The part limit (`PART_MAX`) rose from 16 to 32. `tests/logic-standards.js` checks every standard of every grade by its crosswalk row: a section with its code, the same module, types and level (add and subtract and multiply and divide settings too). The old version kept the last add/subtract preset of a grade only and merged types by family.
 
 ## Additional items
 

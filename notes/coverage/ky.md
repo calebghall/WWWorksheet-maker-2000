@@ -2,11 +2,11 @@
 
 Source: Kentucky Academic Standards: Mathematics (2019), imported from the Common Standards Project. 149 standards.
 
-- Supported: 135
+- Supported: 138
 - Partial: 11
-- Gap: 3
+- Gap: 0
 
-Supported and Partial standards build a worksheet from the Kentucky standard panel of the worksheet maker (standards/ky.crosswalk.json maps each standard to its presets). Partial rows list what differs from the standard. Gaps by grade: Grade 2 (1), Kindergarten (2).
+Supported and Partial standards build a worksheet from the Kentucky standard panel of the worksheet maker (standards/ky.crosswalk.json maps each standard to its presets). Partial rows list what differs from the standard. Gaps by grade: none.
 
 ## Kindergarten
 
@@ -17,8 +17,8 @@ Supported and Partial standards build a worksheet from the Kentucky standard pan
 | KY.K.CC.3 | Represent numbers. | Supported | Number Sense: Write numbers 0 to 20 and show quantities. |
 | KY.K.CC.4 | Understand the relationship between numbers and quantities; connect counting to cardinality. | Supported | Number Sense: Count to tell how many. |
 | KY.K.CC.5 | Given a number from 1-20, count out that many objects. | Supported | Number Sense: Count up to 20 in lines, arrays and circles. |
-| KY.K.CC.6 | Identify whether the number of objects in one group is greater than, less than, or equal to the number of... | Gap | Needs: compare two groups of objects as greater than, less than or equal. |
-| KY.K.CC.7 | Compare two numbers between 1 and 10 presented as written numerals. | Gap | Needs: compare two numerals as greater than, less than or equal. |
+| KY.K.CC.6 | Identify whether the number of objects in one group is greater than, less than, or equal to the number of... | Supported | Number Sense: Compare two groups of objects. |
+| KY.K.CC.7 | Compare two numbers between 1 and 10 presented as written numerals. | Supported | Number Sense: Compare numerals to 10 in words. |
 | KY.K.OA.1 | Represent addition and subtraction with objects, fingers, mental images, drawings, sounds, acting out... | Supported | Number Sense: Show addition and subtraction with pictures. |
 | KY.K.OA.2 | Solve addition and subtraction word problems and add and subtract within 10 by using objects or drawings... | Supported | Addition and Subtraction: Add and subtract within 10. |
 | KY.K.OA.3 | Decompose numbers less than or equal to 10. | Supported | Operations and Algebraic Thinking: Decompose numbers to 10. |
@@ -72,7 +72,7 @@ Supported and Partial standards build a worksheet from the Kentucky standard pan
 | KY.2.OA.4 | Use addition to find the total number of objects arranged in rectangular arrays with up to 5 rows and up... | Supported | Number Sense: Arrays and repeated addition. |
 | KY.2.NBT.1 | Understand that the three digits of a three-digit number represent amounts of hundreds, tens and ones. | Supported | Number Sense: Place value to hundreds. |
 | KY.2.NBT.2 | Count forwards and backwards within 1000; skip-count by 5s, 10s and 100s. | Supported | Number Sense: Counting patterns. |
-| KY.2.NBT.3 | Read and write numbers to 1000 using base-ten numerals, number names and expanded form. | Gap | Needs: read and write numbers to 1000 in standard, word and expanded form. |
+| KY.2.NBT.3 | Read and write numbers to 1000 using base-ten numerals, number names and expanded form. | Supported | Number Sense: Read and write numbers to 1000. |
 | KY.2.NBT.4 | Compare two three-digit numbers based on meanings of the hundreds, tens and ones digits, using >, =, and <... | Supported | Number Sense: Compare three-digit numbers. |
 | KY.2.NBT.5 | Fluently add and subtract within 100 using strategies based on place value, properties of operations... | Supported | Addition and Subtraction: Add and subtract within 100. |
 | KY.2.NBT.6 | Add up to four two-digit numbers using strategies based on place value and properties of operations. | Supported | Addition and Subtraction: Add two-digit numbers. |
