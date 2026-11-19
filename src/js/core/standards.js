@@ -224,28 +224,40 @@ function applyStandard(st, code) {
   return st;
 }
 
-/* "All standards for this grade": one Combined Worksheet with a section for every standard of the grade, in preset-file order. Each section
-   keeps the standard's own module, settings and level, is labeled with its code and has the smallest problem count its module allows.
-   Standards that share a preset share one section (all their codes in the label); a standard that bundles skills gives one section per skill.
-   Returns the parts, or [] for a grade with no presets. */
-function gradeStandardParts(g, fw) {
+/* Sections for a set of standards (one framework): a section for every standard, in preset-file order. Each keeps the standard's own module,
+   settings and level, is labeled with its code and has the smallest problem count its module allows. Standards that share a preset share one
+   section (all their codes in the label); a standard that bundles skills gives one section per skill. A standard without a preset is skipped.
+   "All standards for this grade" is this function over every standard of the grade. */
+function standardParts(codes, fw) {
   const f = fw || FRAMEWORK.id, by = new Map();
-  for (const r of ((STD_FW[f] || {}).list || []).filter(r => r[3] === String(g))) {
-    const pr = stdPreset(r[0], f); if (!pr) continue;
+  for (const c of codes) {
+    const pr = stdPreset(c, f); if (!pr) continue;
     if (!by.has(pr.id)) by.set(pr.id, { pr, codes: [] });
-    by.get(pr.id).codes.push(r[0]);
+    by.get(pr.id).codes.push(c);
   }
   const out = [];
-  for (const { pr, codes } of [...by.values()].sort((a, b) => stdPos(a.pr) - stdPos(b.pr))) {
+  for (const { pr, codes: cs } of [...by.values()].sort((a, b) => stdPos(a.pr) - stdPos(b.pr))) {
     const parts = pr.m === 'parts' ? pr.parts : [{ m: pr.m, label: pr.t, [PART_KEY[pr.m]]: pr[PART_KEY[pr.m]] }];
     for (const p of parts) {
       const q = JSON.parse(JSON.stringify(p));
       q.n = REG[q.m].counts[0];
-      q.label = (codes.join(', ') + ' ' + (q.label || pr.t)).slice(0, 60);
+      q.label = (cs.join(', ') + ' ' + (q.label || pr.t)).slice(0, 60);
       out.push(q);
     }
   }
   return out;
+}
+const gradeStandardParts = (g, fw) => standardParts(((STD_FW[fw || FRAMEWORK.id] || {}).list || []).filter(r => r[3] === String(g)).map(r => r[0]), fw);
+/* A Combined Worksheet from chosen standards. Returns false when none has a preset or the sections would exceed the part limit. */
+function applyStandardSet(st, codes) {
+  const raw = standardParts(codes, st.std.f);
+  if (!raw.length || raw.length > PART_MAX) return false;
+  const parts = normParts(raw);
+  if (!parts) return false;
+  st.module = 'combo'; st.parts = parts;
+  st.titles.combo = codes.length === 1 ? codes[0] : `${codes.length} standards`;
+  st.std.c = '';
+  return true;
 }
 function applyGradeStandards(st, g) {
   const parts = normParts(gradeStandardParts(g, st.std.f));

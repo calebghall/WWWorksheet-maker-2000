@@ -2,6 +2,7 @@
 # Build, then run every check. Exit status is non-zero on any failure.
 set -e
 PY=python3; "$PY" -c "" 2>/dev/null || PY=python
+export PYTHON="$PY"
 cd "$(dirname "$0")/.."
 "$PY" build.py
 node tests/logic-arith.js | tail -1
@@ -37,6 +38,7 @@ node tests/logic-strands.js
 "$PY" tests/clip.py
 "$PY" tests/parts_ui.py
 "$PY" tests/types_ui.py
+"$PY" tests/std_ui.py
 "$PY" build.py --target site --embed none
 "$PY" tests/frameworks_ui.py
 "$PY" build.py --target site
@@ -45,5 +47,6 @@ DIST_URL=$("$PY" -c 'import pathlib; print(pathlib.Path("dist/index.html").resol
 CLIP_URL="$DIST_URL" "$PY" tests/clip.py | tail -1
 CLIP_URL="$DIST_URL" "$PY" tests/parts_ui.py
 CLIP_URL="$DIST_URL" "$PY" tests/types_ui.py
+CLIP_URL="$DIST_URL" "$PY" tests/std_ui.py
 "$PY" build.py
 echo "ALL CHECKS PASSED"

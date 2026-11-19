@@ -174,6 +174,12 @@ details.stdbox { margin: 20px 0 0; border: 1px solid var(--line); border-radius:
 .std .sb { font-size: 11px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
 .std.gap .st { color: var(--muted); }
 .std.on { background: var(--accent-soft); border-color: var(--accent); }
+.stdbar { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 8px; }
+.stdbar .stdn { flex: 1; min-width: 0; font: 12px var(--font-ui); color: var(--muted); }
+.std .box { display: inline-block; width: 1.1em; font-weight: 400; }
+.stddetail { margin-top: 8px; padding: 8px 10px; font: 13px/1.4 var(--font-ui); color: var(--fg); background: var(--panel, transparent); border: 1px solid var(--line); border-radius: 6px; }
+.stddetail .dc { display: block; margin-bottom: 2px; font-weight: 700; }
+.stddetail .dk { display: block; margin-bottom: 4px; font-size: 12px; color: var(--muted); }
 .std.all { border-style: dashed; font-weight: 700; }
 .std:disabled { opacity: .55; cursor: default; }
 .std:focus-visible, .stdq:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }

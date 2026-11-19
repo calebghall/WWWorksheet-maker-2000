@@ -4,7 +4,7 @@ const js=html.split('<script>')[1].split('</script>')[0].split('/*==DOM==*/')[0]
 const ctx={Math,console,globalThis:null};ctx.globalThis=ctx;vm.createContext(ctx);vm.runInContext(js,ctx);
 const SP=ctx.__SP,bad=[];
 /* every framework, not only the embedded ones: the build tool writes each one's payload file, which registers itself */
-cp.execFileSync('python3',[path.join(__dirname,'..','tools','build_fw.py')],{stdio:'ignore'});
+cp.execFileSync(process.env.PYTHON||(process.platform==='win32'?'python':'python3'),[path.join(__dirname,'..','tools','build_fw.py')],{stdio:'ignore'});
 const dist=path.join(__dirname,'..','standards','dist');
 for(const f of fs.readdirSync(dist).filter(f=>f.endsWith('.js')))vm.runInContext(fs.readFileSync(path.join(dist,f),'utf8'),ctx);
 let std;
@@ -67,6 +67,18 @@ for(const g of ['K','1','2','3','4','5']){
     }
     try{const out=SP.renderAll(st);if(!out||!out.includes('sheet'))bad.push('grade '+g+' empty render');SP.comboSections(st).forEach(sec=>{if(!sec.plan.probs.length)bad.push('grade '+g+' empty section '+sec.letter);});}catch(e){bad.push('grade '+g+' threw '+e.message);}
   }
+}
+/* A chosen set of standards: one section per standard, in preset order, skipping a code with no preset; the title counts them. */
+{
+  const codes=['3.OA.A.1','3.NBT.A.2','K.CC.A.3','NOPE'].filter(c=>XW[c]||c==='NOPE'),parts=SP.standardParts(codes,'tn');
+  const want=codes.filter(c=>XW[c]&&SP.stdPreset(c));
+  if(parts.length<want.length)bad.push('standardParts sections '+parts.length+' < '+want.length);
+  for(const c of want)if(!parts.some(p=>p.label.includes(c)))bad.push('standardParts misses '+c);
+  const st=SP.defaults();st.std.f='tn';
+  if(!SP.applyStandardSet(st,want)||st.module!=='combo'||st.parts.length!==parts.length||!/standards/.test(st.titles.combo))bad.push('applyStandardSet');
+  if(SP.applyStandardSet(SP.defaults(),['NOPE'])!==false)bad.push('applyStandardSet accepts no preset');
+  const st2=SP.defaults();st2.std.f='tn';if(!SP.applyStandardSet(st2,[want[0]])||st2.titles.combo!==want[0])bad.push('single title');
+  try{if(!SP.renderAll(st).includes('sheet'))bad.push('chosen set render');}catch(e){bad.push('chosen set threw '+e.message);}
 }
 // digit-limits spot checks
 console.log('standards presets',SP.STANDARDS.length,'crosswalk rows',Object.keys(SP.STD_FW).map(f=>f+' '+Object.keys(SP.STD_FW[f].xw).length).join(', '),'issues',bad.length?bad:[]);

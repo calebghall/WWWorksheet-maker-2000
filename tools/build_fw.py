@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Framework data for the app: standards/<fw>.json + standards/<fw>.crosswalk.json -> one payload per framework
-  { name, source, list: [[code, focus, cluster, grade]], xw: { code: crosswalk row } }.
+  { name, source, list: [[code, focus, cluster, grade, full text]], xw: { code: crosswalk row } }.
 build.py embeds the payloads of the ids in --embed (default: tn) as stdRegister('<fw>', {...}) calls and, for every other
 framework, writes standards/dist/<fw>.<hash>.js (same call; the content hash in the name busts the cache) that the page
 loads on first pick. Crosswalk row: { "to": [preset ids], "status": "supported" | "partial" | "gap", "note": (partial), "need": (gap) };
@@ -24,6 +24,11 @@ def clean(t):
     t = re.sub(r' \( or or \)', '', t, count=1)
     if re.match(r'[a-z]', t): t = re.sub(r'^[^.]*\.\s+', '', t, count=1)
     return re.split(r'\s+\d\.[A-Z]+\.[A-Z]\.\d+\.[a-z]', t)[0]
+
+
+def full(t):
+    t = re.sub(r'\s+', ' ', t)
+    return re.sub('[^\x00-\x7F‘-”×÷–]', '', t).strip()
 
 
 def short(t):
@@ -58,7 +63,7 @@ def load():
         out[fw] = {
             'name': xw['name'],
             'source': f"{meta['title']} ({meta['valid']}), imported from the Common Standards Project",
-            'list': [[c, short(clean(r['text'])), re.sub(r'^[A-Z]\. ', '', r['cluster']), r['grade']] for c, r in rows.items()],
+            'list': [[c, short(clean(r['text'])), re.sub(r'^[A-Z]\. ', '', r['cluster']), r['grade'], full(clean(r['text']))] for c, r in rows.items()],
             'xw': xw['rows']}
     if errs: sys.exit('\n'.join(errs))
     return out

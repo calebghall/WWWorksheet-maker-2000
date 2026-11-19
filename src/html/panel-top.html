@@ -32,7 +32,16 @@
 
         <input type="search" id="stdQ" name="stdQ" class="stdq" placeholder="Search standards (code or words)" aria-label="Search standards">
 
+        <div class="stdbar">
+          <button type="button" class="btn ghost sm" id="stdMulti" aria-pressed="false">Select several</button>
+          <span class="stdn" id="stdSelN" aria-live="polite"></span>
+          <button type="button" class="btn ghost sm" id="stdClear" hidden>Clear</button>
+          <button type="button" class="btn sm" id="stdBuild" hidden disabled>Build worksheet</button>
+        </div>
+
         <div class="stdlist" id="stdList"></div>
+
+        <div class="stddetail" id="stdDetail" aria-live="polite" hidden></div>
 
         <p class="note" id="stdNote"></p>
 

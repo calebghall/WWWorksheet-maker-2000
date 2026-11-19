@@ -39,7 +39,7 @@ function bugReportUrl(st, agent) {
   const withParts = q(JSON.stringify({ module: st.module, seed: st.seed, level: st.level, std: st.std, parts: st.parts, combo: st.combo }));
   return withParts.length <= 6000 ? withParts : q(JSON.stringify({ module: st.module, seed: st.seed, level: st.level, std: st.std }));
 }
-globalThis.__SP = { applyGradeStandards, gradeStandardParts, bugReportUrl, FGEN, NGEN, generateSet, renderAll, defaults, rngFrom, LEVELS, UNITS, TYPE_IDS, geom, svg, carries, borrows, arLayout, needSize, REG, META, comboSections, comboPages, genArithN, genAreaN, TGEN, flowPack, mixLayout, mixItems, STANDARDS, applyStandard, stdList, stdPreset, stdInfo, stdLoad, STD_FW, STD_MANIFEST, STD_BY_ID, VGEN, VIS_TYPES, genVisN, partsOf, makePart, normPart, normParts, partState, captureSettings, applyModSettings, TYPE_DEFS, TYPE_HOME, STRAND_IDS, STRAND_REFS, STRAND_META, STRAND_GROUPS, genStrandN, migrateLegacyState, migrateParts, partMixable, strandsFromLegacy, genNsN, genVisN, genFdpN, genTmN, mixItems, typeTags, FRAMEWORK };
+globalThis.__SP = { applyGradeStandards, gradeStandardParts, standardParts, applyStandardSet, bugReportUrl, FGEN, NGEN, generateSet, renderAll, defaults, rngFrom, LEVELS, UNITS, TYPE_IDS, geom, svg, carries, borrows, arLayout, needSize, REG, META, comboSections, comboPages, genArithN, genAreaN, TGEN, flowPack, mixLayout, mixItems, STANDARDS, applyStandard, stdList, stdPreset, stdInfo, stdLoad, STD_FW, STD_MANIFEST, STD_BY_ID, VGEN, VIS_TYPES, genVisN, partsOf, makePart, normPart, normParts, partState, captureSettings, applyModSettings, TYPE_DEFS, TYPE_HOME, STRAND_IDS, STRAND_REFS, STRAND_META, STRAND_GROUPS, genStrandN, migrateLegacyState, migrateParts, partMixable, strandsFromLegacy, genNsN, genVisN, genFdpN, genTmN, mixItems, typeTags, FRAMEWORK };
 
 /*==DOM==*/
 const $ = s => document.querySelector(s);
@@ -209,16 +209,33 @@ function stdData() {
   if (!stdFailed[f]) stdLoad(f).then(() => { writeStd(); }, () => { stdFailed[f] = true; writeStd(); });
   return null;
 }
+let stdPick = false, stdSel = [], stdSelFw = '', stdFocus = '';
+const stdFull = (c, f) => { const D = STD_FW[f]; const r = D && D.list.find(x => x[0] === c); return r || null; };
+function writeStdDetail() {
+  const c = stdFocus || state.std.c, r = c && stdFull(c, state.std.f), el = $('#stdDetail');
+  el.hidden = !r;
+  if (r) el.innerHTML = `<span class="dc">${esc(r[0])}</span><span class="dk">${esc(r[2])}</span>${esc(r[4] || r[1])}`;
+}
+function writeStdBar() {
+  const n = stdSel.length, parts = n ? standardParts(stdSel, state.std.f).length : 0;
+  $('#stdMulti').setAttribute('aria-pressed', String(stdPick)); $('#stdMulti').textContent = stdPick ? 'Done selecting' : 'Select several';
+  $('#stdClear').hidden = !stdPick || !n; $('#stdBuild').hidden = !stdPick;
+  $('#stdBuild').disabled = !n || parts > PART_MAX;
+  $('#stdBuild').textContent = n ? `Build worksheet (${n})` : 'Build worksheet';
+  $('#stdSelN').textContent = !stdPick ? '' : !n ? 'Tick standards to combine them.' : parts > PART_MAX ? `${n} selected: too many sections (${parts}, limit ${PART_MAX}).` : `${n} selected, ${parts} section${parts === 1 ? '' : 's'}.`;
+}
 function writeStdList() {
   const q = stdQuery.trim().toLowerCase(), f = state.std.f, D = stdData();
+  if (stdSelFw !== f) { stdSel = []; stdSelFw = f; }
   if (!D) { $('#stdList').innerHTML = `<p class="note">${stdFailed[f] ? `Could not load the ${esc(stdFwName(f))} standards. Check the connection and reload the page.` : `Loading the ${esc(stdFwName(f))} standards...`}</p>`; return; }
-  const rows = D.list.filter(r => (q ? (r[0] + ' ' + r[1] + ' ' + r[2]).toLowerCase().includes(q) : r[3] === state.std.g));
+  const rows = D.list.filter(r => (q ? (r[0] + ' ' + r[1] + ' ' + r[2] + ' ' + (r[4] || '')).toLowerCase().includes(q) : r[3] === state.std.g));
   const badge = i => i.status === 'gap' ? ['gap', 'Not yet'] : i.status === 'partial' ? ['part', 'Partial'] : ['ok', ''];
   $('#stdList').innerHTML = rows.length ? rows.map(r => {
-    const p = stdPreset(r[0], f), b = badge(stdInfo(r[0], f)), on = r[0] === state.std.c;
-    const left = `<span class="sl"><span class="sc">${r[0]}</span>${b[1] ? `<span class="sb">${b[1]}</span>` : ''}</span>`;
-    return `<button type="button" class="std ${b[0]}${on ? ' on' : ''}" data-std="${r[0]}"${p ? '' : ' disabled'}${on ? ' aria-pressed="true"' : ''}>${left}<span class="st">${esc(r[1])}</span></button>`;
-  }).join('') + (!q && rows.length ? `<button type="button" class="std all" data-std-all="${state.std.g}"><span class="sl"><span class="sc">All</span></span><span class="st">All standards for this grade</span></button>` : '') : '<p class="note">No standards match.</p>';
+    const p = stdPreset(r[0], f), b = badge(stdInfo(r[0], f)), picked = stdSel.includes(r[0]), on = stdPick ? picked : r[0] === state.std.c;
+    const left = `<span class="sl"><span class="sc">${stdPick ? `<span class="box" aria-hidden="true">${picked ? '\u2611' : '\u2610'}</span>` : ''}${r[0]}</span>${b[1] ? `<span class="sb">${b[1]}</span>` : ''}</span>`;
+    return `<button type="button" class="std ${b[0]}${on ? ' on' : ''}" data-std="${r[0]}"${p ? '' : ' disabled'}${on ? ' aria-pressed="true"' : ''} title="${esc(r[4] || r[1])}">${left}<span class="st">${esc(r[1])}</span></button>`;
+  }).join('') + (!q && rows.length && !stdPick ? `<button type="button" class="std all" data-std-all="${state.std.g}"><span class="sl"><span class="sc">All</span></span><span class="st">All standards for this grade</span></button>` : '') : '<p class="note">No standards match.</p>';
+  writeStdBar(); writeStdDetail();
 }
 function writeStd() {
   $('#stdGrades').innerHTML = STD_GRADE_IDS.map(id => `<label><input type="radio" name="stdGrade" value="${id}"${state.std.g === id ? ' checked' : ''}><span title="${STD_GRADES[id]}">${id}</span></label>`).join('');
@@ -568,9 +585,19 @@ function partAction(e) {
 
 form.addEventListener('click', e => {
   if (partAction(e)) return;
+  if (e.target.closest('#stdMulti')) { stdPick = !stdPick; stdFocus = ''; writeStdList(); return; }
+  if (e.target.closest('#stdClear')) { stdSel = []; writeStdList(); return; }
+  if (e.target.closest('#stdBuild')) {
+    if (stdSel.length && applyStandardSet(state, stdSel.slice())) { editIdx = null; lastMultiMod = 'combo'; save(); writeForm(); render(); }
+    return;
+  }
   const ra = e.target.closest('[data-std-all]');
   if (ra && applyGradeStandards(state, ra.dataset.stdAll)) { editIdx = null; lastMultiMod = 'combo'; save(); writeForm(); render(); return; }
   const r = e.target.closest('[data-std]');
+  if (r && !r.disabled && stdPick) {
+    const c = r.dataset.std; stdSel = stdSel.includes(c) ? stdSel.filter(x => x !== c) : stdSel.concat(c);
+    stdFocus = c; writeStdList(); return;
+  }
   if (r && !r.disabled) {
     editIdx = null;
     state.std = { f: state.std.f, g: stdGrade(r.dataset.std, state.std.f), c: r.dataset.std };
@@ -580,6 +607,11 @@ form.addEventListener('click', e => {
     save(); writeForm(); render(); return;
   }
 });
+/* The full text of the standard under the pointer or focus; back to the picked standard when it leaves. */
+const stdListEl = $('#stdList');
+const stdHover = e => { const r = e.target.closest && e.target.closest('[data-std]'); if (r && r.dataset.std !== stdFocus) { stdFocus = r.dataset.std; writeStdDetail(); } };
+stdListEl.addEventListener('mouseover', stdHover); stdListEl.addEventListener('focusin', stdHover);
+stdListEl.addEventListener('mouseleave', () => { if (stdFocus) { stdFocus = ''; writeStdDetail(); } });
 /* Remember which type groups the person opened (toggle does not bubble, so listen in the capture phase). */
 form.addEventListener('toggle', e => {
   const g = e.target; if (!g.matches || !g.matches('details.tgroup') || g.dataset.auto) return;

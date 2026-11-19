@@ -7,7 +7,7 @@ const html=fs.readFileSync(path.join(root,'WWWorksheet-maker-2000.html'),'utf8')
 const js=html.split('<script>')[1].split('</script>')[0].split('/*==DOM==*/')[0];
 const ctx={Math,console,globalThis:null};ctx.globalThis=ctx;vm.createContext(ctx);vm.runInContext(js,ctx);
 /* every framework, not only the embedded ones: the build tool writes each one's payload file, which registers itself */
-cp.execFileSync('python3',[path.join(root,'tools','build_fw.py')],{stdio:'ignore'});
+cp.execFileSync(process.env.PYTHON||(process.platform==='win32'?'python':'python3'),[path.join(root,'tools','build_fw.py')],{stdio:'ignore'});
 const dist=path.join(root,'standards','dist');
 for(const f of fs.readdirSync(dist).filter(f=>f.endsWith('.js')))vm.runInContext(fs.readFileSync(path.join(dist,f),'utf8'),ctx);
 const SP=ctx.__SP;
