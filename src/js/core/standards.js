@@ -63,7 +63,7 @@ const STANDARDS = [
   { id: 'addsub.fluently-add-subtract-within-30', t: 'Fluently add and subtract within 30', m: 'addsub', as: AS(1, 1, { format: 'horizontal', cap: 30 }) },
   { id: 'num.odd-even', t: 'Odd and even', m: 'num', num: { types: ['ns.par20'], level: 2 } },
   { id: 'num.arrays-repeated-addition', t: 'Arrays and repeated addition', m: 'num', num: { types: ['vis.array'], level: 2 } },
-  { id: 'oa.patterns-in-hundreds-addition-charts', t: 'Patterns in hundreds and addition charts', m: 'oa', oa: { types: ['vis.chart', 'vis.chartwhy'], level: 3 } },
+  { id: 'oa.patterns-in-hundreds-addition-charts', t: 'Patterns in hundreds and addition charts', m: 'oa', oa: { types: ['vis.addchart', 'vis.chartcircle', 'ns.addcmp', 'ns.claim', 'ns.parsum'], level: 2 } },
   { id: 'num.place-value-hundreds', t: 'Place value to hundreds', m: 'num', num: { types: ['ns.place'], level: 1 } },
   { id: 'num.counting-patterns-2', t: 'Counting patterns', m: 'num', num: { types: ['ns.skip', 'ns.cseq'], level: 1 } },
   { id: 'num.compare-three-digit-numbers', t: 'Compare three-digit numbers', m: 'num', num: { types: ['ns.compare'], level: 1 } },

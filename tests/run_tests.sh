@@ -20,6 +20,7 @@ node tests/logic-k2-b.js
 node tests/logic-k2-e.js
 node tests/logic-k2-c.js
 node tests/logic-k2-d.js
+node tests/logic-2oa5.js
 node tests/logic-g3.js
 node tests/logic-g5.js
 node tests/logic-g5f.js

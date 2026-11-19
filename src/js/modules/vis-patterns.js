@@ -107,10 +107,44 @@ function g3MchartHtml(p, key, x) {
   return g + `<div>${esc(p.q)}</div><div>${vopts(p.opts, p.ans, key)}</div>`;
 }
 
+/* -----: addition chart, 5 by 5 sums under row and column headers (2.OA.D.5). Fill the blanks, or circle the even or odd sums. ----- */
+function vAcSvg(r0, c0, body) {
+  const cw = 46, ch = 30; let o = '';
+  const hd = (i, j, t) => vrect(8 + cw * j, 6 + ch * i, cw, ch, '#e8eef7', { c: '#8d99ad', w: 1.3 }) + vtxt(8 + cw * j + cw / 2, 6 + ch * i + 20, String(t), { s: 14, b: 1 });
+  o += hd(0, 0, '+');
+  for (let j = 1; j <= 5; j++) o += hd(0, j, c0 + j - 1);
+  for (let i = 1; i <= 5; i++) o += hd(i, 0, r0 + i - 1);
+  for (let i = 1; i <= 5; i++) for (let j = 1; j <= 5; j++) o += body(i, j, 8 + cw * j, 6 + ch * i, r0 + i - 1 + c0 + j - 1);
+  return vsvg(2.95, 1.9, o, 'Addition chart');
+}
+
+const vAcStart = (rng, L, lo0) => { const r0 = L === 1 ? lo0 : ri(rng, 0, L === 3 ? 9 : 5); return [r0, L === 1 ? lo0 : L === 2 ? r0 : ri(rng, 0, 9)]; };
+
+function visAddchart(rng, L) {
+  const [r0, c0] = vAcStart(rng, L, 0), nb = L === 1 ? 6 : L === 2 ? 8 : 10, blanks = shuffle(rng, Array.from({ length: 25 }, (_, i) => i)).slice(0, nb).sort((a, b) => a - b);
+  return vp('addchart', 'Finish the addition chart.', { r0, c0, blanks, ans: blanks.map(b => r0 + Math.floor(b / 5) + c0 + b % 5).join(' '), sig: `ad${r0}.${c0}.${blanks}` }, 2.95, 1.9, 1.9);
+}
+
+function visAddchartHtml(p, key) {
+  return vAcSvg(p.r0, p.c0, (i, j, x, y, v) => vrect(x, y, 46, 30, 'none', { c: '#8d99ad', w: 1.3 }) + (p.blanks.includes((i - 1) * 5 + j - 1) ? (key ? vtxt(x + 23, y + 20, String(v), { s: 14, b: 1, c: VKEY }) : '') : vtxt(x + 23, y + 20, String(v), { s: 14 })));
+}
+
+function visChartcircle(rng, L) {
+  let r0, c0; if (L === 1) { r0 = c0 = ri(rng, 0, 5); } else { r0 = ri(rng, 0, L === 3 ? 9 : 5); c0 = ri(rng, 0, L === 3 ? 9 : 5); }
+  const want = pick(rng, ['even', 'odd']);
+  return vp('chartcircle', `Circle all the ${want} sums.`, { r0, c0, want, ans: want, sig: `cc${r0}.${c0}${want}` }, 2.95, 1.9, 1.9);
+}
+
+function visChartcircleHtml(p, key) {
+  return vAcSvg(p.r0, p.c0, (i, j, x, y, v) => vrect(x, y, 46, 30, 'none', { c: '#8d99ad', w: 1.3 }) + vtxt(x + 23, y + 20, String(v), { s: 14 }) + (key && (v % 2 ? 'odd' : 'even') === p.want ? vring(x + 3, y + 3, 40, 24) : ''));
+}
+
 defTypes("vis", "Patterns and charts", [
   { id: "pat", label: "Repeating patterns", blurb: "What comes next, and how long is the core.", on: true, gen: visPat, html: visPatHtml },
   { id: "patmake", label: "Make a pattern", blurb: "Draw your own AB, AAB, ABB or ABC pattern.", on: false, gen: visPatmake, html: visPatmakeHtml },
   { id: "chart", label: "Number charts", blurb: "Hundreds chart and addition chart patterns.", on: false, gen: visChart, html: visChartHtml },
   { id: "chartwhy", label: "Why the chart pattern works", blurb: "Choose the property that explains it.", on: false, gen: visChartwhy, html: visChartwhyHtml },
-  { id: "mchart", label: "Multiplication chart patterns", blurb: "Fill the chart, even and odd products, one more group.", on: false, gen: g3Mchart, html: g3MchartHtml }
+  { id: "mchart", label: "Multiplication chart patterns", blurb: "Fill the chart, even and odd products, one more group.", on: false, gen: g3Mchart, html: g3MchartHtml },
+  { id: "addchart", label: "Finish the addition chart", blurb: "Fill in the missing sums in a 5 by 5 addition chart.", on: false, gen: visAddchart, html: visAddchartHtml },
+  { id: "chartcircle", label: "Circle even or odd sums", blurb: "Circle the even or the odd sums in an addition chart.", on: false, gen: visChartcircle, html: visChartcircleHtml }
 ]);

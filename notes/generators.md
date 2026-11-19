@@ -77,6 +77,9 @@ Types are registered in the `ns-*.js` family files (`defTypes`, `core/types.js`)
 - **Unknown in an equation** (`eqn`): Find the missing number in any position.
 - **Equal sign** (`equal`): True or false equations and balancing both sides.
 - **Properties of operations** (`prop`): Commutative, associative and distributive.
+- **Compare sums without adding** (`addcmp`): Same or greater: swapped addends (L1), regrouped three-addend sums (L2), two-digit numbers (L3).
+- **Test a claim about sums** (`claim`): Yes or no, then show a test: swapping addends, adding 1 or 2, a chart row, odd and even sums (L2 up).
+- **Odd and even after adding** (`parsum`): Odd or even after adding 1 or 2 (L1), with the number unknown (L2), or for a sum of two-digit numbers (L3).
 - **Related facts** (`rel`): Subtraction as unknown addend, division as unknown factor.
 - **Subtraction strategies** (`substr`): Think addition, make a ten, count back.
 - **Subtract tens** (`sub10`): Subtract a multiple of 10 from a two-digit number.
@@ -130,6 +133,8 @@ Types are registered in the `vis-*.js` family files (`defTypes`, `core/types.js`
 - **Number charts** (`chart`): Hundreds chart and addition chart patterns.
 - **Why the chart pattern works** (`chartwhy`): Choose the property that explains it.
 - **Multiplication chart patterns** (`mchart`): Fill the chart, even and odd products, one more group.
+- **Finish the addition chart** (`addchart`): Fill 6 / 8 / 10 blanks in a 5 by 5 addition chart; L2 starts both headers at the same number, L3 at different numbers.
+- **Circle even or odd sums** (`chartcircle`): Circle every even or every odd sum in a full 5 by 5 addition chart.
 
 ### Coins (`vis-money.js`)
 

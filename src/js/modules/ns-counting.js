@@ -146,10 +146,10 @@ function nsxRulePat(rng, L) {
     taken.add(t); return true;   // each wrong rule appears once and none fits the numbers
   });
   const wrong = shuffle(rng, cand).slice(0, 2).map(([o2, d2]) => nsRuleText(o2, d2)), ans = nsRuleText(op, d), o = shuffle(rng, [ans].concat(wrong));
-  return { mod: 'ns', type: 'rulepat', prompt: 'What is the rule? Circle one.', kind, seq, opts: o, ans, sig: `rpr${seq.join('.')}${o.join('|')}`, ew: 24, eh: 1.1 + 1.45 + 1.4 };
+  return { mod: 'ns', type: 'rulepat', prompt: 'What is the rule? Circle one.', kind, seq, opts: o, ans, sig: `rpr${seq.join('.')}${o.join('|')}`, ew: 24, eh: 1.1 + 1.45 + (o.some(t => t.length > 9) ? 3.1 : 1.4) };
 }
 
-const nsRulePatHtml = (p, key, x) => p.kind === 'next' ? tokHtml(p.tok, key, x) : p.kind === 'shape' ? `${p.svg}<div>Figure 5: ${x(p.ans, 3)} squares</div>` : `<div>${p.seq.join(',&ensp;')}</div><div>${opts(p.opts, p.ans, key)}</div>`;
+const nsRulePatHtml = (p, key, x) => p.kind === 'next' ? tokHtml(p.tok, key, x) : p.kind === 'shape' ? `${p.svg}<div>Figure 5: ${x(p.ans, 3)} squares</div>` : `<div>${p.seq.join(',&ensp;')}</div><div style="white-space:normal">${opts(p.opts, p.ans, key)}</div>`;
 
 /* Two numerical patterns from two rules. L1 and L2: both start at 0 and the second rule adds a multiple of the first (B is k times A).
    L3 also uses equal rules with different starts (B is A plus c). kind: fill in the terms, name the relationship, write ordered pairs. */

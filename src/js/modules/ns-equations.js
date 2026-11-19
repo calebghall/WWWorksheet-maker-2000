@@ -198,6 +198,77 @@ const nsExWriteHtml = (p, key, x) => p.kind === 'write' ? `<div class="wt">${esc
   : p.kind === 'times' ? `<div class="wt">${esc(p.text).replace('____', x(p.ans, 2.4))}</div>`
     : `<div>${p.text}</div><div>${opts(p.opts, p.ans, key)}</div>`;
 
+/* Compare two sums without adding (2.OA.D.5). L1 swapped addends or one changed addend, L2 adds regrouped three-addend sums, L3 two-digit numbers. */
+function nsxAddcmp(rng, L) {
+  const assoc = L > 1 && rng() < 0.5, same = rng() < 0.45;
+  const lo = assoc ? (L === 3 ? 10 : 2) : L === 1 ? 2 : 11, hi = assoc ? (L === 3 ? 30 : 9) : L === 1 ? 9 : L === 2 ? 29 : 49;
+  const other = x => { let t; do { t = ri(rng, lo, hi); } while (t === x); return t; };
+  const a = ri(rng, lo, hi), b = other(a);
+  let e1, e2, v1, v2;
+  if (assoc) {
+    const c = ri(rng, lo, hi), c2 = same ? c : other(c);
+    e1 = `(${a} + ${b}) + ${c}`; e2 = `${a} + (${b} + ${c2})`; v1 = a + b + c; v2 = a + b + c2;
+  } else if (same) { e1 = `${a} + ${b}`; e2 = `${b} + ${a}`; v1 = v2 = a + b; }
+  else {
+    const keep = rng() < 0.5 ? a : b, gone = keep === a ? b : a, d = other(gone);
+    e1 = `${a} + ${b}`; e2 = rng() < 0.5 ? `${keep} + ${d}` : `${d} + ${keep}`; v1 = a + b; v2 = keep + d;
+  }
+  const o = ['a) the same', `b) ${e1} is greater`, `c) ${e2} is greater`], ans = v1 === v2 ? o[0] : v1 > v2 ? o[1] : o[2];
+  return { mod: 'ns', type: 'addcmp', prompt: 'Do not add. Circle the best answer.', text: `${e1} and ${e2}`, e1, e2, opts: o, ans, wide: true, sig: `ac${e1}|${e2}`, ew: 21, eh: 1.1 + 1.45 + 3 * 1.7 + 0.6 };
+}
+
+const nsAddcmpHtml = (p, key) => `<div class="wt">${p.text}</div>${p.opts.map(o => `<div>${opts([o], p.ans, key)}</div>`).join('')}`;
+
+/* Test a claim (2.OA.D.5): swapping addends, adding 1 or 2, a row of the addition chart, odd and even sums. L1 single digits, L2 adds odd and even sums, L3 two-digit numbers. */
+function nsxClaim(rng, L) {
+  const nm = pick(rng, NS_NAMES), hi = L === 3 ? 49 : L === 2 ? 19 : 9;
+  const evenN = () => 2 * ri(rng, 1, Math.floor(hi / 2)), oddN = () => 2 * ri(rng, 1, Math.floor((hi - 1) / 2)) + 1;
+  const numOf = par => par === 'odd' ? oddN() : evenN();
+  const kind = pick(rng, L === 1 ? ['comm', 'plus1', 'plus2', 'row'] : ['comm', 'plus1', 'plus2', 'row', 'oddodd', 'oddodd']);
+  let text, ans, why;
+  if (kind === 'comm') {
+    const lo = L === 3 ? 11 : 2; let a, b; do { a = ri(rng, lo, hi); b = ri(rng, lo, hi); } while (a === b);
+    text = `${nm} says ${a} + ${b} and ${b} + ${a} have the same sum.`; ans = 'yes'; why = `${a} + ${b} = ${a + b} and ${b} + ${a} = ${a + b}`;
+  } else if (kind === 'plus1') {
+    const e = evenN(), o = oddN(), P = pick(rng, ['odd', 'even']), t = rng() < 0.5 ? [e, o] : [o, e];
+    text = `${nm} says adding 1 to a number always makes an ${P} number. Test it with ${t[0]} and ${t[1]}.`; ans = 'no'; why = `${e} + 1 = ${e + 1} (odd); ${o} + 1 = ${o + 1} (even)`;
+  } else if (kind === 'plus2') {
+    const P = pick(rng, ['odd', 'even']); let n1, n2; do { n1 = numOf(P); n2 = numOf(P); } while (n1 === n2);
+    text = `${nm} says adding 2 to an ${P} number makes an ${P} number. Test it with ${n1} and ${n2}.`; ans = 'yes'; why = `${n1} + 2 = ${n1 + 2}; ${n2} + 2 = ${n2 + 2}`;
+  } else if (kind === 'row') {
+    const r = ri(rng, 1, Math.min(hi, 15)), step = rng() < 0.5 ? 1 : 2;
+    text = `Part of a row in an addition chart is ${r}, ${r + 1}, ${r + 2}, ${r + 3}. ${nm} says each number is ${step} more than the number before it.`;
+    ans = step === 1 ? 'yes' : 'no'; why = step === 1 ? `${r} + 1 = ${r + 1}; ${r + 1} + 1 = ${r + 2}` : `${r} + 2 = ${r + 2}, not ${r + 1}`;
+  } else {
+    const px = pick(rng, ['odd', 'even']), py = pick(rng, ['odd', 'even']), cl = pick(rng, ['odd', 'even']), a = numOf(px), b = numOf(py), act = (a + b) % 2 ? 'odd' : 'even';
+    text = `${nm} says an ${px} number plus an ${py} number is an ${cl} number. Test it with ${a} + ${b}.`; ans = cl === act ? 'yes' : 'no'; why = `${a} + ${b} = ${a + b}, which is ${act}`;
+  }
+  return { mod: 'ns', type: 'claim', prompt: 'Is the claim right? Circle yes or no.', kind, text, ans, why, wide: true, sig: `cl${text}`, ew: 21, eh: nsWordEh(text) + 1.45 + (why.length > 30 ? 2.9 : 1.45) };
+}
+
+const nsClaimHtml = (p, key) => `<div class="wt">${esc(p.text)}</div><div>${opts(['yes', 'no'], p.ans, key)}</div><div>Show your test:</div><div><span class="blank" style="min-width:18em">${key ? esc(p.why) : '&nbsp;'}</span></div>`;
+
+/* Odd and even after adding (2.OA.D.5). L1 a number and 1 or 2 more, L2 adds odd or even without the number, L3 odd or even sums of two-digit numbers. */
+function nsxParsum(rng, L) {
+  const A = pick(rng, NS_NAMES); let B; do { B = pick(rng, NS_NAMES); } while (B === A);
+  const th = pick(rng, NS_THINGS), par = n => n % 2 ? 'odd' : 'even', d = ri(rng, 1, 2), more = rng() < 0.65;
+  const kind = L === 1 ? 'num' : pick(rng, L === 2 ? ['num', 'given', 'given'] : ['given', 'sum', 'sum']), cmpw = `${d} ${more ? 'more' : 'fewer'} ${th} than ${A}`;
+  let text, ans;
+  if (kind === 'num') {
+    const n = ri(rng, more ? 3 : d + 2, L === 1 ? 19 : 49);
+    text = `${A} has ${n} ${th}. ${B} has ${cmpw}. Does ${B} have an odd or even number of ${th}?`; ans = par(more ? n + d : n - d);
+  } else if (kind === 'given') {
+    const P = pick(rng, ['odd', 'even']);
+    text = `${A} has an ${P} number of ${th}. ${B} has ${cmpw}. Does ${B} have an odd or even number?`; ans = d === 1 ? (P === 'odd' ? 'even' : 'odd') : P;
+  } else {
+    const a = ri(rng, 11, 49), b = ri(rng, 11, 49);
+    text = `Without adding, is ${a} + ${b} odd or even?`; ans = par(a + b);
+  }
+  return { mod: 'ns', type: 'parsum', prompt: 'Circle odd or even.', kind, text, ans, wide: true, sig: `pq${text}`, ew: 21, eh: nsWordEh(text) };
+}
+
+const nsParsumHtml = (p, key) => `<div class="wt">${esc(p.text)}</div><div>${opts(['odd', 'even'], p.ans, key)}</div>`;
+
 defTypes("ns", "Equations, properties and facts", [
   { id: "bond", label: "Number bonds", blurb: "Decompose to 10, make ten, teen numbers as ten and ones.", on: false, gen: nsxBond, html: nsBondHtml },
   { id: "bondp", label: "Number bonds with pictures", blurb: "Two-color counters and ten-frames.", on: false, gen: nsxBondp, html: nsBondpHtml },
@@ -210,5 +281,8 @@ defTypes("ns", "Equations, properties and facts", [
   { id: "mul10", label: "Multiply by multiples of 10", blurb: "One digit times 10 to 90.", on: false, gen: nsxMul10, html: nsMul10Html },
   { id: "mcomp", label: "Multiplicative comparison", blurb: "\"__ times as many as\" statements.", on: false, gen: nsxMcomp, html: nsMcompHtml },
   { id: "exeval", label: "Evaluate expressions", blurb: "Parentheses, brackets and the order of operations.", on: false, gen: nsxExEval, html: nsExEvalHtml },
-  { id: "exwrite", label: "Write and interpret expressions", blurb: "Words to expressions, and times as large without calculating.", on: false, gen: nsxExWrite, html: nsExWriteHtml }
+  { id: "exwrite", label: "Write and interpret expressions", blurb: "Words to expressions, and times as large without calculating.", on: false, gen: nsxExWrite, html: nsExWriteHtml },
+  { id: "addcmp", label: "Compare sums without adding", blurb: "Same or greater: swapped addends and regrouped sums.", on: false, gen: nsxAddcmp, html: nsAddcmpHtml },
+  { id: "claim", label: "Test a claim about sums", blurb: "Decide if a claim about adding is right, and show a test.", on: false, gen: nsxClaim, html: nsClaimHtml },
+  { id: "parsum", label: "Odd and even after adding", blurb: "Odd or even after adding 1, adding 2, or adding two numbers.", on: false, gen: nsxParsum, html: nsParsumHtml }
 ]);
