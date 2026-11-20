@@ -30,7 +30,9 @@ function check(p,tag,L){
   case 'mtwo':if(p.n!==p.m*p.b||p.n>12||p.n<=p.m)e('mtwo');break;
   case 'mdiff':if(String(Math.abs(p.a-p.b))!==p.ans||p.a===p.b||Math.max(p.a,p.b)>p.max)e('mdiff');break;
   case 'mest':{const t=V_EST.find(r=>r[0]===p.thing);if(!t||t[1]!==p.unit||t[2]!==p.v||!p.opts.includes(p.unit)||new Set(p.opts).size!==3)e('mest');break;}
-  case 'nline':{const r=p.add?p.a+p.b:p.a-p.b;if(String(r)!==p.ans||r<p.lo||r>p.hi||p.b<=0||(p.tens&&(p.a%10||p.b%10)))e('nline');break;}
+  case 'nline':{const r=p.add?p.a+p.b:p.a-p.b;if(String(r)!==p.ans||r<p.lo||r>p.hi||p.b<=0||(p.tens&&(p.a%10||p.b%10)))e('nline');if(p.kind!=='draw'&&p.kind!=='write')e('nline kind');
+    /* the student copy must not show where the jump lands: no drawn jump in 'draw'; in 'write' the three numbers are blanks */
+    {const VH=E('VHTML'),sh=VH.nline(p,false,v=>'['+v+']'),kh=VH.nline(p,true,v=>'['+v+']');if(p.kind==='draw'&&(/<path/.test(sh)||!/<path/.test(kh)||!sh.includes(p.a+' '+(p.add?'+':'\u2212')+' '+p.b+' = ['+p.ans+']')))e('nline draw copy');if(p.kind==='write'&&(!/<path/.test(sh)||sh.includes(String(p.a)+' +')||sh.includes('['+p.a+'] ['+(p.add?'+':'\u2212')+'] ['+p.b+'] = ['+p.ans+']')===false))e('nline write copy');}break;}
   case 'sort':{const a=p.items.filter(k=>k===0).length,b=p.items.filter(k=>k===1).length;if(a!==p.a||b!==p.b||a===b||a>10||b>10||p.ans!==(a>b?p.kinds[0]:p.kinds[1]))e('sort');break;}
   case 'tally':case 'pict':case 'bar':{const tot=sum(p.cnt),hi=Math.max(...p.cnt),lo=Math.min(...p.cnt);if(p.tot!==tot||p.diff!==hi-lo||p.cnt[p.hi]!==hi||p.cnt[p.lo]!==lo||new Set(p.cnt).size!==3)e('data');
     if(p.type==='pict'&&p.cnt.some(c=>c%p.step))e('step');if(p.type==='bar'&&Math.max(...p.cnt)>9)e('bar max');if(p.type==='tally'&&Math.max(...p.cnt)>(L===1?6:12))e('tally max');

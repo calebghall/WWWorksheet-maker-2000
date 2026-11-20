@@ -61,31 +61,46 @@ function visPatmakeHtml(p, key) {
   return vsvg(2.95, 0.95, o, 'Legend and eight empty boxes');
 }
 
-/* why does the chart pattern work? Choose the property. */
+/* Free-response "Why are the shaded numbers the same?" for a chart with two mirrored shaded cells. Every such problem has the same sig, so a worksheet
+   keeps one and draws a different kind for the rest. The student writes on three lines; the key shows a model answer split across them. */
+const V_EXPLAIN_SIG = 'chartexplain';
+function vExplainAns(add, a, b) {
+  const sym = add ? '+' : '\u00d7', t = `${a} ${sym} ${b} and ${b} ${sym} ${a} both equal ${add ? a + b : a * b} because the order of the ${add ? 'addends' : 'factors'} does not change the ${add ? 'sum' : 'product'}.`, w = t.split(' ');
+  const lim = Math.ceil(t.length / 3) + 2, out = ['']; for (const x of w) { if (out[out.length - 1] && (out[out.length - 1] + ' ' + x).length > lim && out.length < 3) out.push(''); out[out.length - 1] += (out[out.length - 1] ? ' ' : '') + x; }
+  return out;
+}
+const vExplainHtml = (lines, key) => lines.map(t => `<div><span class="blank" style="min-width:21em;text-align:left;font-weight:600">${key ? esc(t) : '&nbsp;'}</span></div>`).join('');
+
+/* why does the chart pattern work? Finish the sentence that names the property. */
 function visChartwhy(rng) {
-  const kind = pick(rng, ['comm', 'zero', 'plus1']), r0 = kind === 'zero' ? 0 : ri(rng, 0, 4);
-  let cells, q, ans;
-  if (kind === 'comm') { const i = ri(rng, 1, 3), j = ri(rng, 0, i - 1); cells = [[i, j], [j, i]]; q = 'Why are the shaded numbers the same?'; ans = 'any order'; }
-  else if (kind === 'zero') { const i = 0; cells = [0, 1, 2, 3].map(j => [i, j]); q = 'Why is the shaded row like the top row?'; ans = 'adding 0'; }
-  else { const i = ri(rng, 0, 3), j = ri(rng, 0, 2); cells = [[i, j], [i, j + 1]]; q = 'Why does the shaded number go up by 1?'; ans = 'adding 1'; }
-  return vp('chartwhy', 'Why? Circle the best reason.', { kind, r0, cells, q, ans, sig: `cw${kind}${r0}${cells}` }, 3.3, 1.5, 4.9, 24);
+  const kind = pick(rng, ['explain', 'next', 'next']), r0 = ri(rng, 0, 4);
+  if (kind === 'explain') {
+    const i = ri(rng, 1, 3), j = ri(rng, 0, i - 1), lines = vExplainAns(true, r0 + i, r0 + j);
+    return vp('chartwhy', 'Write why the shaded numbers are the same.', { kind, r0, cells: [[i, j], [j, i]], lines, ans: lines.join(' '), sig: V_EXPLAIN_SIG }, 3.3, 1.5, 7.4, 22);
+  }
+  /* two shaded cells d steps apart in one row or one column: the second number is d more than the first */
+  const d = ri(rng, 1, 3), row = rng() < 0.5, i = ri(rng, 0, row ? 3 : 3 - d), j = ri(rng, 0, row ? 3 - d : 3), c2 = row ? [i, j + d] : [i + d, j];
+  const a = r0 + i + r0 + j, b = r0 + c2[0] + r0 + c2[1];
+  return vp('chartwhy', 'Use the shaded cells. Fill in the blank.', { kind, r0, cells: [[i, j], c2], a, b, d, row, ans: String(d), sig: `cw${r0}${i}${j}${d}${row}` }, 3.3, 1.5, 4.9, 22);
 }
 
-function visChartwhyHtml(p, key) {
+function visChartwhyHtml(p, key, x) {
   const cw = 46, ch = 30; let o = '';
   const cell = (i, j, txt, head, shade) => { const xx = 8 + cw * j, yy = 6 + ch * i; return vrect(xx, yy, cw, ch, head ? '#e8eef7' : shade ? VFILL[0] : 'none', { c: '#8d99ad', w: 1.3 }) + vtxt(xx + cw / 2, yy + 20, String(txt), { s: 14, b: head }); };
   for (let j = 0; j < 5; j++) o += cell(0, j, j ? p.r0 + j - 1 : '+', true);
   for (let i = 1; i < 5; i++) for (let j = 0; j < 5; j++) o += j === 0 ? cell(i, 0, p.r0 + i - 1, true) : cell(i, j, (p.r0 + i - 1) + (p.r0 + j - 1), false, p.cells.some(c => c[0] === i - 1 && c[1] === j - 1));
-  return vsvg(2.5, 1.55, o, 'Addition chart with shaded cells') + `<div>${esc(p.q)}</div><div>${vopts(['any order', 'adding 0', 'adding 1'], p.ans, key)}</div>`;
+  const svg = vsvg(2.5, 1.55, o, 'Addition chart with shaded cells');
+  if (p.kind === 'explain') return svg + vExplainHtml(p.lines, key);
+  return svg + `<div>${p.a} and ${p.b} are ${p.d === 1 ? 'next to each other' : p.d + ' cells apart'} in the ${p.row ? 'row' : 'column'}.</div><div>The second number is ${x(p.ans, 2)} more than the first.</div>`;
 }
 
 /* -----: patterns in the multiplication chart ----- */
 function g3Mchart(rng, L) {
-  const kind = pick(rng, L === 1 ? ['fill', 'comm'] : L === 2 ? ['fill', 'comm', 'row'] : ['fill', 'comm', 'row', 'plus']), top = L === 1 ? 3 : L === 2 ? 6 : 7;
+  const kind = pick(rng, L === 1 ? ['fill', 'explain'] : L === 2 ? ['fill', 'explain', 'row'] : ['fill', 'explain', 'row', 'plus']), top = L === 1 ? 3 : L === 2 ? 6 : 7;
   if (kind === 'fill') { const r0 = ri(rng, 1, top), c0 = ri(rng, 1, top), bl = shuffle(rng, Array.from({ length: 16 }, (_, i) => i)).slice(0, 3).sort((a, b) => a - b);
     return vp('mchart', 'Fill in the missing products.', { kind, r0, c0, blanks: bl, cells: [], ans: bl.map(b => (r0 + Math.floor(b / 4)) * (c0 + b % 4)).join(' '), sig: `mcf${r0}${c0}${bl}` }, 2.5, 1.55, 1.9); }
-  if (kind === 'comm') { const s = ri(rng, 1, top), i = ri(rng, 1, 3), j = ri(rng, 0, i - 1);
-    return vp('mchart', 'Why? Circle the best reason.', { kind, r0: s, c0: s, cells: [[i, j], [j, i]], q: 'Why are the shaded numbers the same?', opts: ['any order', 'adding 0', 'doubling'], ans: 'any order', sig: `mcc${s}${i}${j}` }, 3.3, 1.55, 4.9, 24); }
+  if (kind === 'explain') { const s = ri(rng, 1, top), i = ri(rng, 1, 3), j = ri(rng, 0, i - 1), lines = vExplainAns(false, s + i, s + j);
+    return vp('mchart', 'Write why the shaded numbers are the same.', { kind, r0: s, c0: s, cells: [[i, j], [j, i]], q: '', lines, ans: lines.join(' '), sig: V_EXPLAIN_SIG }, 3.3, 1.55, 7.4, 22); }
   if (kind === 'row') { const f = pick(rng, [2, 4, 5, 6, 8, 10].filter(q => q <= top + 3)), r0 = ri(rng, Math.max(1, f - 3), Math.min(top, f)), c0 = ri(rng, 1, top), i = f - r0;
     const q = f === 5 ? 'What are the last digits of the shaded products?' : f === 10 ? 'What is the last digit of each shaded product?' : 'Are the shaded products even or odd?', opts = f === 5 ? ['0 or 5', '0 or 2'] : f === 10 ? ['0', '5'] : ['even', 'odd'];
     return vp('mchart', 'Look at the shaded row.', { kind, f, r0, c0, cells: [0, 1, 2, 3].map(j => [i, j]), q, opts, ans: opts[0], sig: `mcr${f}${r0}${c0}` }, 3.3, 1.55, 4.9, 24); }
@@ -104,6 +119,7 @@ function g3MchartHtml(p, key, x) {
   const g = vsvg(2.5, 1.55, o, 'Multiplication chart');
   if (p.kind === 'fill') return g;
   if (p.kind === 'plus') return g + `<div>${p.r + 1} × ${p.c} is one more group of ${x(p.c, 1.6)} than ${p.r} × ${p.c}.</div>`;
+  if (p.kind === 'explain') return g + vExplainHtml(p.lines, key);
   return g + `<div>${esc(p.q)}</div><div>${vopts(p.opts, p.ans, key)}</div>`;
 }
 
@@ -143,7 +159,7 @@ defTypes("vis", "Patterns and charts", [
   { id: "pat", label: "Repeating patterns", blurb: "What comes next, and how long is the core.", on: true, gen: visPat, html: visPatHtml },
   { id: "patmake", label: "Make a pattern", blurb: "Draw your own AB, AAB, ABB or ABC pattern.", on: false, gen: visPatmake, html: visPatmakeHtml },
   { id: "chart", label: "Number charts", blurb: "Hundreds chart and addition chart patterns.", on: false, gen: visChart, html: visChartHtml },
-  { id: "chartwhy", label: "Why the chart pattern works", blurb: "Choose the property that explains it.", on: false, gen: visChartwhy, html: visChartwhyHtml },
+  { id: "chartwhy", label: "Why the chart pattern works", blurb: "Read the shaded cells, and explain why mirrored cells match.", on: false, gen: visChartwhy, html: visChartwhyHtml },
   { id: "mchart", label: "Multiplication chart patterns", blurb: "Fill the chart, even and odd products, one more group.", on: false, gen: g3Mchart, html: g3MchartHtml },
   { id: "addchart", label: "Finish the addition chart", blurb: "Fill in the missing sums in a 5 by 5 addition chart.", on: false, gen: visAddchart, html: visAddchartHtml },
   { id: "chartcircle", label: "Circle even or odd sums", blurb: "Circle the even or the odd sums in an addition chart.", on: false, gen: visChartcircle, html: visChartcircleHtml }

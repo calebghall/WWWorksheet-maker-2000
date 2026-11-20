@@ -10,7 +10,7 @@ function chk(p,id,L){n++;const e=m=>bad.push(`${id} L${L}: ${m} ${JSON.stringify
  case 'mfac':if(p.variant==='pic'){if(p.ans!==`${p.a} ${p.b} ${p.a*p.b}`)e('pic');}else if(p.variant==='name'){if(p.ans!==String(p.a*p.b)||!p.opts.includes(p.ans)||new Set(p.opts).size!==3)e('name');}else if(p.ans!==['groups','in each group','in all'][p.role]||[p.a,p.b,p.a*p.b][p.role]!==p.num||p.a===p.b)e('mean');break;
  case 'dint':if(p.n!==p.d*p.q)e('div');if(p.variant==='name'){if(p.ans!==String([p.n,p.d,p.q][['dividend','divisor','quotient'].indexOf(p.ask)])||new Set(p.opts).size!==3)e('name');}else if(p.ans!==String(p.q))e('ans');break;
  case 'mchart':{if(p.kind==='fill'){if(p.ans!==p.blanks.map(b=>(p.r0+Math.floor(b/4))*(p.c0+b%4)).join(' ')||p.blanks.length!==3)e('fill');}
-  else if(p.kind==='comm'){const[a,b]=p.cells;if(a[0]!==b[1]||a[1]!==b[0]||a[0]===a[1]||p.r0!==p.c0)e('comm');}
+  else if(p.kind==='explain'){const[a,b]=p.cells;if(a[0]!==b[1]||a[1]!==b[0]||a[0]===a[1]||p.r0!==p.c0)e('explain cells');const x1=p.r0+a[0],y1=p.r0+a[1];if(p.lines.join(' ')!==`${x1} \u00d7 ${y1} and ${y1} \u00d7 ${x1} both equal ${x1*y1} because the order of the factors does not change the product.`)e('explain model');if(p.sig!=='chartexplain')e('explain sig');}
   else if(p.kind==='row'){const i=p.cells[0][0],r=p.r0+i,prods=[0,1,2,3].map(j=>r*(p.c0+j)),ok={'even':v=>v%2===0,'odd':v=>v%2===1,'0 or 5':v=>[0,5].includes(v%10),'0 or 2':v=>[0,2].includes(v%10),'0':v=>v%10===0,'5':v=>v%10===5};
    if(!prods.every(ok[p.ans])||prods.every(ok[p.opts.find(o=>o!==p.ans)])||r!==p.f||p.r0+3>10||p.c0+3>10)e('row');}
   else{const[a,b]=p.cells;if(b[0]!==a[0]+1||b[1]!==a[1]||p.ans!==String(p.c0+a[1])||(p.r0+b[0])*p.c-(p.r0+a[0])*p.c!==p.c)e('plus');}break;}

@@ -131,8 +131,8 @@ Types are registered in the `vis-*.js` family files (`defTypes`, `core/types.js`
 - **Repeating patterns** (`pat`): What comes next, and how long is the core. **Small pool:** 36 / 144 / 168.
 - **Make a pattern** (`patmake`): Draw your own AB, AAB, ABB or ABC pattern.
 - **Number charts** (`chart`): Hundreds chart and addition chart patterns.
-- **Why the chart pattern works** (`chartwhy`): Choose the property that explains it.
-- **Multiplication chart patterns** (`mchart`): Fill the chart, even and odd products, one more group.
+- **Why the chart pattern works** (`chartwhy`): Two shaded cells in an addition chart. Fill in how much more the second number is (1 to 3, in a row or a column), or, for two mirrored cells, a free response on three lines (at most one such problem per worksheet, shared with `mchart`). In the 2.OA.D.5 preset.
+- **Multiplication chart patterns** (`mchart`): Fill the chart, even and odd products, one more group, and one free-response "why are the shaded numbers the same?" per worksheet.
 - **Finish the addition chart** (`addchart`): Fill 6 / 8 / 10 blanks in a 5 by 5 addition chart; L2 starts both headers at the same number, L3 at different numbers.
 - **Circle even or odd sums** (`chartcircle`): Circle every even or every odd sum in a full 5 by 5 addition chart.
 
@@ -157,7 +157,7 @@ Types are registered in the `vis-*.js` family files (`defTypes`, `core/types.js`
 
 ### Number lines (`vis-numberline.js`)
 
-- **Number line jumps** (`nline`): Add and subtract on a number line.
+- **Number line jumps** (`nline`): Add and subtract on a number line. Either the start is marked and the student draws the jump and writes the answer, or the jump is drawn and the student writes the equation. The student copy never shows where a given equation's jump lands.
 - **Fractions on a number line** (`fline`): Read and mark fractions; length of one part.
 
 ### Data displays (`vis-data.js`)

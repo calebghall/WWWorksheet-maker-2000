@@ -4,7 +4,7 @@ const html=fs.readFileSync(path.join(__dirname,'..','WWWorksheet-maker-2000.html
 const js=html.split('<script>')[1].split('</script>')[0].split('/*==DOM==*/')[0];
 const ctx={Math,console,globalThis:null};ctx.globalThis=ctx;vm.createContext(ctx);vm.runInContext(js,ctx);
 const SP=ctx.__SP,E=x=>vm.runInContext(x,ctx),bad=[];let n=0;
-const K2=['patmake', 'cntn', 'showop', 'mattr', 'pos2', 'shcmp', 'shbuild', 'split', 'partw', 'pdraw', 'mtool', 'mrule2', 'pict4', 'bar4', 'chartwhy'],V_SIDES=E('V_SIDES'),V_EQ=E('V_EQSIDES'),V_ATTR=E('V_ATTR'),V_ATTRW=E('V_ATTRW'),V_MT=E('V_MT'),V_SPLITS=E('V_SPLITS'),V_PM=E('V_PM');
+const VHTML=E('VHTML');const K2=['patmake', 'cntn', 'showop', 'mattr', 'pos2', 'shcmp', 'shbuild', 'split', 'partw', 'pdraw', 'mtool', 'mrule2', 'pict4', 'bar4', 'chartwhy'],V_SIDES=E('V_SIDES'),V_EQ=E('V_EQSIDES'),V_ATTR=E('V_ATTR'),V_ATTRW=E('V_ATTRW'),V_MT=E('V_MT'),V_SPLITS=E('V_SPLITS'),V_PM=E('V_PM');
 const sum=a=>a.reduce((x,y)=>x+y,0);
 function chk(p,id,L){n++;const e=m=>bad.push(`${id} L${L}: ${m} ${JSON.stringify(p).slice(0,150)}`);
   if(!p.sig||!p.prompt||p.prompt.length>42||!((p.win>0&&p.hin>0)||(p.ew>0&&p.eh>0)))e('shape');if(p.win>3.4)e('wide '+p.win);
@@ -25,8 +25,9 @@ function chk(p,id,L){n++;const e=m=>bad.push(`${id} L${L}: ${m} ${JSON.stringify
   case 'pict4':case 'bar4':{const t=sum(p.cnt),hi=Math.max(...p.cnt),lo=Math.min(...p.cnt);if(p.cats.length!==4||p.cnt.length!==4||new Set(p.cnt).size!==4||p.tot!==t||p.diff!==hi-lo||p.cnt[p.hi]!==hi||p.cnt[p.lo]!==lo)e('data');
     if(id==='pict4'){if(p.cnt.some(c=>c%p.step)||Math.max(...p.cnt)/p.step>6||![1,2,5,10].includes(p.step))e('pict');}else if(hi>9||lo<1)e('bar');
     if(p.ans!==(p.make?p.cnt.join(' '):`${t} ${hi-lo}`))e('ans');break;}
-  case 'chartwhy':{const m={comm:'any order',zero:'adding 0',plus1:'adding 1'};if(p.ans!==m[p.kind])e('why');if(p.kind==='comm'){const[a,b]=p.cells;if(a[0]!==b[1]||a[1]!==b[0]||a[0]===a[1])e('comm cells');}
-    if(p.kind==='zero'&&(p.r0!==0||p.cells.some(c=>c[0]!==0)))e('zero');if(p.kind==='plus1'){const[a,b]=p.cells;if(a[0]!==b[0]||b[1]!==a[1]+1||b[1]>3)e('plus1');}break;}
+  case 'chartwhy':{if(p.kind==='explain'){const[a,b]=p.cells;if(a[0]!==b[1]||a[1]!==b[0]||a[0]===a[1])e('explain cells');const[x1,y1]=[p.r0+a[0],p.r0+a[1]];if(p.lines.join(' ')!==`${x1} + ${y1} and ${y1} + ${x1} both equal ${x1+y1} because the order of the addends does not change the sum.`)e('explain model');if(p.sig!=='chartexplain'||p.lines.length>3)e('explain sig or lines');}
+    else if(p.kind==='next'){const[a,b]=p.cells,v=c=>2*p.r0+c[0]+c[1];if(v(a)!==p.a||v(b)!==p.b||p.b-p.a!==p.d||p.ans!==String(p.d)||p.d<1||p.d>3)e('next numbers');if(p.row?(a[0]!==b[0]||b[1]-a[1]!==p.d):(a[1]!==b[1]||b[0]-a[0]!==p.d))e('next cells');if(a.concat(b).some(q=>q<0||q>3))e('next range');if(p.prompt.length>42)e('prompt');const h=VHTML.chartwhy(p,true,(v)=>String(v));if(h.includes(p.a+' and '+p.b+' are')===false)e('next text');}
+    else e('kind');break;}
   }}
 for(const L of [1,2,3])for(const id of K2)for(let i=0;i<600;i++)chk(SP.VGEN[id](SP.rngFrom('Z'+i+id),L),id,L);
 for(const L of [1,2,3]){const s=SP.defaults();s.module='vis';s.seed='K2';s.pages=3;s.arPerPage=12;s.vis.level=L;for(const k of Object.keys(s.vis.types))s.vis.types[k]=K2.includes(k);

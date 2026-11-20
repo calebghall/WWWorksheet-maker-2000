@@ -122,15 +122,15 @@ for (const L of [1, 2, 3]) {
   if (!has('parsum', 3, p => p.kind === 'sum')) bad.push('parsum sum missing at L3');
 }
 
-/* the preset: only these five types, nothing multiplicative, renders sheet and key, same set code gives the same sheet */
+/* the preset: only these six types, nothing multiplicative, renders sheet and key, same set code gives the same sheet */
 for (const seed of ['A', 'B', 'C', '6NXREZ']) {
   const st = SP.defaults(); st.seed = seed; st.pages = 2; SP.applyStandard(st, '2.OA.D.5');
   const on = Object.keys(st.oa.types).filter(k => st.oa.types[k]).sort().join();
-  if (on !== 'ns.addcmp,ns.claim,ns.parsum,vis.addchart,vis.chartcircle') bad.push('preset types ' + on);
+  if (on !== 'ns.addcmp,ns.claim,ns.parsum,vis.addchart,vis.chartcircle,vis.chartwhy') bad.push('preset types ' + on);
   if (st.module !== 'oa' || st.oa.level !== 2) bad.push('preset module or level');
   const probs = SP.generateSet(st), got = new Set(probs.map(q => q.type));
   if (probs.length < 8) bad.push('preset size ' + probs.length);
-  for (const t of got) if (!['addcmp', 'claim', 'parsum', 'addchart', 'chartcircle'].includes(t)) bad.push('preset unexpected ' + t);
+  for (const t of got) if (!['addcmp', 'claim', 'parsum', 'addchart', 'chartcircle', 'chartwhy'].includes(t)) bad.push('preset unexpected ' + t);
   if (got.size < 4) bad.push('preset mix ' + [...got]);
   if (probs.some(q => /×|÷/.test(JSON.stringify(q)))) bad.push('preset multiplicative');
   for (const key of [false, true]) { st.key = key; const out = SP.renderAll(st); if (/NaN|undefined|null|\[object/.test(out) || !out.includes('sheet')) bad.push('preset render key' + key); }

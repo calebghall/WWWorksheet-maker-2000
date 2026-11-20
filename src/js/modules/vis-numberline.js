@@ -2,26 +2,32 @@
    Generators take (rng, level) and return a problem with `sig` and size hints; cell bodies are (p, key, x) functions.
    The types are registered at the bottom with defTypes (id, label, blurb, default, generator, cell body). */
 
-/* -----: number line jumps ----- */
+/* -----: number line jumps -----
+   The student copy never draws where the jump lands. kind 'draw': only the start is marked, the equation is given and the student draws the jump
+   and writes the answer. kind 'write': the jump is drawn and the student writes the equation it shows (operation, both numbers and the result). */
 function visNline(rng, L) {
-  const tens = L === 2 || (L === 3 && rng() < 0.5), lo = tens ? 0 : 0, hi = tens ? 100 : 20, st = tens ? 10 : 1, add = rng() < 0.6;
+  const tens = L === 2 || (L === 3 && rng() < 0.5), lo = 0, hi = tens ? 100 : 20, st = tens ? 10 : 1, add = rng() < 0.6, kind = rng() < 0.6 ? 'draw' : 'write';
   let a, b;
   if (add) { a = st * ri(rng, tens ? 1 : 2, tens ? 6 : 12); b = st * ri(rng, tens ? 1 : 2, Math.min(tens ? 9 : 9, (hi - a) / st)); }
   else { a = st * ri(rng, tens ? 4 : 8, hi / st); b = st * ri(rng, tens ? 1 : 2, Math.min(a / st - (tens ? 0 : 1), tens ? 6 : 9)); }
   const res = add ? a + b : a - b;
-  return vp('nline', 'Write the answer.', { add, a, b, lo, hi, st, tens, ans: String(res), sig: `nl${add}${a}${b}${tens}` }, 3.05, 0.95, 3.4, 12);
+  return vp('nline', kind === 'draw' ? 'Draw the jump. Write the answer.' : 'Write the equation for the jump.', { kind, add, a, b, lo, hi, st, tens, ans: String(res), sig: `nl${kind}${add}${a}${b}${tens}` }, 3.05, 0.95, 3.4, 12);
 }
 
 function visNlineHtml(p, key, x) {
-  const x0 = 22, W = 260, X = v => x0 + W * (v - p.lo) / (p.hi - p.lo), y = 62;
+  const x0 = 22, W = 260, X = v => x0 + W * (v - p.lo) / (p.hi - p.lo), y = 62, draw = p.kind === 'draw';
   let o = vline(x0 - 8, y, x0 + W + 8, y, VINK, 2);
   for (let v = p.lo; v <= p.hi; v += p.st) { const big = p.tens || v % 5 === 0; o += vline(X(v), y - (big ? 8 : 5), X(v), y + (big ? 8 : 5), VINK, 1.5); if (p.tens ? true : v % 5 === 0) o += vtxt(X(v), y + 22, String(v), { s: 11 }); }
-  const end = p.add ? p.a + p.b : p.a - p.b, mx = (X(p.a) + X(end)) / 2, top = 14;
-  o += `<path d="M${X(p.a)} ${y - 4}Q${mx} ${top} ${X(end)} ${y - 4}" fill="none" stroke="${key ? VKEY : VINK}" stroke-width="2.2"/>`;
-  const ex = X(end), dir = end > p.a ? -1 : 1;
-  o += vpoly([[ex, y - 4], [ex + dir * 9 - 0, y - 14], [ex + dir * 1, y - 16]], key ? VKEY : VINK, 0, 0, 0, key ? VKEY : VINK);
-  o += `<circle cx="${X(p.a)}" cy="${y}" r="5" fill="${VINK}"/>` + (key ? `<circle cx="${ex}" cy="${y}" r="5" fill="${VKEY}"/>` : '');
-  return vsvg(3.05, 0.95, o, 'Number line with a jump') + `<div>${p.a} ${p.add ? '+' : '−'} ${p.b} = ${x(p.ans, 2.6)}</div>`;
+  const end = p.add ? p.a + p.b : p.a - p.b, mx = (X(p.a) + X(end)) / 2, top = y - 4 - Math.min(46, 12 + 0.12 * Math.abs(X(end) - X(p.a))), ex = X(end);
+  if (!draw || key) {
+    o += `<path d="M${X(p.a)} ${y - 4}Q${mx} ${top} ${ex} ${y - 4}" fill="none" stroke="${key && draw ? VKEY : VINK}" stroke-width="2.2"/>`;
+    /* arrowhead on the end of the curve: tip at the end point, pointing along the curve's end tangent (control point to end point) */
+    const tx = ex - mx, ty = (y - 4) - top, tl = Math.hypot(tx, ty), ux = tx / tl, uy = ty / tl, hl = 11, hw = 5, bx = ex - ux * hl, by = y - 4 - uy * hl, col = key && draw ? VKEY : VINK;
+    o += vpoly([[ex, y - 4], [bx - uy * hw, by + ux * hw], [bx + uy * hw, by - ux * hw]], col, 0, 0, 0, col);
+  }
+  o += draw ? `<circle cx="${X(p.a)}" cy="${y}" r="5" fill="${VINK}"/>` + (key ? `<circle cx="${ex}" cy="${y}" r="5" fill="${VKEY}"/>` : '') : '';
+  const body = draw ? `${p.a} ${p.add ? '+' : '\u2212'} ${p.b} = ${x(p.ans, 2.6)}` : `${x(String(p.a), 2)} ${x(p.add ? '+' : '\u2212', 1.2)} ${x(String(p.b), 2)} = ${x(p.ans, 2)}`;
+  return vsvg(3.05, 0.95, o, draw ? 'Number line with a start point' : 'Number line with a jump') + `<div>${body}</div>`;
 }
 
 /* -----: fractions on a number line ----- */
@@ -44,6 +50,6 @@ function g3FlineHtml(p, key, x) {
 }
 
 defTypes("vis", "Number lines", [
-  { id: "nline", label: "Number line jumps", blurb: "Add and subtract on a number line.", on: false, gen: visNline, html: visNlineHtml },
+  { id: "nline", label: "Number line jumps", blurb: "Draw a jump to add or subtract, or write the equation a jump shows.", on: false, gen: visNline, html: visNlineHtml },
   { id: "fline", label: "Fractions on a number line", blurb: "Read and mark fractions; length of one part.", on: false, gen: g3Fline, html: g3FlineHtml }
 ]);
