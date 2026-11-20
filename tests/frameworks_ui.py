@@ -27,7 +27,7 @@ with sync_playwright() as p:
         pg.evaluate("document.querySelector('#stdBox').open=true")
         check(pg.evaluate("document.querySelectorAll('#stdList .std').length") > 3, 'lazy tn list renders')
         check(not pg.evaluate("document.querySelector('#stdFwRow').hidden"), 'picker shows tn and ky')
-        pg.click('#stdList .std:not([disabled])'); pg.wait_for_timeout(200)
+        pg.click('#stdList .std[data-std]:not([disabled])'); pg.wait_for_timeout(200)
         s = state(pg); check(s and s['f'] == 'tn' and s['c'], 'picked standard saved with its framework ' + str(s))
         # Kentucky loads on first pick and builds a worksheet titled with its own code
         pg.select_option('#stdFwSel', 'ky'); pg.wait_for_timeout(500)

@@ -9,6 +9,11 @@ body:
       description: Which problem number, and what it shows. Paste the text of the problem if you can.
     validations:
       required: true
+  - type: input
+    id: problem
+    attributes:
+      label: Problem number
+      description: The number printed beside the problem, and whether it is on the worksheet or the answer key (for example, "7, answer key").
   - type: textarea
     id: expected
     attributes:
@@ -18,6 +23,11 @@ body:
     attributes:
       label: Set code
       description: Filled in by the app. The same code and settings make the same problems.
+  - type: input
+    id: share_link
+    attributes:
+      label: Link to this worksheet
+      description: Filled in by the app, the same address as the Share link button. Opening it shows this exact worksheet.
   - type: textarea
     id: settings
     attributes:

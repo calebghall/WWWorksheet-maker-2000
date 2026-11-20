@@ -104,10 +104,10 @@ with sync_playwright() as p:
     pg.click('#partDone'); pg.wait_for_timeout(100)
     check(len(parts()) == 2 and pg.is_visible('#multiBox'), 'done returns to multi-topic')
 
-    # Limit of 32 parts
-    for _ in range(32):
+    # Limit of 64 parts
+    for _ in range(64):
         if pg.is_enabled('#partAdd'): pg.click('#partAdd')
-    check(len(parts()) == 32 and not pg.is_enabled('#partAdd'), 'limit of 32 parts ' + str(len(parts())))
+    check(len(parts()) == 64 and not pg.is_enabled('#partAdd'), 'limit of 64 parts ' + str(len(parts())))
     check(not errs, 'page errors ' + str(errs))
     b.close()
 print('parts ui issues', bad)

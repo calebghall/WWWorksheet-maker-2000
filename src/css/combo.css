@@ -43,3 +43,5 @@
 .pdrawer-meta { display: flex; flex-wrap: wrap; gap: 8px; align-items: end; }
 [data-md] { margin-top: 12px; }
 .btn.sm { padding: 5px 10px; font-size: 13px; }
+.btn.sm:not(.ghost) { color: var(--accent-fg); }   /* .sm (small text) sets a soft colour that would otherwise win over .btn */
+.btn.ghost.sm { color: var(--fg); }

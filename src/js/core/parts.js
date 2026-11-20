@@ -10,7 +10,7 @@
 
 const PART_KEY = { addsub: 'as', muldiv: 'md', fdp: 'fd', ns: 'ns', tm: 'tm', vis: 'vis', area: 'area', mix: 'mix', num: 'num', oa: 'oa', frac: 'frac', time: 'time', meas: 'meas', geom: 'geom' };
 
-const PART_MAX = 32;
+const PART_MAX = 64;
 
 /* Set of problem signatures shared by the parts of one module while they generate, so two parts of the same
 

@@ -26,13 +26,14 @@ const ISSUES_URL = 'https://github.com/calebghall/WWWorksheet-maker-2000/issues/
 /* Saved type lists are { id: bool } maps; the bug report sends the checked ids only, so both forms load. */
 function mergeTypes(base, t) { return Array.isArray(t) ? stdMap(t, Object.keys(base)) : Object.assign(base, t || {}); }
 const checkedIds = o => Object.keys(o).filter(k => o[k]);
-function bugReportUrl(st, agent) {
+function bugReportUrl(st, agent, link) {
   const mod = (typeof MODULES !== 'undefined' && MODULES[st.module]) ? MODULES[st.module].name : st.module;
   const full = Object.assign({}, st); delete full.titles;
   /* The type lists are long; send only the checked ids (normalize reads either form). */
   for (const M of STRAND_IDS.concat(['fd', 'ns', 'tm', 'vis'])) full[M] = Object.assign({}, st[M], { types: checkedIds(st[M].types) });
   full.types = checkedIds(st.types);
-  const q = settings => ISSUES_URL + '?' + [['template', 'bug.yml'], ['title', `Problem with ${mod} worksheet (set ${st.seed})`], ['set_code', st.seed], ['settings', settings], ['browser', agent || '']]
+  /* `link` is the same address the Share link button copies; it rebuilds the whole worksheet, so it stays in every version of the report. */
+  const q = settings => ISSUES_URL + '?' + [['template', 'bug.yml'], ['title', `Problem with ${mod} worksheet (set ${st.seed})`], ['set_code', st.seed], ['share_link', link || ''], ['settings', settings], ['browser', agent || '']]
     .map(([k, v]) => k + '=' + encodeURIComponent(v)).join('&');
   const url = q(JSON.stringify(full));
   if (url.length <= 6000) return url;
@@ -212,7 +213,7 @@ function stdData() {
 let stdPick = false, stdSel = [], stdSelFw = '', stdFocus = '';
 const stdFull = (c, f) => { const D = STD_FW[f]; const r = D && D.list.find(x => x[0] === c); return r || null; };
 function writeStdDetail() {
-  const c = stdFocus || state.std.c, r = c && stdFull(c, state.std.f), el = $('#stdDetail');
+  const c = stdFocus || (stdPick ? '' : state.std.c), r = c && stdFull(c, state.std.f), el = $('#stdDetail');
   el.hidden = !r;
   if (r) el.innerHTML = `<span class="dc">${esc(r[0])}</span><span class="dk">${esc(r[2])}</span>${esc(r[4] || r[1])}`;
 }
@@ -230,11 +231,12 @@ function writeStdList() {
   if (!D) { $('#stdList').innerHTML = `<p class="note">${stdFailed[f] ? `Could not load the ${esc(stdFwName(f))} standards. Check the connection and reload the page.` : `Loading the ${esc(stdFwName(f))} standards...`}</p>`; return; }
   const rows = D.list.filter(r => (q ? (r[0] + ' ' + r[1] + ' ' + r[2] + ' ' + (r[4] || '')).toLowerCase().includes(q) : r[3] === state.std.g));
   const badge = i => i.status === 'gap' ? ['gap', 'Not yet'] : i.status === 'partial' ? ['part', 'Partial'] : ['ok', ''];
-  $('#stdList').innerHTML = rows.length ? rows.map(r => {
+  const allRow = !q && !stdPick && rows.length ? `<button type="button" class="std all" data-std-all="${state.std.g}"><span class="sl"><span class="sc">All</span></span><span class="st">All standards for this grade</span></button>` : '';
+  $('#stdList').innerHTML = rows.length ? allRow + rows.map(r => {
     const p = stdPreset(r[0], f), b = badge(stdInfo(r[0], f)), picked = stdSel.includes(r[0]), on = stdPick ? picked : r[0] === state.std.c;
     const left = `<span class="sl"><span class="sc">${stdPick ? `<span class="box" aria-hidden="true">${picked ? '\u2611' : '\u2610'}</span>` : ''}${r[0]}</span>${b[1] ? `<span class="sb">${b[1]}</span>` : ''}</span>`;
     return `<button type="button" class="std ${b[0]}${on ? ' on' : ''}" data-std="${r[0]}"${p ? '' : ' disabled'}${on ? ' aria-pressed="true"' : ''} title="${esc(r[4] || r[1])}">${left}<span class="st">${esc(r[1])}</span></button>`;
-  }).join('') + (!q && rows.length && !stdPick ? `<button type="button" class="std all" data-std-all="${state.std.g}"><span class="sl"><span class="sc">All</span></span><span class="st">All standards for this grade</span></button>` : '') : '<p class="note">No standards match.</p>';
+  }).join('') : '<p class="note">No standards match.</p>';
   writeStdBar(); writeStdDetail();
 }
 function writeStd() {
@@ -245,7 +247,7 @@ function writeStd() {
   writeStdList();
   const s = state.std.c ? stdInfo(state.std.c, state.std.f) : null;
   $('#stdCur').textContent = s && s.preset ? state.std.c : '';
-  $('#stdNote').textContent = s && s.preset ? `${state.std.c}: ${s.status === 'partial' ? 'Partial match. ' + s.note : 'The settings match this standard.'}` : 'Pick a standard to set the module, problem types and level. "Not yet" standards need a problem type this maker does not have.';
+  $('#stdNote').textContent = stdPick ? 'Tick standards, then Build worksheet: each one becomes its own section.' : s && s.preset ? `${state.std.c}: ${s.status === 'partial' ? 'Partial match. ' + s.note : 'The settings match this standard.'}` : 'Pick a standard to set the module, problem types and level. "Not yet" standards need a problem type this maker does not have.';
 }
 let lastSingleMod = (state.module === 'combo' || state.module === 'mix') ? 'geom' : state.module;
 let lastMultiMod = state.module === 'mix' ? 'mix' : 'combo';
@@ -585,7 +587,7 @@ function partAction(e) {
 
 form.addEventListener('click', e => {
   if (partAction(e)) return;
-  if (e.target.closest('#stdMulti')) { stdPick = !stdPick; stdFocus = ''; writeStdList(); return; }
+  if (e.target.closest('#stdMulti')) { stdPick = !stdPick; stdFocus = ''; writeStd(); return; }
   if (e.target.closest('#stdClear')) { stdSel = []; writeStdList(); return; }
   if (e.target.closest('#stdBuild')) {
     if (stdSel.length && applyStandardSet(state, stdSel.slice())) { editIdx = null; lastMultiMod = 'combo'; save(); writeForm(); render(); }
@@ -621,7 +623,10 @@ form.addEventListener('toggle', e => {
 }, true);
 form.elements.seed.addEventListener('blur', () => { form.elements.seed.value = state.seed; });
 const reportBtn = $('#reportBug');
-if (reportBtn) reportBtn.addEventListener('click', () => window.open(bugReportUrl(state, navigator.userAgent), '_blank', 'noopener'));
+if (reportBtn) reportBtn.addEventListener('click', async () => {
+  let link = ''; try { link = location.href.split('#')[0] + '#s=' + await encodeShare(state); } catch (e) { /* the report still carries the set code and settings */ }
+  window.open(bugReportUrl(state, navigator.userAgent, link), '_blank', 'noopener');
+});
 $('#newSet').addEventListener('click', () => { state.seed = newSeed(); form.elements.seed.value = state.seed; save(); render(); });
 const shareBtn = document.getElementById('shareBtn');
 if (shareBtn) shareBtn.addEventListener('click', async () => {

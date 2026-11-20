@@ -55,7 +55,7 @@ for(const g of ['K','1','2','3','4','5']){
   for(const seed of ['A','B','C']){
     const st=SP.defaults();st.seed=seed;st.pages=2;
     if(!SP.applyGradeStandards(st,g)){bad.push('grade '+g+' no parts');continue;}
-    if(st.module!=='combo'||!st.parts||st.parts.length<2||st.parts.length>32)bad.push('grade '+g+' parts '+(st.parts&&st.parts.length));
+    if(st.module!=='combo'||!st.parts||st.parts.length<2||st.parts.length>64)bad.push('grade '+g+' parts '+(st.parts&&st.parts.length));
     const want=new Set();for(const c of Object.keys(XW))if(c.split('.')[0]===g&&SP.stdPreset(c)){const s=SP.stdPreset(c);for(const p of (s.m==='parts'?s.parts:[s]))if(p.m!=='addsub'&&p.m!=='muldiv')p[p.m].types.forEach(t=>want.add(p.m+'|'+t));}
     const have=new Set();for(const p of st.parts)if(p.m!=='addsub'&&p.m!=='muldiv'){const t=p[p.m].types;(Array.isArray(t)?t:Object.keys(t).filter(k=>t[k])).forEach(x=>have.add(p.m+'|'+x));}
     for(const k of want)if(!have.has(k))bad.push('grade '+g+' misses '+k);
