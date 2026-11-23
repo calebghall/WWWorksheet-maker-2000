@@ -15,6 +15,9 @@ def load(path):
         return json.load(f)['data']
 
 STD = re.compile(r'^(KY\.)?(K|\d)\.[A-Z]{1,3}\.([A-Z]\.)?\d+$')
+# TEKS-style notation (Texas): <grade>.<knowledge-and-skills number>[.<expectation letter>], e.g. 3.2 and 3.2.A.
+# Number 1 of every grade is the process standards (kept as practice rows); the code is written the TEKS way, 3.2A.
+TEKS = re.compile(r'^(K|\d)\.(\d+)(?:\.([A-Z]))?$')
 
 def rows_from(path):
     d = load(path)
@@ -24,8 +27,22 @@ def rows_from(path):
     for v in s.values():
         kids.setdefault(v.get('parentId'), []).append(v)
     out = {}
+    dom, ks = '', None  # TEKS: current strand heading (depth 0) and knowledge-and-skills statement (the cluster)
     for v in sorted(s.values(), key=lambda x: x['position']):
         code = v.get('statementNotation')
+        if v.get('depth') == 0 and not v.get('parentId'): dom = v['description'].strip().rstrip('.')
+        m = TEKS.match(code or '')
+        if m and v.get('depth') != 0:
+            n, letter = m.group(2), m.group(3)
+            if not letter:
+                ks = {'code': f'{m.group(1)}.{n}', 'text': v['description'].strip()}
+                continue
+            practice = n == '1'
+            c = f'{m.group(1)}.{n}{letter}'
+            if practice: c = f'{g}:{c}'
+            out[c] = {'practice': practice, 'grade': g, 'cluster': ks['text'] if ks else '', 'clusterCode': ks['code'] if ks else '',
+                'domain': dom, 'text': v['description'].strip(), 'components': [], 'guid': v['id'], 'asn': v.get('asnIdentifier', '')}
+            continue
         if not code: continue
         practice = not re.match(r'^(KY\.)?(K|\d)\.', code)
         if not practice and not STD.match(code):

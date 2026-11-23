@@ -1,0 +1,1468 @@
+{
+ "framework": "tx",
+ "name": "Texas",
+ "rows": {
+  "K.2A": {
+   "to": [
+    "num.count-on-back"
+   ],
+   "status": "supported"
+  },
+  "K.2B": {
+   "to": [
+    "num.write-numbers-0-20-show-quantities"
+   ],
+   "status": "supported"
+  },
+  "K.2C": {
+   "to": [
+    "num.count-tell-how-many"
+   ],
+   "status": "supported"
+  },
+  "K.2D": {
+   "to": [
+    "num.count-tell-how-many"
+   ],
+   "status": "partial",
+   "note": "Instant recognition of a quantity without counting (subitizing) is not asked."
+  },
+  "K.2E": {
+   "to": [
+    "num.compare-two-groups"
+   ],
+   "status": "partial",
+   "note": "Compares two given groups; building a set that has more, fewer or the same is not asked."
+  },
+  "K.2F": {
+   "to": [
+    "num.count-on-from-any-number"
+   ],
+   "status": "partial",
+   "note": "Counting on and back is generated; asking for the number one more or one less than a given number is not a separate question."
+  },
+  "K.2G": {
+   "to": [
+    "num.compare-two-groups"
+   ],
+   "status": "supported"
+  },
+  "K.2H": {
+   "to": [
+    "num.compare-numerals-words"
+   ],
+   "status": "partial",
+   "note": "Numerals 0 to 10 only; Texas goes to 20."
+  },
+  "K.2I": {
+   "to": [
+    "oa.decompose-numbers-10"
+   ],
+   "status": "supported"
+  },
+  "K.3A": {
+   "to": [
+    "num.show-addition-subtraction-pictures"
+   ],
+   "status": "supported"
+  },
+  "K.3B": {
+   "to": [
+    "num.add-subtract-word-problems-within-20",
+    "addsub.add-subtract-within-10"
+   ],
+   "status": "supported"
+  },
+  "K.3C": {
+   "to": [
+    "addsub.add-subtract-within-10"
+   ],
+   "status": "supported"
+  },
+  "K.6A": {
+   "to": [
+    "geom.name-shapes-in-any-orientation-size"
+   ],
+   "status": "partial",
+   "note": "Names shapes; squares as special rectangles is not asked."
+  },
+  "K.6B": {
+   "to": [
+    "geom.flat-shapes-solids"
+   ],
+   "status": "supported"
+  },
+  "K.6C": {
+   "to": [
+    "geom.flat-shapes-solids"
+   ],
+   "status": "supported"
+  },
+  "K.6D": {
+   "to": [
+    "geom.name-shapes-in-any-orientation-size"
+   ],
+   "status": "supported"
+  },
+  "K.6E": {
+   "to": [
+    "geom.compare-flat-shapes-solids"
+   ],
+   "status": "supported"
+  },
+  "K.6F": {
+   "to": [
+    "geom.draw-shapes"
+   ],
+   "status": "supported"
+  },
+  "K.7A": {
+   "to": [
+    "meas.compare-length-height-weight"
+   ],
+   "status": "supported"
+  },
+  "K.7B": {
+   "to": [
+    "meas.directly-compare-two-objects"
+   ],
+   "status": "supported"
+  },
+  "K.8A": {
+   "to": [
+    "meas.sort-compare-groups"
+   ],
+   "status": "partial",
+   "note": "Sorts and counts given groups; collecting the data is not generated."
+  },
+  "K.8B": {
+   "to": [
+    "meas.tally-charts-pictographs-bar-graphs"
+   ],
+   "status": "partial",
+   "note": "Pictographs are read or drawn from a table; graphs made from real objects are not generated."
+  },
+  "K.8C": {
+   "to": [
+    "meas.tally-charts-pictographs-bar-graphs"
+   ],
+   "status": "supported"
+  },
+  "K.9A": {
+   "status": "gap",
+   "need": "earning income and jobs"
+  },
+  "K.9B": {
+   "status": "gap",
+   "need": "earning income and jobs"
+  },
+  "K.9C": {
+   "status": "gap",
+   "need": "earning income and jobs"
+  },
+  "K.9D": {
+   "status": "gap",
+   "need": "wants, needs and spending choices"
+  },
+  "1.2A": {
+   "to": [
+    "num.count-up-20-in-lines-arrays-circles"
+   ],
+   "status": "partial",
+   "note": "Instant recognition of a quantity without counting (subitizing) is not asked."
+  },
+  "1.2B": {
+   "to": [
+    "num.tens-ones"
+   ],
+   "status": "partial",
+   "note": "Tens and ones are generated; hundreds, tens and ones in more than one way up to 120 is not."
+  },
+  "1.2C": {
+   "to": [
+    "num.count-on-back",
+    "num.read-write-numbers-1000"
+   ],
+   "status": "partial",
+   "note": "Base-ten blocks and tens and ones to 120 are generated; expanded form is generated only from 100 up."
+  },
+  "1.2D": {
+   "to": [
+    "num.count-on-back"
+   ],
+   "status": "partial",
+   "note": "Counting on and back is generated; asking for a number greater or less than a given number up to 120 is not a separate question."
+  },
+  "1.2E": {
+   "to": [
+    "num.compare-numbers"
+   ],
+   "status": "partial",
+   "note": "Compares two-digit numbers (10 to 99); 100 to 120 is not generated."
+  },
+  "1.2F": {
+   "status": "gap",
+   "need": "order numbers with place value and number lines (type ns.order has no preset)"
+  },
+  "1.2G": {
+   "to": [
+    "num.compare-numbers"
+   ],
+   "status": "supported"
+  },
+  "1.3A": {
+   "to": [
+    "addsub.add-two-digit-one-digit-number"
+   ],
+   "status": "supported"
+  },
+  "1.3B": {
+   "to": [
+    "num.add-subtract-word-problems-within-20"
+   ],
+   "status": "supported"
+  },
+  "1.3C": {
+   "to": [
+    "oa.make-ten",
+    "addsub.add-three-numbers"
+   ],
+   "status": "partial",
+   "note": "Makes ten with two addends; three or more addends are not asked."
+  },
+  "1.3D": {
+   "to": [
+    "oa.make-ten",
+    "addsub.addition-subtraction-fluency-within-20"
+   ],
+   "status": "supported"
+  },
+  "1.3E": {
+   "to": [
+    "oa.properties-addition",
+    "oa.make-ten"
+   ],
+   "status": "supported"
+  },
+  "1.3F": {
+   "to": [
+    "num.add-subtract-word-problems-within-20"
+   ],
+   "status": "partial",
+   "note": "Solves given stories; writing a story for a number sentence is not asked."
+  },
+  "1.4A": {
+   "to": [
+    "time.identify-coins-their-values"
+   ],
+   "status": "supported"
+  },
+  "1.4B": {
+   "to": [
+    "time.identify-coins-their-values"
+   ],
+   "status": "supported"
+  },
+  "1.4C": {
+   "to": [
+    "time.count-coins-under-one-dollar"
+   ],
+   "status": "supported"
+  },
+  "1.5A": {
+   "to": [
+    "num.count-on-back"
+   ],
+   "status": "supported"
+  },
+  "1.5B": {
+   "to": [
+    "num.counting-patterns"
+   ],
+   "status": "partial",
+   "note": "Skip-counting sequences are generated; finding the total of a set of objects by skip counting is not."
+  },
+  "1.5C": {
+   "to": [
+    "num.10-more-10-less"
+   ],
+   "status": "supported"
+  },
+  "1.5D": {
+   "to": [
+    "num.add-subtract-word-problems-within-20"
+   ],
+   "status": "supported"
+  },
+  "1.5E": {
+   "to": [
+    "oa.meaning-equal-sign"
+   ],
+   "status": "supported"
+  },
+  "1.5F": {
+   "to": [
+    "oa.unknown-number-in-equation-within-20"
+   ],
+   "status": "supported"
+  },
+  "1.5G": {
+   "to": [
+    "oa.properties-addition"
+   ],
+   "status": "supported"
+  },
+  "1.6A": {
+   "to": [
+    "geom.defining-attributes-shapes"
+   ],
+   "status": "supported"
+  },
+  "1.6B": {
+   "to": [
+    "geom.defining-attributes-shapes"
+   ],
+   "status": "supported"
+  },
+  "1.6C": {
+   "to": [
+    "geom.draw-shapes"
+   ],
+   "status": "supported"
+  },
+  "1.6D": {
+   "to": [
+    "geom.name-shapes-in-any-orientation-size"
+   ],
+   "status": "supported"
+  },
+  "1.6E": {
+   "to": [
+    "geom.flat-shapes-solids"
+   ],
+   "status": "partial",
+   "note": "Tells flat shapes from solids; describing the attributes of each solid is not asked."
+  },
+  "1.6F": {
+   "to": [
+    "geom.shapes-that-make-figure"
+   ],
+   "status": "supported"
+  },
+  "1.6G": {
+   "to": [
+    "frac.halves-fourths"
+   ],
+   "status": "supported"
+  },
+  "1.6H": {
+   "to": [
+    "frac.halves-fourths"
+   ],
+   "status": "supported"
+  },
+  "1.7A": {
+   "to": [
+    "meas.measure-length-ruler"
+   ],
+   "status": "supported"
+  },
+  "1.7B": {
+   "to": [
+    "meas.measure-non-standard-units"
+   ],
+   "status": "supported"
+  },
+  "1.7C": {
+   "to": [
+    "meas.measure-two-different-units"
+   ],
+   "status": "supported"
+  },
+  "1.7D": {
+   "to": [
+    "meas.measure-length-ruler"
+   ],
+   "status": "supported"
+  },
+  "1.7E": {
+   "to": [
+    "time.tell-time-hour-half-hour"
+   ],
+   "status": "supported"
+  },
+  "1.8A": {
+   "to": [
+    "meas.tally-charts-pictographs-bar-graphs"
+   ],
+   "status": "partial",
+   "note": "Tally charts are read from given data; collecting and sorting the data is not generated."
+  },
+  "1.8B": {
+   "to": [
+    "meas.draw-pictographs-bar-graphs"
+   ],
+   "status": "supported"
+  },
+  "1.8C": {
+   "to": [
+    "meas.tally-charts-pictographs-bar-graphs"
+   ],
+   "status": "supported"
+  },
+  "1.9A": {
+   "status": "gap",
+   "need": "earning income and jobs"
+  },
+  "1.9B": {
+   "status": "gap",
+   "need": "wants, needs and spending choices"
+  },
+  "1.9C": {
+   "status": "gap",
+   "need": "saving, spending and giving"
+  },
+  "1.9D": {
+   "status": "gap",
+   "need": "saving, spending and giving"
+  },
+  "2.2A": {
+   "to": [
+    "num.place-value-hundreds"
+   ],
+   "status": "partial",
+   "note": "Place value to hundreds; numbers above 999 and writing a number in more than one way are not generated."
+  },
+  "2.2B": {
+   "to": [
+    "num.read-write-numbers-1000"
+   ],
+   "status": "partial",
+   "note": "Standard, word and expanded forms are generated for 100 to 1,000; Texas goes to 1,200."
+  },
+  "2.2C": {
+   "to": [
+    "num.mentally-add-subtract-10-100"
+   ],
+   "status": "partial",
+   "note": "Counting and 10 or 100 more or less are generated; asking for any number greater or less than a given number is not a separate question."
+  },
+  "2.2D": {
+   "to": [
+    "num.compare-three-digit-numbers"
+   ],
+   "status": "partial",
+   "note": "Compares three-digit numbers; ordering numbers and numbers up to 1,200 are not generated."
+  },
+  "2.2E": {
+   "status": "gap",
+   "need": "whole numbers on a number line (type ns.line has no preset)"
+  },
+  "2.2F": {
+   "status": "gap",
+   "need": "whole numbers on a number line (type ns.line has no preset)"
+  },
+  "2.3A": {
+   "to": [
+    "frac.equal-shares"
+   ],
+   "status": "partial",
+   "note": "Halves, thirds and fourths are generated; eighths are not."
+  },
+  "2.3B": {
+   "status": "gap",
+   "need": "size and number of fractional parts of a whole"
+  },
+  "2.3C": {
+   "status": "gap",
+   "need": "size and number of fractional parts of a whole"
+  },
+  "2.3D": {
+   "to": [
+    "frac.halves-fourths"
+   ],
+   "status": "partial",
+   "note": "Halves and fourths are generated; eighths are not."
+  },
+  "2.4A": {
+   "to": [
+    "addsub.addition-subtraction-fluency-within-20"
+   ],
+   "status": "supported"
+  },
+  "2.4B": {
+   "to": [
+    "addsub.add-two-digit-numbers",
+    "addsub.add-subtract-within-100"
+   ],
+   "status": "supported"
+  },
+  "2.4C": {
+   "to": [
+    "num.add-subtract-word-problems-within-100",
+    "addsub.add-subtract-within-1000"
+   ],
+   "status": "partial",
+   "note": "Word problems are generated within 100; multi-step stories within 1,000 are not."
+  },
+  "2.4D": {
+   "to": [
+    "num.add-subtract-word-problems-within-100"
+   ],
+   "status": "partial",
+   "note": "Solves given stories within 100; writing a story for a number sentence is not asked."
+  },
+  "2.5A": {
+   "to": [
+    "time.coins-under-one-dollar"
+   ],
+   "status": "supported"
+  },
+  "2.5B": {
+   "to": [
+    "time.coins-under-one-dollar"
+   ],
+   "status": "supported"
+  },
+  "2.6A": {
+   "to": [
+    "num.arrays-repeated-addition",
+    "num.interpret-factors-products"
+   ],
+   "status": "supported"
+  },
+  "2.6B": {
+   "to": [
+    "num.interpret-dividend-divisor-quotient"
+   ],
+   "status": "supported"
+  },
+  "2.7A": {
+   "to": [
+    "num.odd-even"
+   ],
+   "status": "partial",
+   "note": "Odd and even are generated to 20; Texas goes to 40."
+  },
+  "2.7B": {
+   "to": [
+    "num.mentally-add-subtract-10-100"
+   ],
+   "status": "supported"
+  },
+  "2.7C": {
+   "to": [
+    "num.add-subtract-word-problems-within-100"
+   ],
+   "status": "supported"
+  },
+  "2.8A": {
+   "to": [
+    "geom.name-draw-polygons"
+   ],
+   "status": "supported"
+  },
+  "2.8B": {
+   "to": [
+    "geom.compare-flat-shapes-solids"
+   ],
+   "status": "partial",
+   "note": "Compares flat shapes and solids; sorting solids by their attributes is not generated."
+  },
+  "2.8C": {
+   "to": [
+    "geom.name-draw-polygons",
+    "geom.it-polygon"
+   ],
+   "status": "supported"
+  },
+  "2.8D": {
+   "to": [
+    "geom.shapes-that-make-figure"
+   ],
+   "status": "partial",
+   "note": "Composes two-dimensional shapes; composing three-dimensional solids is not generated."
+  },
+  "2.8E": {
+   "to": [
+    "geom.shapes-that-make-figure"
+   ],
+   "status": "supported"
+  },
+  "2.9A": {
+   "to": [
+    "meas.measure-length-ruler"
+   ],
+   "status": "supported"
+  },
+  "2.9B": {
+   "to": [
+    "meas.measure-two-different-units"
+   ],
+   "status": "supported"
+  },
+  "2.9C": {
+   "to": [
+    "num.number-line-sums-differences"
+   ],
+   "status": "supported"
+  },
+  "2.9D": {
+   "to": [
+    "meas.measure-length-ruler"
+   ],
+   "status": "supported"
+  },
+  "2.9E": {
+   "to": [
+    "meas.estimate-lengths",
+    "num.add-subtract-lengths-within-100",
+    "meas.how-much-longer"
+   ],
+   "status": "supported"
+  },
+  "2.9F": {
+   "to": [
+    "geom.count-unit-squares-in-rectangle"
+   ],
+   "status": "supported"
+  },
+  "2.9G": {
+   "to": [
+    "time.tell-time-five-minutes",
+    "time.time-minute-elapsed-time"
+   ],
+   "status": "supported"
+  },
+  "2.10A": {
+   "to": [
+    "meas.draw-pictographs-bar-graphs"
+   ],
+   "status": "supported"
+  },
+  "2.10B": {
+   "to": [
+    "meas.draw-pictographs-bar-graphs"
+   ],
+   "status": "supported"
+  },
+  "2.10C": {
+   "to": [
+    "meas.draw-pictographs-bar-graphs"
+   ],
+   "status": "supported"
+  },
+  "2.10D": {
+   "to": [
+    "meas.draw-pictographs-bar-graphs"
+   ],
+   "status": "partial",
+   "note": "Questions are read from graphs; making predictions is not generated."
+  },
+  "2.11A": {
+   "status": "gap",
+   "need": "saving, spending and giving"
+  },
+  "2.11B": {
+   "status": "gap",
+   "need": "saving, spending and giving"
+  },
+  "2.11C": {
+   "status": "gap",
+   "need": "banking and financial institutions"
+  },
+  "2.11D": {
+   "status": "gap",
+   "need": "borrowing and lending"
+  },
+  "2.11E": {
+   "status": "gap",
+   "need": "borrowing and lending"
+  },
+  "2.11F": {
+   "status": "gap",
+   "need": "producers, consumers and cost of production"
+  },
+  "3.2A": {
+   "to": [
+    "num.read-write-multi-digit-numbers"
+   ],
+   "status": "supported"
+  },
+  "3.2B": {
+   "to": [
+    "num.place-value"
+   ],
+   "status": "supported"
+  },
+  "3.2C": {
+   "to": [
+    "num.round-nearest-10-100"
+   ],
+   "status": "partial",
+   "note": "Rounding to 10 or 100 on a number line is generated; 1,000 and 10,000 and describing where a number lies are not."
+  },
+  "3.2D": {
+   "to": [
+    "num.compare-three-digit-numbers"
+   ],
+   "status": "partial",
+   "note": "Comparing with <, > and = is generated; ordering numbers is not in any preset (type ns.order)."
+  },
+  "3.3A": {
+   "to": [
+    "frac.fractions-parts-whole"
+   ],
+   "status": "supported"
+  },
+  "3.3B": {
+   "to": [
+    "frac.fractions-on-number-line"
+   ],
+   "status": "supported"
+  },
+  "3.3C": {
+   "to": [
+    "frac.fractions-parts-whole"
+   ],
+   "status": "supported"
+  },
+  "3.3D": {
+   "to": [
+    "frac.fractions-parts-whole"
+   ],
+   "status": "supported"
+  },
+  "3.3E": {
+   "to": [
+    "frac.equal-shares"
+   ],
+   "status": "partial",
+   "note": "Equal shares are drawn and named; sharing problems with fraction answers are not generated."
+  },
+  "3.3F": {
+   "to": [
+    "frac.equivalent-fractions-comparing"
+   ],
+   "status": "supported"
+  },
+  "3.3G": {
+   "to": [
+    "frac.equivalent-fractions-comparing"
+   ],
+   "status": "supported"
+  },
+  "3.3H": {
+   "to": [
+    "frac.equivalent-fractions-comparing"
+   ],
+   "status": "supported"
+  },
+  "3.4A": {
+   "to": [
+    "addsub.add-subtract-within-1000-2"
+   ],
+   "status": "supported"
+  },
+  "3.4B": {
+   "to": [
+    "num.round-nearest-10-100",
+    "num.two-step-word-problems"
+   ],
+   "status": "partial",
+   "note": "Rounding to 10 or 100 and estimate-and-solve stories are generated; compatible numbers are not."
+  },
+  "3.4C": {
+   "to": [
+    "time.coins-under-one-dollar"
+   ],
+   "status": "supported"
+  },
+  "3.4D": {
+   "to": [
+    "num.arrays-repeated-addition",
+    "num.interpret-factors-products"
+   ],
+   "status": "supported"
+  },
+  "3.4E": {
+   "to": [
+    "num.arrays-repeated-addition",
+    "num.interpret-factors-products"
+   ],
+   "status": "supported"
+  },
+  "3.4F": {
+   "to": [
+    "muldiv.multiply-divide-within-100"
+   ],
+   "status": "supported"
+  },
+  "3.4G": {
+   "to": [
+    "multi.multiply-four-digits-one-digit-two"
+   ],
+   "status": "supported"
+  },
+  "3.4H": {
+   "to": [
+    "num.interpret-dividend-divisor-quotient"
+   ],
+   "status": "supported"
+  },
+  "3.4I": {
+   "to": [
+    "num.odd-even"
+   ],
+   "status": "partial",
+   "note": "Odd and even are generated to 20 by pairing; divisibility rules for larger numbers are not."
+  },
+  "3.4J": {
+   "to": [
+    "oa.division-unknown-factor"
+   ],
+   "status": "supported"
+  },
+  "3.4K": {
+   "to": [
+    "num.multiply-divide-word-problems",
+    "num.two-step-word-problems"
+   ],
+   "status": "supported"
+  },
+  "3.5A": {
+   "to": [
+    "num.add-subtract-word-problems-within-100",
+    "addsub.add-subtract-within-1000-2"
+   ],
+   "status": "partial",
+   "note": "Word problems are generated within 100; to 1,000 only as computation."
+  },
+  "3.5B": {
+   "to": [
+    "num.multiply-divide-word-problems"
+   ],
+   "status": "supported"
+  },
+  "3.5C": {
+   "to": [
+    "oa.multiplicative-comparison-statements"
+   ],
+   "status": "supported"
+  },
+  "3.5D": {
+   "to": [
+    "oa.unknown-number-in-multiplication"
+   ],
+   "status": "supported"
+  },
+  "3.5E": {
+   "status": "gap",
+   "need": "number pairs in a table for real-world relationships"
+  },
+  "3.6A": {
+   "to": [
+    "geom.compare-flat-shapes-solids"
+   ],
+   "status": "partial",
+   "note": "Compares flat shapes and solids; classifying cones, cylinders and prisms by attributes is not generated."
+  },
+  "3.6B": {
+   "to": [
+    "geom.quadrilateral-categories"
+   ],
+   "status": "supported"
+  },
+  "3.6C": {
+   "to": [
+    "geom.area-rectangles"
+   ],
+   "status": "supported"
+  },
+  "3.6D": {
+   "to": [
+    "geom.area-rectangles"
+   ],
+   "status": "supported"
+  },
+  "3.6E": {
+   "to": [
+    "frac.equal-areas-unit-fractions"
+   ],
+   "status": "supported"
+  },
+  "3.7A": {
+   "to": [
+    "frac.fractions-on-number-line"
+   ],
+   "status": "supported"
+  },
+  "3.7B": {
+   "to": [
+    "geom.perimeter"
+   ],
+   "status": "supported"
+  },
+  "3.7C": {
+   "to": [
+    "time.time-minute-elapsed-time"
+   ],
+   "status": "supported"
+  },
+  "3.7D": {
+   "to": [
+    "meas.mass-liquid-volume"
+   ],
+   "status": "supported"
+  },
+  "3.7E": {
+   "to": [
+    "meas.mass-liquid-volume"
+   ],
+   "status": "supported"
+  },
+  "3.8A": {
+   "to": [
+    "meas.scaled-pictographs-bar-graphs",
+    "meas.line-plots"
+   ],
+   "status": "partial",
+   "note": "Scaled pictographs, bar graphs and line plots are generated; frequency tables are not."
+  },
+  "3.8B": {
+   "to": [
+    "meas.scaled-pictographs-bar-graphs",
+    "meas.line-plots"
+   ],
+   "status": "partial",
+   "note": "Scaled pictographs, bar graphs and line plots are generated; frequency tables are not."
+  },
+  "3.9A": {
+   "status": "gap",
+   "need": "earning income and jobs"
+  },
+  "3.9B": {
+   "status": "gap",
+   "need": "scarcity and cost"
+  },
+  "3.9C": {
+   "status": "gap",
+   "need": "wants, needs and spending choices"
+  },
+  "3.9D": {
+   "status": "gap",
+   "need": "borrowing and lending"
+  },
+  "3.9E": {
+   "status": "gap",
+   "need": "saving, spending and giving"
+  },
+  "3.9F": {
+   "status": "gap",
+   "need": "saving, spending and giving"
+  },
+  "4.2A": {
+   "to": [
+    "num.place-value",
+    "frac.ten-times-one-tenth"
+   ],
+   "status": "supported"
+  },
+  "4.2B": {
+   "to": [
+    "num.read-write-multi-digit-numbers",
+    "multi.read-write-compare-decimals"
+   ],
+   "status": "partial",
+   "note": "Whole numbers are generated to 999,999; Texas goes to 1,000,000,000."
+  },
+  "4.2C": {
+   "to": [
+    "num.read-write-multi-digit-numbers"
+   ],
+   "status": "partial",
+   "note": "Comparing and ordering whole numbers beyond 999,999 is not generated; ordering is not in any preset (type ns.order)."
+  },
+  "4.2D": {
+   "to": [
+    "num.round-multi-digit-numbers"
+   ],
+   "status": "supported"
+  },
+  "4.2E": {
+   "to": [
+    "frac.fractions-decimals",
+    "multi.read-write-compare-decimals"
+   ],
+   "status": "partial",
+   "note": "Decimals are shown as numerals and on number lines; concrete and money models are not generated."
+  },
+  "4.2F": {
+   "to": [
+    "num.compare-decimals"
+   ],
+   "status": "supported"
+  },
+  "4.2G": {
+   "to": [
+    "frac.fractions-decimals"
+   ],
+   "status": "supported"
+  },
+  "4.2H": {
+   "to": [
+    "frac.fractions-decimals"
+   ],
+   "status": "supported"
+  },
+  "4.3A": {
+   "to": [
+    "frac.multiply-whole-number-fraction"
+   ],
+   "status": "supported"
+  },
+  "4.3B": {
+   "to": [
+    "frac.add-subtract-fractions-like"
+   ],
+   "status": "supported"
+  },
+  "4.3C": {
+   "to": [
+    "frac.equivalent-fractions"
+   ],
+   "status": "supported"
+  },
+  "4.3D": {
+   "to": [
+    "frac.compare-fractions"
+   ],
+   "status": "supported"
+  },
+  "4.3E": {
+   "to": [
+    "frac.add-subtract-fractions-like"
+   ],
+   "status": "supported"
+  },
+  "4.3F": {
+   "to": [
+    "frac.fraction-addition-subtraction-problems"
+   ],
+   "status": "supported"
+  },
+  "4.3G": {
+   "to": [
+    "frac.fractions-decimals",
+    "frac.fractions-on-number-line"
+   ],
+   "status": "supported"
+  },
+  "4.4A": {
+   "to": [
+    "addsub.add-subtract-within-1-000-000",
+    "multi.add-subtract-multiply-divide-decimals"
+   ],
+   "status": "supported"
+  },
+  "4.4B": {
+   "to": [
+    "frac.powers-10",
+    "oa.multiply-multiples-10"
+   ],
+   "status": "supported"
+  },
+  "4.4C": {
+   "to": [
+    "multi.multiply-four-digits-one-digit-two"
+   ],
+   "status": "supported"
+  },
+  "4.4D": {
+   "to": [
+    "multi.multiply-four-digits-one-digit-two"
+   ],
+   "status": "supported"
+  },
+  "4.4E": {
+   "to": [
+    "muldiv.divide-remainders"
+   ],
+   "status": "supported"
+  },
+  "4.4F": {
+   "to": [
+    "muldiv.divide-remainders"
+   ],
+   "status": "supported"
+  },
+  "4.4G": {
+   "to": [
+    "num.round-multi-digit-numbers",
+    "num.two-step-word-problems"
+   ],
+   "status": "partial",
+   "note": "Rounding to any place and estimate-and-solve stories are generated; compatible numbers are not."
+  },
+  "4.4H": {
+   "to": [
+    "num.multi-step-word-problems"
+   ],
+   "status": "supported"
+  },
+  "4.5A": {
+   "to": [
+    "num.multi-step-word-problems"
+   ],
+   "status": "supported"
+  },
+  "4.5B": {
+   "to": [
+    "oa.number-shape-patterns"
+   ],
+   "status": "partial",
+   "note": "Number patterns from a rule are generated; input-output tables are not."
+  },
+  "4.5C": {
+   "to": [
+    "geom.area-perimeter-rectangles",
+    "geom.perimeter"
+   ],
+   "status": "supported"
+  },
+  "4.5D": {
+   "to": [
+    "geom.area-perimeter-rectangles"
+   ],
+   "status": "supported"
+  },
+  "4.6A": {
+   "to": [
+    "geom.points-lines-segments-rays-angles"
+   ],
+   "status": "supported"
+  },
+  "4.6B": {
+   "to": [
+    "geom.lines-symmetry"
+   ],
+   "status": "supported"
+  },
+  "4.6C": {
+   "to": [
+    "geom.classify-figures-parallel-sides-angles"
+   ],
+   "status": "supported"
+  },
+  "4.6D": {
+   "to": [
+    "geom.classify-figures-parallel-sides-angles"
+   ],
+   "status": "supported"
+  },
+  "4.7A": {
+   "to": [
+    "geom.angles-parts-circle"
+   ],
+   "status": "supported"
+  },
+  "4.7B": {
+   "to": [
+    "geom.angles-parts-circle"
+   ],
+   "status": "supported"
+  },
+  "4.7C": {
+   "to": [
+    "geom.measure-draw-angles-protractor"
+   ],
+   "status": "supported"
+  },
+  "4.7D": {
+   "to": [
+    "geom.measure-draw-angles-protractor"
+   ],
+   "status": "supported"
+  },
+  "4.7E": {
+   "to": [
+    "geom.angle-measure-additive"
+   ],
+   "status": "supported"
+  },
+  "4.8A": {
+   "to": [
+    "meas.convert-measurement-units"
+   ],
+   "status": "supported"
+  },
+  "4.8B": {
+   "to": [
+    "meas.convert-measurement-units"
+   ],
+   "status": "partial",
+   "note": "Converts a larger unit to a smaller unit; converting a smaller unit to a larger one is not generated."
+  },
+  "4.8C": {
+   "to": [
+    "num.measurement-word-problems"
+   ],
+   "status": "supported"
+  },
+  "4.9A": {
+   "to": [
+    "meas.line-plots-fractional-units"
+   ],
+   "status": "partial",
+   "note": "Dot plots (line plots) marked in halves, fourths and eighths are generated; frequency tables and stem-and-leaf plots are not."
+  },
+  "4.9B": {
+   "to": [
+    "meas.line-plots-fractional-units"
+   ],
+   "status": "partial",
+   "note": "Dot plots (line plots) marked in halves, fourths and eighths are generated; frequency tables and stem-and-leaf plots are not."
+  },
+  "4.10A": {
+   "status": "gap",
+   "need": "income, expenses and profit"
+  },
+  "4.10B": {
+   "status": "gap",
+   "need": "income, expenses and profit"
+  },
+  "4.10C": {
+   "status": "gap",
+   "need": "saving, spending and giving"
+  },
+  "4.10D": {
+   "status": "gap",
+   "need": "saving, spending and giving"
+  },
+  "4.10E": {
+   "status": "gap",
+   "need": "banking and financial institutions"
+  },
+  "5.2A": {
+   "to": [
+    "multi.read-write-compare-decimals"
+   ],
+   "status": "supported"
+  },
+  "5.2B": {
+   "to": [
+    "multi.read-write-compare-decimals"
+   ],
+   "status": "supported"
+  },
+  "5.2C": {
+   "to": [
+    "frac.round-decimals"
+   ],
+   "status": "supported"
+  },
+  "5.3A": {
+   "to": [
+    "num.two-step-word-problems",
+    "num.round-multi-digit-numbers"
+   ],
+   "status": "partial",
+   "note": "Estimate-and-solve stories round to the nearest ten; estimating with decimals and the other operations is not generated."
+  },
+  "5.3B": {
+   "to": [
+    "muldiv.multiply-up-three-digits-four-digits"
+   ],
+   "status": "supported"
+  },
+  "5.3C": {
+   "to": [
+    "muldiv.divide-four-digit-numbers-two-digit"
+   ],
+   "status": "supported"
+  },
+  "5.3D": {
+   "to": [
+    "multi.add-subtract-multiply-divide-decimals"
+   ],
+   "status": "partial",
+   "note": "Decimal products and quotients are generated as computation; objects, pictorial models and area models are not."
+  },
+  "5.3E": {
+   "to": [
+    "multi.add-subtract-multiply-divide-decimals"
+   ],
+   "status": "supported"
+  },
+  "5.3F": {
+   "to": [
+    "multi.add-subtract-multiply-divide-decimals"
+   ],
+   "status": "partial",
+   "note": "Decimal products and quotients are generated as computation; objects, pictorial models and area models are not."
+  },
+  "5.3G": {
+   "to": [
+    "multi.add-subtract-multiply-divide-decimals",
+    "muldiv.divide-four-digit-numbers-two-digit"
+   ],
+   "status": "supported"
+  },
+  "5.3H": {
+   "to": [
+    "frac.fraction-addition-subtraction-problems",
+    "frac.add-subtract-fractions-mixed-numbers"
+   ],
+   "status": "supported"
+  },
+  "5.3I": {
+   "to": [
+    "frac.fraction-multiplication-problems",
+    "frac.multiply-fractions"
+   ],
+   "status": "supported"
+  },
+  "5.3J": {
+   "to": [
+    "frac.divide-unit-fractions"
+   ],
+   "status": "supported"
+  },
+  "5.3K": {
+   "to": [
+    "frac.add-subtract-fractions-mixed-numbers",
+    "multi.add-subtract-multiply-divide-decimals"
+   ],
+   "status": "supported"
+  },
+  "5.3L": {
+   "to": [
+    "frac.divide-unit-fractions"
+   ],
+   "status": "supported"
+  },
+  "5.4A": {
+   "to": [
+    "num.factors-multiples-prime-composite"
+   ],
+   "status": "supported"
+  },
+  "5.4B": {
+   "to": [
+    "num.multi-step-word-problems"
+   ],
+   "status": "supported"
+  },
+  "5.4C": {
+   "to": [
+    "oa.two-patterns-from-two-rules"
+   ],
+   "status": "supported"
+  },
+  "5.4D": {
+   "to": [
+    "oa.two-patterns-from-two-rules"
+   ],
+   "status": "supported"
+  },
+  "5.4E": {
+   "to": [
+    "oa.evaluate-expressions-grouping-symbols"
+   ],
+   "status": "supported"
+  },
+  "5.4F": {
+   "to": [
+    "oa.evaluate-expressions-grouping-symbols"
+   ],
+   "status": "supported"
+  },
+  "5.4G": {
+   "to": [
+    "geom.volume-rectangular-prisms"
+   ],
+   "status": "supported"
+  },
+  "5.4H": {
+   "to": [
+    "geom.area-perimeter-rectangles",
+    "geom.volume-rectangular-prisms"
+   ],
+   "status": "supported"
+  },
+  "5.6A": {
+   "to": [
+    "geom.volume-unit-cubes"
+   ],
+   "status": "supported"
+  },
+  "5.6B": {
+   "to": [
+    "geom.volume-rectangular-prisms"
+   ],
+   "status": "supported"
+  },
+  "5.8A": {
+   "to": [
+    "geom.graph-name-points-in-first-quadrant"
+   ],
+   "status": "supported"
+  },
+  "5.8B": {
+   "to": [
+    "geom.graph-name-points-in-first-quadrant"
+   ],
+   "status": "supported"
+  },
+  "5.8C": {
+   "to": [
+    "geom.graph-real-world-problems"
+   ],
+   "status": "supported"
+  },
+  "5.9A": {
+   "to": [
+    "meas.scaled-pictographs-bar-graphs",
+    "meas.line-plots-operations"
+   ],
+   "status": "partial",
+   "note": "Bar graphs and line plots are generated; frequency tables and stem-and-leaf plots are not."
+  },
+  "5.9B": {
+   "status": "gap",
+   "need": "scatterplots of paired data"
+  },
+  "5.9C": {
+   "to": [
+    "meas.scaled-pictographs-bar-graphs",
+    "meas.line-plots-operations"
+   ],
+   "status": "partial",
+   "note": "Bar graphs and line plots are generated; frequency tables, stem-and-leaf plots and scatterplots are not."
+  },
+  "5.10A": {
+   "status": "gap",
+   "need": "taxes and paychecks"
+  },
+  "5.10B": {
+   "status": "gap",
+   "need": "taxes and paychecks"
+  },
+  "5.10C": {
+   "status": "gap",
+   "need": "methods of payment"
+  },
+  "5.10D": {
+   "status": "gap",
+   "need": "financial records and budgets"
+  },
+  "5.10E": {
+   "status": "gap",
+   "need": "financial records and budgets"
+  },
+  "5.10F": {
+   "status": "gap",
+   "need": "financial records and budgets"
+  }
+ }
+}
