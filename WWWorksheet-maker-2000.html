@@ -3243,7 +3243,7 @@ function nsLinePlotSvg(counts, den, thing) {
 
 function nsxLinePlot(rng, L) {
   const p = nsxLinePlot0(rng, L), len = p.q.replace(/<[^>]*>/g, '').length;   // question lines at the narrowest layout (about 22 characters per line), plus the answer line and the fraction's extra height
-  p.hfs = 1.5 * Math.ceil(len / 22) + 1.7 + 0.5 + (p.kind === 'total' ? 1.4 : 0);   // the answer fraction box is two lines tall
+  p.hfs = 1.5 * Math.ceil(len / 22) + 1.7 + 0.5 + 2.2 + (p.kind === 'total' ? 1.4 : 0);   // the answer fraction box is two lines tall
   return p;
 }
 
@@ -3839,7 +3839,7 @@ const vcap = n => String(n);
 
 const vpl = (shape, n) => n === 1 ? shape : shape + 's';
 
-const vopts = (arr, ans, key) => arr.map(o => `<span class="opt${key && ans === o ? ' on' : ''}" style="min-width:0">${o}</span>`).join('');
+const vopts = (arr, ans, key) => arr.map(o => `<span class="opt${key && ans === o ? ' on' : ''}" style="min-width:0;margin:0 .02in;padding:.01in .06in">${o}</span>`).join('');
 
 /* ----- ,: compare length, height and weight;: order three objects ----- */
 const V_LET = ['A', 'B', 'C'];
@@ -4554,7 +4554,7 @@ function visSort(rng, L) {
   const kinds = shuffle(rng, ['circle', 'square', 'triangle']).slice(0, 2), all = [];
   for (let i = 0; i < a; i++) all.push(0); for (let i = 0; i < b; i++) all.push(1);
   const items = shuffle(rng, all), pts = items.map((_, i) => [22 + 34 * (i % 8), 22 + 38 * Math.floor(i / 8)]), rows = Math.ceil(items.length / 8);
-  return vp('sort', 'Count. Circle the group with more.', { kinds, items, pts, a, b, rows, ans: a > b ? kinds[0] : kinds[1], sig: `so${kinds}${items.join('')}`.slice(0, 60) }, 2.9, rows * 0.38 + 0.1, 4.5, 14);
+  return vp('sort', 'Count. Circle the group with more.', { kinds, items, pts, a, b, rows, ans: a > b ? kinds[0] : kinds[1], sig: `so${kinds}${items.join('')}`.slice(0, 60) }, 2.9, rows * 0.38 + 0.1, 5.2, 14);
 }
 
 function visSortHtml(p, key, x) {
@@ -4578,7 +4578,7 @@ function visTallyHtml(p, key, x) {
 /* Pictograph: read it or draw it. */
 function visPict(rng, L) {
   const step = L === 1 ? 1 : L === 2 ? 2 : pick(rng, [2, 5]), { cats, cnt } = vdataSet(rng, L, step * 6, step), make = L === 3 && rng() < 0.6, q = vQs(cats, cnt);
-  return vp('pict', make ? 'Draw the pictograph.' : 'Read the pictograph.', Object.assign({ cats, cnt, step, make, sig: `pi${cats}${cnt}${step}${make}` }, q, { ans: make ? cnt.join(' ') : `${q.tot} ${q.diff}` }), 2.9, make ? 1.25 : 1.2, make ? 2.8 : 4.5, make ? vmk(cats, cnt) : 15);
+  return vp('pict', make ? 'Draw the pictograph.' : 'Read the pictograph.', Object.assign({ cats, cnt, step, make, sig: `pi${cats}${cnt}${step}${make}` }, q, { ans: make ? cnt.join(' ') : `${q.tot} ${q.diff}` }), 2.9, make ? 1.25 : 1.2, make ? 2.8 : 5.0, make ? vmk(cats, cnt) : 15);
 }
 
 function visPictHtml(p, key, x) {
@@ -4625,7 +4625,7 @@ const V_CATS4 = [['Cats', 'Dogs', 'Fish', 'Birds'], ['Apples', 'Pears', 'Plums',
 
 function visPict4(rng, L) {
   const step = pick(rng, L === 1 ? [1, 2] : L === 2 ? [1, 2, 5] : [2, 5, 10]), cats = pick(rng, V_CATS4).slice(), cnt = shuffle(rng, [1, 2, 3, 4, 5, 6].map(i => i * step)).slice(0, 4), make = L === 3 && rng() < 0.6, q = vQs(cats, cnt);
-  return vp('pict4', make ? 'Draw the pictograph.' : 'Read the pictograph.', Object.assign({ cats, cnt, step, make, sig: `p4${cats}${cnt}${step}${make}` }, q, { ans: make ? cnt.join(' ') : `${q.tot} ${q.diff}` }), 2.9, 1.3, make ? 2.8 : 4.5, make ? vmk(cats, cnt) : 15);
+  return vp('pict4', make ? 'Draw the pictograph.' : 'Read the pictograph.', Object.assign({ cats, cnt, step, make, sig: `p4${cats}${cnt}${step}${make}` }, q, { ans: make ? cnt.join(' ') : `${q.tot} ${q.diff}` }), 2.9, 1.3, make ? 2.8 : 5.9, make ? vmk(cats, cnt) : 15);
 }
 
 function visPict4Html(p, key, x) {
@@ -4668,7 +4668,7 @@ function g3Pictg(rng, L) {
   return p;
 }
 
-function g3Qhtml(p, x) { return vQHtml(p, x) + (p.two ? `<div>How many more ${esc(p.cats[p.two.a])} and ${esc(p.cats[p.two.b])} than ${esc(p.cats[p.two.c])}? ${x(p.two.ans, 2)}</div>` : ''); }
+function g3Qhtml(p, x) { return vQHtml(p, x) + (p.two ? `<div>How many more ${esc(p.cats[p.two.a])} and ${esc(p.cats[p.two.b])} than ${esc(p.cats[p.two.c])}?<br>${x(p.two.ans, 1.6)}</div>` : ''); }
 
 function g3PictgHtml(p, key, x) {
   let o = '';
@@ -4682,7 +4682,7 @@ function g3PictgHtml(p, key, x) {
 
 function g3Barg(rng, L) {
   const d = g3Graph(rng, L, true);
-  return vp('barg', d.make ? 'Draw the bar graph.' : 'Read the bar graph.', Object.assign({ ans: d.make ? d.cnt.join(' ') : `${d.q.tot} ${d.q.diff}`, sig: `bg${d.cats}${d.cnt}${d.step}${d.make}${d.two ? d.two.a + '' + d.two.b : ''}` }, d, d.q), 2.95, 1.75, d.make ? 5.5 : d.two ? 6.2 : 4.7, 15);
+  return vp('barg', d.make ? 'Draw the bar graph.' : 'Read the bar graph.', Object.assign({ ans: d.make ? d.cnt.join(' ') : `${d.q.tot} ${d.q.diff}`, sig: `bg${d.cats}${d.cnt}${d.step}${d.make}${d.two ? d.two.a + '' + d.two.b : ''}` }, d, d.q), 3.3, 1.75, d.make ? 5.5 : d.two ? 7.2 : 4.7, 15);
 }
 
 function g3BargHtml(p, key, x) {
@@ -4879,7 +4879,7 @@ function visShcmpHtml(p, key, x) {
 /* shapes built from sticks */
 function visShbuild(rng, L) {
   const n = pick(rng, L === 1 ? [3, 4] : [3, 4, 5, 6]), shape = { 3: 'triangle', 4: 'square', 5: 'pentagon', 6: 'hexagon' }[n], rot = ri(rng, 0, 2);
-  return vp('shbuild', 'Count the sticks. Name the shape.', { n, shape, rot, ans: `${n} ${shape}`, sig: `sb${n}${rot}` }, 1.7, 1.05, 3.4, 12);
+  return vp('shbuild', 'Count the sticks. Name the shape.', { n, shape, rot, ans: `${n} ${shape}`, sig: `sb${n}${rot}` }, 1.7, 1.05, 4.5, 12);
 }
 
 function visShbuildHtml(p, key, x) {
@@ -5343,7 +5343,7 @@ function vVcubes(rng, L) {
   const mx = L === 1 ? [3, 2, 2] : L === 2 ? [5, 3, 3] : [6, 4, 5];
   let l, w, h; do { l = ri(rng, 2, mx[0]); w = ri(rng, 1, mx[1]); h = ri(rng, 1, mx[2]); } while ((l * w * h < 4) || (L === 1 && l * w * h > 12));
   const unit = L === 3 && rng() < 0.4 ? pick(rng, V_VIMPROV) : u[0], fig = vvFig(l, w, h, null, true);
-  return vp('vcubes', 'Count the cubes.', { variant, l, w, h, unit, ans: String(l * w * h), svg: fig.svg, sw: fig.W, sh: fig.H, sig: `vc${l}${w}${h}${unit}` }, Math.max(fig.W / 100, 1.3), fig.H / 100, 3.8, 0);
+  return vp('vcubes', 'Count the cubes.', { variant, l, w, h, unit, ans: String(l * w * h), svg: fig.svg, sw: fig.W, sh: fig.H, sig: `vc${l}${w}${h}${unit}` }, Math.max(fig.W / 100 + 0.2, 2.6), fig.H / 100, 4.6, 0);
 }
 
 function vVcubesHtml(p, key, x) {
@@ -5366,7 +5366,7 @@ function vVlwh(rng, L) {
   }
   const un = pick(rng, V_VUNITS.slice(1)), labs = { l: `${l} ${un[1]}`, w: `${w} ${un[1]}`, h: `${h} ${un[1]}` }, fig = vvFig(l, w, h, labs, variant !== 'bh');
   const sh = un[1] === 'cm' ? 'cubic cm' : `cubic ${un[1] === 'in' ? 'in' : 'ft'}`;
-  return vp('vlwh', variant === 'bh' ? 'Find the volume with B × h.' : variant === 'assoc' ? 'Find the volume two ways.' : 'Find the volume.', { variant, l, w, h, B: l * w, unit: sh, ans: cnum(V), svg: fig.svg, sw: fig.W, sh: fig.H, sig: `vl${variant}${l}.${w}.${h}${un[1]}` }, Math.max(fig.W / 100, 1.3), fig.H / 100, variant === 'edges' ? 3.2 : 4.8, 0);
+  return vp('vlwh', variant === 'bh' ? 'Find the volume with B × h.' : variant === 'assoc' ? 'Find the volume two ways.' : 'Find the volume.', { variant, l, w, h, B: l * w, unit: sh, ans: cnum(V), svg: fig.svg, sw: fig.W, sh: fig.H, sig: `vl${variant}${l}.${w}.${h}${un[1]}` }, Math.max(fig.W / 100 + 0.2, 2.7, variant === 'assoc' ? 2.9 : 0), fig.H / 100, variant === 'edges' ? 3.2 : 5.8, 0);
 }
 
 function vVlwhHtml(p, key, x) {

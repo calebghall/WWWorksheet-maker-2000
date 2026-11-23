@@ -26,7 +26,7 @@ function visSort(rng, L) {
   const kinds = shuffle(rng, ['circle', 'square', 'triangle']).slice(0, 2), all = [];
   for (let i = 0; i < a; i++) all.push(0); for (let i = 0; i < b; i++) all.push(1);
   const items = shuffle(rng, all), pts = items.map((_, i) => [22 + 34 * (i % 8), 22 + 38 * Math.floor(i / 8)]), rows = Math.ceil(items.length / 8);
-  return vp('sort', 'Count. Circle the group with more.', { kinds, items, pts, a, b, rows, ans: a > b ? kinds[0] : kinds[1], sig: `so${kinds}${items.join('')}`.slice(0, 60) }, 2.9, rows * 0.38 + 0.1, 4.5, 14);
+  return vp('sort', 'Count. Circle the group with more.', { kinds, items, pts, a, b, rows, ans: a > b ? kinds[0] : kinds[1], sig: `so${kinds}${items.join('')}`.slice(0, 60) }, 2.9, rows * 0.38 + 0.1, 5.2, 14);
 }
 
 function visSortHtml(p, key, x) {
@@ -50,7 +50,7 @@ function visTallyHtml(p, key, x) {
 /* Pictograph: read it or draw it. */
 function visPict(rng, L) {
   const step = L === 1 ? 1 : L === 2 ? 2 : pick(rng, [2, 5]), { cats, cnt } = vdataSet(rng, L, step * 6, step), make = L === 3 && rng() < 0.6, q = vQs(cats, cnt);
-  return vp('pict', make ? 'Draw the pictograph.' : 'Read the pictograph.', Object.assign({ cats, cnt, step, make, sig: `pi${cats}${cnt}${step}${make}` }, q, { ans: make ? cnt.join(' ') : `${q.tot} ${q.diff}` }), 2.9, make ? 1.25 : 1.2, make ? 2.8 : 4.5, make ? vmk(cats, cnt) : 15);
+  return vp('pict', make ? 'Draw the pictograph.' : 'Read the pictograph.', Object.assign({ cats, cnt, step, make, sig: `pi${cats}${cnt}${step}${make}` }, q, { ans: make ? cnt.join(' ') : `${q.tot} ${q.diff}` }), 2.9, make ? 1.25 : 1.2, make ? 2.8 : 5.0, make ? vmk(cats, cnt) : 15);
 }
 
 function visPictHtml(p, key, x) {
@@ -97,7 +97,7 @@ const V_CATS4 = [['Cats', 'Dogs', 'Fish', 'Birds'], ['Apples', 'Pears', 'Plums',
 
 function visPict4(rng, L) {
   const step = pick(rng, L === 1 ? [1, 2] : L === 2 ? [1, 2, 5] : [2, 5, 10]), cats = pick(rng, V_CATS4).slice(), cnt = shuffle(rng, [1, 2, 3, 4, 5, 6].map(i => i * step)).slice(0, 4), make = L === 3 && rng() < 0.6, q = vQs(cats, cnt);
-  return vp('pict4', make ? 'Draw the pictograph.' : 'Read the pictograph.', Object.assign({ cats, cnt, step, make, sig: `p4${cats}${cnt}${step}${make}` }, q, { ans: make ? cnt.join(' ') : `${q.tot} ${q.diff}` }), 2.9, 1.3, make ? 2.8 : 4.5, make ? vmk(cats, cnt) : 15);
+  return vp('pict4', make ? 'Draw the pictograph.' : 'Read the pictograph.', Object.assign({ cats, cnt, step, make, sig: `p4${cats}${cnt}${step}${make}` }, q, { ans: make ? cnt.join(' ') : `${q.tot} ${q.diff}` }), 2.9, 1.3, make ? 2.8 : 5.9, make ? vmk(cats, cnt) : 15);
 }
 
 function visPict4Html(p, key, x) {
@@ -140,7 +140,7 @@ function g3Pictg(rng, L) {
   return p;
 }
 
-function g3Qhtml(p, x) { return vQHtml(p, x) + (p.two ? `<div>How many more ${esc(p.cats[p.two.a])} and ${esc(p.cats[p.two.b])} than ${esc(p.cats[p.two.c])}? ${x(p.two.ans, 2)}</div>` : ''); }
+function g3Qhtml(p, x) { return vQHtml(p, x) + (p.two ? `<div>How many more ${esc(p.cats[p.two.a])} and ${esc(p.cats[p.two.b])} than ${esc(p.cats[p.two.c])}?<br>${x(p.two.ans, 1.6)}</div>` : ''); }
 
 function g3PictgHtml(p, key, x) {
   let o = '';
@@ -154,7 +154,7 @@ function g3PictgHtml(p, key, x) {
 
 function g3Barg(rng, L) {
   const d = g3Graph(rng, L, true);
-  return vp('barg', d.make ? 'Draw the bar graph.' : 'Read the bar graph.', Object.assign({ ans: d.make ? d.cnt.join(' ') : `${d.q.tot} ${d.q.diff}`, sig: `bg${d.cats}${d.cnt}${d.step}${d.make}${d.two ? d.two.a + '' + d.two.b : ''}` }, d, d.q), 2.95, 1.75, d.make ? 5.5 : d.two ? 6.2 : 4.7, 15);
+  return vp('barg', d.make ? 'Draw the bar graph.' : 'Read the bar graph.', Object.assign({ ans: d.make ? d.cnt.join(' ') : `${d.q.tot} ${d.q.diff}`, sig: `bg${d.cats}${d.cnt}${d.step}${d.make}${d.two ? d.two.a + '' + d.two.b : ''}` }, d, d.q), 3.3, 1.75, d.make ? 5.5 : d.two ? 7.2 : 4.7, 15);
 }
 
 function g3BargHtml(p, key, x) {

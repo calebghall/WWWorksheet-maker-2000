@@ -14,7 +14,7 @@ for(const mod of ['area','addsub','muldiv','fdp','ns','tm','vis','mix','combo'])
   if(u.href.length>6000)issues.push(mod+' url too long '+u.href.length);
   if(p.get('template')!=='bug.yml')issues.push(mod+' template');
   if(p.get('set_code')!=='ABC123'||!p.get('title').includes('ABC123'))issues.push(mod+' set code');
-  for(const k of ['set_code','settings','browser','share_link','problem'])if(!ids.includes(k))issues.push('template lacks field '+k);
+  for(const k of ['set_code','settings','browser','share_link'])if(!ids.includes(k))issues.push('template lacks field '+k);
   if(p.get('share_link')!==LINK)issues.push(mod+' share link missing or changed');
   if(!new URL(SP.bugReportUrl(s,'a')).searchParams.has('share_link')||new URL(SP.bugReportUrl(s,'a')).searchParams.get('share_link')!=='')issues.push(mod+' no-link report');
   let back;try{back=JSON.parse(p.get('settings'));}catch(e){issues.push(mod+' settings not JSON');continue;}

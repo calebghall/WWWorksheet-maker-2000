@@ -41,7 +41,7 @@ const vcap = n => String(n);
 
 const vpl = (shape, n) => n === 1 ? shape : shape + 's';
 
-const vopts = (arr, ans, key) => arr.map(o => `<span class="opt${key && ans === o ? ' on' : ''}" style="min-width:0">${o}</span>`).join('');
+const vopts = (arr, ans, key) => arr.map(o => `<span class="opt${key && ans === o ? ' on' : ''}" style="min-width:0;margin:0 .02in;padding:.01in .06in">${o}</span>`).join('');
 
 /* ----- ,: compare length, height and weight;: order three objects ----- */
 const V_LET = ['A', 'B', 'C'];

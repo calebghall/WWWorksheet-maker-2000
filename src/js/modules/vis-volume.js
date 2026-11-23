@@ -52,7 +52,7 @@ function vVcubes(rng, L) {
   const mx = L === 1 ? [3, 2, 2] : L === 2 ? [5, 3, 3] : [6, 4, 5];
   let l, w, h; do { l = ri(rng, 2, mx[0]); w = ri(rng, 1, mx[1]); h = ri(rng, 1, mx[2]); } while ((l * w * h < 4) || (L === 1 && l * w * h > 12));
   const unit = L === 3 && rng() < 0.4 ? pick(rng, V_VIMPROV) : u[0], fig = vvFig(l, w, h, null, true);
-  return vp('vcubes', 'Count the cubes.', { variant, l, w, h, unit, ans: String(l * w * h), svg: fig.svg, sw: fig.W, sh: fig.H, sig: `vc${l}${w}${h}${unit}` }, Math.max(fig.W / 100, 1.3), fig.H / 100, 3.8, 0);
+  return vp('vcubes', 'Count the cubes.', { variant, l, w, h, unit, ans: String(l * w * h), svg: fig.svg, sw: fig.W, sh: fig.H, sig: `vc${l}${w}${h}${unit}` }, Math.max(fig.W / 100 + 0.2, 2.6), fig.H / 100, 4.6, 0);
 }
 
 function vVcubesHtml(p, key, x) {
@@ -75,7 +75,7 @@ function vVlwh(rng, L) {
   }
   const un = pick(rng, V_VUNITS.slice(1)), labs = { l: `${l} ${un[1]}`, w: `${w} ${un[1]}`, h: `${h} ${un[1]}` }, fig = vvFig(l, w, h, labs, variant !== 'bh');
   const sh = un[1] === 'cm' ? 'cubic cm' : `cubic ${un[1] === 'in' ? 'in' : 'ft'}`;
-  return vp('vlwh', variant === 'bh' ? 'Find the volume with B × h.' : variant === 'assoc' ? 'Find the volume two ways.' : 'Find the volume.', { variant, l, w, h, B: l * w, unit: sh, ans: cnum(V), svg: fig.svg, sw: fig.W, sh: fig.H, sig: `vl${variant}${l}.${w}.${h}${un[1]}` }, Math.max(fig.W / 100, 1.3), fig.H / 100, variant === 'edges' ? 3.2 : 4.8, 0);
+  return vp('vlwh', variant === 'bh' ? 'Find the volume with B × h.' : variant === 'assoc' ? 'Find the volume two ways.' : 'Find the volume.', { variant, l, w, h, B: l * w, unit: sh, ans: cnum(V), svg: fig.svg, sw: fig.W, sh: fig.H, sig: `vl${variant}${l}.${w}.${h}${un[1]}` }, Math.max(fig.W / 100 + 0.2, 2.7, variant === 'assoc' ? 2.9 : 0), fig.H / 100, variant === 'edges' ? 3.2 : 5.8, 0);
 }
 
 function vVlwhHtml(p, key, x) {

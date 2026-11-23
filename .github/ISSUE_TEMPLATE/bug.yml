@@ -9,11 +9,6 @@ body:
       description: Which problem number, and what it shows. Paste the text of the problem if you can.
     validations:
       required: true
-  - type: input
-    id: problem
-    attributes:
-      label: Problem number
-      description: The number printed beside the problem, and whether it is on the worksheet or the answer key (for example, "7, answer key").
   - type: textarea
     id: expected
     attributes:

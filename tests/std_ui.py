@@ -77,7 +77,7 @@ with sync_playwright() as p:
     check(time.time() - t0 < 15, 'two-grade build renders in time ' + str(round(time.time() - t0, 1)))
     if pg.is_visible('#stdClear'): pg.click('#stdClear'); pg.wait_for_timeout(80)
     for c in codes: pass
-    # bug report: opens the issue form with the same address the Share link button builds, and the new Problem number field exists in the template
+    # bug report: opens the issue form with the same address the Share link button builds, and the template has the link field
     pg.evaluate("window.__opened = []; window.open = (u) => { window.__opened.push(String(u)); return null; }")
     pg.click('#reportBug'); pg.wait_for_timeout(400)
     opened = [u for u in pg.evaluate("window.__opened") if 'issues/new' in u]
@@ -85,7 +85,7 @@ with sync_playwright() as p:
     from urllib.parse import urlparse, parse_qs
     q = parse_qs(urlparse(opened[0]).query) if opened else {}
     check(opened and q.get('share_link', [''])[0] == link and '#s=' in link, 'bug report carries the share link ' + str(q.get('share_link'))[:80])
-    check(os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '.github', 'ISSUE_TEMPLATE', 'bug.yml')) and 'id: problem' in open(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '.github', 'ISSUE_TEMPLATE', 'bug.yml')).read(), 'template has the Problem number field')
+    check('id: share_link' in open(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '.github', 'ISSUE_TEMPLATE', 'bug.yml')).read(), 'template has the Link to this worksheet field')
     check(not errs, 'page errors ' + str(errs))
     b.close()
 print('std ui issues', bad)

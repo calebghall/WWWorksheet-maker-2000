@@ -36,6 +36,7 @@ node tests/logic-parts.js
 node tests/logic-typemap.js
 node tests/logic-strands.js
 "$PY" tests/clip.py
+if [ -n "$CLIP_TYPES" ]; then "$PY" tests/clip_types.py; fi   # slow (several minutes): run with CLIP_TYPES=1 after changing cell sizes, sheet CSS or a problem type markup
 "$PY" tests/parts_ui.py
 "$PY" tests/types_ui.py
 "$PY" tests/std_ui.py

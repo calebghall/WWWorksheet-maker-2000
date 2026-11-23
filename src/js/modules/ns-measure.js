@@ -92,7 +92,7 @@ function nsLinePlotSvg(counts, den, thing) {
 
 function nsxLinePlot(rng, L) {
   const p = nsxLinePlot0(rng, L), len = p.q.replace(/<[^>]*>/g, '').length;   // question lines at the narrowest layout (about 22 characters per line), plus the answer line and the fraction's extra height
-  p.hfs = 1.5 * Math.ceil(len / 22) + 1.7 + 0.5 + (p.kind === 'total' ? 1.4 : 0);   // the answer fraction box is two lines tall
+  p.hfs = 1.5 * Math.ceil(len / 22) + 1.7 + 0.5 + 2.2 + (p.kind === 'total' ? 1.4 : 0);   // the answer fraction box is two lines tall
   return p;
 }
 

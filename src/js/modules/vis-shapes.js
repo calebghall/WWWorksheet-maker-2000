@@ -153,7 +153,7 @@ function visShcmpHtml(p, key, x) {
 /* shapes built from sticks */
 function visShbuild(rng, L) {
   const n = pick(rng, L === 1 ? [3, 4] : [3, 4, 5, 6]), shape = { 3: 'triangle', 4: 'square', 5: 'pentagon', 6: 'hexagon' }[n], rot = ri(rng, 0, 2);
-  return vp('shbuild', 'Count the sticks. Name the shape.', { n, shape, rot, ans: `${n} ${shape}`, sig: `sb${n}${rot}` }, 1.7, 1.05, 3.4, 12);
+  return vp('shbuild', 'Count the sticks. Name the shape.', { n, shape, rot, ans: `${n} ${shape}`, sig: `sb${n}${rot}` }, 1.7, 1.05, 4.5, 12);
 }
 
 function visShbuildHtml(p, key, x) {
