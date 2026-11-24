@@ -4,7 +4,7 @@ const html=fs.readFileSync(path.join(__dirname,'..','WWWorksheet-maker-2000.html
 const js=html.split('<script>')[1].split('</script>')[0].split('/*==DOM==*/')[0];
 const ctx={Math,console,globalThis:null};ctx.globalThis=ctx;vm.createContext(ctx);vm.runInContext(js,ctx);
 const SP=ctx.__SP,E=x=>vm.runInContext(x,ctx),bad=[];let n=0;
-const TYPES=['placew','roundw','fdec','tenx','rulepat','facmodel','convm','rectf','mword','lineplot'];
+const TYPES=['ordsm','placew','roundw','fdec','tenx','rulepat','facmodel','convm','rectf','mword','lineplot'];
 const num=s=>Number(String(s).replace(/,/g,'')),cn=v=>v>=1000?String(v).replace(/\B(?=(\d{3})+(?!\d))/g,','):String(v);
 const ev=e=>Function('"use strict";return ('+e.replace(/,/g,'').replace(/×/g,'*').replace(/÷/g,'/').replace(/−/g,'-')+')')();
 const PL=['ones','tens','hundreds','thousands','ten thousands','hundred thousands'],UN={ten:10,hundred:100,thousand:1000,'ten thousand':10000,'hundred thousand':100000};
@@ -14,6 +14,7 @@ const seqOf=(op,d,a0,k)=>{const s=[a0];for(let i=1;i<k;i++)s.push(RULE(op,d)(s[i
 function chk(p,id,L){n++;const e=m=>bad.push(`${id} L${L}: ${m} ${JSON.stringify(p).slice(0,170)}`);
  if(!p.sig||!p.prompt||!((p.win>0&&p.hin>0)||(p.ew>0&&p.eh>0)))e('shape');
  switch(id){
+  case 'ordsm':{const v=p.ans.map(num),asc=/least to greatest/.test(p.prompt);for(let k=1;k<v.length;k++)if(asc?v[k]<=v[k-1]:v[k]>=v[k-1])e('order');if(p.shown.map(num).slice().sort((a,b)=>a-b).join()!==v.slice().sort((a,b)=>a-b).join())e('order set');if(v.some(x=>x<10||x>120)||v.length!==(L===1?3:4))e('range or count');break;}
  case 'placew':{if(p.type!=='place')e('type');if([p.shown,p.ans,p.std,p.expd].some(v=>/\./.test(String(v||''))))e('decimal');
   const digits=(p.shown||'').replace(/<\/?u>/g,'').replace(/,/g,'');if(digits.length>6)e('too long');
   if(p.variant==='expand'){if(p.expd.split(' + ').map(num).reduce((a,b)=>a+b,0)!==num(digits))e('expand');}

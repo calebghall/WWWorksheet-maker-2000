@@ -315,6 +315,22 @@ details.stdbox { margin: 20px 0 0; border: 1px solid var(--line); border-radius:
 @keyframes emgOut { to { opacity: 0; visibility: hidden; } }
 @media (prefers-reduced-motion: reduce) { .emg::before, .emg::after, .emg .stripe, .emg .big { animation: none; } }
 @media print { .emg { display: none; } }
+/* ---------- privacy, acknowledgements, saved-data control ---------- */
+.legal-links { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--line); }
+.linkbtn { padding: 0; font: 400 13px var(--font-ui); color: var(--muted); background: none; border: 0; text-decoration: underline; cursor: pointer; }
+.linkbtn:hover { color: var(--fg); }
+.linkbtn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.legal-dlg { width: min(640px, calc(100vw - 32px)); max-height: calc(100vh - 48px); overflow: auto; padding: 22px 26px; color: var(--fg); background: var(--panel); border: 1px solid var(--line); border-radius: 12px; font: 400 14px/1.5 var(--font-ui); }
+.legal-dlg::backdrop { background: rgba(0, 0, 0, .45); }
+.legal-dlg h2 { margin: 0 0 8px; font: 700 20px var(--font-display); }
+.legal-dlg h3 { margin: 18px 0 4px; font: 700 15px var(--font-ui); }
+.legal-dlg h4 { margin: 12px 0 2px; font: 700 14px var(--font-ui); }
+.legal-dlg p, .legal-dlg ul { margin: 6px 0; }
+.legal-dlg a { color: var(--accent); }
+.legal-dlg form { margin-top: 18px; text-align: right; }
+.legal-tbl { width: 100%; border-collapse: collapse; font-size: 13px; }
+.legal-tbl th, .legal-tbl td { padding: 5px 8px; text-align: left; vertical-align: top; border: 1px solid var(--line); }
+@media print { .legal-links, .legal-dlg { display: none !important; } }
 /* ---------- the sheet itself ---------- */
 .sheet {
   flex: none;
@@ -895,6 +911,11 @@ details.stdbox { margin: 20px 0 0; border: 1px solid var(--line); border-radius:
 
       </fieldset>
     </form>
+    <div class="legal-links">
+      <button type="button" class="linkbtn" data-dlg="privacyDlg">Privacy</button>
+      <button type="button" class="linkbtn" data-dlg="ackDlg">Acknowledgements</button>
+      <button type="button" class="linkbtn" id="wipeData" title="Remove the settings this site saved in your browser">Delete saved data</button>
+    </div>
   </aside>
 
   <main class="stage" id="stage">
@@ -912,6 +933,51 @@ details.stdbox { margin: 20px 0 0; border: 1px solid var(--line); border-radius:
     <div class="sheets" id="sheets"></div>
   </main>
 </div>
+<dialog class="legal-dlg" id="privacyDlg" aria-labelledby="privacyDlgT">
+  <h2 id="privacyDlgT">Privacy information</h2>
+<p>Last updated: November 23, 2026</p>
+<h3>Types of data collected</h3>
+<h4>a. Technical log data (GitHub)</h4>
+<p>World Wide Worksheet Maker 2000 is hosted as a static site using GitHub Pages. When you visit this site, GitHub may collect standard User Personal Information, including visitor IP addresses, to comply with legal obligations and maintain server security and service integrity.</p>
+<ul>
+<li><strong>What is collected:</strong> technical request data such as IP address, browser and device type, operating system, referring URL, and date/time stamps.</li>
+<li><strong>Purpose:</strong> infrastructure security, troubleshooting, service delivery, and legal compliance.</li>
+<li><strong>Relationship:</strong> GitHub acts as a data processor. See the <a href="https://docs.github.com/en/site-policy/privacy-policies/github-privacy-statement" target="_blank" rel="noopener noreferrer">GitHub Privacy Statement</a>.</li>
+</ul>
+<h4>b. Fonts (Google Fonts)</h4>
+<p>The page loads its typefaces from Google Fonts. Your browser requests them from Google's servers, so Google receives standard request data such as your IP address and browser type. See the <a href="https://developers.google.com/fonts/faq/privacy" target="_blank" rel="noopener noreferrer">Google Fonts privacy information</a>. If the fonts cannot load, the page falls back to your system fonts.</p>
+<h4>c. Worksheet and student data (client-side only)</h4>
+<p>All worksheet configurations, problem generation, seed values, answer keys, titles, and printable outputs are generated entirely inside your web browser. <strong>No student names, entered answers, or custom worksheet contents are ever sent to, processed by, or stored on any external server.</strong></p>
+<h3>Local storage (persistent settings)</h3>
+<p>This site uses <code>localStorage</code> to preserve your worksheet options (such as paper size, problem count, topic selections, layout preferences, which topic groups are open, and the color theme) between visits.</p>
+<ul>
+<li><strong>What is stored:</strong> UI settings and generator preferences. No personal identifiers are stored.</li>
+<li><strong>Your control:</strong> this data stays on your device until you clear your browser's site data or use <strong>Delete saved data</strong> at the bottom of the settings panel. It cannot be accessed or deleted remotely because it never leaves your device.</li>
+</ul>
+<h3>Cookies and tracking</h3>
+<p>This website does not use cookies, advertising pixels, or third-party tracking analytics.</p>
+<h3>Data retention</h3>
+<p>Because worksheet data and custom inputs are never sent to a backend server, there is no remote data retention period. Server logs maintained by GitHub and request logs maintained by Google Fonts are retained according to their standard retention policies.</p>
+<h3>Your rights</h3>
+<p>Because this tool does not collect, track, or transmit personal data or student records, no accounts or identifiable databases are maintained. You keep full control over deleting any preferences stored locally within your browser.</p>
+  <form method="dialog"><button class="btn" value="close">Close</button></form>
+</dialog>
+<dialog class="legal-dlg" id="ackDlg" aria-labelledby="ackDlgT">
+  <h2 id="ackDlgT">Acknowledgements</h2>
+<h3>State standards</h3>
+<p>The standards text and codes shown in the standards picker come from the <a href="https://commonstandardsproject.com/" target="_blank" rel="noopener noreferrer">Common Standards Project</a>, a service of D2L Corporation, which publishes the state standards under the Creative Commons Attribution 3.0 United States license (<a href="http://creativecommons.org/licenses/by/3.0/us/" target="_blank" rel="noopener noreferrer">CC BY 3.0 US</a>) where the record states it.</p>
+<table class="legal-tbl"><thead><tr><th>Framework</th><th>Source</th><th>License recorded by the Common Standards Project</th></tr></thead><tbody>
+<tr><td>Kentucky Academic Standards: Mathematics (2019)</td><td>Kentucky Department of Education</td><td>CC BY 3.0 US, rights holder D2L Corporation</td></tr>
+<tr><td>Texas Essential Knowledge and Skills for Mathematics (2012)</td><td>Texas Education Agency, 19 TAC Chapter 111</td><td>CC BY 3.0 US, rights holder D2L Corporation</td></tr>
+<tr><td>Tennessee Academic Standards: Mathematics K-4th Year (2023)</td><td>Tennessee State Board of Education</td><td>No license text recorded; rights holder D2L Corporation</td></tr>
+</tbody></table>
+<p>Changes made: standards were imported, grouped by grade and domain, given normalized codes, and each was mapped to the worksheet types that practice it. Standards text is otherwise unaltered. The mappings are this project's own judgment. The state agencies, D2L Corporation, and the Common Standards Project do not endorse this project.</p>
+<h3>Coin images</h3>
+<p>The coin pictures are photographs from the United States Mint, which are in the public domain. They are downsized in this project.</p>
+<h3>Typefaces</h3>
+<p>Andika, Atkinson Hyperlegible, and Bricolage Grotesque are loaded from Google Fonts and are licensed under the SIL Open Font License 1.1.</p>
+  <form method="dialog"><button class="btn" value="close">Close</button></form>
+</dialog>
 
 <script>
 /* ===== World Wide Worksheet Maker 2000: pure logic (no DOM) ===== */
@@ -2072,6 +2138,19 @@ function nsOrder(rng, L) {
     ew: Math.max(shown.reduce((a, s) => a + s.length * 0.62 + 1.3, 0), ans.reduce((a, s) => a + s.length * 0.62 + 2.4, 0), 12), eh: 1.1 + 1.45 * 2 + 0.8 };
 }
 
+/* Order numbers to 120 (Texas 1.2F): two-digit numbers, then numbers that cross 100 so place value decides the order. */
+function nsOrderSm(rng, L) {
+  const cnt = L === 1 ? 3 : 4, set = new Set(), vals = [];
+  let g = 0;
+  while (vals.length < cnt && g++ < 200) {
+    const n = L === 1 ? ri(rng, 10, 99) : L === 2 ? ri(rng, 10, 120) : (vals.length === 0 ? ri(rng, 100, 120) : pick(rng, [ri(rng, 90, 99), ri(rng, 100, 120)]));
+    if (!set.has(n)) { set.add(n); vals.push(String(n)); }
+  }
+  const asc = rng() < 0.6, ans = vals.slice().sort((x, y) => asc ? x - y : y - x);
+  return { mod: 'ns', type: 'ordsm', prompt: asc ? 'Order least to greatest:' : 'Order greatest to least:', shown: vals, ans, sig: `os${vals.join(',')}${asc}`,
+    ew: Math.max(vals.reduce((a, s) => a + s.length * 0.62 + 1.3, 0), ans.reduce((a, s) => a + s.length * 0.62 + 2.4, 0), 12), eh: 1.1 + 1.45 * 2 + 0.8 };
+}
+
 function nsRound(rng, L) {
   let n, unit, name, dp = 0;
   if (L === 1) { const big = rng() < 0.4; n = big ? ri(rng, 101, 999) : ri(rng, 11, 99); unit = 10; name = 'ten'; }
@@ -2209,6 +2288,7 @@ defTypes("ns", "Place value, comparing and rounding", [
   { id: "compare", label: "Compare numbers", blurb: "Write <, > or = between two numbers.", on: true, gen: nsCompare, html: nsCompareHtml },
   { id: "cmp2", label: "Compare two-digit numbers", blurb: "Write <, > or = between numbers 10 to 99.", on: false, gen: nsxCmp2 },
   { id: "order", label: "Order numbers", blurb: "Least to greatest or greatest to least.", on: true, gen: nsOrder, html: nsOrderHtml },
+  { id: "ordsm", label: "Order numbers to 120", blurb: "Least to greatest or greatest to least, two-digit numbers and 100 to 120.", on: false, gen: nsOrderSm, html: nsOrderHtml },
   { id: "round", label: "Rounding", blurb: "Whole numbers and decimals.", on: true, gen: nsRound, html: nsRoundHtml },
   { id: "rnd3", label: "Round to 10 or 100", blurb: "Plain problems and number lines.", on: false, gen: nsxRnd3, html: nsRnd3Html },
   { id: "est", label: "Estimation", blurb: "Round each number, then add, subtract or multiply.", on: true, gen: nsEst, html: nsEstHtml },
@@ -3528,6 +3608,499 @@ defTypes("ns", "Word problems", [
   { id: "west", label: "Estimate and solve", blurb: "Two-step stories: round to the nearest ten, then solve.", on: false, gen: nsxWest, html: nsWestHtml },
 { id: "mword", label: "Measurement word problems", blurb: "One- and two-step problems with length, mass, volume, time and money.", on: false, gen: nsxMword, html: nsMwordHtml }
 ]);
+/* ---------- Number Sense: financial literacy ----------
+   Texas TEKS strand "personal financial literacy" (kindergarten to grade 5). Two kinds of problem, both text cells:
+   - pick: a short situation and two to five printed choices; the answer key circles one (Circle ... questions);
+   - calc: a short story with a number sentence line and an answer blank (whole dollars only).
+   Within a type, a higher level is a harder version of the same topic (more choices, more steps, bigger numbers). A pick problem keeps
+   `opts` in the printed order and its `sig` names the whole text and the options, so shuffled options never repeat visually.
+   A calc problem keeps `kind` and `nums` so tests/logic-finance.js can recompute the answer on its own. */
+
+const fm = n => '$' + String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+const flOther = (rng, n) => pick(rng, NS_NAMES.filter(x => x !== n));
+const flSome = (rng, arr, k) => shuffle(rng, arr).slice(0, k);
+
+/* Layout hints: options stack one per line when they are long. */
+const flStack = o => o.join('').length > 44 || o.some(s => s.length > 24);
+const flPick = (type, prompt, text, opts, ans) => {
+  const stack = flStack(opts), lines = Math.ceil(text.length * 0.62 / 20);
+  const optLines = stack ? opts.reduce((a, s) => a + Math.ceil(s.length * 0.62 / 19), 0) : 1;
+  return { mod: 'ns', type, prompt, text, opts, ans, stack, wide: true, sig: `${type}|${text}|${opts.join('/')}`, ew: 21, eh: 1.1 + lines * 1.45 + optLines * 1.5 + (stack ? opts.length * 0.3 : 0) + 0.5 };
+};
+const flCalc = (type, kind, nums, text, eq, ans, extra) => Object.assign({ mod: 'ns', type, prompt: 'Read and solve.', kind, nums, text, eq, ans: String(ans), wide: true, sig: `${type}|${text}`, ew: 21, eh: nsWordEh(text) }, extra);
+const flc = t => String(t).replace(/\d{4,}/g, d => d.replace(/\B(?=(\d{3})+(?!\d))/g, ','));
+const flHtml = (p, key, x) => p.opts
+  ? `<div class="wt">${esc(p.text)}</div>` + (p.stack ? p.opts.map(o => `<div>${opts([esc(o)], esc(p.ans), key)}</div>`).join('') : `<div>${opts(p.opts.map(esc), esc(p.ans), key)}</div>`)
+  : `<div class="wt">${esc(p.text)}</div><div>Number sentence: <span class="blank" style="min-width:9em">${key ? esc(flc(p.eq)) : '&nbsp;'}</span></div><div>Answer: ${p.pre || ''}${p.pre ? ' ' : ''}${x(flc(p.ans), 3.6)}${p.unit ? ' ' + esc(p.unit) : ''}</div>`;
+
+/* Income. L1 income or gift, L2 which is a way to earn income, L3 what income means. */
+const FL_EARN = [(n, a) => `${n} walks a neighbor's dog and is paid ${fm(a)}.`, (n, a) => `${n} sells lemonade at a stand and makes ${fm(a)}.`, (n, a) => `${n} rakes leaves for a neighbor and earns ${fm(a)}.`,
+  (n, a) => `${n} washes cars and is paid ${fm(a)}.`, (n, a) => `${n} helps in a shop on Saturday and is paid ${fm(a)}.`, (n, a) => `${n} waters plants for a neighbor and earns ${fm(a)}.`];
+const FL_GIFT = [(n, a) => `${n} gets ${fm(a)} from a grandparent for a birthday.`, (n, a) => `${n} gets ${fm(a)} in a card from an aunt.`, (n, a) => `A friend gives ${n} ${fm(a)} as a present.`,
+  (n, a) => `${n} is given ${fm(a)} as a holiday gift.`, (n, a) => `${n} gets ${fm(a)} as a present at a party.`];
+const FL_EARN_W = ['Wash cars for pay.', 'Sell lemonade at a stand.', "Walk a neighbor's dog for pay.", 'Mow lawns for pay.', 'Rake leaves for pay.', 'Help in a shop for pay.', "Water a neighbor's plants for pay."];
+const FL_GIFT_W = ['Get money in a birthday card.', 'Get a toy as a present.', 'Get a holiday gift of money.', 'Get a gift card from an aunt.', 'Get a present at a party.'];
+function flInc(rng, L) {
+  const n = pick(rng, NS_NAMES), a = ri(rng, 2, 20);
+  if (L === 1) {
+    const inc = rng() < 0.5, t = pick(rng, inc ? FL_EARN : FL_GIFT)(n, a);
+    return flPick('flinc', 'Circle income or gift.', t, ['income', 'gift'], inc ? 'income' : 'gift');
+  }
+  if (L === 2) {
+    const e = pick(rng, FL_EARN_W), o = shuffle(rng, [e].concat(flSome(rng, FL_GIFT_W, 2)));
+    return flPick('flinc', 'Circle the answer.', pick(rng, ['Which is a way to earn income?', 'Which one would give a child income?', 'Which of these is a way to earn money by working?', 'Which choice is a way to get income?']), o, e);
+  }
+  const d = pick(rng, [[`${n} earns money by doing a job. This money is called ___.`, 'income', ['income', 'a gift', 'a bill']], [`The money in ${n}'s paycheck is called ___.`, 'income', ['income', 'a gift', 'a bill']],
+    [`Money that ${n} gets as a present is a ___, not income.`, 'gift', ['gift', 'job', 'paycheck']], [`Which word means the money ${n} earns by working?`, 'income', ['income', 'gift', 'present']]]);
+  return flPick('flinc', 'Circle the answer.', d[0], shuffle(rng, d[2]), d[1]);
+}
+
+/* Jobs and skills. L1 skill for a job, L2 skills and hours change income (choose), L3 income from pay rates (calculate). */
+const FL_JOBS = [['baker', 'baking bread and cakes'], ['teacher', 'explaining new ideas'], ['doctor', 'caring for sick people'], ['mechanic', 'fixing cars and engines'], ['farmer', 'growing crops'],
+  ['librarian', 'helping people find books'], ['bus driver', 'driving a bus safely'], ['cashier', 'counting money and giving change'], ['firefighter', 'putting out fires safely'], ['carpenter', 'building with wood']];
+function flJob(rng, L) {
+  if (L === 1) {
+    const j = pick(rng, FL_JOBS), d = flSome(rng, FL_JOBS.filter(x => x !== j), 2);
+    return flPick('fljob', 'Circle the skill.', `Which skill does a ${j[0]} need?`, shuffle(rng, [j[1]].concat(d.map(x => x[1]))), j[1]);
+  }
+  const n = pick(rng, NS_NAMES), m = flOther(rng, n);
+  if (L === 2) {
+    const kind = pick(rng, ['skill', 'train', 'hours']);
+    if (kind === 'skill') return flPick('fljob', 'Circle the answer.', `${n} learns new job skills. ${n} can often earn ___ income.`, shuffle(rng, ['more', 'less', 'the same']), 'more');
+    if (kind === 'train') return flPick('fljob', 'Circle the answer.', `${n} learns to fix computers and can be paid more for repair jobs. ${m} has not learned any new skills. Who can likely earn more income from computer repair?`, shuffle(rng, [n, m]), n);
+    const r = ri(rng, 5, 14), a = ri(rng, 3, 8); let b = ri(rng, 3, 8); if (b === a) b = a === 8 ? 7 : a + 1;
+    return flPick('fljob', 'Circle the answer.', `${n} works ${a} hours at ${fm(r)} an hour. ${m} works ${b} hours at ${fm(r)} an hour. Who earns more income?`, shuffle(rng, [n, m]), a > b ? n : m);
+  }
+  if (rng() < 0.5) { const r = ri(rng, 5, 14), h = ri(rng, 2, 8); return flCalc('fljob', 'rate', [r, h], pick(rng, [`${n} earns ${fm(r)} an hour and works ${h} hours. How much income does ${n} earn?`, `${n} is paid ${fm(r)} for each hour of work. ${n} works ${h} hours. How much is ${n} paid in all?`, `A job pays ${fm(r)} an hour. How much income does ${n} earn after ${h} hours?`, `${n} works ${h} hours at ${fm(r)} an hour. What is ${n}'s income?`]), `${r} × ${h}`, r * h, { pre: '$' }); }
+  const r1 = ri(rng, 6, 12), r2 = r1 + ri(rng, 2, 5), h = ri(rng, 2, 8);
+  return flCalc('fljob', 'skill', [r1, r2, h], pick(rng, [`${n} learned a new skill and now earns ${fm(r2)} an hour instead of ${fm(r1)}. How much more income does ${n} earn in ${h} hours?`, `Before training, ${n} was paid ${fm(r1)} an hour. After training, ${n} is paid ${fm(r2)} an hour. How much more does ${n} earn in ${h} hours?`, `With a new skill, ${n}'s pay rises from ${fm(r1)} to ${fm(r2)} an hour. How much more income is that over ${h} hours?`]), `(${r2} − ${r1}) × ${h}`, (r2 - r1) * h, { pre: '$' });
+}
+
+/* Wants and needs. L1 want or need, L2 the same when income pays for it, L3 which to buy first with limited income. */
+const FL_NEEDS = ['food', 'water', 'a warm coat in winter', 'a place to live', 'medicine when sick', 'clean clothes', 'a bed to sleep in', 'shoes that fit', 'a doctor visit'];
+const FL_WANTS = ['a video game', 'a toy robot', 'candy', 'a stuffed animal', 'a movie ticket', 'a sticker book', 'a game console', 'a pool toy', 'a skateboard', 'a toy car', 'a new poster', 'a fancy hat'];
+function flWant(rng, L) {
+  const n = pick(rng, NS_NAMES), a = ri(rng, 5, 30), need = rng() < 0.5, thing = pick(rng, need ? FL_NEEDS : FL_WANTS), ans = need ? 'need' : 'want';
+  if (L === 1) return flPick('flwant', 'Circle want or need.', pick(rng, [`Is ${thing} a want or a need?`, `${n} thinks about ${thing}. Is it a want or a need?`, `Is ${thing} something people must have (a need) or something they would like to have (a want)?`]), ['want', 'need'], ans);
+  if (L === 2) return flPick('flwant', 'Circle want or need.', `${n} earns ${fm(a)} walking dogs. ${n} uses the income to pay for ${thing}. Is ${thing} a want or a need?`, ['want', 'need'], ans);
+  const nd = pick(rng, FL_NEEDS), ws = flSome(rng, FL_WANTS, rng() < 0.5 ? 1 : 2);
+  const stem = pick(rng, [`${n} has ${fm(a)} of income and can buy only one thing. Which should ${n} buy first?`, `${n} has only ${fm(a)} left this month. Which should ${n} buy first?`, `${n} earned ${fm(a)} and must choose carefully. Which should come first?`]);
+  return flPick('flwant', 'Circle the answer.', stem, shuffle(rng, [nd].concat(ws)), nd);
+}
+
+/* Spend, save, give. L1 spending or saving, L2 adds giving, L3 any money decision: earning, spending, saving, borrowing or giving. */
+const FL_SPEND = [(n, a) => `${n} buys a toy with ${fm(a)}.`, (n, a) => `${n} spends ${fm(a)} on a snack.`, (n, a) => `${n} uses ${fm(a)} to buy a game.`, (n, a) => `${n} pays ${fm(a)} for a movie ticket.`];
+const FL_SAVE = [(n, a) => `${n} puts ${fm(a)} in a piggy bank for later.`, (n, a) => `${n} keeps ${fm(a)} in a jar instead of buying a toy.`, (n, a) => `${n} puts ${fm(a)} in a savings account.`, (n, a) => `${n} puts ${fm(a)} away to use next month.`];
+const FL_GIVE = [(n, a) => `${n} gives ${fm(a)} to a food drive.`, (n, a) => `${n} donates ${fm(a)} to an animal shelter.`, (n, a) => `${n} gives ${fm(a)} to help a neighbor in need.`, (n, a) => `${n} puts ${fm(a)} in a collection for a charity.`];
+const FL_EARNS = [(n, a) => `${n} is paid ${fm(a)} for mowing a lawn.`, (n, a) => `${n} earns ${fm(a)} for helping at a store.`];
+const FL_BORROW = [(n, a) => `${n} borrows ${fm(a)} from a bank and will pay it back with interest.`, (n, a) => `${n} uses a loan of ${fm(a)} and must pay it back later.`];
+function flSave(rng, L) {
+  const n = pick(rng, NS_NAMES), a = ri(rng, 2, 25);
+  const cats = L === 1 ? [['spending', FL_SPEND], ['saving', FL_SAVE]] : L === 2 ? [['spending', FL_SPEND], ['saving', FL_SAVE], ['giving', FL_GIVE]]
+    : [['earning', FL_EARNS], ['spending', FL_SPEND], ['saving', FL_SAVE], ['borrowing', FL_BORROW], ['giving', FL_GIVE]];
+  const c = pick(rng, cats);
+  return flPick('flsave', 'Circle the answer.', `${pick(rng, c[1])(n, a)} ${L === 1 ? 'Is this spending or saving?' : 'Which kind of money decision is this?'}`, cats.map(x => x[0]), c[0]);
+}
+
+/* Saving adds up. L1 the same amount each week, L2 with money already saved, L3 how many weeks to reach a goal. */
+const FL_GOALS = ['a bike', 'a new game', 'a class trip', 'a college fund'];
+function flGrow(rng, L) {
+  const n = pick(rng, NS_NAMES);
+  if (L === 1) {
+    const a = pick(rng, [1, 2, 3, 5, 10]), k = ri(rng, 2, 6);
+    const t = pick(rng, [`${n} saves ${fm(a)} every week. How much will ${n} have saved after ${k} weeks?`, `${n} puts ${fm(a)} in a jar each week. How much is in the jar after ${k} weeks?`,
+      `${n} earns ${fm(a)} each week doing chores and saves all of it. How much does ${n} save in ${k} weeks?`, `${n} drops ${fm(a)} into a piggy bank every Friday. How much is in the bank after ${k} Fridays?`,
+      `${n} sets aside ${fm(a)} each week for a gift. How much is set aside after ${k} weeks?`, `For ${k} weeks in a row, ${n} saves ${fm(a)} a week. How much has ${n} saved in all?`]);
+    return flCalc('flgrow', 'week', [a, k], t, `${a} × ${k}`, a * k, { pre: '$' });
+  }
+  if (L === 2) {
+    const a = pick(rng, [2, 3, 5, 10]), k = ri(rng, 2, 8), s = 5 * ri(rng, 1, 8);
+    const t = pick(rng, [`${n} has ${fm(s)} in a jar. ${n} adds ${fm(a)} every week for ${k} weeks. How much is in the jar then?`, `${n} starts with ${fm(s)} in savings and adds ${fm(a)} each week for ${k} weeks. How much does ${n} have then?`,
+      `A savings account has ${fm(s)}. ${n} deposits ${fm(a)} every week for ${k} weeks. What is the balance then?`, `${n} has saved ${fm(s)} so far and saves ${fm(a)} more each week. How much will ${n} have after ${k} more weeks?`,
+      `The class fund has ${fm(s)}. Each week the class adds ${fm(a)}. How much is in the fund after ${k} weeks?`]);
+    return flCalc('flgrow', 'start', [s, a, k], t, `${s} + ${a} × ${k}`, s + a * k, { pre: '$' });
+  }
+  const a = ri(rng, 2, 10), k = ri(rng, 3, 12), g = a * k, goal = pick(rng, FL_GOALS);
+  const t = pick(rng, [`${n} is saving for ${goal}. The goal is ${fm(g)}. ${n} saves ${fm(a)} each week. How many weeks will it take?`, `${n} needs ${fm(g)} for ${goal} and saves ${fm(a)} a week. How many weeks until ${n} has enough?`,
+    `To buy ${goal}, ${n} must save ${fm(g)}. Each week ${n} adds ${fm(a)}. How many weeks does ${n} need?`]);
+  return flCalc('flgrow', 'goal', [g, a], t, `${g} ÷ ${a}`, k, { unit: 'weeks' });
+}
+
+/* Deposits and withdrawals. L1 deposit or withdrawal, L2 new balance after one, L3 after two. */
+const FL_DEP = [(n, a) => `${n} puts ${fm(a)} into a bank account.`, (n, a) => `${n} adds ${fm(a)} of birthday money to a savings account.`, (n, a) => `${n} brings ${fm(a)} to the bank to keep it safe.`];
+const FL_WDR = [(n, a) => `${n} takes ${fm(a)} out of the bank to buy a gift.`, (n, a) => `${n} takes ${fm(a)} out of a savings account for shoes.`, (n, a) => `${n} gets ${fm(a)} from the bank account to pay for a trip.`];
+function flBank(rng, L) {
+  const n = pick(rng, NS_NAMES);
+  if (L === 1) { const d = rng() < 0.5, a = ri(rng, 3, 40); return flPick('flbank', 'Circle deposit or withdrawal.', pick(rng, d ? FL_DEP : FL_WDR)(n, a), ['deposit', 'withdrawal'], d ? 'deposit' : 'withdrawal'); }
+  const b = 5 * ri(rng, 4, 30);
+  if (L === 2) {
+    const dep = rng() < 0.5, a = dep ? ri(rng, 5, 60) : ri(rng, 5, b - 5);
+    const t = pick(rng, [`${n} has ${fm(b)} in a bank account. ${n} makes a ${dep ? 'deposit' : 'withdrawal'} of ${fm(a)}. How much is in the account now?`, `The balance in ${n}'s account is ${fm(b)}. ${n} ${dep ? 'deposits' : 'withdraws'} ${fm(a)}. What is the new balance?`,
+      `${n} has ${fm(b)} in savings. ${n} ${dep ? 'adds' : 'takes out'} ${fm(a)}. How much is in savings now?`, `${n}'s account holds ${fm(b)}. After ${n} ${dep ? 'deposits' : 'withdraws'} ${fm(a)}, how much does the account hold?`]);
+    return flCalc('flbank', dep ? 'dep' : 'wdr', [b, a], t, `${b} ${dep ? '+' : '−'} ${a}`, dep ? b + a : b - a, { pre: '$' });
+  }
+  const a = ri(rng, 5, 60), c = ri(rng, 5, b + a - 5), depFirst = rng() < 0.5;
+  const text = pick(rng, depFirst ? [`${n} has ${fm(b)} in a bank account. ${n} deposits ${fm(a)} and then withdraws ${fm(c)}. How much is in the account now?`, `The account has ${fm(b)}. ${n} deposits ${fm(a)} on Monday and withdraws ${fm(c)} on Friday. What is the balance after Friday?`,
+      `${n} has ${fm(b)} in savings. First ${n} adds ${fm(a)}, then ${n} takes out ${fm(c)}. How much is in savings now?`] : [`${n} has ${fm(b)} in a bank account. ${n} withdraws ${fm(c)} and then deposits ${fm(a)}. How much is in the account now?`,
+      `The account has ${fm(b)}. ${n} withdraws ${fm(c)} on Monday and deposits ${fm(a)} on Friday. What is the balance after Friday?`, `${n} has ${fm(b)} in savings. First ${n} takes out ${fm(c)}, then ${n} adds ${fm(a)}. How much is in savings now?`]);
+  return flCalc('flbank', 'two', [b, a, c], text, `${b} + ${a} − ${c}`, b + a - c, { pre: '$' });
+}
+
+/* Borrowing and lending. L1 borrowing or lending, L2 responsible or not, and benefit or cost of lending, L3 interest. */
+const FL_ITEMS = ['bike', 'book', 'ball', 'game', 'ruler', 'pencil'];
+const FL_RESP = [(n, a) => `${n} borrows ${fm(a)} and pays it back on the day ${n} promised.`, n => `${n} borrows a book and returns it on time.`, n => `${n} borrows a ball and returns it in good shape.`];
+const FL_NORESP = [(n, a) => `${n} borrows ${fm(a)}, spends it all, and does not pay it back.`, n => `${n} borrows a game, loses it, and does not tell anyone.`, n => `${n} borrows a ruler and never returns it.`];
+const FL_LEND = [['helps a friend buy lunch', 'benefit'], ['has less money to spend right now', 'cost'], ['may not get the money back', 'cost']];
+const FL_BANKLEND = [['earns interest when the loan is paid back', 'benefit'], ['may not get the money back', 'cost'], ['has less money to lend to others while the loan is out', 'cost']];
+function flCred(rng, L) {
+  const n = pick(rng, NS_NAMES), m = flOther(rng, n), a = ri(rng, 3, 30);
+  if (L === 1) {
+    const it = pick(rng, FL_ITEMS), b = rng() < 0.5;
+    const s = b ? `${n} uses ${m}'s ${it} for a day and will give it back.` : `${n} lets ${m} use ${n}'s ${it} for a day.`;
+    return flPick('flcred', 'Circle borrowing or lending.', `${s} Is ${n} borrowing or lending?`, ['borrowing', 'lending'], b ? 'borrowing' : 'lending');
+  }
+  if (L === 2) {
+    if (rng() < 0.65) { const ok = rng() < 0.5; return flPick('flcred', 'Circle the answer.', `${pick(rng, ok ? FL_RESP : FL_NORESP)(n, a)} Is ${n} responsible or not responsible?`, ['responsible', 'not responsible'], ok ? 'responsible' : 'not responsible'); }
+    const bank = rng() < 0.4, s = pick(rng, bank ? FL_BANKLEND : FL_LEND);
+    const who = bank ? 'A bank lends ' + fm(a * 10) + ' to a family.' : `${n} lends ${fm(a)} to ${m}.`, subj = bank ? 'the bank' : n;
+    return flPick('flcred', 'Circle benefit or cost.', `${who} Is it a benefit or a cost that ${subj} ${s[0]}?`, ['benefit', 'cost'], s[1]);
+  }
+  const p = 10 * ri(rng, 1, 10), i = ri(rng, 1, Math.max(1, Math.floor(p / 5)));
+  if (rng() < 0.5) return flCalc('flcred', 'owe', [p, i], pick(rng, [`${n} borrows ${fm(p)} and must pay back ${fm(p + i)}. How much interest does ${n} pay?`, `${n} takes out a loan of ${fm(p)}. The lender says ${n} must repay ${fm(p + i)}. What is the interest?`,
+    `A family borrows ${fm(p)} and pays back ${fm(p + i)} in all. How much of that is interest?`]), `${p + i} − ${p}`, i, { pre: '$' });
+  return flCalc('flcred', 'back', [p, i], pick(rng, [`${n} borrows ${fm(p)} and pays ${fm(i)} in interest. How much must ${n} pay back in all?`, `${n} borrows ${fm(p)} from a bank. The interest is ${fm(i)}. How much does ${n} pay back in total?`,
+    `A loan of ${fm(p)} has ${fm(i)} of interest. How much must be paid back altogether?`]), `${p} + ${i}`, p + i, { pre: '$' });
+}
+
+/* Producers and consumers. L1 producer or consumer, L2 cost to produce from two or three supply costs, L3 cost of a batch. */
+const FL_PROD = ['bakes bread to sell', 'grows apples on a farm to sell', 'sews shirts to sell', 'makes wooden chairs to sell', 'builds toy cars in a factory to sell'];
+const FL_CONS = ['buys a loaf of bread', 'eats an apple', 'buys a new shirt', 'buys a wooden chair', 'plays with a toy car'];
+const FL_MAKE = [['lemonade', ['lemons', 'sugar', 'cups'], 'cup of lemonade'], ['muffins', ['flour', 'eggs', 'sugar'], 'muffin'], ['bracelets', ['beads', 'string', 'clasps'], 'bracelet'],
+  ['greeting cards', ['paper', 'markers', 'glue'], 'card'], ['popcorn', ['kernels', 'butter', 'bags'], 'bag of popcorn']];
+function flMake(rng, L) {
+  const n = pick(rng, NS_NAMES);
+  if (L === 1) { const pr = rng() < 0.5; return flPick('flmake', 'Circle producer or consumer.', `${n} ${pick(rng, pr ? FL_PROD : FL_CONS)}. Is ${n} a producer or a consumer?`, ['producer', 'consumer'], pr ? 'producer' : 'consumer'); }
+  const [prod, sup, one] = pick(rng, FL_MAKE);
+  if (L === 2) {
+    const k = rng() < 0.5 ? 2 : 3, c = sup.slice(0, k).map(() => ri(rng, 1, 12)), list = sup.slice(0, k).map((s, i) => `${s} ${fm(c[i])}`).join(', ');
+    return flCalc('flmake', 'sum', c, `${n} makes ${prod} to sell. Supplies: ${list}. What is the total cost to make the ${prod}?`, c.join(' + '), c.reduce((x, y) => x + y, 0), { pre: '$' });
+  }
+  const c = ri(rng, 2, 9), k = ri(rng, 3, 9);
+  return flCalc('flmake', 'batch', [c, k], `It costs ${fm(c)} to make one ${one}. How much does it cost ${n} to make ${k} of them?`, `${c} × ${k}`, c * k, { pre: '$' });
+}
+
+/* Scarcity and price. L1 will the price go up or down, L2 the likely reason for a price change, L3 how much more a scarce item costs. */
+const FL_GOODS = ['oranges', 'apples', 'pumpkins', 'strawberries', 'peaches', 'potatoes', 'tomatoes', 'pears', 'blueberries', 'corn', 'melons', 'carrots'];
+const FL_FEW = [g => `A storm ruins many ${g}.`, g => `A dry summer leaves fewer ${g} to sell.`, g => `Few ${g} are left in the store.`, g => `A cold spring kills many ${g} before harvest.`, g => `Only a small amount of ${g} can be found this year.`];
+const FL_MANY = [g => `A farm grows a very large crop of ${g}.`, g => `Stores have more ${g} than people want to buy.`, g => `There are plenty of ${g} for everyone.`, g => `A perfect summer gives farmers more ${g} than they can sell.`, g => `Trucks bring in a huge load of ${g} to the store.`];
+function flScar(rng, L) {
+  const g = pick(rng, FL_GOODS), few = rng() < 0.5;
+  if (L === 1) return flPick('flscar', 'Circle up or down.', `${pick(rng, few ? FL_FEW : FL_MANY)(g)} The price of ${g} will probably go ___.`, ['up', 'down'], few ? 'up' : 'down');
+  if (L === 2) {
+    const right = few ? `There are fewer ${g} than before.` : `There are more ${g} than before.`, wrong = few ? [`There are more ${g} than before.`, `Nobody wants ${g} now.`] : [`There are fewer ${g} than before.`, `A storm ruined the crop.`];
+    return flPick('flscar', 'Circle the answer.', `The price of ${g} went ${few ? 'up' : 'down'}. Which is the most likely reason?`, shuffle(rng, [right].concat(wrong)), right);
+  }
+  const a = ri(rng, 2, 9), b = ri(rng, 1, 6);
+  return flCalc('flscar', 'diff', [a, b], `A basket of ${g} costs ${fm(a)} when there are many. After a storm there are fewer, and a basket costs ${fm(a + b)}. How much more does a basket cost now?`, `${a + b} − ${a}`, b, { pre: '$' });
+}
+
+/* Planned and unplanned spending. L1 planned or unplanned, L2 cost or benefit of a spending choice, L3 money left after buying. */
+const FL_PLAN = [n => `${n} saved for a bike and buys it.`, n => `${n} writes a list and buys only the things on it.`, n => `${n} picks out a gift a week ahead and then buys it for a friend's birthday.`, n => `${n} saves each week for new shoes and then buys them.`, n => `${n} saved for a skateboard and buys it.`, n => `${n} writes a list for the store and buys only what is on it.`];
+const FL_UNPLAN = [n => `${n} sees candy at the checkout and buys it.`, n => `${n} sees a toy in a window and buys it right away.`, n => `${n} gets a snack at a stand without thinking about it first.`, n => `${n} buys a game after seeing an ad, without a plan.`, n => `${n} grabs a toy on the way out of the store.`, n => `${n} buys a drink at the ball game because it looks good.`];
+const FL_THINGS = ['toy', 'snack', 'game', 'book'];
+function flSpend(rng, L) {
+  const n = pick(rng, NS_NAMES);
+  if (L === 1) { const p = rng() < 0.5; return flPick('flspend', 'Circle planned or unplanned.', `${pick(rng, p ? FL_PLAN : FL_UNPLAN)(n)} Is this spending planned or unplanned?`, ['planned', 'unplanned'], p ? 'planned' : 'unplanned'); }
+  if (L === 2) {
+    const a = ri(rng, 3, 25), it = pick(rng, FL_THINGS), cost = rng() < 0.5;
+    const s = cost ? pick(rng, ['has less money left for other things', 'may not have enough for something else later']) : pick(rng, [`gets to enjoy the ${it}`, `gets something ${n} wanted`]);
+    return flPick('flspend', 'Circle cost or benefit.', `${n} spends ${fm(a)} on a ${it}. Is it a cost or a benefit that ${n} ${s}?`, ['cost', 'benefit'], cost ? 'cost' : 'benefit');
+  }
+  const m = ri(rng, 10, 40), c = ri(rng, 3, m - 2), it = pick(rng, FL_THINGS);
+  return flCalc('flspend', 'left', [m, c], `${n} has ${fm(m)}. A ${it} costs ${fm(c)}. If ${n} buys it, how much money will ${n} have left?`, `${m} − ${c}`, m - c, { pre: '$' });
+}
+
+/* Fixed and variable expenses. L1 classify an expense, L2 classify from amounts, L3 total of the fixed or the variable expenses. */
+const FL_FIXED = ['rent', 'a phone plan', 'a car payment', 'internet service', 'health insurance', 'a gym membership'], FL_VAR = ['groceries', 'gas for the car', 'electricity', 'movie tickets', 'restaurant meals', 'clothes'];
+const flCap = s => s[0].toUpperCase() + s.slice(1);
+function flExp(rng, L) {
+  if (L === 1) { const f = rng() < 0.5, n = pick(rng, NS_NAMES); return flPick('flexp', 'Circle fixed or variable.', `${n}'s family pays for ${pick(rng, f ? FL_FIXED : FL_VAR)}. Is this usually a fixed expense or a variable expense?`, ['fixed', 'variable'], f ? 'fixed' : 'variable'); }
+  if (L === 2) {
+    const f = rng() < 0.5, a = 10 * ri(rng, 4, 60), b = a + 10 * ri(rng, 1, 8), item = flCap(pick(rng, f ? FL_FIXED : FL_VAR));
+    const t = f ? `${item}: ${fm(a)} every month.` : `${item}: ${fm(a)} in May and ${fm(b)} in June.`;
+    return flPick('flexp', 'Circle fixed or variable.', `${t} Is this a fixed expense or a variable expense?`, ['fixed', 'variable'], f ? 'fixed' : 'variable');
+  }
+  const askFixed = rng() < 0.5, fx = flSome(rng, FL_FIXED, askFixed ? 2 : 1), vr = flSome(rng, FL_VAR, askFixed ? 1 : 2);
+  const rows = fx.map(s => [s, 'fixed', 10 * ri(rng, 5, 60)]).concat(vr.map(s => [s, 'variable', 10 * ri(rng, 3, 40)]));
+  const ord = shuffle(rng, rows), want = askFixed ? 'fixed' : 'variable', sel = rows.filter(r => r[1] === want);
+  const t = `A family's monthly expenses: ${ord.map(r => `${r[0]} ${fm(r[2])} (${r[1]})`).join(', ')}. What is the total of the ${want} expenses?`;
+  return flCalc('flexp', want, rows.map(r => r[2]), t, sel.map(r => r[2]).join(' + '), sel.reduce((a, r) => a + r[2], 0), { pre: '$', rows: rows.map(r => [r[1], r[2]]) });
+}
+
+/* Profit. L1 money taken in minus supplies, L2 price times number sold minus supplies, L3 two costs. */
+const FL_SELL = [['cups of lemonade', 'lemonade'], ['bracelets', 'bracelets'], ['cookies', 'cookies'], ['cards', 'cards']];
+function flProfit(rng, L) {
+  const n = pick(rng, NS_NAMES), [items] = pick(rng, FL_SELL);
+  if (L === 1) {
+    const c = ri(rng, 5, 40), r = c + ri(rng, 5, 50);
+    const t = pick(rng, [`${n} sells ${items} and takes in ${fm(r)}. The supplies cost ${fm(c)}. What is ${n}'s profit?`, `${n}'s ${items} stand brought in ${fm(r)}. ${n} spent ${fm(c)} on supplies. How much profit did ${n} make?`,
+      `Sales of ${items} were ${fm(r)} and the supplies cost ${fm(c)}. What is the profit?`, `${n} takes in ${fm(r)} selling ${items} and spends ${fm(c)} to make them. What is the profit?`]);
+    return flCalc('flprofit', 'basic', [r, c], t, `${r} − ${c}`, r - c, { pre: '$' });
+  }
+  const k = ri(rng, 4, 20), p = ri(rng, 2, 6);
+  if (L === 2) {
+    const c = ri(rng, 3, k * p - 5);
+    const t = pick(rng, [`${n} sells ${k} ${items} for ${fm(p)} each. The supplies cost ${fm(c)}. What is ${n}'s profit?`, `Each of the ${k} ${items} that ${n} sells costs ${fm(p)}. ${n} spent ${fm(c)} on supplies. What is ${n}'s profit?`,
+      `${n} makes ${k} ${items} and sells them all at ${fm(p)} each. Making them cost ${fm(c)}. How much profit does ${n} make?`]);
+    return flCalc('flprofit', 'each', [k, p, c], t, `${k} × ${p} − ${c}`, k * p - c, { pre: '$' });
+  }
+  const c1 = ri(rng, 2, Math.max(2, Math.floor(k * p / 3))), c2 = ri(rng, 2, Math.max(2, Math.floor(k * p / 3)));
+  const t = pick(rng, [`${n} sells ${k} ${items} for ${fm(p)} each. The supplies cost ${fm(c1)} and the table rental costs ${fm(c2)}. What is ${n}'s profit?`, `${n} sells ${k} ${items} at ${fm(p)} each. ${n} paid ${fm(c1)} for supplies and ${fm(c2)} for a sign. What is the profit?`,
+    `A club sells ${k} ${items} for ${fm(p)} each. Supplies cost ${fm(c1)} and a permit costs ${fm(c2)}. How much profit does the club make?`]);
+  return flCalc('flprofit', 'two', [k, p, c1, c2], t, `${k} × ${p} − (${c1} + ${c2})`, k * p - c1 - c2, { pre: '$' });
+}
+
+/* Savings options. L1 and L2 an advantage or a disadvantage of one place to keep savings (two or three choices), L3 the best place for a long-term goal. */
+const FL_PLACE = {
+  'a piggy bank at home': { adv: ['It is easy to reach.', 'It has no fees.'], dis: ['It could be lost or stolen.', 'It does not earn interest.'] },
+  'a savings account at a bank': { adv: ['The bank keeps the money safe.', 'It can earn interest.'], dis: ['You may have to go to the bank to get it.', 'Some accounts have rules about taking money out.'] },
+  'cash hidden in a drawer': { adv: ['It is easy to reach.', 'It is free to use.'], dis: ['It could be lost or stolen.', 'It does not earn interest.'] }
+};
+function flOpt(rng, L) {
+  const keys = Object.keys(FL_PLACE);
+  if (L === 3) {
+    const n = pick(rng, NS_NAMES), a = 5 * ri(rng, 4, 40);
+    const stem = pick(rng, [`${n} wants to save ${fm(a)} for college.`, `${n}'s family wants to keep ${fm(a)} safe and earn interest.`, `${n} will not need ${fm(a)} for years and wants it to grow.`, `${n} has ${fm(a)} to save for a long-term goal.`]);
+    return flPick('flopt', 'Circle the answer.', `${stem} Which place is the best choice?`, shuffle(rng, keys), 'a savings account at a bank');
+  }
+  const k = pick(rng, keys), adv = rng() < 0.5, P = FL_PLACE[k], right = pick(rng, adv ? P.adv : P.dis);
+  const pool = adv ? P.dis : P.adv, o = L === 1 ? [right, pick(rng, pool)] : [right].concat(pool);
+  return flPick('flopt', 'Circle the answer.', `Which is ${adv ? 'an advantage' : 'a disadvantage'} of ${k}?`, shuffle(rng, o), right);
+}
+
+/* Allowance. L1 find the amount left to share, L2 find any one part, L3 a half, a fourth and the rest. */
+function flAllow(rng, L) {
+  const n = pick(rng, NS_NAMES);
+  if (L === 1) {
+    const a = ri(rng, 8, 30), s = ri(rng, 2, Math.floor(a / 2)), v = ri(rng, 1, a - s - 1);
+    const t = pick(rng, [`${n} gets ${fm(a)} allowance. ${n} plans to spend ${fm(s)} and save ${fm(v)}. How much is left to share?`, `${n}'s allowance is ${fm(a)}. ${n} will spend ${fm(s)} and save ${fm(v)}. How much can ${n} share with others?`,
+      `${n} gets ${fm(a)} each week. ${fm(s)} is for spending and ${fm(v)} is for saving. The rest is for sharing. How much is for sharing?`, `Of a ${fm(a)} allowance, ${n} spends ${fm(s)} and saves ${fm(v)}. How much does ${n} have left to give away?`]);
+    return flCalc('flallow', 'share', [a, s, v], t, `${a} − ${s} − ${v}`, a - s - v, { pre: '$' });
+  }
+  if (L === 2) {
+    const a = ri(rng, 10, 40), x = ri(rng, 2, Math.floor(a / 2)), y = ri(rng, 1, a - x - 1), ask = pick(rng, ['share', 'spend', 'save']);
+    const known = { share: ['spend', 'save for college'], spend: ['save for college', 'share'], save: ['spend', 'share'] }[ask], lastWord = { share: 'share', spend: 'spend', save: 'save for college' }[ask];
+    const t = rng() < 0.5 ? `${n} gets ${fm(a)}. ${n} plans to ${known[0]} ${fm(x)}, ${known[1]} ${fm(y)}, and ${lastWord} the rest. How much will ${n} ${lastWord}?`
+      : `Allowance: ${fm(a)}. ${flCap(known[0])}: ${fm(x)}. ${flCap(known[1])}: ${fm(y)}. The rest is to ${lastWord}. How much is that?`;
+    return flCalc('flallow', ask, [a, x, y], t, `${a} − ${x} − ${y}`, a - x - y, { pre: '$' });
+  }
+  const a = 4 * ri(rng, 3, 10), parts = shuffle(rng, ['spend', 'save', 'share']), ask = pick(rng, parts), amt = { [parts[0]]: a / 2, [parts[1]]: a / 4, [parts[2]]: a / 4 };
+  const verb = v => v === 'save' ? 'saves' : v === 'share' ? 'shares' : 'spends';
+  const t = rng() < 0.5 ? `${n} gets ${fm(a)}. ${n} ${verb(parts[0])} half, ${verb(parts[1])} a fourth, and ${verb(parts[2])} the rest. How much does ${n} ${ask}?`
+    : `${n} splits a ${fm(a)} allowance. Half is to ${parts[0]}, a fourth is to ${parts[1]}, and the rest is to ${parts[2]}. How much is to ${ask}?`;
+  return flCalc('flallow', 'frac', [a, parts.indexOf(ask)], t, parts.indexOf(ask) === 0 ? `${a} ÷ 2` : `${a} ÷ 4`, amt[ask], { pre: '$' });
+}
+
+/* Financial institutions. Two, three or four choices by level. */
+function flInst(rng, L) {
+  const n = pick(rng, NS_NAMES), a = 5 * ri(rng, 2, 60), k = L + 1, kind = pick(rng, ['safe', 'borrow', 'purpose']);
+  if (kind === 'safe') { const o = [['a bank', 1]].concat(flSome(rng, ['a school desk', 'a toy box', 'a pocket', 'a shoe box'], k - 1).map(s => [s, 0])); return flPick('flinst', 'Circle the answer.', `${n} wants a safe place to keep ${fm(a)} for a long time. Where could ${n} put it?`, shuffle(rng, o.map(x => x[0])), 'a bank'); }
+  if (kind === 'borrow') { const o = ['a bank'].concat(flSome(rng, ['a grocery store', 'a school', 'a library', 'a pet shop'], k - 1)); return flPick('flinst', 'Circle the answer.', `${n}'s family needs to borrow money to buy a house. Who can lend it to them?`, shuffle(rng, o), 'a bank'); }
+  const right = pick(rng, ["It keeps people's money safe.", 'It lends money to people who need it.']), o = [right].concat(flSome(rng, ['It makes toys to sell.', 'It grows food on farms.', 'It teaches children to read.', 'It fixes cars.'], k - 1));
+  return flPick('flinst', 'Circle the answer.', 'Which is one purpose of a bank?', shuffle(rng, o), right);
+}
+
+/* Taxes. L1 which tax fits a description, L2 which tax fits a situation, L3 total cost with sales tax. */
+const FL_TAX = { 'income tax': 'a tax on the money people earn', 'payroll tax': "a tax taken out of a worker's paycheck", 'sales tax': 'a tax added to the price of things people buy', 'property tax': 'a tax paid on land and buildings people own' };
+function flTax(rng, L) {
+  const names = Object.keys(FL_TAX), n = pick(rng, NS_NAMES);
+  if (L === 1) { const t = pick(rng, names); return flPick('fltax', 'Circle the answer.', `Which tax is ${FL_TAX[t]}?`, shuffle(rng, names), t); }
+  if (L === 2) {
+    const a = ri(rng, 10, 60), sc = pick(rng, [[`${n} buys a ${fm(a)} game. At the register, ${n} pays more than ${fm(a)} because of a tax.`, 'sales tax'], [`${n}'s family owns a house and pays a tax on it every year.`, 'property tax'],
+      [`A tax is taken out of ${n}'s parent's paycheck each pay period.`, 'payroll tax'], [`${n}'s parent pays a tax on the money earned from working.`, 'income tax']]);
+    return flPick('fltax', 'Circle the answer.', `${sc[0]} Which tax is it?`, shuffle(rng, names), sc[1]);
+  }
+  const k = ri(rng, 2, 19), item = pick(rng, ['game', 'jacket', 'backpack', 'bike helmet', 'lamp']), kind = pick(rng, ['sales', 'taxamt', 'total2']);
+  if (kind === 'taxamt') return flCalc('fltax', 'taxamt', [k], `A ${item} costs ${fm(10 * k)}. The sales tax is ${fm(1)} for every ${fm(10)}. How much sales tax is added?`, `${10 * k} ÷ 10`, k, { pre: '$' });
+  if (kind === 'total2') { const p = ri(rng, 10, 80), t = ri(rng, 1, 9); return flCalc('fltax', 'total2', [p, t], `${n} buys a ${item} for ${fm(p)}. The sales tax is ${fm(t)}. How much does ${n} pay in all?`, `${p} + ${t}`, p + t, { pre: '$' }); }
+  return flCalc('fltax', 'sales', [k], `A ${item} costs ${fm(10 * k)}. Sales tax adds ${fm(1)} for every ${fm(10)}. What is the total cost with tax?`, `${10 * k} + ${k}`, 11 * k, { pre: '$' });
+}
+
+/* Gross and net income. L1 which amount is gross or net, L2 net income after taxes, L3 net income after taxes and one more deduction. */
+function flNet(rng, L) {
+  const n = pick(rng, NS_NAMES), g = 50 * ri(rng, 4, 30);
+  if (L === 1) {
+    const x = 10 * ri(rng, 3, Math.floor(g / 20)), t = g - x, gross = rng() < 0.5;
+    return flPick('flnet', 'Circle the answer.', `${n} earns ${fm(g)} in a month before taxes. After taxes, ${n} takes home ${fm(t)}. Which amount is ${n}'s ${gross ? 'gross' : 'net'} income?`, shuffle(rng, [fm(g), fm(t)]), gross ? fm(g) : fm(t));
+  }
+  const x = 10 * ri(rng, 3, Math.floor(g / 20));
+  if (L === 2) return flCalc('flnet', 'tax', [g, x], pick(rng, [`${n} earns a gross income of ${fm(g)}. Taxes take ${fm(x)}. What is ${n}'s net income?`, `${n} earns ${fm(g)} before taxes. Taxes take ${fm(x)}. How much does ${n} take home?`,
+    `${n}'s gross income is ${fm(g)}. After ${fm(x)} is paid in taxes, what is ${n}'s net income?`, `${n}'s paycheck is ${fm(g)} before taxes. ${fm(x)} is taken out for taxes. What is the net income?`]), `${g} − ${x}`, g - x, { pre: '$' });
+  const y = 10 * ri(rng, 2, Math.max(2, Math.floor((g - x) / 20))), ded = pick(rng, ['health insurance', 'a retirement plan', 'union dues', 'a savings plan at work']);
+  return flCalc('flnet', 'two', [g, x, y], pick(rng, [`${n} earns a gross income of ${fm(g)}. Taxes take ${fm(x)} and ${ded} takes ${fm(y)}. What is ${n}'s net income?`, `${n} earns ${fm(g)} before anything is taken out. Taxes take ${fm(x)} and ${ded} takes ${fm(y)}. How much does ${n} take home?`,
+    `${n}'s gross income is ${fm(g)}. After ${fm(x)} for taxes and ${fm(y)} for ${ded}, what is ${n}'s net income?`]), `${g} − ${x} − ${y}`, g - x - y, { pre: '$' });
+}
+
+/* Methods of payment. L1 which method fits a description, L2 an advantage or a disadvantage of a method, L3 the best method for a situation. */
+const FL_PAYM = { 'check': 'a written note that tells a bank to pay someone from your account', 'credit card': 'a card that lets you borrow money to buy things now and pay later',
+  'debit card': 'a card that takes money straight from your bank account', 'electronic payment': 'sending money with a phone or a website' };
+const FL_PADV = { 'check': 'It leaves a written record.', 'credit card': 'You can buy something now and pay later.', 'debit card': 'It uses your own money, so you do not borrow.', 'electronic payment': 'It is quick and easy to use.' };
+const FL_PDIS = { 'check': 'It takes time to write and for the bank to process.', 'credit card': 'You may owe interest if you do not pay it all back.', 'debit card': 'You cannot buy things if the account is empty.', 'electronic payment': 'Someone could steal your account information.' };
+function flPay(rng, L) {
+  const names = Object.keys(FL_PAYM), n = pick(rng, NS_NAMES);
+  if (L === 1) { const m = pick(rng, names); return flPick('flpay', 'Circle the answer.', `Which method of payment is ${FL_PAYM[m]}?`, shuffle(rng, names), m); }
+  if (L === 2) {
+    const m = pick(rng, names), adv = rng() < 0.5, right = (adv ? FL_PADV : FL_PDIS)[m], pool = names.filter(x => x !== m).map(x => (adv ? FL_PDIS : FL_PADV)[x]);
+    const wrong = [(adv ? FL_PDIS : FL_PADV)[m]].concat(flSome(rng, pool, 1));
+    return flPick('flpay', 'Circle the answer.', `Which is ${adv ? 'an advantage' : 'a disadvantage'} of paying with ${m === 'electronic payment' ? 'an electronic payment' : 'a ' + m}?`, shuffle(rng, [right].concat(wrong)), right);
+  }
+  const sc = pick(rng, [[`${n} wants to buy groceries with ${n}'s own money and not borrow.`, 'debit card'], [`${n} wants to pay a friend right away using a phone.`, 'electronic payment'],
+    [`${n} needs to buy a bike today and pay for it next month.`, 'credit card'], [`${n} wants to mail a payment and keep a written record.`, 'check']]);
+  return flPick('flpay', 'Circle the answer.', `${sc[0]} Which method of payment fits best?`, shuffle(rng, names), sc[1]);
+}
+
+/* Financial records. L1 which record to keep, L2 which folder, L3 the new balance in a check register. */
+const FL_REC = [['to show what it bought at a store', 'a receipt'], ['to show how much money is in the bank account', 'a bank statement'], ['to show money that must be paid by a due date', 'a bill'], ['to write down each check and deposit', 'a check register']];
+const FL_FOLD = [['an electric bill that is due next week', 'Bills to pay'], ['a receipt for new shoes', 'Receipts'], ['the monthly bank statement', 'Bank statements'], ['a store receipt for school supplies', 'Receipts'],
+  ['a phone bill that is due on the 5th', 'Bills to pay'], ['a statement from the savings account', 'Bank statements'], ['a water bill that is due on Friday', 'Bills to pay'], ['a receipt for a pair of socks', 'Receipts'],
+  ['a statement from the checking account', 'Bank statements'], ['a receipt from the grocery store', 'Receipts']];
+function flRec(rng, L) {
+  const n = pick(rng, NS_NAMES);
+  if (L === 1) { const r = pick(rng, FL_REC), o = [r[1]].concat(flSome(rng, FL_REC.filter(x => x !== r).map(x => x[1]), 2)); return flPick('flrec', 'Circle the answer.', `Which record should ${n} keep ${r[0].replace('it bought', n + ' bought')}?`, shuffle(rng, o), r[1]); }
+  if (L === 2) { const f = pick(rng, FL_FOLD); return flPick('flrec', 'Circle the answer.', `${n} keeps records in folders. Which folder should hold ${f[0]}?`, ['Bills to pay', 'Receipts', 'Bank statements'], f[1]); }
+  const b = 5 * ri(rng, 8, 60), kind = pick(rng, ['chk', 'dep', 'both']);
+  if (kind === 'chk') { const c = ri(rng, 5, b - 5); return flCalc('flrec', kind, [b, c], `${n}'s check register shows ${fm(b)}. ${n} writes a check for ${fm(c)}. What is the new balance?`, `${b} − ${c}`, b - c, { pre: '$' }); }
+  if (kind === 'dep') { const a = ri(rng, 5, 80); return flCalc('flrec', kind, [b, a], `${n}'s check register shows ${fm(b)}. ${n} makes a deposit of ${fm(a)}. What is the new balance?`, `${b} + ${a}`, b + a, { pre: '$' }); }
+  const c = ri(rng, 5, b - 5), a = ri(rng, 5, 80);
+  return flCalc('flrec', kind, [b, c, a], `${n}'s check register shows ${fm(b)}. ${n} writes a check for ${fm(c)} and makes a deposit of ${fm(a)}. What is the new balance?`, `${b} − ${c} + ${a}`, b - c + a, { pre: '$' });
+}
+
+/* Budgets. L1 find the amount that balances the budget, L2 how much to cut when expenses are more than income, L3 an action that balances a budget. */
+const FL_COSTS = ['rent', 'food', 'gas', 'the phone', 'clothes', 'the internet'];
+function flBud(rng, L) {
+  const n = pick(rng, NS_NAMES);
+  if (L === 1) {
+    const i = 100 * ri(rng, 5, 30), [x, y] = flSome(rng, FL_COSTS, 2), a = 10 * ri(rng, 5, Math.floor(i / 20)), b = 10 * ri(rng, 3, Math.floor(i / 25));
+    const t = pick(rng, [`${n}'s monthly income is ${fm(i)}. Spending on ${x} is ${fm(a)} and on ${y} is ${fm(b)}. ${n} saves the rest. How much does ${n} save to balance the budget?`, `${n} plans a budget with ${fm(i)} of income. ${flCap(x)} costs ${fm(a)} and ${y} costs ${fm(b)}. The rest goes to savings. How much goes to savings?`,
+      `A family earns ${fm(i)} a month. They spend ${fm(a)} on ${x} and ${fm(b)} on ${y}. How much is left to balance the budget?`]);
+    return flCalc('flbud', 'left', [i, a, b], t, `${i} − ${a} − ${b}`, i - a - b, { pre: '$' });
+  }
+  if (L === 2) {
+    const i = 100 * ri(rng, 5, 25);
+    const tot = i + 10 * ri(rng, 2, 15), a = 10 * ri(rng, Math.floor(tot / 40), Math.floor(tot / 25)), b = 10 * ri(rng, Math.floor(tot / 40), Math.floor(tot / 25)), d = tot - a - b;
+    const [x, y, z] = flSome(rng, FL_COSTS, 3);
+    const t = pick(rng, [`${n}'s monthly income is ${fm(i)}. Spending on ${x} is ${fm(a)}, on ${y} is ${fm(b)}, and on ${z} is ${fm(d)}. How much must ${n} cut so the budget balances?`, `${n} earns ${fm(i)} a month but plans to spend ${fm(a)} on ${x}, ${fm(b)} on ${y}, and ${fm(d)} on ${z}. How much too much is that?`,
+      `A family's income is ${fm(i)}. Their spending is ${fm(a)} on ${x}, ${fm(b)} on ${y}, and ${fm(d)} on ${z}. How much must they cut to balance the budget?`]);
+    return flCalc('flbud', 'over', [i, a, b, d], t, `(${a} + ${b} + ${d}) − ${i}`, a + b + d - i, { pre: '$' });
+  }
+  const right = pick(rng, ['Spend less on wants.', 'Earn more income.', 'Cut back on spending that is not needed.', 'Find a way to earn extra money.', 'Skip buying things that are only wants.']), wrong = flSome(rng, ['Spend more on wants.', 'Borrow more money and not pay it back.', 'Ignore the budget.', 'Buy more things that are not needed.'], 2);
+  const stem = pick(rng, [`${n}'s expenses are more than ${n}'s income.`, `${n}'s family spends more than it earns each month.`, `${n} spent more than ${n} earned this month.`]);
+  return flPick('flbud', 'Circle the answer.', `${stem} Which action could help balance the budget?`, shuffle(rng, [right].concat(wrong)), right);
+}
+
+/* ---------- Written formats (no circling) ----------
+   Sort: write a letter beside each item (flsortwn, flsortfv, flsortig; level = 4, 6 or 8 items).
+   Budget table: fill the blank cells of a small budget (flbtab).
+   Complete the sentences: fill blanks from a word bank (flexplain; level = 1, 2 or 3 blanks). */
+const FL_SORT_INC = ['Pay for washing cars', 'Money from selling lemonade', 'A paycheck from a job', 'Pay for walking a dog', 'Money for mowing a lawn', 'Pay for raking leaves', 'Wages for helping in a shop', 'Pay for watering plants'];
+const FL_SORT_GIFT = ['Money in a birthday card', 'A holiday gift of money', 'A gift card from an aunt', 'Birthday money from a grandparent', 'A present of money from a friend', 'Money given at a graduation party', 'A cash gift from an uncle', 'A wedding gift of money'];
+const FL_SORT_FIX = ['rent', 'a phone plan', 'a car payment', 'internet service', 'health insurance', 'a gym membership', 'a monthly bus pass', 'a loan payment'];
+const FL_SORT_VAR = ['groceries', 'gas for the car', 'electricity', 'movie tickets', 'restaurant meals', 'clothes', 'a trip to the zoo', 'school snacks'];
+function flSort(type, prompt, a, b, ia, ib, rng, L) {
+  const n = L === 1 ? 4 : L === 2 ? 6 : 8, k = L === 1 ? 2 : ri(rng, 2, n - 2);
+  const rows = shuffle(rng, flSome(rng, ia, k).map(t => [t, a[0]]).concat(flSome(rng, ib, n - k).map(t => [t, b[0]])));
+  const cap = t => t[0].toUpperCase() + t.slice(1);
+  return { mod: 'ns', type, prompt, items: rows.map(r => cap(r[0])), cats: rows.map(r => r[1]), groups: [a, b], ans: rows.map(r => r[1]).join(' '), wide: true, sig: `${type}|${rows.map(r => r[0]).join('|')}`, ew: 21, eh: 1.1 + n * 1.5 + 1.3 };
+}
+const flSortWn = (rng, L) => flSort('flsortwn', 'Write N for need or W for want.', ['N', 'need'], ['W', 'want'], FL_NEEDS, FL_WANTS, rng, L);
+const flSortFv = (rng, L) => flSort('flsortfv', 'Write F for fixed or V for variable.', ['F', 'fixed'], ['V', 'variable'], FL_SORT_FIX, FL_SORT_VAR, rng, L);
+const flSortIg = (rng, L) => flSort('flsortig', 'Write I for income or G for gift.', ['I', 'income'], ['G', 'gift'], FL_SORT_INC, FL_SORT_GIFT, rng, L);
+
+/* Budget table. L1 find the savings, L2 total spending and money left, L3 total spending and the amount over budget, or the missing expense. */
+function flBtab(rng, L) {
+  const n = pick(rng, NS_NAMES), cost = (lo, hi) => 10 * ri(rng, lo, hi), [x, y, z] = flSome(rng, FL_COSTS, 3).map(flCap);
+  if (L === 1) {
+    const i = 100 * ri(rng, 5, 25), a = cost(5, Math.floor(i / 20)), b = cost(3, Math.floor(i / 25));
+    return flTable('left', [i, a, b], `${n}'s monthly budget. Savings is the money left after spending.`, [['Income', i], [x, a], [y, b], ['Savings', null, i - a - b]]);
+  }
+  if (L === 2) {
+    const i = 100 * ri(rng, 6, 25), a = cost(4, Math.floor(i / 40)), b = cost(4, Math.floor(i / 40)), c = cost(3, Math.floor(i / 50)), t = a + b + c;
+    return flTable('tot', [i, a, b, c], `${n}'s monthly budget.`, [['Income', i], [x, a], [y, b], [z, c], ['Total spending', null, t], ['Money left over', null, i - t]]);
+  }
+  const i = 100 * ri(rng, 6, 20);
+  if (rng() < 0.5) {
+    const t = i + cost(2, 12), a = cost(Math.floor(t / 40), Math.floor(t / 28)), b = cost(Math.floor(t / 40), Math.floor(t / 28)), c = t - a - b;
+    return flTable('over2', [i, a, b, c], `${n}'s monthly budget. Spending is more than income.`, [['Income', i], [x, a], [y, b], [z, c], ['Total spending', null, t], ['Over budget by', null, t - i]]);
+  }
+  const a = cost(Math.floor(i / 40), Math.floor(i / 28)), b = cost(Math.floor(i / 40), Math.floor(i / 28));
+  return flTable('miss', [i, a, b], `${n}'s monthly budget balances. Total spending equals income.`, [['Income', i], [x, a], [y, b], [z, null, i - a - b], ['Total spending', i]]);
+}
+function flTable(kind, nums, intro, rows) {
+  const blanks = rows.filter(r => r[1] === null).map(r => r[2]);
+  return { mod: 'ns', type: 'flbtab', prompt: 'Fill in the budget.', kind, nums, intro, tbl: rows, ans: blanks.join(' '), wide: true, sig: `flbtab|${kind}|${intro}|${rows.map(r => r[0] + r[1]).join('|')}`, ew: 21, eh: 1.1 + Math.ceil(intro.length * 0.62 / 20) * 1.45 + rows.length * 1.5 + 0.8 };
+}
+
+/* Complete the sentences: each sentence has three key words; the level decides how many are blanked (1, 2 or 3). The word bank adds two wrong words. */
+const FL_CLOZE = [
+  ['Saving is an {0} to spending. When you spend money, you use it {1}. When you save money, you keep it for {2}.', ['alternative', 'now', 'later'], ['gift', 'bill']],
+  ['People who learn more {0} can often earn more {1}. A person who works more {2} can also earn more.', ['skills', 'income', 'hours'], ['gifts', 'taxes']],
+  ['When a good is {0}, there is not much of it, so its price usually goes {1}. When there is a lot of it, its price usually goes {2}.', ['scarce', 'up', 'down'], ['free', 'broken']],
+  ['People use credit when they cannot {0} what they want or need right now. The {1} must pay the money back to the {2}.', ['afford', 'borrower', 'lender'], ['teacher', 'farmer']],
+  ['A savings plan helps a person {0} money for something big, such as {1}. A plan can also help in an {2}.', ['save', 'college', 'emergency'], ['tax', 'paycheck']],
+  ['A savings {0} at a bank keeps money {1} and can earn {2}.', ['account', 'safe', 'interest'], ['bill', 'lost']],
+  ['Money you {0} is used right away. Money you {1} is kept for later. Money you {2} helps other people.', ['spend', 'save', 'share'], ['owe', 'tax']],
+  ["A {0} keeps people's money safe. It can also {1} money to people who need it, and they pay it back with {2}.", ['bank', 'lend', 'interest'], ['store', 'spend']],
+  ['Gross income is the pay a person earns {0} taxes. Net income is the pay left {1} taxes are taken out. Net income is {2} than gross income.', ['before', 'after', 'less'], ['during', 'more']],
+  ['Good {0} are kept in one place. Keep {1} to show what you bought. Pay each {2} by its due date.', ['records', 'receipts', 'bill'], ['gifts', 'taxes']],
+  ['A budget is balanced when income is the {0} as spending. If spending is more than income, a person can spend {1} on wants or earn {2} income.', ['same', 'less', 'more'], ['gift', 'tax']],
+  ['A {0} makes goods or services to sell. A {1} buys and uses them. The cost to make something includes the cost of {2}.', ['producer', 'consumer', 'supplies'], ['bank', 'tax']]
+];
+function flExplain(rng, L) {
+  const t = Math.floor(rng() * FL_CLOZE.length), [tpl, words, dis] = FL_CLOZE[t], blank = shuffle(rng, [0, 1, 2]).slice(0, L).sort((a, b) => a - b);
+  const bank = shuffle(rng, blank.map(i => words[i]).concat(dis));
+  return { mod: 'ns', type: 'flexplain', prompt: 'Use the word bank to finish the sentences.', tpl: t, words, blank, bank, ans: blank.map(i => words[i]).join(' '), wide: true, sig: `flexplain|${t}|${blank}|${bank}`, ew: 21, eh: 1.1 + (Math.ceil(tpl.length * 0.62 / 20) + L) * 1.5 + 1.8 };
+}
+const flWrittenHtml = (p, key, x) => {
+  if (p.items) {
+    const rows = p.items.map((t, i) => `<div style="display:flex;gap:.4em;align-items:baseline"><span>${i + 1}.</span><span>${esc(t)}</span>${x(p.cats[i], 1.2)}</div>`).join('');
+    return `<div style="display:grid;grid-template-columns:1fr;gap:.2em">${rows}</div>`;
+  }
+  if (p.tbl) {
+    const cs = 'border:1px solid #8d99ad;padding:.02in .08in', rows = p.tbl.map(r => `<tr><td style="${cs}">${esc(r[0])}</td><td style="${cs};text-align:right;white-space:nowrap">${r[1] === null ? '$ ' + x(flc(r[2]), 3) : fm(r[1])}</td></tr>`).join('');
+    return `<div class="wt">${esc(p.intro)}</div><table style="border-collapse:collapse;margin-top:.04in">${rows}</table>`;
+  }
+  const parts = FL_CLOZE[p.tpl][0].split(/\{(\d)\}/);
+  const body = parts.map((seg, i) => i % 2 === 0 ? esc(seg) : p.blank.includes(+seg) ? x(p.words[+seg], p.words[+seg].length * 0.6 + 1.4) : esc(p.words[+seg])).join('');
+  return `<div class="wt" style="line-height:1.9">${body}</div><div>Word bank: ${p.bank.map(w => `<span class="opt" style="min-width:0;margin:0 .04in;padding:.01in .06in">${esc(w)}</span>`).join('')}</div>`;
+};
+
+defTypes("ns", "Financial literacy", [
+  { id: "flinc", label: "Income and gifts", blurb: "Income or gift, ways to earn income, what income means.", on: false, gen: flInc, html: flHtml },
+  { id: "fljob", label: "Jobs, skills and income", blurb: "Skills for a job, how skills and hours change income, pay rates.", on: false, gen: flJob, html: flHtml },
+  { id: "flwant", label: "Wants and needs", blurb: "Want or need, paying with income, choosing between a want and a need.", on: false, gen: flWant, html: flHtml },
+  { id: "flsave", label: "Spend, save or give", blurb: "Spending or saving, giving, and any money decision.", on: false, gen: flSave, html: flHtml },
+  { id: "flgrow", label: "Saving adds up", blurb: "How saved money grows week by week and how long a goal takes.", on: false, gen: flGrow, html: flHtml },
+  { id: "flbank", label: "Deposits and withdrawals", blurb: "Deposit or withdrawal, and the new bank balance.", on: false, gen: flBank, html: flHtml },
+  { id: "flcred", label: "Borrowing, lending and interest", blurb: "Borrow or lend, responsible borrowing, benefits and costs, interest.", on: false, gen: flCred, html: flHtml },
+  { id: "flmake", label: "Producers, consumers and cost to make", blurb: "Producer or consumer, the cost to make an item.", on: false, gen: flMake, html: flHtml },
+  { id: "flscar", label: "Scarcity and price", blurb: "Fewer goods usually cost more, more goods usually cost less.", on: false, gen: flScar, html: flHtml },
+  { id: "flspend", label: "Planned and unplanned spending", blurb: "Planned or unplanned, costs and benefits of a choice, money left.", on: false, gen: flSpend, html: flHtml },
+  { id: "flexp", label: "Fixed and variable expenses", blurb: "Fixed or variable, and totals of each kind.", on: false, gen: flExp, html: flHtml },
+  { id: "flprofit", label: "Profit", blurb: "Money taken in minus the cost of supplies.", on: false, gen: flProfit, html: flHtml },
+  { id: "flopt", label: "Savings options", blurb: "Advantages and disadvantages of places to keep savings.", on: false, gen: flOpt, html: flHtml },
+  { id: "flallow", label: "Allowance plans", blurb: "Split an allowance among spending, saving and sharing.", on: false, gen: flAllow, html: flHtml },
+  { id: "flinst", label: "Banks and what they do", blurb: "Keeping money safe, borrowing and lending.", on: false, gen: flInst, html: flHtml },
+  { id: "fltax", label: "Taxes", blurb: "Income, payroll, sales and property tax, and a total with sales tax.", on: false, gen: flTax, html: flHtml },
+  { id: "flnet", label: "Gross and net income", blurb: "Gross or net, and net income after taxes and deductions.", on: false, gen: flNet, html: flHtml },
+  { id: "flpay", label: "Methods of payment", blurb: "Check, credit card, debit card and electronic payment.", on: false, gen: flPay, html: flHtml },
+  { id: "flrec", label: "Financial records", blurb: "Which record to keep, which folder, and a check register balance.", on: false, gen: flRec, html: flHtml },
+  { id: "flbud", label: "Balance a budget", blurb: "Find the amount that balances a budget, cut spending, choose an action.", on: false, gen: flBud, html: flHtml },
+  { id: "flsortwn", label: "Sort wants and needs", blurb: "Write N or W beside each item (4, 6 or 8 items).", on: false, gen: flSortWn, html: flWrittenHtml },
+  { id: "flsortfv", label: "Sort fixed and variable expenses", blurb: "Write F or V beside each expense (4, 6 or 8 items).", on: false, gen: flSortFv, html: flWrittenHtml },
+  { id: "flsortig", label: "Sort income and gifts", blurb: "Write I or G beside each way of getting money (4, 6 or 8 items).", on: false, gen: flSortIg, html: flWrittenHtml },
+  { id: "flbtab", label: "Fill in a budget table", blurb: "Savings, total spending, money left over, an over-budget amount or a missing expense.", on: false, gen: flBtab, html: flWrittenHtml },
+  { id: "flexplain", label: "Complete the sentences", blurb: "Finish sentences about money ideas from a word bank (1, 2 or 3 blanks).", on: false, gen: flExplain, html: flWrittenHtml }
+]);
 /* ---------- Number Sense (module id: ns) ----------
    The problem types live in the ns-*.js family files and register themselves with defTypes (core/types.js). */
 
@@ -4183,6 +4756,28 @@ function visChartcircleHtml(p, key) {
   return vAcSvg(p.r0, p.c0, (i, j, x, y, v) => vrect(x, y, 46, 30, 'none', { c: '#8d99ad', w: 1.3 }) + vtxt(x + 23, y + 20, String(v), { s: 14 }) + (key && (v % 2 ? 'odd' : 'even') === p.want ? vring(x + 3, y + 3, 40, 24) : ''));
 }
 
+/* Number pairs in a table for real-world relationships (a rule that multiplies or adds). L1 four whole-number inputs 1 to 4 with the last two outputs blank,
+   L2 four inputs with any two cells blank, L3 five inputs, multiplying or adding, three cells blank. */
+const PT_MULT = [['Each bag holds', 'apples', 'Bags', 'Apples'], ['Each box holds', 'crayons', 'Boxes', 'Crayons'], ['Each pack has', 'stickers', 'Packs', 'Stickers'], ['Each shelf holds', 'books', 'Shelves', 'Books'],
+  ['Each team has', 'players', 'Teams', 'Players'], ['Each tray holds', 'muffins', 'Trays', 'Muffins']];
+const PT_ADD = [k => ['Mia is ' + k + ' years older than her cousin.', "Cousin's age", "Mia's age"], k => ['A tree is ' + k + ' feet taller than a bush.', "Bush's height (feet)", "Tree's height (feet)"], k => ['A box weighs ' + k + ' pounds more than its lid.', 'Lid (pounds)', 'Box (pounds)']];
+function visPtable(rng, L) {
+  const mult = L < 3 || rng() < 0.5, n = L === 3 ? 5 : 4;
+  let ins, ctx, k;
+  if (mult) { const c = pick(rng, PT_MULT); k = pick(rng, L === 1 ? [2, 3, 4, 5, 10] : [2, 3, 4, 5, 6, 7, 8, 9, 10]); ctx = [`${c[0]} ${k} ${c[1]}.`, c[2], c[3]]; }
+  else { k = ri(rng, 2, 9); ctx = pick(rng, PT_ADD)(k); }
+  ins = L === 1 ? [1, 2, 3, 4] : shuffle(rng, Array.from({ length: 10 }, (_, i) => i + 1)).slice(0, n).sort((a, b) => a - b);
+  const outs = ins.map(i => mult ? i * k : i + k), cols = shuffle(rng, ins.map((_, i) => i));
+  const blanks = L === 1 ? [[1, 2], [1, 3]] : (L === 2 ? cols.slice(0, 2) : cols.slice(0, 3)).sort((a, b) => a - b).map(c => [rng() < 0.5 ? 0 : 1, c]);
+  const val = b => b[0] ? outs[b[1]] : ins[b[1]];
+  return vp('ptable', 'Fill in the table.', { mult, k, ctx, ins, outs, blanks, ans: blanks.map(val).join(' '), sig: `pt${mult}${ctx[0]}${ins}${blanks.join('/')}` }, 3.3, vwrapH(ctx[0], 3.2) + 0.45 + n * 0.3 + 0.3, 0);
+}
+function visPtableHtml(p, key, x) {
+  const isB = (r, c) => p.blanks.some(b => b[0] === r && b[1] === c), cs = 'border:1px solid #8d99ad;padding:.02in .04in;text-align:center;width:1.3in;box-sizing:border-box';
+  const rows = p.ins.map((v, c) => `<tr><td style="${cs}">${isB(0, c) ? x(v, 1.8) : v}</td><td style="${cs}">${isB(1, c) ? x(p.outs[c], 1.8) : p.outs[c]}</td></tr>`).join('');
+  return vwrap(p.ctx[0], 3.2) + `<table style="border-collapse:collapse;margin-top:.04in;table-layout:fixed;width:2.6in"><tr><th style="${cs};background:#e8eef7;white-space:normal;font-size:.85em">${esc(p.ctx[1])}</th><th style="${cs};background:#e8eef7;white-space:normal;font-size:.85em">${esc(p.ctx[2])}</th></tr>${rows}</table>`;
+}
+
 defTypes("vis", "Patterns and charts", [
   { id: "pat", label: "Repeating patterns", blurb: "What comes next, and how long is the core.", on: true, gen: visPat, html: visPatHtml },
   { id: "patmake", label: "Make a pattern", blurb: "Draw your own AB, AAB, ABB or ABC pattern.", on: false, gen: visPatmake, html: visPatmakeHtml },
@@ -4190,7 +4785,8 @@ defTypes("vis", "Patterns and charts", [
   { id: "chartwhy", label: "Why the chart pattern works", blurb: "Read the shaded cells, and explain why mirrored cells match.", on: false, gen: visChartwhy, html: visChartwhyHtml },
   { id: "mchart", label: "Multiplication chart patterns", blurb: "Fill the chart, even and odd products, one more group.", on: false, gen: g3Mchart, html: g3MchartHtml },
   { id: "addchart", label: "Finish the addition chart", blurb: "Fill in the missing sums in a 5 by 5 addition chart.", on: false, gen: visAddchart, html: visAddchartHtml },
-  { id: "chartcircle", label: "Circle even or odd sums", blurb: "Circle the even or the odd sums in an addition chart.", on: false, gen: visChartcircle, html: visChartcircleHtml }
+  { id: "chartcircle", label: "Circle even or odd sums", blurb: "Circle the even or the odd sums in an addition chart.", on: false, gen: visChartcircle, html: visChartcircleHtml },
+  { id: "ptable", label: "Number pairs in a table", blurb: "Fill in a table of number pairs for a real-world rule that multiplies or adds.", on: false, gen: visPtable, html: visPtableHtml }
 ]);
 /* ---------- Shapes, Measures and Data: coins ----------
    Generators take (rng, level) and return a problem with `sig` and size hints; cell bodies are (p, key, x) functions.
@@ -4937,7 +5533,7 @@ function g3Gcat(rng, L) {
   if (v === 'is') { const shape = pick(rng, L === 1 ? ['square', 'rectangle', 'rhombus', 'trapezoid', 'triangle', 'pentagon', 'hexagon'] : Object.keys(G3_SH)), cat = pick(rng, L === 1 ? ['quad'] : L === 2 ? ['quad', 'rect'] : ['quad', 'rect', 'rhom', 'sq']), rot = pick(rng, [0, 0, 15, 30, 45]) * (shape === 'circle' ? 0 : 1);
     return vp('gcat', `Is this shape a ${G3_CATN[cat]}?`, { variant: v, shape, cat, rot, ans: G3_SH[shape].includes(cat) ? 'yes' : 'no', sig: `gi${shape}${cat}${rot}` }, 2.6, 0.95, 1.9); }
   if (v === 'both') { const k = pick(rng, G3_BOTH.filter(b => b.L <= L)), list = shuffle(rng, G3_QUAD), ans = list.findIndex(k.t);
-    return vp('gcat', 'Circle the shape.', { variant: v, q: k.q, list, ans: String(ans), sig: `gb${k.q.length}${list}` }, 3.0, 1.0, 4.9, 24); }
+    return vp('gcat', 'Circle the shape.', { variant: v, q: k.q, list, ans: String(ans), sig: `gb${k.q.length}${list}` }, 3.0, 1.0 + Math.max(0, vwrapH(k.q, 3.0) - 0.3), 4.9, 24); }
   const list = shuffle(rng, G3_QUAD).slice(0, 3), opts = shuffle(rng, ['quadrilaterals', 'rectangles', 'rhombuses']);
   return vp('gcat', 'Name the group.', { variant: v, list, opts, ans: 'quadrilaterals', sig: `gg${list}${opts}` }, 2.7, 0.9, 4.9, 20);
 }
@@ -4945,7 +5541,7 @@ function g3Gcat(rng, L) {
 function g3GcatHtml(p, key, x) {
   const fl = k => vshape(k, 0, 0, 44, V_SHFILL(k), 0);
   if (p.variant === 'is') return `<div style="display:flex;align-items:center;gap:.5em">${vsvg(1.2, 0.95, vshape(p.shape, 60, 48, 62, V_SHFILL(p.shape), p.rot), 'A shape')}<div>${vopts(['yes', 'no'], p.ans, key)}</div></div>`;
-  if (p.variant === 'both') { let o = p.list.map((k, i) => vshape(k, 40 + 72 * i, 50, 44, V_SHFILL(k), 0)).join(''); if (key) o += vring(40 + 72 * +p.ans - 36, 12, 72, 76); return `<div class="wt">${esc(p.q)}</div>` + vsvg(3.0, 1.0, o, 'Four shapes'); }
+  if (p.variant === 'both') { let o = p.list.map((k, i) => vshape(k, 40 + 72 * i, 50, 44, V_SHFILL(k), 0)).join(''); if (key) o += vring(40 + 72 * +p.ans - 36, 12, 72, 76); return vwrap(p.q, 3.0) + vsvg(3.0, 1.0, o, 'Four shapes'); }
   return vsvg(2.7, 0.9, p.list.map((k, i) => vshape(k, 45 + 90 * i, 45, 46, V_SHFILL(k), 0)).join(''), 'Three shapes') + `<div>These shapes are all</div><div>${vopts(p.opts, p.ans, key)}</div>`;
 }
 
@@ -5133,12 +5729,41 @@ function g3GpartHtml(p, key, x) {
   return vsvg(2.95, 1.0, `<g>${part(p.first === 'A')}</g><g transform="translate(150 0)">${part(p.first !== 'A')}</g>` + vtxt(63, 98, 'A', { b: 1, s: 11 }) + vtxt(213, 98, 'B', { b: 1, s: 11 }), 'Two shapes cut into parts') + `<div>${vopts(['A', 'B'], p.ans, key)}</div>`;
 }
 
+/* Size and number of fractional parts: wholes of the same size cut into 2, 3, 4, 6 or 8 equal parts.
+   L1 which shaded part is larger or smaller (two wholes), or how many parts make 1 whole; L2 how many parts make 2 or 3 wholes;
+   L3 which of three wholes has the largest or smallest parts. */
+const FP_NAME = { 2: 'halves', 3: 'thirds', 4: 'fourths', 6: 'sixths', 8: 'eighths' };
+function fpBars(dens, shade) {
+  let o = '';
+  dens.forEach((d, i) => {
+    const y = 6 + i * 36, x0 = 30, w = 280;
+    if (dens.length > 1 && shade !== 'none') o += vtxt(14, y + 18, V_LET[i], { b: 1, s: 13 });
+    for (let j = 0; j < d; j++) o += vrect((x0 + w * j / d).toFixed(1), y, (w / d).toFixed(1), 26, shade === 'first' && j === 0 ? 'var(--c0)' : '#fff', { c: VINK, w: 2 });
+  });
+  return vsvg(3.2, 0.12 + dens.length * 0.36, o, 'Wholes of the same size cut into equal parts');
+}
+function visFpart(rng, L) {
+  const D = [2, 3, 4, 6, 8];
+  if (L === 1 && rng() < 0.4) { const d = pick(rng, D); return vp('fpart', `How many ${FP_NAME[d]} make 1 whole?`, { kind: 'one', dens: [d], ans: String(d), sig: `fp1w${d}` }, 3.2, 0.5, 0); }
+  if (L === 2) { const d = pick(rng, D), w = pick(rng, [2, 3, 4]); return vp('fpart', `How many ${FP_NAME[d]} make ${w} wholes?`, { kind: 'many', dens: Array(w).fill(d), d, w, ans: String(d * w), sig: `fpm${d}x${w}` }, 3.2, 0.2 + w * 0.36 + 0.45, 0); }
+  const n = L === 1 ? 2 : 3, dens = shuffle(rng, D).slice(0, n), big = rng() < 0.5;
+  const best = dens.reduce((a, b, i) => (big ? b < dens[a] : b > dens[a]) ? i : a, 0), word = L === 1 ? (big ? 'larger' : 'smaller') : (big ? 'largest' : 'smallest');
+  const prompt = L === 1 ? `Which shaded part is ${word}?` : `Which whole has the ${word} parts?`;
+  return vp('fpart', prompt, { kind: 'cmp', dens, opts: V_LET.slice(0, n), ans: V_LET[best], shade: L === 1 ? 'first' : 'all', sig: `fpc${L}${dens.join('')}${big}` }, 3.2, 0.2 + n * 0.36 + 0.45, 0);
+}
+function visFpartHtml(p, key, x) {
+  const g = fpBars(p.dens, p.kind === 'cmp' ? p.shade === 'first' ? 'first' : 'all' : 'none');
+  if (p.kind === 'cmp') return g + `<div>${vopts(p.opts, p.ans, key)}</div>`;
+  return g + `<div>${x(p.ans, 1.6)} ${p.kind === 'one' ? FP_NAME[p.dens[0]] : FP_NAME[p.d]}</div>`;
+}
+
 defTypes("vis", "Equal parts and fractions", [
   { id: "part", label: "Equal shares", blurb: "Halves, thirds, fourths.", on: false, gen: visPart, html: visPartHtml },
   { id: "partw", label: "Halves and quarters", blurb: "Name one share, whole as shares, shade quarters.", on: false, gen: visPartw, html: visPartwHtml },
   { id: "pdraw", label: "Draw equal shares", blurb: "Draw lines to make halves, thirds or fourths.", on: false, gen: visPdraw, html: visPdrawHtml },
   { id: "gpart", label: "Equal areas and unit fractions", blurb: "Draw equal parts, name the unit fraction.", on: false, gen: g3Gpart, html: g3GpartHtml },
-  { id: "fmodel", label: "Fraction models", blurb: "Name, shade and count equal parts of a whole.", on: false, gen: g3Fmodel, html: g3FmodelHtml }
+  { id: "fmodel", label: "Fraction models", blurb: "Name, shade and count equal parts of a whole.", on: false, gen: g3Fmodel, html: g3FmodelHtml },
+  { id: "fpart", label: "Size and number of fractional parts", blurb: "Which parts are larger, and how many parts make 1, 2 or 3 wholes.", on: false, gen: visFpart, html: visFpartHtml }
 ]);
 /* ---------- Shapes, Measures and Data: area and perimeter ----------
    Generators take (rng, level) and return a problem with `sig` and size hints; cell bodies are (p, key, x) functions.
@@ -5505,9 +6130,42 @@ function vCpwordHtml(p, key, x) {
   return `${fig}${cpWrap(p.q)}<div>Answer: ${x(p.ans, 2.4)}</div>`;
 }
 
+/* scatterplots of discrete paired data. L1 plot four pairs from a table (8 by 8 grid), L2 plot five pairs or read one value from a scatterplot,
+   L3 plot six pairs (10 by 10 grid) or say how one measure changes as the other goes up. */
+const SC_CTX = [['Hours practiced', 'Goals scored', 'hours', 'goals'], ['Days of rain', 'Plants that grew', 'days', 'plants'], ['Weeks in the club', 'Badges earned', 'weeks', 'badges'],
+  ['Minutes jogged', 'Laps run', 'minutes', 'laps'], ['Pages read', 'Minutes spent', 'pages', 'minutes'], ['Players on the team', 'Cheers heard', 'players', 'cheers']];
+function vScatter(rng, L) {
+  const N = L === 3 ? 10 : 8, c = L === 3 ? 22 : 26, n = L === 1 ? 4 : L === 2 ? 5 : 6, [xl, yl, xu, yu] = pick(rng, SC_CTX);
+  const kind = L === 1 ? 'plot' : L === 2 ? pick(rng, ['plot', 'read']) : pick(rng, ['plot', 'trend']);
+  const xs = shuffle(rng, Array.from({ length: N }, (_, i) => i + 1)).slice(0, n).sort((a, b) => a - b);
+  let ys, dir = null;
+  if (kind === 'trend') {
+    dir = rng() < 0.5 ? 'up' : 'down';
+    const ramp = Array.from({ length: n }, (_, i) => Math.min(N - 1, 1 + i + (rng() < 0.4 ? 1 : 0)));
+    ys = dir === 'up' ? ramp : ramp.map(v => N + 1 - v - (rng() < 0.4 ? 0 : 0));
+    ys = ys.map(v => Math.max(1, Math.min(N, v)));
+  } else ys = shuffle(rng, Array.from({ length: N }, (_, i) => i + 1)).slice(0, n);
+  const pts = xs.map((x, i) => ({ x, y: ys[i] })), grid = pp => cpGrid(N, N, c, pp, { named: true, xl, yl });
+  const base = { kind, xl, yl, xu, yu, pts, N, sw: 0, sh: 0 }, tab = `<div>${esc(xl)}: ${xs.join(', ')}</div><div>${esc(yl)}: ${ys.join(', ')}</div>`, data = pts.map(q => q.x + '.' + q.y).join('_');
+  if (kind === 'plot') {
+    const g = grid([]), gk = grid(pts.map(q => Object.assign({ key: true }, q)));
+    return vp('scatter', 'Make a scatterplot of the table.', Object.assign(base, { tab, svg: g.svg, svgKey: gk.svg, sw: g.W, sh: g.H, ans: 'plot', sig: `sc${kind}${xl}${data}` }), Math.max(g.W / 100, 2.8), g.H / 100 + 0.65, 0, 0);
+  }
+  const g = grid(pts);
+  if (kind === 'read') { const q = pick(rng, pts); return vp('scatter', 'Use the scatterplot.', Object.assign(base, { svg: g.svg, sw: g.W, sh: g.H, q, ans: String(q.y), sig: `sc${kind}${xl}${data}${q.x}` }), Math.max(g.W / 100, 2.8), g.H / 100 + 0.95, 0, 0); }
+  return vp('scatter', 'Use the scatterplot.', Object.assign(base, { svg: g.svg, sw: g.W, sh: g.H, dir, ans: dir === 'up' ? 'go up' : 'go down', opts: ['go up', 'go down'], sig: `sc${kind}${xl}${data}` }), Math.max(g.W / 100, 2.8), g.H / 100 + 1.4, 0, 0);
+}
+function vScatterHtml(p, key, x) {
+  const fig = vsvg(p.sw / 100, p.sh / 100, p.kind === 'plot' && key ? p.svgKey : p.svg, `Scatterplot of ${p.yl} against ${p.xl}`);
+  if (p.kind === 'plot') return `${p.tab}${fig}`;
+  if (p.kind === 'read') return `${fig}${vwrap(`How many ${p.yu} are shown for ${p.q.x} ${p.xu}?`, 2.8)}<div>Answer: ${x(p.ans, 2)}</div>`;
+  return `${fig}${vwrap(`As the number of ${p.xu} goes up, the number of ${p.yu} tends to`, 2.8)}<div>${vopts(p.opts, p.ans, key)}</div>`;
+}
+
 defTypes("vis", "Coordinate plane", [
   { id: "cplane", label: "Ordered pairs", blurb: "Read and plot points in the first quadrant, parts of an ordered pair, and moves along the axes.", on: false, gen: vCplane, html: vCplaneHtml },
-  { id: "cpword", label: "Graphs of real-world tables", blurb: "Plot a table of ordered pairs, read the graph, and say what a point means.", on: false, gen: vCpword, html: vCpwordHtml }
+  { id: "cpword", label: "Graphs of real-world tables", blurb: "Plot a table of ordered pairs, read the graph, and say what a point means.", on: false, gen: vCpword, html: vCpwordHtml },
+  { id: "scatter", label: "Scatterplots of paired data", blurb: "Plot a table of paired data on a scatterplot, read a value, and say how one measure changes as the other goes up.", on: false, gen: vScatter, html: vScatterHtml }
 ]);
 /* ---------- Shapes, Measures and Data: angles, protractors, points, lines and rays ----------
    Generators take (rng, level) and return a problem with `sig` and size hints; cell bodies are (p, key, x) functions.
@@ -6305,7 +6963,57 @@ const STANDARDS = [
   { id: 'geom.volume-rectangular-prisms', t: 'Volume of rectangular prisms', m: 'geom', geom: { types: ['vis.vlwh', 'vis.vcomp'], level: 3 } },
   { id: 'geom.graph-name-points-in-first-quadrant', t: 'Graph and name points in the first quadrant', m: 'geom', geom: { types: ['vis.cplane'], level: 2 } },
   { id: 'geom.graph-real-world-problems', t: 'Graph real-world problems', m: 'geom', geom: { types: ['vis.cpword'], level: 3 } },
-  { id: 'geom.hierarchy-two-dimensional-figures', t: 'Hierarchy of two-dimensional figures', m: 'geom', geom: { types: ['vis.ghier'], level: 3 } }
+  { id: 'geom.hierarchy-two-dimensional-figures', t: 'Hierarchy of two-dimensional figures', m: 'geom', geom: { types: ['vis.ghier'], level: 3 } },
+  { id: 'num.read-number-line', t: 'Read a number line', m: 'num', num: { types: ['ns.line'], level: 2 } },
+  { id: 'num.order-numbers-to-120', t: 'Order numbers to 120', m: 'num', num: { types: ['ns.ordsm'], level: 2 } },
+  { id: 'num.order-three-digit-numbers', t: 'Order three-digit numbers', m: 'num', num: { types: ['ns.order'], level: 1 } },
+  { id: 'num.order-four-digit-numbers', t: 'Order four-digit numbers', m: 'num', num: { types: ['ns.order'], level: 2 } },
+  { id: 'num.compare-five-digit-numbers', t: 'Compare four- and five-digit numbers', m: 'num', num: { types: ['ns.compare'], level: 2 } },
+  { id: 'num.order-decimals', t: 'Order decimals', m: 'num', num: { types: ['ns.order'], level: 3 } },
+  { id: 'time.earn-income', t: 'Identify ways to earn income', m: 'time', time: { types: ['ns.flinc'], level: 2 } },
+  { id: 'time.income-or-gift', t: 'Tell income from gifts', m: 'time', time: { types: ['ns.flinc'], level: 1 } },
+  { id: 'time.define-income', t: 'Define income', m: 'time', time: { types: ['ns.flinc'], level: 3 } },
+  { id: 'time.skills-for-jobs', t: 'Skills needed for jobs', m: 'time', time: { types: ['ns.fljob'], level: 1 } },
+  { id: 'time.skills-hours-income', t: 'Skills, hours and income', m: 'time', time: { types: ['ns.fljob'], level: 2 } },
+  { id: 'time.pay-rate-income', t: 'Income from a pay rate', m: 'time', time: { types: ['ns.fljob'], level: 3 } },
+  { id: 'time.wants-and-needs', t: 'Wants and needs', m: 'time', time: { types: ['ns.flwant'], level: 1 } },
+  { id: 'time.income-wants-needs', t: 'Use income for a want or a need', m: 'time', time: { types: ['ns.flwant'], level: 3 } },
+  { id: 'time.spend-or-save', t: 'Spending and saving', m: 'time', time: { types: ['ns.flsave'], level: 1 } },
+  { id: 'time.spend-save-give', t: 'Spending, saving and giving', m: 'time', time: { types: ['ns.flsave'], level: 2 } },
+  { id: 'time.money-decisions', t: 'Decisions about income, spending, saving, credit and giving', m: 'time', time: { types: ['ns.flsave'], level: 3 } },
+  { id: 'time.saving-adds-up', t: 'Saved money adds up', m: 'time', time: { types: ['ns.flgrow'], level: 1 } },
+  { id: 'time.saving-with-start', t: 'Saving from a starting amount', m: 'time', time: { types: ['ns.flgrow'], level: 2 } },
+  { id: 'time.weeks-to-goal', t: 'Weeks to reach a savings goal', m: 'time', time: { types: ['ns.flgrow'], level: 3 } },
+  { id: 'time.deposit-withdrawal', t: 'Deposits and withdrawals', m: 'time', time: { types: ['ns.flbank'], level: 1 } },
+  { id: 'time.bank-balance', t: 'Bank balance after transactions', m: 'time', time: { types: ['ns.flbank'], level: 2 } },
+  { id: 'time.borrowing-lending', t: 'Borrowing and lending', m: 'time', time: { types: ['ns.flcred'], level: 1 } },
+  { id: 'time.responsible-borrowing', t: 'Responsible borrowing and lending decisions', m: 'time', time: { types: ['ns.flcred'], level: 2 } },
+  { id: 'time.cost-of-credit', t: 'Paying back a loan', m: 'time', time: { types: ['ns.flcred'], level: 3 } },
+  { id: 'time.producers-consumers', t: 'Producers and consumers', m: 'time', time: { types: ['ns.flmake'], level: 1 } },
+  { id: 'time.cost-to-produce', t: 'Cost to produce an item', m: 'time', time: { types: ['ns.flmake'], level: 2 } },
+  { id: 'time.scarcity-and-cost', t: 'Scarcity and price', m: 'time', time: { types: ['ns.flscar'], level: 2 } },
+  { id: 'time.planned-unplanned-spending', t: 'Planned and unplanned spending', m: 'time', time: { types: ['ns.flspend'], level: 1 } },
+  { id: 'time.spending-costs-benefits', t: 'Costs and benefits of spending', m: 'time', time: { types: ['ns.flspend'], level: 2 } },
+  { id: 'time.fixed-variable-expenses', t: 'Fixed and variable expenses', m: 'time', time: { types: ['ns.flexp'], level: 1 } },
+  { id: 'time.calculate-profit', t: 'Calculate profit', m: 'time', time: { types: ['ns.flprofit'], level: 2 } },
+  { id: 'time.savings-options', t: 'Savings options', m: 'time', time: { types: ['ns.flopt'], level: 2 } },
+  { id: 'time.allocate-allowance', t: 'Allocate an allowance', m: 'time', time: { types: ['ns.flallow'], level: 2 } },
+  { id: 'time.financial-institutions', t: 'Purpose of financial institutions', m: 'time', time: { types: ['ns.flinst'], level: 1 } },
+  { id: 'time.kinds-of-taxes', t: 'Kinds of taxes', m: 'time', time: { types: ['ns.fltax'], level: 2 } },
+  { id: 'time.gross-net-income', t: 'Gross and net income', m: 'time', time: { types: ['ns.flnet'], level: 1 } },
+  { id: 'time.payment-methods', t: 'Methods of payment', m: 'time', time: { types: ['ns.flpay'], level: 2 } },
+  { id: 'time.financial-records', t: 'Financial records', m: 'time', time: { types: ['ns.flrec'], level: 2 } },
+  { id: 'time.balance-budget', t: 'Balance a simple budget', m: 'time', time: { types: ['ns.flbud'], level: 1 } },
+  { id: 'time.budget-actions', t: 'Actions to balance a budget', m: 'time', time: { types: ['ns.flbud'], level: 3 } },
+  { id: 'frac.fraction-part-size', t: 'Size of fractional parts', m: 'frac', frac: { types: ['vis.fpart'], level: 1 } },
+  { id: 'frac.fraction-parts-in-wholes', t: 'Number of fractional parts in wholes', m: 'frac', frac: { types: ['vis.fpart'], level: 2 } },
+  { id: 'oa.number-pairs-in-table', t: 'Number pairs in a table', m: 'oa', oa: { types: ['vis.ptable'], level: 2 } },
+  { id: 'geom.scatterplot-paired-data', t: 'Scatterplot of paired data', m: 'geom', geom: { types: ['vis.scatter'], level: 2 } },
+  { id: 'time.sort-wants-needs', t: 'Sort wants and needs', m: 'time', time: { types: ['ns.flsortwn'], level: 2 } },
+  { id: 'time.sort-fixed-variable', t: 'Sort fixed and variable expenses', m: 'time', time: { types: ['ns.flsortfv'], level: 2 } },
+  { id: 'time.sort-income-gifts', t: 'Sort income and gifts', m: 'time', time: { types: ['ns.flsortig'], level: 2 } },
+  { id: 'time.budget-table', t: 'Fill in a budget table', m: 'time', time: { types: ['ns.flbtab'], level: 2 } },
+  { id: 'time.complete-money-sentences', t: 'Complete sentences about money ideas', m: 'time', time: { types: ['ns.flexplain'], level: 2 } }
 ];
 const STD_BY_ID = {}; STANDARDS.forEach(s => { STD_BY_ID[s.id] = s; });
 /* Framework data is in STD_FW (framework.js); fw defaults to the default framework. A framework that is not loaded yet has no rows. */
@@ -6700,6 +7408,32 @@ const TYPE_HOME = {
   "ns.compare": ["ns", "Place value, comparing and rounding"],
   "ns.cmp2": ["ns", "Place value, comparing and rounding"],
   "ns.order": ["ns", "Place value, comparing and rounding"],
+  "ns.ordsm": ["ns", "Place value, comparing and rounding"],
+  "ns.flinc": ["tm", "Financial literacy"],
+  "ns.fljob": ["tm", "Financial literacy"],
+  "ns.flwant": ["tm", "Financial literacy"],
+  "ns.flsave": ["tm", "Financial literacy"],
+  "ns.flgrow": ["tm", "Financial literacy"],
+  "ns.flbank": ["tm", "Financial literacy"],
+  "ns.flcred": ["tm", "Financial literacy"],
+  "ns.flmake": ["tm", "Financial literacy"],
+  "ns.flscar": ["tm", "Financial literacy"],
+  "ns.flspend": ["tm", "Financial literacy"],
+  "ns.flexp": ["tm", "Financial literacy"],
+  "ns.flprofit": ["tm", "Financial literacy"],
+  "ns.flopt": ["tm", "Financial literacy"],
+  "ns.flallow": ["tm", "Financial literacy"],
+  "ns.flinst": ["tm", "Financial literacy"],
+  "ns.fltax": ["tm", "Financial literacy"],
+  "ns.flnet": ["tm", "Financial literacy"],
+  "ns.flpay": ["tm", "Financial literacy"],
+  "ns.flrec": ["tm", "Financial literacy"],
+  "ns.flbud": ["tm", "Financial literacy"],
+  "ns.flsortwn": ["tm", "Financial literacy"],
+  "ns.flsortfv": ["tm", "Financial literacy"],
+  "ns.flsortig": ["tm", "Financial literacy"],
+  "ns.flbtab": ["tm", "Financial literacy"],
+  "ns.flexplain": ["tm", "Financial literacy"],
   "ns.round": ["ns", "Place value, comparing and rounding"],
   "ns.roundw": ["ns", "Place value, comparing and rounding"],
   "ns.rnd3": ["ns", "Place value, comparing and rounding"],
@@ -6735,6 +7469,7 @@ const TYPE_HOME = {
   "vis.addchart": ["oa", "Patterns and charts"],
   "vis.chartcircle": ["oa", "Patterns and charts"],
   "vis.mchart": ["oa", "Patterns and charts"],
+  "vis.ptable": ["oa", "Patterns and charts"],
   "ns.rulepat": ["oa", "Patterns and charts"],
   "ns.rule2": ["oa", "Patterns and charts"],
   "ns.rule2g": ["oa", "Patterns and charts"],
@@ -6743,6 +7478,7 @@ const TYPE_HOME = {
   "vis.pdraw": ["fdp", "Visual models and number lines"],
   "vis.gpart": ["fdp", "Visual models and number lines"],
   "vis.fmodel": ["fdp", "Visual models and number lines"],
+  "vis.fpart": ["fdp", "Visual models and number lines"],
   "vis.fline": ["fdp", "Visual models and number lines"],
   "fdp.simp": ["fdp", "Compare, simplify and equivalence"],
   "fdp.equiv": ["fdp", "Compare, simplify and equivalence"],
@@ -6837,7 +7573,8 @@ const TYPE_HOME = {
   "vis.vlwh": ["geom", "Space and coordinates"],
   "vis.vcomp": ["geom", "Space and coordinates"],
   "vis.cplane": ["geom", "Space and coordinates"],
-  "vis.cpword": ["geom", "Space and coordinates"]
+  "vis.cpword": ["geom", "Space and coordinates"],
+  "vis.scatter": ["geom", "Space and coordinates"]
 };
 const WORD_IDS = ['wadd', 'wlen', 'wmul', 'wcmp', 'wstep', 'west', 'mword', 'fword6', 'cstory'];
 function typeTags(mod, d) {
@@ -7653,6 +8390,14 @@ if (shareBtn) shareBtn.addEventListener('click', async () => {
   const link = location.href.split('#')[0] + '#s=' + await encodeShare(state);
   try { await navigator.clipboard.writeText(link); shareBtn.textContent = 'Link copied'; } catch (e) { prompt('Copy this link', link); }
   setTimeout(() => { shareBtn.textContent = 'Share link'; }, 1800);
+});
+/* Privacy and acknowledgements dialogs; "Delete saved data" removes every key this site stores (settings, open groups, theme) and reloads without a share link. */
+document.querySelectorAll('[data-dlg]').forEach(b => b.addEventListener('click', () => { const d = document.getElementById(b.dataset.dlg); if (d && d.showModal) d.showModal(); }));
+const wipeBtn = document.getElementById('wipeData');
+if (wipeBtn) wipeBtn.addEventListener('click', () => {
+  if (!confirm('Delete the settings this site saved in your browser? The page will reload with the defaults.')) return;
+  try { [STORE, GROUPS_KEY, THEME_KEY].forEach(k => localStorage.removeItem(k)); } catch (e) { /* ignore */ }
+  location.replace(location.href.split('#')[0]);
 });
 const printBtn = document.getElementById('printBtn');
 /* Coins loaded from files (site build) must be in the browser cache before printing; embedded coins resolve at once. */

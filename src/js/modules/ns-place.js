@@ -172,6 +172,19 @@ function nsOrder(rng, L) {
     ew: Math.max(shown.reduce((a, s) => a + s.length * 0.62 + 1.3, 0), ans.reduce((a, s) => a + s.length * 0.62 + 2.4, 0), 12), eh: 1.1 + 1.45 * 2 + 0.8 };
 }
 
+/* Order numbers to 120 (Texas 1.2F): two-digit numbers, then numbers that cross 100 so place value decides the order. */
+function nsOrderSm(rng, L) {
+  const cnt = L === 1 ? 3 : 4, set = new Set(), vals = [];
+  let g = 0;
+  while (vals.length < cnt && g++ < 200) {
+    const n = L === 1 ? ri(rng, 10, 99) : L === 2 ? ri(rng, 10, 120) : (vals.length === 0 ? ri(rng, 100, 120) : pick(rng, [ri(rng, 90, 99), ri(rng, 100, 120)]));
+    if (!set.has(n)) { set.add(n); vals.push(String(n)); }
+  }
+  const asc = rng() < 0.6, ans = vals.slice().sort((x, y) => asc ? x - y : y - x);
+  return { mod: 'ns', type: 'ordsm', prompt: asc ? 'Order least to greatest:' : 'Order greatest to least:', shown: vals, ans, sig: `os${vals.join(',')}${asc}`,
+    ew: Math.max(vals.reduce((a, s) => a + s.length * 0.62 + 1.3, 0), ans.reduce((a, s) => a + s.length * 0.62 + 2.4, 0), 12), eh: 1.1 + 1.45 * 2 + 0.8 };
+}
+
 function nsRound(rng, L) {
   let n, unit, name, dp = 0;
   if (L === 1) { const big = rng() < 0.4; n = big ? ri(rng, 101, 999) : ri(rng, 11, 99); unit = 10; name = 'ten'; }
@@ -309,6 +322,7 @@ defTypes("ns", "Place value, comparing and rounding", [
   { id: "compare", label: "Compare numbers", blurb: "Write <, > or = between two numbers.", on: true, gen: nsCompare, html: nsCompareHtml },
   { id: "cmp2", label: "Compare two-digit numbers", blurb: "Write <, > or = between numbers 10 to 99.", on: false, gen: nsxCmp2 },
   { id: "order", label: "Order numbers", blurb: "Least to greatest or greatest to least.", on: true, gen: nsOrder, html: nsOrderHtml },
+  { id: "ordsm", label: "Order numbers to 120", blurb: "Least to greatest or greatest to least, two-digit numbers and 100 to 120.", on: false, gen: nsOrderSm, html: nsOrderHtml },
   { id: "round", label: "Rounding", blurb: "Whole numbers and decimals.", on: true, gen: nsRound, html: nsRoundHtml },
   { id: "rnd3", label: "Round to 10 or 100", blurb: "Plain problems and number lines.", on: false, gen: nsxRnd3, html: nsRnd3Html },
   { id: "est", label: "Estimation", blurb: "Round each number, then add, subtract or multiply.", on: true, gen: nsEst, html: nsEstHtml },

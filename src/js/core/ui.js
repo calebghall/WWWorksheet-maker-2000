@@ -634,6 +634,14 @@ if (shareBtn) shareBtn.addEventListener('click', async () => {
   try { await navigator.clipboard.writeText(link); shareBtn.textContent = 'Link copied'; } catch (e) { prompt('Copy this link', link); }
   setTimeout(() => { shareBtn.textContent = 'Share link'; }, 1800);
 });
+/* Privacy and acknowledgements dialogs; "Delete saved data" removes every key this site stores (settings, open groups, theme) and reloads without a share link. */
+document.querySelectorAll('[data-dlg]').forEach(b => b.addEventListener('click', () => { const d = document.getElementById(b.dataset.dlg); if (d && d.showModal) d.showModal(); }));
+const wipeBtn = document.getElementById('wipeData');
+if (wipeBtn) wipeBtn.addEventListener('click', () => {
+  if (!confirm('Delete the settings this site saved in your browser? The page will reload with the defaults.')) return;
+  try { [STORE, GROUPS_KEY, THEME_KEY].forEach(k => localStorage.removeItem(k)); } catch (e) { /* ignore */ }
+  location.replace(location.href.split('#')[0]);
+});
 const printBtn = document.getElementById('printBtn');
 /* Coins loaded from files (site build) must be in the browser cache before printing; embedded coins resolve at once. */
 if (printBtn) printBtn.addEventListener('click', () => {

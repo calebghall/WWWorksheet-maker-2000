@@ -2,11 +2,11 @@
 
 Source: Texas Essential Knowledge and Skills for Mathematics (2012), imported from the Common Standards Project. 242 standards.
 
-- Supported: 153
-- Partial: 51
-- Gap: 38
+- Supported: 179
+- Partial: 63
+- Gap: 0
 
-Supported and Partial standards build a worksheet from the Texas standard panel of the worksheet maker (standards/tx.crosswalk.json maps each standard to its presets). Partial rows list what differs from the standard. Gaps by grade: Grade 1 (5), Grade 2 (10), Grade 3 (7), Grade 4 (5), Grade 5 (7), Kindergarten (4).
+Supported and Partial standards build a worksheet from the Texas standard panel of the worksheet maker (standards/tx.crosswalk.json maps each standard to its presets). Partial rows list what differs from the standard. Gaps by grade: none.
 
 ## Kindergarten
 
@@ -35,10 +35,10 @@ Supported and Partial standards build a worksheet from the Texas standard panel 
 | K.8A | collect, sort, and organize data into two or three categories | Partial | Measurement and Data: Sort and compare groups. Sorts and counts given groups; collecting the data is not generated. |
 | K.8B | use data to create real-object and picture graphs | Partial | Measurement and Data: Tally charts, pictographs and bar graphs. Pictographs are read or drawn from a table; graphs made from real objects are not generated. |
 | K.8C | draw conclusions from real-object and picture graphs | Supported | Measurement and Data: Tally charts, pictographs and bar graphs. |
-| K.9A | identify ways to earn income | Gap | Needs: earning income and jobs. |
-| K.9B | differentiate between money received as income and money received as gifts | Gap | Needs: earning income and jobs. |
-| K.9C | list simple skills required for jobs | Gap | Needs: earning income and jobs. |
-| K.9D | distinguish between wants and needs and identify income as a source to meet one's wants and needs | Gap | Needs: wants, needs and spending choices. |
+| K.9A | identify ways to earn income | Supported | Time and Money: Identify ways to earn income. |
+| K.9B | differentiate between money received as income and money received as gifts | Supported | Time and Money: Tell income from gifts and Sort income and gifts. |
+| K.9C | list simple skills required for jobs | Supported | Time and Money: Skills needed for jobs. |
+| K.9D | distinguish between wants and needs and identify income as a source to meet one's wants and needs | Supported | Time and Money: Wants and needs and Sort wants and needs. |
 
 ## Grade 1
 
@@ -49,7 +49,7 @@ Supported and Partial standards build a worksheet from the Texas standard panel 
 | 1.2C | use objects, pictures, and expanded and standard forms to represent numbers up to 120 | Partial | Number Sense: Count on and back and Read and write numbers to 1000. Base-ten blocks and tens and ones to 120 are generated; expanded form is generated only from 100 up. |
 | 1.2D | generate a number that is greater than or less than a given whole number up to 120 | Partial | Number Sense: Count on and back. Counting on and back is generated; asking for a number greater or less than a given number up to 120 is not a separate question. |
 | 1.2E | use place value to compare whole numbers up to 120 using comparative language | Partial | Number Sense: Compare numbers. Compares two-digit numbers (10 to 99); 100 to 120 is not generated. |
-| 1.2F | order whole numbers up to 120 using place value and open number lines | Gap | Needs: order numbers with place value and number lines (type ns.order has no preset). |
+| 1.2F | order whole numbers up to 120 using place value and open number lines | Partial | Number Sense: Order numbers to 120. Orders numbers to 120; open number lines are not used. |
 | 1.2G | represent the comparison of two numbers to 100 using the symbols >, <, or = | Supported | Number Sense: Compare numbers. |
 | 1.3A | use concrete and pictorial models to determine the sum of a multiple of 10 and a one-digit number in... | Supported | Addition and Subtraction: Add a two-digit and a one-digit number. |
 | 1.3B | use objects and pictorial models to solve word problems involving joining, separating, and comparing sets... | Supported | Number Sense: Add and subtract word problems within 20. |
@@ -83,10 +83,10 @@ Supported and Partial standards build a worksheet from the Texas standard panel 
 | 1.8A | collect, sort, and organize data in up to three categories using models/representations such as tally... | Partial | Measurement and Data: Tally charts, pictographs and bar graphs. Tally charts are read from given data; collecting and sorting the data is not generated. |
 | 1.8B | use data to create picture and bar-type graphs | Supported | Measurement and Data: Draw pictographs and bar graphs. |
 | 1.8C | draw conclusions and generate and answer questions using information from picture and bar-type graphs | Supported | Measurement and Data: Tally charts, pictographs and bar graphs. |
-| 1.9A | define money earned as income | Gap | Needs: earning income and jobs. |
-| 1.9B | identify income as a means of obtaining goods and services, oftentimes making choices between wants and needs | Gap | Needs: wants, needs and spending choices. |
-| 1.9C | distinguish between spending and saving | Gap | Needs: saving, spending and giving. |
-| 1.9D | consider charitable giving | Gap | Needs: saving, spending and giving. |
+| 1.9A | define money earned as income | Supported | Time and Money: Define income. |
+| 1.9B | identify income as a means of obtaining goods and services, oftentimes making choices between wants and needs | Supported | Time and Money: Use income for a want or a need. |
+| 1.9C | distinguish between spending and saving | Supported | Time and Money: Spending and saving. |
+| 1.9D | consider charitable giving | Supported | Time and Money: Spending, saving and giving. |
 
 ## Grade 2
 
@@ -95,12 +95,12 @@ Supported and Partial standards build a worksheet from the Texas standard panel 
 | 2.2A | use concrete and pictorial models to compose and decompose numbers up to 1,200 in more than one way as a... | Partial | Number Sense: Place value to hundreds. Place value to hundreds; numbers above 999 and writing a number in more than one way are not generated. |
 | 2.2B | use standard, word, and expanded forms to represent numbers up to 1,200 | Partial | Number Sense: Read and write numbers to 1000. Standard, word and expanded forms are generated for 100 to 1,000; Texas goes to 1,200. |
 | 2.2C | generate a number that is greater than or less than a given whole number up to 1,200 | Partial | Number Sense: Mentally add or subtract 10 or 100. Counting and 10 or 100 more or less are generated; asking for any number greater or less than a given number is not a separate question. |
-| 2.2D | use place value to compare and order whole numbers up to 1,200 using comparative language, numbers, and... | Partial | Number Sense: Compare three-digit numbers. Compares three-digit numbers; ordering numbers and numbers up to 1,200 are not generated. |
-| 2.2E | locate the position of a given whole number on an open number line | Gap | Needs: whole numbers on a number line (type ns.line has no preset). |
-| 2.2F | name the whole number that corresponds to a specific point on a number line | Gap | Needs: whole numbers on a number line (type ns.line has no preset). |
+| 2.2D | use place value to compare and order whole numbers up to 1,200 using comparative language, numbers, and... | Partial | Number Sense: Compare three-digit numbers and Order three-digit numbers. Compares and orders three-digit numbers; numbers from 1,000 to 1,200 are not generated. |
+| 2.2E | locate the position of a given whole number on an open number line | Partial | Number Sense: Read a number line. Reads the number an arrow shows on a marked number line; marking a given number on an open number line is not generated. |
+| 2.2F | name the whole number that corresponds to a specific point on a number line | Supported | Number Sense: Read a number line. |
 | 2.3A | partition objects into equal parts and name the parts, including halves, fourths, and eighths, using words | Partial | Fractions, Decimals and Percents: Equal shares. Halves, thirds and fourths are generated; eighths are not. |
-| 2.3B | explain that the more fractional parts used to make a whole, the smaller the part; and the fewer the... | Gap | Needs: size and number of fractional parts of a whole. |
-| 2.3C | use concrete models to count fractional parts beyond one whole using words and recognize how many parts it... | Gap | Needs: size and number of fractional parts of a whole. |
+| 2.3B | explain that the more fractional parts used to make a whole, the smaller the part; and the fewer the... | Supported | Fractions, Decimals and Percents: Size of fractional parts and Number of fractional parts in wholes. |
+| 2.3C | use concrete models to count fractional parts beyond one whole using words and recognize how many parts it... | Supported | Fractions, Decimals and Percents: Number of fractional parts in wholes. |
 | 2.3D | identify examples and non-examples of halves, fourths, and eighths | Partial | Fractions, Decimals and Percents: Halves and fourths. Halves and fourths are generated; eighths are not. |
 | 2.4A | recall basic facts to add and subtract within 20 with automaticity | Supported | Addition and Subtraction: Addition and subtraction fluency within 20. |
 | 2.4B | add up to four two-digit numbers and subtract two-digit numbers using mental strategies and algorithms... | Supported | Addition and Subtraction: Add two-digit numbers and Add and subtract within 100. |
@@ -129,12 +129,12 @@ Supported and Partial standards build a worksheet from the Texas standard panel 
 | 2.10B | organize a collection of data with up to four categories using pictographs and bar graphs with intervals... | Supported | Measurement and Data: Draw pictographs and bar graphs. |
 | 2.10C | write and solve one-step word problems involving addition or subtraction using data represented within... | Supported | Measurement and Data: Draw pictographs and bar graphs. |
 | 2.10D | draw conclusions and make predictions from information in a graph | Partial | Measurement and Data: Draw pictographs and bar graphs. Questions are read from graphs; making predictions is not generated. |
-| 2.11A | calculate how money saved can accumulate into a larger amount over time | Gap | Needs: saving, spending and giving. |
-| 2.11B | explain that saving is an alternative to spending | Gap | Needs: saving, spending and giving. |
-| 2.11C | distinguish between a deposit and a withdrawal | Gap | Needs: banking and financial institutions. |
-| 2.11D | identify examples of borrowing and distinguish between responsible and irresponsible borrowing | Gap | Needs: borrowing and lending. |
-| 2.11E | identify examples of lending and use concepts of benefits and costs to evaluate lending decisions | Gap | Needs: borrowing and lending. |
-| 2.11F | differentiate between producers and consumers and calculate the cost to produce a simple item | Gap | Needs: producers, consumers and cost of production. |
+| 2.11A | calculate how money saved can accumulate into a larger amount over time | Supported | Time and Money: Saved money adds up and Saving from a starting amount. |
+| 2.11B | explain that saving is an alternative to spending | Partial | Time and Money: Spending and saving and Complete sentences about money ideas. Worksheets identify spending versus saving; they do not ask for an explanation; a word-bank sentence completion adds recall of the explanation (mixed money topics, not one topic per standard). |
+| 2.11C | distinguish between a deposit and a withdrawal | Supported | Time and Money: Deposits and withdrawals and Bank balance after transactions. |
+| 2.11D | identify examples of borrowing and distinguish between responsible and irresponsible borrowing | Supported | Time and Money: Borrowing and lending and Responsible borrowing and lending decisions. |
+| 2.11E | identify examples of lending and use concepts of benefits and costs to evaluate lending decisions | Supported | Time and Money: Borrowing and lending and Responsible borrowing and lending decisions. |
+| 2.11F | differentiate between producers and consumers and calculate the cost to produce a simple item | Supported | Time and Money: Producers and consumers and Cost to produce an item. |
 
 ## Grade 3
 
@@ -143,7 +143,7 @@ Supported and Partial standards build a worksheet from the Texas standard panel 
 | 3.2A | compose and decompose numbers up to 100,000 as a sum of so many ten thousands, so many thousands, so many... | Supported | Number Sense: Read and write multi-digit numbers. |
 | 3.2B | describe the mathematical relationships found in the base-10 place value system through the hundred... | Supported | Number Sense: Place value. |
 | 3.2C | represent a number on a number line as being between two consecutive multiples of 10; 100; 1,000; or... | Partial | Number Sense: Round to the nearest 10 or 100. Rounding to 10 or 100 on a number line is generated; 1,000 and 10,000 and describing where a number lies are not. |
-| 3.2D | compare and order whole numbers up to 100,000 and represent comparisons using the symbols >, <, or = | Partial | Number Sense: Compare three-digit numbers. Comparing with <, > and = is generated; ordering numbers is not in any preset (type ns.order). |
+| 3.2D | compare and order whole numbers up to 100,000 and represent comparisons using the symbols >, <, or = | Partial | Number Sense: Compare four- and five-digit numbers and Order four-digit numbers. Compares numbers to 99,999; ordering is generated to 9,999. |
 | 3.3A | represent fractions greater than zero and less than or equal to one with denominators of 2, 3, 4, 6, and 8... | Supported | Fractions, Decimals and Percents: Fractions as parts of a whole. |
 | 3.3B | determine the corresponding fraction greater than zero and less than or equal to one with denominators of... | Supported | Fractions, Decimals and Percents: Fractions on a number line. |
 | 3.3C | explain that the unit fraction 1/b represents the quantity formed by one part of a whole that has been... | Supported | Fractions, Decimals and Percents: Fractions as parts of a whole. |
@@ -167,7 +167,7 @@ Supported and Partial standards build a worksheet from the Texas standard panel 
 | 3.5B | represent and solve one- and two-step multiplication and division problems within 100 using arrays, strip... | Supported | Number Sense: Multiply and divide word problems. |
 | 3.5C | describe a multiplication expression as a comparison such as 3 x 24 represents 3 times as much as 24 | Supported | Operations and Algebraic Thinking: Multiplicative comparison statements. |
 | 3.5D | determine the unknown whole number in a multiplication or division equation relating three whole numbers... | Supported | Operations and Algebraic Thinking: Unknown number in a multiplication or division equation. |
-| 3.5E | represent real-world relationships using number pairs in a table and verbal descriptions | Gap | Needs: number pairs in a table for real-world relationships. |
+| 3.5E | represent real-world relationships using number pairs in a table and verbal descriptions | Supported | Operations and Algebraic Thinking: Number pairs in a table. |
 | 3.6A | classify and sort two- and three-dimensional solids, including cones, cylinders, spheres, triangular and... | Partial | Geometry, Area and Volume: Compare flat shapes and solids. Compares flat shapes and solids; classifying cones, cylinders and prisms by attributes is not generated. |
 | 3.6B | use attributes to recognize rhombuses, parallelograms, trapezoids, rectangles, and squares as examples of... | Supported | Geometry, Area and Volume: Quadrilateral categories. |
 | 3.6C | determine the area of rectangles with whole number side lengths in problems using multiplication related... | Supported | Geometry, Area and Volume: Area of rectangles. |
@@ -180,12 +180,12 @@ Supported and Partial standards build a worksheet from the Texas standard panel 
 | 3.7E | determine liquid volume (capacity) or weight using appropriate units and tools | Supported | Measurement and Data: Mass and liquid volume. |
 | 3.8A | summarize a data set with multiple categories using a frequency table, dot plot, pictograph, or bar graph... | Partial | Measurement and Data: Scaled pictographs and bar graphs and Line plots. Scaled pictographs, bar graphs and line plots are generated; frequency tables are not. |
 | 3.8B | solve one- and two-step problems using categorical data represented with a frequency table, dot plot,... | Partial | Measurement and Data: Scaled pictographs and bar graphs and Line plots. Scaled pictographs, bar graphs and line plots are generated; frequency tables are not. |
-| 3.9A | explain the connection between human capital/labor and income | Gap | Needs: earning income and jobs. |
-| 3.9B | describe the relationship between the availability or scarcity of resources and how that impacts cost | Gap | Needs: scarcity and cost. |
-| 3.9C | identify the costs and benefits of planned and unplanned spending decisions | Gap | Needs: wants, needs and spending choices. |
-| 3.9D | explain that credit is used when wants or needs exceed the ability to pay and that it is the borrower's... | Gap | Needs: borrowing and lending. |
-| 3.9E | list reasons to save and explain the benefit of a savings plan, including for college | Gap | Needs: saving, spending and giving. |
-| 3.9F | identify decisions involving income, spending, saving, credit, and charitable giving | Gap | Needs: saving, spending and giving. |
+| 3.9A | explain the connection between human capital/labor and income | Partial | Time and Money: Skills, hours and income and Income from a pay rate and Complete sentences about money ideas. Worksheets identify job skills and calculate income from skills and hours; they do not ask for a written explanation; a word-bank sentence completion adds recall of the explanation (mixed money topics, not one topic per standard). |
+| 3.9B | describe the relationship between the availability or scarcity of resources and how that impacts cost | Partial | Time and Money: Scarcity and price and Complete sentences about money ideas. Worksheets identify the price effect and the likely reason; they do not ask for a description of the relationship; a word-bank sentence completion adds recall of the explanation (mixed money topics, not one topic per standard). |
+| 3.9C | identify the costs and benefits of planned and unplanned spending decisions | Supported | Time and Money: Planned and unplanned spending and Costs and benefits of spending. |
+| 3.9D | explain that credit is used when wants or needs exceed the ability to pay and that it is the borrower's... | Partial | Time and Money: Paying back a loan and Complete sentences about money ideas. Worksheets calculate paying a loan back with a fee; they do not ask for an explanation of credit; a word-bank sentence completion adds recall of the explanation (mixed money topics, not one topic per standard). |
+| 3.9E | list reasons to save and explain the benefit of a savings plan, including for college | Partial | Time and Money: Weeks to reach a savings goal and Complete sentences about money ideas. Worksheets calculate weeks to reach a goal; they do not ask for reasons to save or for a savings plan; a word-bank sentence completion adds recall of the explanation (mixed money topics, not one topic per standard). |
+| 3.9F | identify decisions involving income, spending, saving, credit, and charitable giving | Supported | Time and Money: Decisions about income, spending, saving, credit and giving. |
 
 ## Grade 4
 
@@ -193,10 +193,10 @@ Supported and Partial standards build a worksheet from the Texas standard panel 
 |---|---|---|---|
 | 4.2A | interpret the value of each place-value position as 10 times the position to the right and as one-tenth of... | Supported | Number Sense and Fractions, Decimals and Percents: Place value and Ten times and one tenth. |
 | 4.2B | represent the value of the digit in whole numbers through 1,000,000,000 and decimals to the hundredths... | Partial | Number Sense and Fractions, Decimals and Percents: Read and write multi-digit numbers and Read, write and compare decimals. Whole numbers are generated to 999,999; Texas goes to 1,000,000,000. |
-| 4.2C | compare and order whole numbers to 1,000,000,000 and represent comparisons using the symbols >, <, or = | Partial | Number Sense: Read and write multi-digit numbers. Comparing and ordering whole numbers beyond 999,999 is not generated; ordering is not in any preset (type ns.order). |
+| 4.2C | compare and order whole numbers to 1,000,000,000 and represent comparisons using the symbols >, <, or = | Partial | Number Sense: Compare four- and five-digit numbers and Order four-digit numbers. Compares numbers to 99,999 and orders numbers to 9,999; Texas goes to 1,000,000,000. |
 | 4.2D | round whole numbers to a given place value through the hundred thousands place | Supported | Number Sense: Round multi-digit numbers. |
 | 4.2E | represent decimals, including tenths and hundredths, using concrete and visual models and money | Partial | Fractions, Decimals and Percents and Number Sense: Fractions and decimals and Read, write and compare decimals. Decimals are shown as numerals and on number lines; concrete and money models are not generated. |
-| 4.2F | compare and order decimals using concrete and visual models to the hundredths | Supported | Number Sense: Compare decimals. |
+| 4.2F | compare and order decimals using concrete and visual models to the hundredths | Supported | Number Sense: Compare decimals and Order decimals. |
 | 4.2G | relate decimals to fractions that name tenths and hundredths | Supported | Fractions, Decimals and Percents: Fractions and decimals. |
 | 4.2H | determine the corresponding decimal to the tenths or hundredths place of a specified point on a number line | Supported | Fractions, Decimals and Percents: Fractions and decimals. |
 | 4.3A | represent a fraction a/b as a sum of fractions 1/b, where a and b are whole numbers and b > 0, including... | Supported | Fractions, Decimals and Percents: Multiply a whole number by a fraction. |
@@ -232,18 +232,18 @@ Supported and Partial standards build a worksheet from the Texas standard panel 
 | 4.8C | solve problems that deal with measurements of length, intervals of time, liquid volumes, mass, and money... | Supported | Number Sense: Measurement word problems. |
 | 4.9A | represent data on a frequency table, dot plot, or stem-and-leaf plot marked with whole numbers and fractions | Partial | Measurement and Data: Line plots with fractional units. Dot plots (line plots) marked in halves, fourths and eighths are generated; frequency tables and stem-and-leaf plots are not. |
 | 4.9B | solve one- and two-step problems using data in whole number, decimal, and fraction form in a frequency... | Partial | Measurement and Data: Line plots with fractional units. Dot plots (line plots) marked in halves, fourths and eighths are generated; frequency tables and stem-and-leaf plots are not. |
-| 4.10A | distinguish between fixed and variable expenses | Gap | Needs: income, expenses and profit. |
-| 4.10B | calculate profit in a given situation | Gap | Needs: income, expenses and profit. |
-| 4.10C | compare the advantages and disadvantages of various savings options | Gap | Needs: saving, spending and giving. |
-| 4.10D | describe how to allocate a weekly allowance among spending; saving, including for college; and sharing | Gap | Needs: saving, spending and giving. |
-| 4.10E | describe the basic purpose of financial institutions, including keeping money safe, borrowing money, and... | Gap | Needs: banking and financial institutions. |
+| 4.10A | distinguish between fixed and variable expenses | Supported | Time and Money: Fixed and variable expenses and Sort fixed and variable expenses. |
+| 4.10B | calculate profit in a given situation | Supported | Time and Money: Calculate profit. |
+| 4.10C | compare the advantages and disadvantages of various savings options | Partial | Time and Money: Savings options and Complete sentences about money ideas. Worksheets pick an advantage or a disadvantage of each option; they do not compare options in writing; a word-bank sentence completion adds recall of the explanation (mixed money topics, not one topic per standard). |
+| 4.10D | describe how to allocate a weekly allowance among spending; saving, including for college; and sharing | Partial | Time and Money: Allocate an allowance and Complete sentences about money ideas. Worksheets calculate each share of an allowance; they do not ask for a description; a word-bank sentence completion adds recall of the explanation (mixed money topics, not one topic per standard). |
+| 4.10E | describe the basic purpose of financial institutions, including keeping money safe, borrowing money, and... | Partial | Time and Money: Purpose of financial institutions and Complete sentences about money ideas. Worksheets identify the purpose of a bank; they do not ask for a description; a word-bank sentence completion adds recall of the explanation (mixed money topics, not one topic per standard). |
 
 ## Grade 5
 
 | Standard | Focus | Status | Module and notes |
 |---|---|---|---|
 | 5.2A | represent the value of the digit in decimals through the thousandths using expanded notation and numerals | Supported | Fractions, Decimals and Percents and Number Sense: Read, write and compare decimals. |
-| 5.2B | compare and order two decimals to thousandths and represent comparisons using the symbols >, <, or = | Supported | Fractions, Decimals and Percents and Number Sense: Read, write and compare decimals. |
+| 5.2B | compare and order two decimals to thousandths and represent comparisons using the symbols >, <, or = | Supported | Fractions, Decimals and Percents and Number Sense: Read, write and compare decimals and Order decimals. |
 | 5.2C | round decimals to tenths or hundredths | Supported | Fractions, Decimals and Percents: Round decimals. |
 | 5.3A | estimate to determine solutions to mathematical and real-world problems involving addition, subtraction,... | Partial | Number Sense: Two-step word problems and Round multi-digit numbers. Estimate-and-solve stories round to the nearest ten; estimating with decimals and the other operations is not generated. |
 | 5.3B | multiply with fluency a three-digit number by a two-digit number using the standard algorithm | Supported | Multiplication and Division: Multiply up to three digits by four digits. |
@@ -271,11 +271,11 @@ Supported and Partial standards build a worksheet from the Texas standard panel 
 | 5.8B | describe the process for graphing ordered pairs of numbers in the first quadrant of the coordinate plane | Supported | Geometry, Area and Volume: Graph and name points in the first quadrant. |
 | 5.8C | graph in the first quadrant of the coordinate plane ordered pairs of numbers arising from mathematical and... | Supported | Geometry, Area and Volume: Graph real-world problems. |
 | 5.9A | represent categorical data with bar graphs or frequency tables and numerical data, including data sets of... | Partial | Measurement and Data: Scaled pictographs and bar graphs and Line plots and operations. Bar graphs and line plots are generated; frequency tables and stem-and-leaf plots are not. |
-| 5.9B | represent discrete paired data on a scatterplot | Gap | Needs: scatterplots of paired data. |
+| 5.9B | represent discrete paired data on a scatterplot | Supported | Geometry, Area and Volume: Scatterplot of paired data. |
 | 5.9C | solve one- and two-step problems using data from a frequency table, dot plot, bar graph, stem-and-leaf... | Partial | Measurement and Data: Scaled pictographs and bar graphs and Line plots and operations. Bar graphs and line plots are generated; frequency tables, stem-and-leaf plots and scatterplots are not. |
-| 5.10A | define income tax, payroll tax, sales tax, and property tax | Gap | Needs: taxes and paychecks. |
-| 5.10B | explain the difference between gross income and net income | Gap | Needs: taxes and paychecks. |
-| 5.10C | identify the advantages and disadvantages of different methods of payment, including check, credit card,... | Gap | Needs: methods of payment. |
-| 5.10D | develop a system for keeping and using financial records | Gap | Needs: financial records and budgets. |
-| 5.10E | describe actions that might be taken to balance a budget when expenses exceed income | Gap | Needs: financial records and budgets. |
-| 5.10F | balance a simple budget | Gap | Needs: financial records and budgets. |
+| 5.10A | define income tax, payroll tax, sales tax, and property tax | Supported | Time and Money: Kinds of taxes. |
+| 5.10B | explain the difference between gross income and net income | Supported | Time and Money: Gross and net income. |
+| 5.10C | identify the advantages and disadvantages of different methods of payment, including check, credit card,... | Supported | Time and Money: Methods of payment. |
+| 5.10D | develop a system for keeping and using financial records | Partial | Time and Money: Financial records and Complete sentences about money ideas. Worksheets identify which record to keep; they do not ask students to develop a system; a word-bank sentence completion adds recall of the explanation (mixed money topics, not one topic per standard). |
+| 5.10E | describe actions that might be taken to balance a budget when expenses exceed income | Partial | Time and Money: Actions to balance a budget and Fill in a budget table and Complete sentences about money ideas. Worksheets pick an action that balances a budget; they do not ask for a description; a word-bank sentence completion adds recall of the explanation (mixed money topics, not one topic per standard). |
+| 5.10F | balance a simple budget | Supported | Time and Money: Balance a simple budget and Fill in a budget table. |

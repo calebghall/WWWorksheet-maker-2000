@@ -155,6 +155,28 @@ function visChartcircleHtml(p, key) {
   return vAcSvg(p.r0, p.c0, (i, j, x, y, v) => vrect(x, y, 46, 30, 'none', { c: '#8d99ad', w: 1.3 }) + vtxt(x + 23, y + 20, String(v), { s: 14 }) + (key && (v % 2 ? 'odd' : 'even') === p.want ? vring(x + 3, y + 3, 40, 24) : ''));
 }
 
+/* Number pairs in a table for real-world relationships (a rule that multiplies or adds). L1 four whole-number inputs 1 to 4 with the last two outputs blank,
+   L2 four inputs with any two cells blank, L3 five inputs, multiplying or adding, three cells blank. */
+const PT_MULT = [['Each bag holds', 'apples', 'Bags', 'Apples'], ['Each box holds', 'crayons', 'Boxes', 'Crayons'], ['Each pack has', 'stickers', 'Packs', 'Stickers'], ['Each shelf holds', 'books', 'Shelves', 'Books'],
+  ['Each team has', 'players', 'Teams', 'Players'], ['Each tray holds', 'muffins', 'Trays', 'Muffins']];
+const PT_ADD = [k => ['Mia is ' + k + ' years older than her cousin.', "Cousin's age", "Mia's age"], k => ['A tree is ' + k + ' feet taller than a bush.', "Bush's height (feet)", "Tree's height (feet)"], k => ['A box weighs ' + k + ' pounds more than its lid.', 'Lid (pounds)', 'Box (pounds)']];
+function visPtable(rng, L) {
+  const mult = L < 3 || rng() < 0.5, n = L === 3 ? 5 : 4;
+  let ins, ctx, k;
+  if (mult) { const c = pick(rng, PT_MULT); k = pick(rng, L === 1 ? [2, 3, 4, 5, 10] : [2, 3, 4, 5, 6, 7, 8, 9, 10]); ctx = [`${c[0]} ${k} ${c[1]}.`, c[2], c[3]]; }
+  else { k = ri(rng, 2, 9); ctx = pick(rng, PT_ADD)(k); }
+  ins = L === 1 ? [1, 2, 3, 4] : shuffle(rng, Array.from({ length: 10 }, (_, i) => i + 1)).slice(0, n).sort((a, b) => a - b);
+  const outs = ins.map(i => mult ? i * k : i + k), cols = shuffle(rng, ins.map((_, i) => i));
+  const blanks = L === 1 ? [[1, 2], [1, 3]] : (L === 2 ? cols.slice(0, 2) : cols.slice(0, 3)).sort((a, b) => a - b).map(c => [rng() < 0.5 ? 0 : 1, c]);
+  const val = b => b[0] ? outs[b[1]] : ins[b[1]];
+  return vp('ptable', 'Fill in the table.', { mult, k, ctx, ins, outs, blanks, ans: blanks.map(val).join(' '), sig: `pt${mult}${ctx[0]}${ins}${blanks.join('/')}` }, 3.3, vwrapH(ctx[0], 3.2) + 0.45 + n * 0.3 + 0.3, 0);
+}
+function visPtableHtml(p, key, x) {
+  const isB = (r, c) => p.blanks.some(b => b[0] === r && b[1] === c), cs = 'border:1px solid #8d99ad;padding:.02in .04in;text-align:center;width:1.3in;box-sizing:border-box';
+  const rows = p.ins.map((v, c) => `<tr><td style="${cs}">${isB(0, c) ? x(v, 1.8) : v}</td><td style="${cs}">${isB(1, c) ? x(p.outs[c], 1.8) : p.outs[c]}</td></tr>`).join('');
+  return vwrap(p.ctx[0], 3.2) + `<table style="border-collapse:collapse;margin-top:.04in;table-layout:fixed;width:2.6in"><tr><th style="${cs};background:#e8eef7;white-space:normal;font-size:.85em">${esc(p.ctx[1])}</th><th style="${cs};background:#e8eef7;white-space:normal;font-size:.85em">${esc(p.ctx[2])}</th></tr>${rows}</table>`;
+}
+
 defTypes("vis", "Patterns and charts", [
   { id: "pat", label: "Repeating patterns", blurb: "What comes next, and how long is the core.", on: true, gen: visPat, html: visPatHtml },
   { id: "patmake", label: "Make a pattern", blurb: "Draw your own AB, AAB, ABB or ABC pattern.", on: false, gen: visPatmake, html: visPatmakeHtml },
@@ -162,5 +184,6 @@ defTypes("vis", "Patterns and charts", [
   { id: "chartwhy", label: "Why the chart pattern works", blurb: "Read the shaded cells, and explain why mirrored cells match.", on: false, gen: visChartwhy, html: visChartwhyHtml },
   { id: "mchart", label: "Multiplication chart patterns", blurb: "Fill the chart, even and odd products, one more group.", on: false, gen: g3Mchart, html: g3MchartHtml },
   { id: "addchart", label: "Finish the addition chart", blurb: "Fill in the missing sums in a 5 by 5 addition chart.", on: false, gen: visAddchart, html: visAddchartHtml },
-  { id: "chartcircle", label: "Circle even or odd sums", blurb: "Circle the even or the odd sums in an addition chart.", on: false, gen: visChartcircle, html: visChartcircleHtml }
+  { id: "chartcircle", label: "Circle even or odd sums", blurb: "Circle the even or the odd sums in an addition chart.", on: false, gen: visChartcircle, html: visChartcircleHtml },
+  { id: "ptable", label: "Number pairs in a table", blurb: "Fill in a table of number pairs for a real-world rule that multiplies or adds.", on: false, gen: visPtable, html: visPtableHtml }
 ]);

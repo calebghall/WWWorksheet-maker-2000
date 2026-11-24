@@ -98,7 +98,40 @@ function vCpwordHtml(p, key, x) {
   return `${fig}${cpWrap(p.q)}<div>Answer: ${x(p.ans, 2.4)}</div>`;
 }
 
+/* scatterplots of discrete paired data. L1 plot four pairs from a table (8 by 8 grid), L2 plot five pairs or read one value from a scatterplot,
+   L3 plot six pairs (10 by 10 grid) or say how one measure changes as the other goes up. */
+const SC_CTX = [['Hours practiced', 'Goals scored', 'hours', 'goals'], ['Days of rain', 'Plants that grew', 'days', 'plants'], ['Weeks in the club', 'Badges earned', 'weeks', 'badges'],
+  ['Minutes jogged', 'Laps run', 'minutes', 'laps'], ['Pages read', 'Minutes spent', 'pages', 'minutes'], ['Players on the team', 'Cheers heard', 'players', 'cheers']];
+function vScatter(rng, L) {
+  const N = L === 3 ? 10 : 8, c = L === 3 ? 22 : 26, n = L === 1 ? 4 : L === 2 ? 5 : 6, [xl, yl, xu, yu] = pick(rng, SC_CTX);
+  const kind = L === 1 ? 'plot' : L === 2 ? pick(rng, ['plot', 'read']) : pick(rng, ['plot', 'trend']);
+  const xs = shuffle(rng, Array.from({ length: N }, (_, i) => i + 1)).slice(0, n).sort((a, b) => a - b);
+  let ys, dir = null;
+  if (kind === 'trend') {
+    dir = rng() < 0.5 ? 'up' : 'down';
+    const ramp = Array.from({ length: n }, (_, i) => Math.min(N - 1, 1 + i + (rng() < 0.4 ? 1 : 0)));
+    ys = dir === 'up' ? ramp : ramp.map(v => N + 1 - v - (rng() < 0.4 ? 0 : 0));
+    ys = ys.map(v => Math.max(1, Math.min(N, v)));
+  } else ys = shuffle(rng, Array.from({ length: N }, (_, i) => i + 1)).slice(0, n);
+  const pts = xs.map((x, i) => ({ x, y: ys[i] })), grid = pp => cpGrid(N, N, c, pp, { named: true, xl, yl });
+  const base = { kind, xl, yl, xu, yu, pts, N, sw: 0, sh: 0 }, tab = `<div>${esc(xl)}: ${xs.join(', ')}</div><div>${esc(yl)}: ${ys.join(', ')}</div>`, data = pts.map(q => q.x + '.' + q.y).join('_');
+  if (kind === 'plot') {
+    const g = grid([]), gk = grid(pts.map(q => Object.assign({ key: true }, q)));
+    return vp('scatter', 'Make a scatterplot of the table.', Object.assign(base, { tab, svg: g.svg, svgKey: gk.svg, sw: g.W, sh: g.H, ans: 'plot', sig: `sc${kind}${xl}${data}` }), Math.max(g.W / 100, 2.8), g.H / 100 + 0.65, 0, 0);
+  }
+  const g = grid(pts);
+  if (kind === 'read') { const q = pick(rng, pts); return vp('scatter', 'Use the scatterplot.', Object.assign(base, { svg: g.svg, sw: g.W, sh: g.H, q, ans: String(q.y), sig: `sc${kind}${xl}${data}${q.x}` }), Math.max(g.W / 100, 2.8), g.H / 100 + 0.95, 0, 0); }
+  return vp('scatter', 'Use the scatterplot.', Object.assign(base, { svg: g.svg, sw: g.W, sh: g.H, dir, ans: dir === 'up' ? 'go up' : 'go down', opts: ['go up', 'go down'], sig: `sc${kind}${xl}${data}` }), Math.max(g.W / 100, 2.8), g.H / 100 + 1.4, 0, 0);
+}
+function vScatterHtml(p, key, x) {
+  const fig = vsvg(p.sw / 100, p.sh / 100, p.kind === 'plot' && key ? p.svgKey : p.svg, `Scatterplot of ${p.yl} against ${p.xl}`);
+  if (p.kind === 'plot') return `${p.tab}${fig}`;
+  if (p.kind === 'read') return `${fig}${vwrap(`How many ${p.yu} are shown for ${p.q.x} ${p.xu}?`, 2.8)}<div>Answer: ${x(p.ans, 2)}</div>`;
+  return `${fig}${vwrap(`As the number of ${p.xu} goes up, the number of ${p.yu} tends to`, 2.8)}<div>${vopts(p.opts, p.ans, key)}</div>`;
+}
+
 defTypes("vis", "Coordinate plane", [
   { id: "cplane", label: "Ordered pairs", blurb: "Read and plot points in the first quadrant, parts of an ordered pair, and moves along the axes.", on: false, gen: vCplane, html: vCplaneHtml },
-  { id: "cpword", label: "Graphs of real-world tables", blurb: "Plot a table of ordered pairs, read the graph, and say what a point means.", on: false, gen: vCpword, html: vCpwordHtml }
+  { id: "cpword", label: "Graphs of real-world tables", blurb: "Plot a table of ordered pairs, read the graph, and say what a point means.", on: false, gen: vCpword, html: vCpwordHtml },
+  { id: "scatter", label: "Scatterplots of paired data", blurb: "Plot a table of paired data on a scatterplot, read a value, and say how one measure changes as the other goes up.", on: false, gen: vScatter, html: vScatterHtml }
 ]);

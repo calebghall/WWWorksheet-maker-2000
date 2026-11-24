@@ -55,7 +55,7 @@ with sync_playwright() as p:
         zf = glob.glob(root + 'dist/standards/zz.*.js'); check(len(zf) == 1 and not glob.glob(root + 'dist/standards/tn.*.js'), 'zz is a file, tn stays embedded ' + str(zf))
         pg = page(); fresh(pg, url()); pg.evaluate("document.querySelector('#stdBox').open=true")
         check(not pg.evaluate("document.querySelector('#stdFwRow').hidden"), 'picker shows with two frameworks')
-        check(pg.evaluate("[...document.querySelectorAll('#stdFwSel option')].map(o=>o.value).join()") == 'tn,ky,zz', 'picker lists tn first')
+        check(pg.evaluate("[...document.querySelectorAll('#stdFwSel option')].map(o=>o.value).join()") == 'tn,ky,tx,zz', 'picker lists tn first')
         check(pg.evaluate("typeof STD_FW.zz") == 'undefined', 'zz not loaded before the pick')
         pg.select_option('#stdFwSel', 'zz'); pg.wait_for_timeout(500)
         check(pg.evaluate("typeof STD_FW.zz") == 'object', 'zz loaded after the pick')

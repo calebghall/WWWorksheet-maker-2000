@@ -1,47 +1,43 @@
 # Privacy Information
 
-**Last Updated:** November 22, 2026
-TODO Need to add to site
+**Last Updated:** November 23, 2026
 
----
-
-### 1. Website
-World Wide Worksheet Maker 2000 by Caleb G. Hall  
+World Wide Worksheet Maker 2000 by Caleb G. Hall
 [github.com/calebghall/WWWorksheet-maker-2000](https://github.com/calebghall/WWWorksheet-maker-2000)
 
----
+## Types of data collected
 
-### 2. Types of Data Collected
+### a. Technical log data (GitHub)
 
-#### a. Technical Log Data (GitHub)
 World Wide Worksheet Maker 2000 is hosted as a static site using GitHub Pages. When you visit this site, GitHub may collect standard User Personal Information, including visitor IP addresses, to comply with legal obligations and maintain server security and service integrity.
 
-- **What is collected:** Technical request data such as IP address, browser and device type, operating system, referring URL, and date/time stamps.
-- **Purpose:** Infrastructure security, troubleshooting, service delivery, and legal compliance.
-- **Relationship:** GitHub acts as a Data Processor. For more information, please see the [GitHub Privacy Statement](https://docs.github.com/en/site-policy/privacy-policies/github-privacy-statement).
+- **What is collected:** technical request data such as IP address, browser and device type, operating system, referring URL, and date/time stamps.
+- **Purpose:** infrastructure security, troubleshooting, service delivery, and legal compliance.
+- **Relationship:** GitHub acts as a data processor. See the [GitHub Privacy Statement](https://docs.github.com/en/site-policy/privacy-policies/github-privacy-statement).
 
-#### b. Worksheet & Student Data (Client-Side Only)
+### b. Fonts (Google Fonts)
+
+The page loads its typefaces from Google Fonts. Your browser requests them from Google's servers, so Google receives standard request data such as your IP address and browser type. See the [Google Fonts privacy information](https://developers.google.com/fonts/faq/privacy). If the fonts cannot load, the page falls back to your system fonts.
+
+### c. Worksheet and student data (client-side only)
+
 All worksheet configurations, problem generation, seed values, answer keys, titles, and printable outputs are generated entirely inside your web browser. **No student names, entered answers, or custom worksheet contents are ever sent to, processed by, or stored on any external server.**
 
----
+## Local storage (persistent settings)
 
-### 3. Local Storage (Persistent Settings)
-This site may use `localStorage` or `sessionStorage` to preserve your worksheet options (such as paper size, problem count, topic selections, and layout preferences) between visits.
+This site uses `localStorage` to preserve your worksheet options (such as paper size, problem count, topic selections, layout preferences, which topic groups are open, and the color theme) between visits.
 
 - **What is stored:** UI settings and generator preferences. No personal identifiers are stored.
-- **Your Control:** This data remains isolated to your device until you clear your browser's site data or use the "Delete Saved Data" option in the application. It cannot be accessed or deleted remotely because it never leaves your device.
+- **Your control:** this data stays on your device until you clear your browser's site data or use **Delete saved data** at the bottom of the settings panel. It cannot be accessed or deleted remotely because it never leaves your device.
 
----
+## Cookies and tracking
 
-### 4. Cookies & Tracking
 This website does not use cookies, advertising pixels, or third-party tracking analytics.
 
----
+## Data retention
 
-### 5. Data Retention
-Because worksheet data and custom inputs are never sent to a backend server, there is no remote data retention period. Server logs maintained by GitHub are retained according to GitHub's standard retention policies.
+Because worksheet data and custom inputs are never sent to a backend server, there is no remote data retention period. Server logs maintained by GitHub and request logs maintained by Google Fonts are retained according to their standard retention policies.
 
----
+## Your rights
 
-### 6. Your Rights
-Because this tool does not collect, track, or transmit personal data or student records, we do not maintain accounts or identifiable databases. You maintain full control over deleting any preferences stored locally within your browser.
+Because this tool does not collect, track, or transmit personal data or student records, no accounts or identifiable databases are maintained. You keep full control over deleting any preferences stored locally within your browser.

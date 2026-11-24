@@ -8,16 +8,16 @@ const SP = ctx.__SP, bad = []; let checks = 0; const ok = (c, m) => { checks++; 
 
 /* 1. registry <-> map */
 const reg = []; for (const mod of ['ns', 'vis']) for (const d of SP.TYPE_DEFS[mod]) reg.push(mod + '.' + d.id);
-ok(reg.length === 146, 'registry size ' + reg.length);
+ok(reg.length === 175, 'registry size ' + reg.length);
 for (const k of reg) ok(SP.TYPE_HOME[k], 'unmapped registry type ' + k);
 const hard = new Set(); for (const m of ['fd', 'tm']) for (const v of html.matchAll(new RegExp('name="' + m + '_type" value="(\\w+)"', 'g'))) hard.add((m === 'fd' ? 'fdp.' : 'tm.') + v[1]);
 for (const k of Object.keys(SP.TYPE_HOME)) ok(reg.includes(k) || hard.has(k), 'mapped key is not a type: ' + k);
 for (const k of hard) ok(SP.TYPE_HOME[k], 'unmapped hard-coded type ' + k);
-ok(Object.keys(SP.TYPE_HOME).length === 166, 'map size ' + Object.keys(SP.TYPE_HOME).length);
+ok(Object.keys(SP.TYPE_HOME).length === 195, 'map size ' + Object.keys(SP.TYPE_HOME).length);
 
-/* 2. modules stay within the cap of about 30 types and 5 groups (ns is the largest at 41 after K to 2 additions) */
+/* 2. modules stay within the cap of about 30 types and 5 groups (ns is the largest at 42 after K to 2 additions and ordsm) */
 const by = {}; for (const [k, [m, g]] of Object.entries(SP.TYPE_HOME)) { (by[m] = by[m] || {})[g] = (by[m][g] || 0) + 1; }
-for (const [m, gs] of Object.entries(by)) { const n = Object.values(gs).reduce((a, b) => a + b, 0); ok(Object.keys(gs).length <= 5, m + ' groups'); ok(n <= 41, m + ' types ' + n); }
+for (const [m, gs] of Object.entries(by)) { const n = Object.values(gs).reduce((a, b) => a + b, 0); ok(Object.keys(gs).length <= 5, m + ' groups'); ok(n <= 42, m + ' types ' + n); }
 
 /* 3. tags */
 const word = SP.TYPE_DEFS.ns.concat(SP.TYPE_DEFS.vis).filter(d => SP.typeTags('', d).includes('word')).map(d => d.id);

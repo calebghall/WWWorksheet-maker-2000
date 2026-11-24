@@ -206,6 +206,16 @@ Types are registered in the `vis-*.js` family files (`defTypes`, `core/types.js`
 
 - `dclock` draws hands for a digital time or writes it in words; `ampm` picks a.m./p.m. for an event with a fixed time window; `like` counts pictured like coins (under 100¢); `cpic` counts pictured mixed coins (plus bills at Medium and Hard); `cstory` one-step money stories in ¢ or $ (small pool of wordings).
 
+## Added for the Texas gaps
+
+- **Financial literacy** (`ns-finance.js`, 20 types `fl*`, planned module Time and Money, group Financial literacy): income and gifts, jobs and skills, wants and needs, spend/save/give, saving over time, deposits and withdrawals, borrowing and lending, producers and consumers, scarcity and price, planned and unplanned spending, fixed and variable expenses, profit, savings options, allowances, financial institutions, taxes, gross and net income, payment methods, records, budgets. Default off. Pick types hold `opts` and `ans`; calculation types keep `kind` and `nums`, recomputed in `tests/logic-finance.js`.
+- **Written formats** (also `ns-finance.js`): `flsortwn`, `flsortfv`, `flsortig` (write a letter beside 4, 6 or 8 items), `flbtab` (fill the blank cells of a budget table: savings, total and left over, over budget, or a missing expense) and `flexplain` (finish sentences from a word bank; level is the number of blanks). Their answers are rechecked in `tests/logic-finance.js`.
+- **Order numbers to 120** (`ns.ordsm`, `ns-place.js`).
+- **Size and number of fractional parts** (`vis.fpart`, `vis-fractions.js`): L1 larger or smaller part, parts in 1 whole; L2 parts in 2 to 4 wholes; L3 largest or smallest of three.
+- **Number pairs in a table** (`vis.ptable`, `vis-patterns.js`): multiplying or adding rules in real-world contexts, blank cells filled.
+- **Scatterplots of paired data** (`vis.scatter`, `vis-plane.js`): plot a table, read a value, say how one measure changes as the other goes up.
+- The last three are checked in `tests/logic-newmath.js`.
+
 ## Other modules
 
 - **Mixed Practice** (`mix.js`) takes problems from the generators above in flow layout; repeats are filtered per generator.

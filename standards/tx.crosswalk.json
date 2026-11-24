@@ -149,20 +149,30 @@
    "status": "supported"
   },
   "K.9A": {
-   "status": "gap",
-   "need": "earning income and jobs"
+   "to": [
+    "time.earn-income"
+   ],
+   "status": "supported"
   },
   "K.9B": {
-   "status": "gap",
-   "need": "earning income and jobs"
+   "to": [
+    "time.income-or-gift",
+    "time.sort-income-gifts"
+   ],
+   "status": "supported"
   },
   "K.9C": {
-   "status": "gap",
-   "need": "earning income and jobs"
+   "to": [
+    "time.skills-for-jobs"
+   ],
+   "status": "supported"
   },
   "K.9D": {
-   "status": "gap",
-   "need": "wants, needs and spending choices"
+   "to": [
+    "time.wants-and-needs",
+    "time.sort-wants-needs"
+   ],
+   "status": "supported"
   },
   "1.2A": {
    "to": [
@@ -201,8 +211,11 @@
    "note": "Compares two-digit numbers (10 to 99); 100 to 120 is not generated."
   },
   "1.2F": {
-   "status": "gap",
-   "need": "order numbers with place value and number lines (type ns.order has no preset)"
+   "to": [
+    "num.order-numbers-to-120"
+   ],
+   "status": "partial",
+   "note": "Orders numbers to 120; open number lines are not used."
   },
   "1.2G": {
    "to": [
@@ -411,20 +424,28 @@
    "status": "supported"
   },
   "1.9A": {
-   "status": "gap",
-   "need": "earning income and jobs"
+   "to": [
+    "time.define-income"
+   ],
+   "status": "supported"
   },
   "1.9B": {
-   "status": "gap",
-   "need": "wants, needs and spending choices"
+   "to": [
+    "time.income-wants-needs"
+   ],
+   "status": "supported"
   },
   "1.9C": {
-   "status": "gap",
-   "need": "saving, spending and giving"
+   "to": [
+    "time.spend-or-save"
+   ],
+   "status": "supported"
   },
   "1.9D": {
-   "status": "gap",
-   "need": "saving, spending and giving"
+   "to": [
+    "time.spend-save-give"
+   ],
+   "status": "supported"
   },
   "2.2A": {
    "to": [
@@ -449,18 +470,24 @@
   },
   "2.2D": {
    "to": [
-    "num.compare-three-digit-numbers"
+    "num.compare-three-digit-numbers",
+    "num.order-three-digit-numbers"
    ],
    "status": "partial",
-   "note": "Compares three-digit numbers; ordering numbers and numbers up to 1,200 are not generated."
+   "note": "Compares and orders three-digit numbers; numbers from 1,000 to 1,200 are not generated."
   },
   "2.2E": {
-   "status": "gap",
-   "need": "whole numbers on a number line (type ns.line has no preset)"
+   "to": [
+    "num.read-number-line"
+   ],
+   "status": "partial",
+   "note": "Reads the number an arrow shows on a marked number line; marking a given number on an open number line is not generated."
   },
   "2.2F": {
-   "status": "gap",
-   "need": "whole numbers on a number line (type ns.line has no preset)"
+   "to": [
+    "num.read-number-line"
+   ],
+   "status": "supported"
   },
   "2.3A": {
    "to": [
@@ -470,12 +497,17 @@
    "note": "Halves, thirds and fourths are generated; eighths are not."
   },
   "2.3B": {
-   "status": "gap",
-   "need": "size and number of fractional parts of a whole"
+   "to": [
+    "frac.fraction-part-size",
+    "frac.fraction-parts-in-wholes"
+   ],
+   "status": "supported"
   },
   "2.3C": {
-   "status": "gap",
-   "need": "size and number of fractional parts of a whole"
+   "to": [
+    "frac.fraction-parts-in-wholes"
+   ],
+   "status": "supported"
   },
   "2.3D": {
    "to": [
@@ -660,28 +692,47 @@
    "note": "Questions are read from graphs; making predictions is not generated."
   },
   "2.11A": {
-   "status": "gap",
-   "need": "saving, spending and giving"
+   "to": [
+    "time.saving-adds-up",
+    "time.saving-with-start"
+   ],
+   "status": "supported"
   },
   "2.11B": {
-   "status": "gap",
-   "need": "saving, spending and giving"
+   "to": [
+    "time.spend-or-save",
+    "time.complete-money-sentences"
+   ],
+   "status": "partial",
+   "note": "Worksheets identify spending versus saving; they do not ask for an explanation; a word-bank sentence completion adds recall of the explanation (mixed money topics, not one topic per standard)."
   },
   "2.11C": {
-   "status": "gap",
-   "need": "banking and financial institutions"
+   "to": [
+    "time.deposit-withdrawal",
+    "time.bank-balance"
+   ],
+   "status": "supported"
   },
   "2.11D": {
-   "status": "gap",
-   "need": "borrowing and lending"
+   "to": [
+    "time.borrowing-lending",
+    "time.responsible-borrowing"
+   ],
+   "status": "supported"
   },
   "2.11E": {
-   "status": "gap",
-   "need": "borrowing and lending"
+   "to": [
+    "time.borrowing-lending",
+    "time.responsible-borrowing"
+   ],
+   "status": "supported"
   },
   "2.11F": {
-   "status": "gap",
-   "need": "producers, consumers and cost of production"
+   "to": [
+    "time.producers-consumers",
+    "time.cost-to-produce"
+   ],
+   "status": "supported"
   },
   "3.2A": {
    "to": [
@@ -704,10 +755,11 @@
   },
   "3.2D": {
    "to": [
-    "num.compare-three-digit-numbers"
+    "num.compare-five-digit-numbers",
+    "num.order-four-digit-numbers"
    ],
    "status": "partial",
-   "note": "Comparing with <, > and = is generated; ordering numbers is not in any preset (type ns.order)."
+   "note": "Compares numbers to 99,999; ordering is generated to 9,999."
   },
   "3.3A": {
    "to": [
@@ -857,8 +909,10 @@
    "status": "supported"
   },
   "3.5E": {
-   "status": "gap",
-   "need": "number pairs in a table for real-world relationships"
+   "to": [
+    "oa.number-pairs-in-table"
+   ],
+   "status": "supported"
   },
   "3.6A": {
    "to": [
@@ -938,28 +992,50 @@
    "note": "Scaled pictographs, bar graphs and line plots are generated; frequency tables are not."
   },
   "3.9A": {
-   "status": "gap",
-   "need": "earning income and jobs"
+   "to": [
+    "time.skills-hours-income",
+    "time.pay-rate-income",
+    "time.complete-money-sentences"
+   ],
+   "status": "partial",
+   "note": "Worksheets identify job skills and calculate income from skills and hours; they do not ask for a written explanation; a word-bank sentence completion adds recall of the explanation (mixed money topics, not one topic per standard)."
   },
   "3.9B": {
-   "status": "gap",
-   "need": "scarcity and cost"
+   "to": [
+    "time.scarcity-and-cost",
+    "time.complete-money-sentences"
+   ],
+   "status": "partial",
+   "note": "Worksheets identify the price effect and the likely reason; they do not ask for a description of the relationship; a word-bank sentence completion adds recall of the explanation (mixed money topics, not one topic per standard)."
   },
   "3.9C": {
-   "status": "gap",
-   "need": "wants, needs and spending choices"
+   "to": [
+    "time.planned-unplanned-spending",
+    "time.spending-costs-benefits"
+   ],
+   "status": "supported"
   },
   "3.9D": {
-   "status": "gap",
-   "need": "borrowing and lending"
+   "to": [
+    "time.cost-of-credit",
+    "time.complete-money-sentences"
+   ],
+   "status": "partial",
+   "note": "Worksheets calculate paying a loan back with a fee; they do not ask for an explanation of credit; a word-bank sentence completion adds recall of the explanation (mixed money topics, not one topic per standard)."
   },
   "3.9E": {
-   "status": "gap",
-   "need": "saving, spending and giving"
+   "to": [
+    "time.weeks-to-goal",
+    "time.complete-money-sentences"
+   ],
+   "status": "partial",
+   "note": "Worksheets calculate weeks to reach a goal; they do not ask for reasons to save or for a savings plan; a word-bank sentence completion adds recall of the explanation (mixed money topics, not one topic per standard)."
   },
   "3.9F": {
-   "status": "gap",
-   "need": "saving, spending and giving"
+   "to": [
+    "time.money-decisions"
+   ],
+   "status": "supported"
   },
   "4.2A": {
    "to": [
@@ -978,10 +1054,11 @@
   },
   "4.2C": {
    "to": [
-    "num.read-write-multi-digit-numbers"
+    "num.compare-five-digit-numbers",
+    "num.order-four-digit-numbers"
    ],
    "status": "partial",
-   "note": "Comparing and ordering whole numbers beyond 999,999 is not generated; ordering is not in any preset (type ns.order)."
+   "note": "Compares numbers to 99,999 and orders numbers to 9,999; Texas goes to 1,000,000,000."
   },
   "4.2D": {
    "to": [
@@ -999,7 +1076,8 @@
   },
   "4.2F": {
    "to": [
-    "num.compare-decimals"
+    "num.compare-decimals",
+    "num.order-decimals"
    ],
    "status": "supported"
   },
@@ -1224,24 +1302,41 @@
    "note": "Dot plots (line plots) marked in halves, fourths and eighths are generated; frequency tables and stem-and-leaf plots are not."
   },
   "4.10A": {
-   "status": "gap",
-   "need": "income, expenses and profit"
+   "to": [
+    "time.fixed-variable-expenses",
+    "time.sort-fixed-variable"
+   ],
+   "status": "supported"
   },
   "4.10B": {
-   "status": "gap",
-   "need": "income, expenses and profit"
+   "to": [
+    "time.calculate-profit"
+   ],
+   "status": "supported"
   },
   "4.10C": {
-   "status": "gap",
-   "need": "saving, spending and giving"
+   "to": [
+    "time.savings-options",
+    "time.complete-money-sentences"
+   ],
+   "status": "partial",
+   "note": "Worksheets pick an advantage or a disadvantage of each option; they do not compare options in writing; a word-bank sentence completion adds recall of the explanation (mixed money topics, not one topic per standard)."
   },
   "4.10D": {
-   "status": "gap",
-   "need": "saving, spending and giving"
+   "to": [
+    "time.allocate-allowance",
+    "time.complete-money-sentences"
+   ],
+   "status": "partial",
+   "note": "Worksheets calculate each share of an allowance; they do not ask for a description; a word-bank sentence completion adds recall of the explanation (mixed money topics, not one topic per standard)."
   },
   "4.10E": {
-   "status": "gap",
-   "need": "banking and financial institutions"
+   "to": [
+    "time.financial-institutions",
+    "time.complete-money-sentences"
+   ],
+   "status": "partial",
+   "note": "Worksheets identify the purpose of a bank; they do not ask for a description; a word-bank sentence completion adds recall of the explanation (mixed money topics, not one topic per standard)."
   },
   "5.2A": {
    "to": [
@@ -1251,7 +1346,8 @@
   },
   "5.2B": {
    "to": [
-    "multi.read-write-compare-decimals"
+    "multi.read-write-compare-decimals",
+    "num.order-decimals"
    ],
    "status": "supported"
   },
@@ -1429,8 +1525,10 @@
    "note": "Bar graphs and line plots are generated; frequency tables and stem-and-leaf plots are not."
   },
   "5.9B": {
-   "status": "gap",
-   "need": "scatterplots of paired data"
+   "to": [
+    "geom.scatterplot-paired-data"
+   ],
+   "status": "supported"
   },
   "5.9C": {
    "to": [
@@ -1441,28 +1539,46 @@
    "note": "Bar graphs and line plots are generated; frequency tables, stem-and-leaf plots and scatterplots are not."
   },
   "5.10A": {
-   "status": "gap",
-   "need": "taxes and paychecks"
+   "to": [
+    "time.kinds-of-taxes"
+   ],
+   "status": "supported"
   },
   "5.10B": {
-   "status": "gap",
-   "need": "taxes and paychecks"
+   "to": [
+    "time.gross-net-income"
+   ],
+   "status": "supported"
   },
   "5.10C": {
-   "status": "gap",
-   "need": "methods of payment"
+   "to": [
+    "time.payment-methods"
+   ],
+   "status": "supported"
   },
   "5.10D": {
-   "status": "gap",
-   "need": "financial records and budgets"
+   "to": [
+    "time.financial-records",
+    "time.complete-money-sentences"
+   ],
+   "status": "partial",
+   "note": "Worksheets identify which record to keep; they do not ask students to develop a system; a word-bank sentence completion adds recall of the explanation (mixed money topics, not one topic per standard)."
   },
   "5.10E": {
-   "status": "gap",
-   "need": "financial records and budgets"
+   "to": [
+    "time.budget-actions",
+    "time.budget-table",
+    "time.complete-money-sentences"
+   ],
+   "status": "partial",
+   "note": "Worksheets pick an action that balances a budget; they do not ask for a description; a word-bank sentence completion adds recall of the explanation (mixed money topics, not one topic per standard)."
   },
   "5.10F": {
-   "status": "gap",
-   "need": "financial records and budgets"
+   "to": [
+    "time.balance-budget",
+    "time.budget-table"
+   ],
+   "status": "supported"
   }
  }
 }

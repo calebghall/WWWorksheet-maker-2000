@@ -133,10 +133,39 @@ function g3GpartHtml(p, key, x) {
   return vsvg(2.95, 1.0, `<g>${part(p.first === 'A')}</g><g transform="translate(150 0)">${part(p.first !== 'A')}</g>` + vtxt(63, 98, 'A', { b: 1, s: 11 }) + vtxt(213, 98, 'B', { b: 1, s: 11 }), 'Two shapes cut into parts') + `<div>${vopts(['A', 'B'], p.ans, key)}</div>`;
 }
 
+/* Size and number of fractional parts: wholes of the same size cut into 2, 3, 4, 6 or 8 equal parts.
+   L1 which shaded part is larger or smaller (two wholes), or how many parts make 1 whole; L2 how many parts make 2 or 3 wholes;
+   L3 which of three wholes has the largest or smallest parts. */
+const FP_NAME = { 2: 'halves', 3: 'thirds', 4: 'fourths', 6: 'sixths', 8: 'eighths' };
+function fpBars(dens, shade) {
+  let o = '';
+  dens.forEach((d, i) => {
+    const y = 6 + i * 36, x0 = 30, w = 280;
+    if (dens.length > 1 && shade !== 'none') o += vtxt(14, y + 18, V_LET[i], { b: 1, s: 13 });
+    for (let j = 0; j < d; j++) o += vrect((x0 + w * j / d).toFixed(1), y, (w / d).toFixed(1), 26, shade === 'first' && j === 0 ? 'var(--c0)' : '#fff', { c: VINK, w: 2 });
+  });
+  return vsvg(3.2, 0.12 + dens.length * 0.36, o, 'Wholes of the same size cut into equal parts');
+}
+function visFpart(rng, L) {
+  const D = [2, 3, 4, 6, 8];
+  if (L === 1 && rng() < 0.4) { const d = pick(rng, D); return vp('fpart', `How many ${FP_NAME[d]} make 1 whole?`, { kind: 'one', dens: [d], ans: String(d), sig: `fp1w${d}` }, 3.2, 0.5, 0); }
+  if (L === 2) { const d = pick(rng, D), w = pick(rng, [2, 3, 4]); return vp('fpart', `How many ${FP_NAME[d]} make ${w} wholes?`, { kind: 'many', dens: Array(w).fill(d), d, w, ans: String(d * w), sig: `fpm${d}x${w}` }, 3.2, 0.2 + w * 0.36 + 0.45, 0); }
+  const n = L === 1 ? 2 : 3, dens = shuffle(rng, D).slice(0, n), big = rng() < 0.5;
+  const best = dens.reduce((a, b, i) => (big ? b < dens[a] : b > dens[a]) ? i : a, 0), word = L === 1 ? (big ? 'larger' : 'smaller') : (big ? 'largest' : 'smallest');
+  const prompt = L === 1 ? `Which shaded part is ${word}?` : `Which whole has the ${word} parts?`;
+  return vp('fpart', prompt, { kind: 'cmp', dens, opts: V_LET.slice(0, n), ans: V_LET[best], shade: L === 1 ? 'first' : 'all', sig: `fpc${L}${dens.join('')}${big}` }, 3.2, 0.2 + n * 0.36 + 0.45, 0);
+}
+function visFpartHtml(p, key, x) {
+  const g = fpBars(p.dens, p.kind === 'cmp' ? p.shade === 'first' ? 'first' : 'all' : 'none');
+  if (p.kind === 'cmp') return g + `<div>${vopts(p.opts, p.ans, key)}</div>`;
+  return g + `<div>${x(p.ans, 1.6)} ${p.kind === 'one' ? FP_NAME[p.dens[0]] : FP_NAME[p.d]}</div>`;
+}
+
 defTypes("vis", "Equal parts and fractions", [
   { id: "part", label: "Equal shares", blurb: "Halves, thirds, fourths.", on: false, gen: visPart, html: visPartHtml },
   { id: "partw", label: "Halves and quarters", blurb: "Name one share, whole as shares, shade quarters.", on: false, gen: visPartw, html: visPartwHtml },
   { id: "pdraw", label: "Draw equal shares", blurb: "Draw lines to make halves, thirds or fourths.", on: false, gen: visPdraw, html: visPdrawHtml },
   { id: "gpart", label: "Equal areas and unit fractions", blurb: "Draw equal parts, name the unit fraction.", on: false, gen: g3Gpart, html: g3GpartHtml },
-  { id: "fmodel", label: "Fraction models", blurb: "Name, shade and count equal parts of a whole.", on: false, gen: g3Fmodel, html: g3FmodelHtml }
+  { id: "fmodel", label: "Fraction models", blurb: "Name, shade and count equal parts of a whole.", on: false, gen: g3Fmodel, html: g3FmodelHtml },
+  { id: "fpart", label: "Size and number of fractional parts", blurb: "Which parts are larger, and how many parts make 1, 2 or 3 wholes.", on: false, gen: visFpart, html: visFpartHtml }
 ]);

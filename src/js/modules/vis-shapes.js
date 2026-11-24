@@ -211,7 +211,7 @@ function g3Gcat(rng, L) {
   if (v === 'is') { const shape = pick(rng, L === 1 ? ['square', 'rectangle', 'rhombus', 'trapezoid', 'triangle', 'pentagon', 'hexagon'] : Object.keys(G3_SH)), cat = pick(rng, L === 1 ? ['quad'] : L === 2 ? ['quad', 'rect'] : ['quad', 'rect', 'rhom', 'sq']), rot = pick(rng, [0, 0, 15, 30, 45]) * (shape === 'circle' ? 0 : 1);
     return vp('gcat', `Is this shape a ${G3_CATN[cat]}?`, { variant: v, shape, cat, rot, ans: G3_SH[shape].includes(cat) ? 'yes' : 'no', sig: `gi${shape}${cat}${rot}` }, 2.6, 0.95, 1.9); }
   if (v === 'both') { const k = pick(rng, G3_BOTH.filter(b => b.L <= L)), list = shuffle(rng, G3_QUAD), ans = list.findIndex(k.t);
-    return vp('gcat', 'Circle the shape.', { variant: v, q: k.q, list, ans: String(ans), sig: `gb${k.q.length}${list}` }, 3.0, 1.0, 4.9, 24); }
+    return vp('gcat', 'Circle the shape.', { variant: v, q: k.q, list, ans: String(ans), sig: `gb${k.q.length}${list}` }, 3.0, 1.0 + Math.max(0, vwrapH(k.q, 3.0) - 0.3), 4.9, 24); }
   const list = shuffle(rng, G3_QUAD).slice(0, 3), opts = shuffle(rng, ['quadrilaterals', 'rectangles', 'rhombuses']);
   return vp('gcat', 'Name the group.', { variant: v, list, opts, ans: 'quadrilaterals', sig: `gg${list}${opts}` }, 2.7, 0.9, 4.9, 20);
 }
@@ -219,7 +219,7 @@ function g3Gcat(rng, L) {
 function g3GcatHtml(p, key, x) {
   const fl = k => vshape(k, 0, 0, 44, V_SHFILL(k), 0);
   if (p.variant === 'is') return `<div style="display:flex;align-items:center;gap:.5em">${vsvg(1.2, 0.95, vshape(p.shape, 60, 48, 62, V_SHFILL(p.shape), p.rot), 'A shape')}<div>${vopts(['yes', 'no'], p.ans, key)}</div></div>`;
-  if (p.variant === 'both') { let o = p.list.map((k, i) => vshape(k, 40 + 72 * i, 50, 44, V_SHFILL(k), 0)).join(''); if (key) o += vring(40 + 72 * +p.ans - 36, 12, 72, 76); return `<div class="wt">${esc(p.q)}</div>` + vsvg(3.0, 1.0, o, 'Four shapes'); }
+  if (p.variant === 'both') { let o = p.list.map((k, i) => vshape(k, 40 + 72 * i, 50, 44, V_SHFILL(k), 0)).join(''); if (key) o += vring(40 + 72 * +p.ans - 36, 12, 72, 76); return vwrap(p.q, 3.0) + vsvg(3.0, 1.0, o, 'Four shapes'); }
   return vsvg(2.7, 0.9, p.list.map((k, i) => vshape(k, 45 + 90 * i, 45, 46, V_SHFILL(k), 0)).join(''), 'Three shapes') + `<div>These shapes are all</div><div>${vopts(p.opts, p.ans, key)}</div>`;
 }
 
