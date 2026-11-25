@@ -2,8 +2,8 @@
 
 Source: Texas Essential Knowledge and Skills for Mathematics (2012), imported from the Common Standards Project. 242 standards.
 
-- Supported: 179
-- Partial: 63
+- Supported: 197
+- Partial: 45
 - Gap: 0
 
 Supported and Partial standards build a worksheet from the Texas standard panel of the worksheet maker (standards/tx.crosswalk.json maps each standard to its presets). Partial rows list what differs from the standard. Gaps by grade: none.
@@ -16,8 +16,8 @@ Supported and Partial standards build a worksheet from the Texas standard panel 
 | K.2B | read, write, and represent whole numbers from 0 to at least 20 with and without objects or pictures | Supported | Number Sense: Write numbers 0 to 20 and show quantities. |
 | K.2C | count a set of objects up to at least 20 and demonstrate that the last number said tells the number of... | Supported | Number Sense: Count to tell how many. |
 | K.2D | recognize instantly the quantity of a small group of objects in organized and random arrangements | Partial | Number Sense: Count to tell how many. Instant recognition of a quantity without counting (subitizing) is not asked. |
-| K.2E | generate a set using concrete and pictorial models that represents a number that is more than, less than,... | Partial | Number Sense: Compare two groups of objects. Compares two given groups; building a set that has more, fewer or the same is not asked. |
-| K.2F | generate a number that is one more than or one less than another number up to at least 20 | Partial | Number Sense: Count on from any number. Counting on and back is generated; asking for the number one more or one less than a given number is not a separate question. |
+| K.2E | generate a set using concrete and pictorial models that represents a number that is more than, less than,... | Supported | Number Sense: Compare two groups of objects and Draw a group with more, fewer or the same. |
+| K.2F | generate a number that is one more than or one less than another number up to at least 20 | Supported | Number Sense: Count on from any number and One more and one less to 20. |
 | K.2G | compare sets of objects up to at least 20 in each set using comparative language | Supported | Number Sense: Compare two groups of objects. |
 | K.2H | use comparative language to describe two numbers up to 20 presented as written numerals | Partial | Number Sense: Compare numerals to 10 in words. Numerals 0 to 10 only; Texas goes to 20. |
 | K.2I | compose and decompose numbers up to 10 with objects and pictures | Supported | Operations and Algebraic Thinking: Decompose numbers to 10. |
@@ -47,8 +47,8 @@ Supported and Partial standards build a worksheet from the Texas standard panel 
 | 1.2A | recognize instantly the quantity of structured arrangements | Partial | Number Sense: Count up to 20 in lines, arrays and circles. Instant recognition of a quantity without counting (subitizing) is not asked. |
 | 1.2B | use concrete and pictorial models to compose and decompose numbers up to 120 in more than one way as so... | Partial | Number Sense: Tens and ones. Tens and ones are generated; hundreds, tens and ones in more than one way up to 120 is not. |
 | 1.2C | use objects, pictures, and expanded and standard forms to represent numbers up to 120 | Partial | Number Sense: Count on and back and Read and write numbers to 1000. Base-ten blocks and tens and ones to 120 are generated; expanded form is generated only from 100 up. |
-| 1.2D | generate a number that is greater than or less than a given whole number up to 120 | Partial | Number Sense: Count on and back. Counting on and back is generated; asking for a number greater or less than a given number up to 120 is not a separate question. |
-| 1.2E | use place value to compare whole numbers up to 120 using comparative language | Partial | Number Sense: Compare numbers. Compares two-digit numbers (10 to 99); 100 to 120 is not generated. |
+| 1.2D | generate a number that is greater than or less than a given whole number up to 120 | Supported | Number Sense: Count on and back and Write a number greater or less than, to 120. |
+| 1.2E | use place value to compare whole numbers up to 120 using comparative language | Supported | Number Sense: Compare numbers and Compare numbers to 120. |
 | 1.2F | order whole numbers up to 120 using place value and open number lines | Partial | Number Sense: Order numbers to 120. Orders numbers to 120; open number lines are not used. |
 | 1.2G | represent the comparison of two numbers to 100 using the symbols >, <, or = | Supported | Number Sense: Compare numbers. |
 | 1.3A | use concrete and pictorial models to determine the sum of a multiple of 10 and a one-digit number in... | Supported | Addition and Subtraction: Add a two-digit and a one-digit number. |
@@ -56,7 +56,7 @@ Supported and Partial standards build a worksheet from the Texas standard panel 
 | 1.3C | compose 10 with two or more addends with and without concrete objects | Partial | Operations and Algebraic Thinking and Addition and Subtraction: Make ten and Add three numbers. Makes ten with two addends; three or more addends are not asked. |
 | 1.3D | apply basic fact strategies to add and subtract within 20, including making 10 and decomposing a number... | Supported | Operations and Algebraic Thinking and Addition and Subtraction: Make ten and Addition and subtraction fluency within 20. |
 | 1.3E | explain strategies used to solve addition and subtraction problems up to 20 using spoken words, objects,... | Supported | Operations and Algebraic Thinking: Properties of addition and Make ten. |
-| 1.3F | generate and solve problem situations when given a number sentence involving addition or subtraction of... | Partial | Number Sense: Add and subtract word problems within 20. Solves given stories; writing a story for a number sentence is not asked. |
+| 1.3F | generate and solve problem situations when given a number sentence involving addition or subtraction of... | Supported | Number Sense and Operations and Algebraic Thinking: Add and subtract word problems within 20 and Write a story for a number sentence within 20. |
 | 1.4A | identify U.S. coins, including pennies, nickels, dimes, and quarters, by value and describe the... | Supported | Time and Money: Identify coins and their values. |
 | 1.4B | write a number with the cent symbol to describe the value of a coin | Supported | Time and Money: Identify coins and their values. |
 | 1.4C | use relationships to count by twos, fives, and tens to determine the value of a collection of pennies,... | Supported | Time and Money: Count coins under one dollar. |
@@ -93,10 +93,10 @@ Supported and Partial standards build a worksheet from the Texas standard panel 
 | Standard | Focus | Status | Module and notes |
 |---|---|---|---|
 | 2.2A | use concrete and pictorial models to compose and decompose numbers up to 1,200 in more than one way as a... | Partial | Number Sense: Place value to hundreds. Place value to hundreds; numbers above 999 and writing a number in more than one way are not generated. |
-| 2.2B | use standard, word, and expanded forms to represent numbers up to 1,200 | Partial | Number Sense: Read and write numbers to 1000. Standard, word and expanded forms are generated for 100 to 1,000; Texas goes to 1,200. |
-| 2.2C | generate a number that is greater than or less than a given whole number up to 1,200 | Partial | Number Sense: Mentally add or subtract 10 or 100. Counting and 10 or 100 more or less are generated; asking for any number greater or less than a given number is not a separate question. |
-| 2.2D | use place value to compare and order whole numbers up to 1,200 using comparative language, numbers, and... | Partial | Number Sense: Compare three-digit numbers and Order three-digit numbers. Compares and orders three-digit numbers; numbers from 1,000 to 1,200 are not generated. |
-| 2.2E | locate the position of a given whole number on an open number line | Partial | Number Sense: Read a number line. Reads the number an arrow shows on a marked number line; marking a given number on an open number line is not generated. |
+| 2.2B | use standard, word, and expanded forms to represent numbers up to 1,200 | Supported | Number Sense: Read and write numbers to 1000 and Read and write numbers to 1,200. |
+| 2.2C | generate a number that is greater than or less than a given whole number up to 1,200 | Supported | Number Sense: Mentally add or subtract 10 or 100 and Write a number greater than, less than or between, to 1,200. |
+| 2.2D | use place value to compare and order whole numbers up to 1,200 using comparative language, numbers, and... | Supported | Number Sense: Compare three-digit numbers and Order three-digit numbers and Compare numbers to 1,200 and Order numbers to 1,200. |
+| 2.2E | locate the position of a given whole number on an open number line | Supported | Number Sense: Read a number line and Mark a number on an open number line and Open number lines to 1,200. |
 | 2.2F | name the whole number that corresponds to a specific point on a number line | Supported | Number Sense: Read a number line. |
 | 2.3A | partition objects into equal parts and name the parts, including halves, fourths, and eighths, using words | Partial | Fractions, Decimals and Percents: Equal shares. Halves, thirds and fourths are generated; eighths are not. |
 | 2.3B | explain that the more fractional parts used to make a whole, the smaller the part; and the fewer the... | Supported | Fractions, Decimals and Percents: Size of fractional parts and Number of fractional parts in wholes. |
@@ -105,12 +105,12 @@ Supported and Partial standards build a worksheet from the Texas standard panel 
 | 2.4A | recall basic facts to add and subtract within 20 with automaticity | Supported | Addition and Subtraction: Addition and subtraction fluency within 20. |
 | 2.4B | add up to four two-digit numbers and subtract two-digit numbers using mental strategies and algorithms... | Supported | Addition and Subtraction: Add two-digit numbers and Add and subtract within 100. |
 | 2.4C | solve one-step and multi-step word problems involving addition and subtraction within 1,000 using a... | Partial | Number Sense and Addition and Subtraction: Add and subtract word problems within 100 and Add and subtract within 1000. Word problems are generated within 100; multi-step stories within 1,000 are not. |
-| 2.4D | generate and solve problem situations for a given mathematical number sentence involving addition and... | Partial | Number Sense: Add and subtract word problems within 100. Solves given stories within 100; writing a story for a number sentence is not asked. |
+| 2.4D | generate and solve problem situations for a given mathematical number sentence involving addition and... | Supported | Number Sense and Operations and Algebraic Thinking: Add and subtract word problems within 100 and Write a story for a number sentence within 100 and Write a story for a number sentence within 1,000. |
 | 2.5A | determine the value of a collection of coins up to one dollar; and | Supported | Time and Money: Coins under one dollar. |
 | 2.5B | use the cent symbol, dollar sign, and the decimal point to name the value of a collection of coins. | Supported | Time and Money: Coins under one dollar. |
 | 2.6A | model, create, and describe contextual multiplication situations in which equivalent sets of concrete... | Supported | Number Sense: Arrays and repeated addition and Interpret factors and products. |
 | 2.6B | model, create, and describe contextual division situations in which a set of concrete objects is separated... | Supported | Number Sense: Interpret dividend, divisor and quotient. |
-| 2.7A | determine whether a number up to 40 is even or odd using pairings of objects to represent the number | Partial | Number Sense: Odd and even. Odd and even are generated to 20; Texas goes to 40. |
+| 2.7A | determine whether a number up to 40 is even or odd using pairings of objects to represent the number | Supported | Number Sense: Odd and even and Odd and even to 40. |
 | 2.7B | use an understanding of place value to determine the number that is 10 or 100 more or less than a given... | Supported | Number Sense: Mentally add or subtract 10 or 100. |
 | 2.7C | represent and solve addition and subtraction word problems where unknowns may be any one of the terms in... | Supported | Number Sense: Add and subtract word problems within 100. |
 | 2.8A | create two-dimensional shapes based on given attributes, including number of sides and vertices | Supported | Geometry, Area and Volume: Name and draw polygons. |
@@ -143,7 +143,7 @@ Supported and Partial standards build a worksheet from the Texas standard panel 
 | 3.2A | compose and decompose numbers up to 100,000 as a sum of so many ten thousands, so many thousands, so many... | Supported | Number Sense: Read and write multi-digit numbers. |
 | 3.2B | describe the mathematical relationships found in the base-10 place value system through the hundred... | Supported | Number Sense: Place value. |
 | 3.2C | represent a number on a number line as being between two consecutive multiples of 10; 100; 1,000; or... | Partial | Number Sense: Round to the nearest 10 or 100. Rounding to 10 or 100 on a number line is generated; 1,000 and 10,000 and describing where a number lies are not. |
-| 3.2D | compare and order whole numbers up to 100,000 and represent comparisons using the symbols >, <, or = | Partial | Number Sense: Compare four- and five-digit numbers and Order four-digit numbers. Compares numbers to 99,999; ordering is generated to 9,999. |
+| 3.2D | compare and order whole numbers up to 100,000 and represent comparisons using the symbols >, <, or = | Supported | Number Sense: Compare four- and five-digit numbers and Order four-digit numbers and Compare numbers to 100,000 and Order numbers to 100,000. |
 | 3.3A | represent fractions greater than zero and less than or equal to one with denominators of 2, 3, 4, 6, and 8... | Supported | Fractions, Decimals and Percents: Fractions as parts of a whole. |
 | 3.3B | determine the corresponding fraction greater than zero and less than or equal to one with denominators of... | Supported | Fractions, Decimals and Percents: Fractions on a number line. |
 | 3.3C | explain that the unit fraction 1/b represents the quantity formed by one part of a whole that has been... | Supported | Fractions, Decimals and Percents: Fractions as parts of a whole. |
@@ -178,8 +178,8 @@ Supported and Partial standards build a worksheet from the Texas standard panel 
 | 3.7C | determine the solutions to problems involving addition and subtraction of time intervals in minutes using... | Supported | Time and Money: Time to the minute and elapsed time. |
 | 3.7D | determine when it is appropriate to use measurements of liquid volume (capacity) or weight | Supported | Measurement and Data: Mass and liquid volume. |
 | 3.7E | determine liquid volume (capacity) or weight using appropriate units and tools | Supported | Measurement and Data: Mass and liquid volume. |
-| 3.8A | summarize a data set with multiple categories using a frequency table, dot plot, pictograph, or bar graph... | Partial | Measurement and Data: Scaled pictographs and bar graphs and Line plots. Scaled pictographs, bar graphs and line plots are generated; frequency tables are not. |
-| 3.8B | solve one- and two-step problems using categorical data represented with a frequency table, dot plot,... | Partial | Measurement and Data: Scaled pictographs and bar graphs and Line plots. Scaled pictographs, bar graphs and line plots are generated; frequency tables are not. |
+| 3.8A | summarize a data set with multiple categories using a frequency table, dot plot, pictograph, or bar graph... | Supported | Measurement and Data: Scaled pictographs and bar graphs and Line plots and Frequency tables. |
+| 3.8B | solve one- and two-step problems using categorical data represented with a frequency table, dot plot,... | Supported | Measurement and Data: Scaled pictographs and bar graphs and Line plots and Two-step problems with frequency tables. |
 | 3.9A | explain the connection between human capital/labor and income | Partial | Time and Money: Skills, hours and income and Income from a pay rate and Complete sentences about money ideas. Worksheets identify job skills and calculate income from skills and hours; they do not ask for a written explanation; a word-bank sentence completion adds recall of the explanation (mixed money topics, not one topic per standard). |
 | 3.9B | describe the relationship between the availability or scarcity of resources and how that impacts cost | Partial | Time and Money: Scarcity and price and Complete sentences about money ideas. Worksheets identify the price effect and the likely reason; they do not ask for a description of the relationship; a word-bank sentence completion adds recall of the explanation (mixed money topics, not one topic per standard). |
 | 3.9C | identify the costs and benefits of planned and unplanned spending decisions | Supported | Time and Money: Planned and unplanned spending and Costs and benefits of spending. |
@@ -192,8 +192,8 @@ Supported and Partial standards build a worksheet from the Texas standard panel 
 | Standard | Focus | Status | Module and notes |
 |---|---|---|---|
 | 4.2A | interpret the value of each place-value position as 10 times the position to the right and as one-tenth of... | Supported | Number Sense and Fractions, Decimals and Percents: Place value and Ten times and one tenth. |
-| 4.2B | represent the value of the digit in whole numbers through 1,000,000,000 and decimals to the hundredths... | Partial | Number Sense and Fractions, Decimals and Percents: Read and write multi-digit numbers and Read, write and compare decimals. Whole numbers are generated to 999,999; Texas goes to 1,000,000,000. |
-| 4.2C | compare and order whole numbers to 1,000,000,000 and represent comparisons using the symbols >, <, or = | Partial | Number Sense: Compare four- and five-digit numbers and Order four-digit numbers. Compares numbers to 99,999 and orders numbers to 9,999; Texas goes to 1,000,000,000. |
+| 4.2B | represent the value of the digit in whole numbers through 1,000,000,000 and decimals to the hundredths... | Supported | Number Sense and Fractions, Decimals and Percents: Read and write multi-digit numbers and Read, write and compare decimals and Compare and use place value with numbers to 1,000,000,000. |
+| 4.2C | compare and order whole numbers to 1,000,000,000 and represent comparisons using the symbols >, <, or = | Supported | Number Sense: Compare four- and five-digit numbers and Order four-digit numbers and Compare and use place value with numbers to 1,000,000,000 and Order numbers to 1,000,000,000. |
 | 4.2D | round whole numbers to a given place value through the hundred thousands place | Supported | Number Sense: Round multi-digit numbers. |
 | 4.2E | represent decimals, including tenths and hundredths, using concrete and visual models and money | Partial | Fractions, Decimals and Percents and Number Sense: Fractions and decimals and Read, write and compare decimals. Decimals are shown as numerals and on number lines; concrete and money models are not generated. |
 | 4.2F | compare and order decimals using concrete and visual models to the hundredths | Supported | Number Sense: Compare decimals and Order decimals. |
@@ -230,8 +230,8 @@ Supported and Partial standards build a worksheet from the Texas standard panel 
 | 4.8A | identify relative sizes of measurement units within the customary and metric systems | Supported | Measurement and Data: Convert measurement units. |
 | 4.8B | convert measurements within the same measurement system, customary or metric, from a smaller unit into a... | Partial | Measurement and Data: Convert measurement units. Converts a larger unit to a smaller unit; converting a smaller unit to a larger one is not generated. |
 | 4.8C | solve problems that deal with measurements of length, intervals of time, liquid volumes, mass, and money... | Supported | Number Sense: Measurement word problems. |
-| 4.9A | represent data on a frequency table, dot plot, or stem-and-leaf plot marked with whole numbers and fractions | Partial | Measurement and Data: Line plots with fractional units. Dot plots (line plots) marked in halves, fourths and eighths are generated; frequency tables and stem-and-leaf plots are not. |
-| 4.9B | solve one- and two-step problems using data in whole number, decimal, and fraction form in a frequency... | Partial | Measurement and Data: Line plots with fractional units. Dot plots (line plots) marked in halves, fourths and eighths are generated; frequency tables and stem-and-leaf plots are not. |
+| 4.9A | represent data on a frequency table, dot plot, or stem-and-leaf plot marked with whole numbers and fractions | Supported | Measurement and Data: Line plots with fractional units and Frequency tables and Stem-and-leaf plots. |
+| 4.9B | solve one- and two-step problems using data in whole number, decimal, and fraction form in a frequency... | Partial | Measurement and Data: Line plots with fractional units and Two-step problems with frequency tables and Problems with stem-and-leaf plots. Frequency tables and stem-and-leaf plots use whole-number data; decimal and fraction data values appear only in line plots. |
 | 4.10A | distinguish between fixed and variable expenses | Supported | Time and Money: Fixed and variable expenses and Sort fixed and variable expenses. |
 | 4.10B | calculate profit in a given situation | Supported | Time and Money: Calculate profit. |
 | 4.10C | compare the advantages and disadvantages of various savings options | Partial | Time and Money: Savings options and Complete sentences about money ideas. Worksheets pick an advantage or a disadvantage of each option; they do not compare options in writing; a word-bank sentence completion adds recall of the explanation (mixed money topics, not one topic per standard). |
@@ -270,9 +270,9 @@ Supported and Partial standards build a worksheet from the Texas standard panel 
 | 5.8A | describe the key attributes of the coordinate plane, including perpendicular number lines (axes) where the... | Supported | Geometry, Area and Volume: Graph and name points in the first quadrant. |
 | 5.8B | describe the process for graphing ordered pairs of numbers in the first quadrant of the coordinate plane | Supported | Geometry, Area and Volume: Graph and name points in the first quadrant. |
 | 5.8C | graph in the first quadrant of the coordinate plane ordered pairs of numbers arising from mathematical and... | Supported | Geometry, Area and Volume: Graph real-world problems. |
-| 5.9A | represent categorical data with bar graphs or frequency tables and numerical data, including data sets of... | Partial | Measurement and Data: Scaled pictographs and bar graphs and Line plots and operations. Bar graphs and line plots are generated; frequency tables and stem-and-leaf plots are not. |
+| 5.9A | represent categorical data with bar graphs or frequency tables and numerical data, including data sets of... | Partial | Measurement and Data: Scaled pictographs and bar graphs and Line plots and operations and Frequency tables and Stem-and-leaf plots. Bar graphs, frequency tables, line plots and whole-number stem-and-leaf plots are generated; stem-and-leaf plots of decimal measurements are not. |
 | 5.9B | represent discrete paired data on a scatterplot | Supported | Geometry, Area and Volume: Scatterplot of paired data. |
-| 5.9C | solve one- and two-step problems using data from a frequency table, dot plot, bar graph, stem-and-leaf... | Partial | Measurement and Data: Scaled pictographs and bar graphs and Line plots and operations. Bar graphs and line plots are generated; frequency tables, stem-and-leaf plots and scatterplots are not. |
+| 5.9C | solve one- and two-step problems using data from a frequency table, dot plot, bar graph, stem-and-leaf... | Supported | Measurement and Data: Scaled pictographs and bar graphs and Line plots and operations and Two-step problems with frequency tables and Problems with stem-and-leaf plots. |
 | 5.10A | define income tax, payroll tax, sales tax, and property tax | Supported | Time and Money: Kinds of taxes. |
 | 5.10B | explain the difference between gross income and net income | Supported | Time and Money: Gross and net income. |
 | 5.10C | identify the advantages and disadvantages of different methods of payment, including check, credit card,... | Supported | Time and Money: Methods of payment. |

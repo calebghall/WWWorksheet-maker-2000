@@ -19,7 +19,7 @@ function checkUnit(code,m,spec,st,p,fix){
     if(!ok)bad.push(code+' digit range or cap');}
   if(m==='muldiv'&&st.md.mode==='digits'){const ok=p.every(q=>q.type==='div'?(q.d<10**st.md.nb&&q.n<10**st.md.na&&q.q*q.d+q.r===q.n):((q.a<10**st.md.da&&q.b<10**st.md.db||st.md.alt&&q.a<10**st.md.da2&&q.b<10**st.md.db2)&&q.a*q.b===q.ans));if(!ok)bad.push(code+' digit range');}
   const types=spec[m==='addsub'||m==='muldiv'?null:m];
-  if(types&&types.types){const allowed=new Set(types.types.map(r=>r.replace(/^[a-z]+\./,'')));if(allowed.has('cmp2'))allowed.add('compare');if(allowed.has('par20'))allowed.add('parity');if(allowed.has('placew'))allowed.add('place');if(allowed.has('roundw'))allowed.add('round');const got=new Set(p.map(q=>q.type));
+  if(types&&types.types){const allowed=new Set(types.types.map(r=>r.replace(/^[a-z]+\./,'')));if(allowed.has('cmp2'))allowed.add('compare');if(allowed.has('par20'))allowed.add('parity');if(allowed.has('placew'))allowed.add('place');if(allowed.has('roundw'))allowed.add('round');if(allowed.has('cmprng'))allowed.add('compare');if(allowed.has('ordrng'))allowed.add('order');if(allowed.has('numrw12'))allowed.add('numrw3');if(allowed.has('par40')){allowed.add('parity');allowed.add('par20');}if(allowed.has('bign')){allowed.add('compare');allowed.add('place');}const got=new Set(p.map(q=>q.type));
     for(const t of got)if(!allowed.has(t)&&!(spec.id==='frac.multiply-whole-number-fraction'&&t==='fmulw'))bad.push(code+' unexpected type '+t);}
 }
 const used=new Set();

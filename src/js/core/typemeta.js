@@ -55,6 +55,15 @@ const TYPE_HOME = {
   "ns.flpay": ["tm", "Financial literacy"],
   "ns.flrec": ["tm", "Financial literacy"],
   "ns.flbud": ["tm", "Financial literacy"],
+  "ns.cmprng": ["ns", "Place value, comparing and rounding"],
+  "ns.ordrng": ["ns", "Place value, comparing and rounding"],
+  "ns.numrw12": ["ns", "Place value, comparing and rounding"],
+  "ns.bign": ["ns", "Place value, comparing and rounding"],
+  "ns.par40": ["ns", "Counting and number lines"],
+  "ns.gen1": ["ns", "Counting and number lines"],
+  "ns.story": ["oa", "Bonds, equations and properties"],
+  "vis.genset": ["ns", "Counting and number lines"],
+  "vis.openline": ["ns", "Counting and number lines"],
   "ns.flsortwn": ["tm", "Financial literacy"],
   "ns.flsortfv": ["tm", "Financial literacy"],
   "ns.flsortig": ["tm", "Financial literacy"],
@@ -200,7 +209,9 @@ const TYPE_HOME = {
   "vis.vcomp": ["geom", "Space and coordinates"],
   "vis.cplane": ["geom", "Space and coordinates"],
   "vis.cpword": ["geom", "Space and coordinates"],
-  "vis.scatter": ["geom", "Space and coordinates"]
+  "vis.scatter": ["geom", "Space and coordinates"],
+  "vis.ftable": ["meas", "Graphs and line plots"],
+  "vis.stem": ["meas", "Graphs and line plots"]
 };
 const WORD_IDS = ['wadd', 'wlen', 'wmul', 'wcmp', 'wstep', 'west', 'mword', 'fword6', 'cstory'];
 function typeTags(mod, d) {

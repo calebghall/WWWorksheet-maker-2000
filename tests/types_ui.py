@@ -16,7 +16,7 @@ with sync_playwright() as p:
     groups = lambda: pg.evaluate("(h)=>[...document.querySelectorAll(h+' details.tgroup')].map(g=>[g.dataset.fam,g.open,g.hidden,g.querySelector('.tcount').textContent])", H)
 
     g = groups(); check(len(g) == 4, 'num has 4 groups ' + str(g))
-    check(all(x[3].split('/')[1].isdigit() for x in g) and sum(int(x[3].split('/')[1]) for x in g) == 42, 'group totals sum to 42 ' + str(g))
+    check(all(x[3].split('/')[1].isdigit() for x in g) and sum(int(x[3].split('/')[1]) for x in g) == 50, 'group totals sum to 50 ' + str(g))
     check(sum(int(x[3].split('/')[0]) for x in g) >= 1, 'a default type is checked')
     check(all(x[1] == (x[3].split('/')[0] != '0') for x in g), 'groups open exactly when they hold a checked type ' + str(g))
 

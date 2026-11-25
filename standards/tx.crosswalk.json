@@ -29,17 +29,17 @@
   },
   "K.2E": {
    "to": [
-    "num.compare-two-groups"
+    "num.compare-two-groups",
+    "num.draw-more-fewer-same"
    ],
-   "status": "partial",
-   "note": "Compares two given groups; building a set that has more, fewer or the same is not asked."
+   "status": "supported"
   },
   "K.2F": {
    "to": [
-    "num.count-on-from-any-number"
+    "num.count-on-from-any-number",
+    "num.one-more-one-less"
    ],
-   "status": "partial",
-   "note": "Counting on and back is generated; asking for the number one more or one less than a given number is not a separate question."
+   "status": "supported"
   },
   "K.2G": {
    "to": [
@@ -198,17 +198,17 @@
   },
   "1.2D": {
    "to": [
-    "num.count-on-back"
+    "num.count-on-back",
+    "num.greater-less-than-to-120"
    ],
-   "status": "partial",
-   "note": "Counting on and back is generated; asking for a number greater or less than a given number up to 120 is not a separate question."
+   "status": "supported"
   },
   "1.2E": {
    "to": [
-    "num.compare-numbers"
+    "num.compare-numbers",
+    "num.compare-numbers-to-120"
    ],
-   "status": "partial",
-   "note": "Compares two-digit numbers (10 to 99); 100 to 120 is not generated."
+   "status": "supported"
   },
   "1.2F": {
    "to": [
@@ -259,10 +259,10 @@
   },
   "1.3F": {
    "to": [
-    "num.add-subtract-word-problems-within-20"
+    "num.add-subtract-word-problems-within-20",
+    "oa.write-story-within-20"
    ],
-   "status": "partial",
-   "note": "Solves given stories; writing a story for a number sentence is not asked."
+   "status": "supported"
   },
   "1.4A": {
    "to": [
@@ -456,32 +456,34 @@
   },
   "2.2B": {
    "to": [
-    "num.read-write-numbers-1000"
+    "num.read-write-numbers-1000",
+    "num.read-write-numbers-1200"
    ],
-   "status": "partial",
-   "note": "Standard, word and expanded forms are generated for 100 to 1,000; Texas goes to 1,200."
+   "status": "supported"
   },
   "2.2C": {
    "to": [
-    "num.mentally-add-subtract-10-100"
+    "num.mentally-add-subtract-10-100",
+    "num.greater-less-between-to-1200"
    ],
-   "status": "partial",
-   "note": "Counting and 10 or 100 more or less are generated; asking for any number greater or less than a given number is not a separate question."
+   "status": "supported"
   },
   "2.2D": {
    "to": [
     "num.compare-three-digit-numbers",
-    "num.order-three-digit-numbers"
+    "num.order-three-digit-numbers",
+    "num.compare-numbers-to-1200",
+    "num.order-numbers-to-1200"
    ],
-   "status": "partial",
-   "note": "Compares and orders three-digit numbers; numbers from 1,000 to 1,200 are not generated."
+   "status": "supported"
   },
   "2.2E": {
    "to": [
-    "num.read-number-line"
+    "num.read-number-line",
+    "num.open-number-line",
+    "num.open-number-line-to-1000"
    ],
-   "status": "partial",
-   "note": "Reads the number an arrow shows on a marked number line; marking a given number on an open number line is not generated."
+   "status": "supported"
   },
   "2.2F": {
    "to": [
@@ -539,10 +541,11 @@
   },
   "2.4D": {
    "to": [
-    "num.add-subtract-word-problems-within-100"
+    "num.add-subtract-word-problems-within-100",
+    "oa.write-story-within-100",
+    "oa.write-story-within-1000"
    ],
-   "status": "partial",
-   "note": "Solves given stories within 100; writing a story for a number sentence is not asked."
+   "status": "supported"
   },
   "2.5A": {
    "to": [
@@ -571,10 +574,10 @@
   },
   "2.7A": {
    "to": [
-    "num.odd-even"
+    "num.odd-even",
+    "num.odd-even-to-40"
    ],
-   "status": "partial",
-   "note": "Odd and even are generated to 20; Texas goes to 40."
+   "status": "supported"
   },
   "2.7B": {
    "to": [
@@ -756,10 +759,11 @@
   "3.2D": {
    "to": [
     "num.compare-five-digit-numbers",
-    "num.order-four-digit-numbers"
+    "num.order-four-digit-numbers",
+    "num.compare-numbers-to-100000",
+    "num.order-numbers-to-100000"
    ],
-   "status": "partial",
-   "note": "Compares numbers to 99,999; ordering is generated to 9,999."
+   "status": "supported"
   },
   "3.3A": {
    "to": [
@@ -978,18 +982,18 @@
   "3.8A": {
    "to": [
     "meas.scaled-pictographs-bar-graphs",
-    "meas.line-plots"
+    "meas.line-plots",
+    "meas.frequency-tables"
    ],
-   "status": "partial",
-   "note": "Scaled pictographs, bar graphs and line plots are generated; frequency tables are not."
+   "status": "supported"
   },
   "3.8B": {
    "to": [
     "meas.scaled-pictographs-bar-graphs",
-    "meas.line-plots"
+    "meas.line-plots",
+    "meas.frequency-tables-two-step"
    ],
-   "status": "partial",
-   "note": "Scaled pictographs, bar graphs and line plots are generated; frequency tables are not."
+   "status": "supported"
   },
   "3.9A": {
    "to": [
@@ -1047,18 +1051,19 @@
   "4.2B": {
    "to": [
     "num.read-write-multi-digit-numbers",
-    "multi.read-write-compare-decimals"
+    "multi.read-write-compare-decimals",
+    "num.large-numbers"
    ],
-   "status": "partial",
-   "note": "Whole numbers are generated to 999,999; Texas goes to 1,000,000,000."
+   "status": "supported"
   },
   "4.2C": {
    "to": [
     "num.compare-five-digit-numbers",
-    "num.order-four-digit-numbers"
+    "num.order-four-digit-numbers",
+    "num.large-numbers",
+    "num.order-numbers-to-1000000000"
    ],
-   "status": "partial",
-   "note": "Compares numbers to 99,999 and orders numbers to 9,999; Texas goes to 1,000,000,000."
+   "status": "supported"
   },
   "4.2D": {
    "to": [
@@ -1289,17 +1294,20 @@
   },
   "4.9A": {
    "to": [
-    "meas.line-plots-fractional-units"
+    "meas.line-plots-fractional-units",
+    "meas.frequency-tables",
+    "meas.stem-and-leaf-plots"
    ],
-   "status": "partial",
-   "note": "Dot plots (line plots) marked in halves, fourths and eighths are generated; frequency tables and stem-and-leaf plots are not."
+   "status": "supported"
   },
   "4.9B": {
    "to": [
-    "meas.line-plots-fractional-units"
+    "meas.line-plots-fractional-units",
+    "meas.frequency-tables-two-step",
+    "meas.stem-and-leaf-problems"
    ],
    "status": "partial",
-   "note": "Dot plots (line plots) marked in halves, fourths and eighths are generated; frequency tables and stem-and-leaf plots are not."
+   "note": "Frequency tables and stem-and-leaf plots use whole-number data; decimal and fraction data values appear only in line plots."
   },
   "4.10A": {
    "to": [
@@ -1519,10 +1527,12 @@
   "5.9A": {
    "to": [
     "meas.scaled-pictographs-bar-graphs",
-    "meas.line-plots-operations"
+    "meas.line-plots-operations",
+    "meas.frequency-tables",
+    "meas.stem-and-leaf-plots"
    ],
    "status": "partial",
-   "note": "Bar graphs and line plots are generated; frequency tables and stem-and-leaf plots are not."
+   "note": "Bar graphs, frequency tables, line plots and whole-number stem-and-leaf plots are generated; stem-and-leaf plots of decimal measurements are not."
   },
   "5.9B": {
    "to": [
@@ -1533,10 +1543,11 @@
   "5.9C": {
    "to": [
     "meas.scaled-pictographs-bar-graphs",
-    "meas.line-plots-operations"
+    "meas.line-plots-operations",
+    "meas.frequency-tables-two-step",
+    "meas.stem-and-leaf-problems"
    ],
-   "status": "partial",
-   "note": "Bar graphs and line plots are generated; frequency tables, stem-and-leaf plots and scatterplots are not."
+   "status": "supported"
   },
   "5.10A": {
    "to": [

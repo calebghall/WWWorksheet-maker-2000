@@ -4101,6 +4101,201 @@ defTypes("ns", "Financial literacy", [
   { id: "flbtab", label: "Fill in a budget table", blurb: "Savings, total spending, money left over, an over-budget amount or a missing expense.", on: false, gen: flBtab, html: flWrittenHtml },
   { id: "flexplain", label: "Complete the sentences", blurb: "Finish sentences about money ideas from a word bank (1, 2 or 3 blanks).", on: false, gen: flExplain, html: flWrittenHtml }
 ]);
+/* ---------- Number Sense: larger number ranges ----------
+   Texas extends several skills past the ranges the earlier types cover. Each type here keeps one skill and lets the level choose the range:
+   cmprng  compare two numbers: L1 to 120 (1.2E), L2 to 1,200 (2.2D), L3 to 100,000 (3.2D)
+   ordrng  order numbers: L1 to 1,200 (2.2D), L2 to 100,000 (3.2D), L3 six to nine digits (4.2C)
+   numrw12 standard, word and expanded form to 1,200 (2.2B)
+   bign    compare and place value with six to nine digits (4.2B, 4.2C)
+   par40   odd and even to 40 (2.7A) */
+
+const NR_PLACES = ['ones', 'tens', 'hundreds', 'thousands', 'ten thousands', 'hundred thousands', 'millions', 'ten millions', 'hundred millions'];
+const nrClamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+const nrW = n => n >= 1000 ? 'one thousand' + (n % 1000 ? ' ' + (n % 1000 < 100 ? numWord(n % 1000) : nsW3(n % 1000)) : '') : nsW3(n);
+const nrExp = n => [n >= 1000 ? 1000 : 0, Math.floor(n % 1000 / 100) * 100, Math.floor(n / 10) % 10 * 10, n % 10].filter(v => v > 0).map(cnum).join(' + ');
+
+/* A number close to another one with the same number of digits: one digit changes, or two neighbors swap. */
+function nrNear(rng, n) {
+  const d = String(n).split('').map(Number), i = ri(rng, 0, d.length - 1);
+  if (rng() < 0.3 && d.length > 2) { const j = ri(rng, 1, d.length - 1); const t = d[j]; d[j] = d[j - 1]; d[j - 1] = t; }
+  else d[i] = (d[i] + ri(rng, 1, 8)) % 10;
+  if (d[0] === 0) d[0] = ri(rng, 1, 9);
+  return Number(d.join(''));
+}
+
+function nsCmpRng(rng, L) {
+  let a, b;
+  for (let g = 0; g < 200; g++) {
+    if (L === 1) {
+      if (rng() < 0.4) { a = ri(rng, 90, 99); b = ri(rng, 100, 120); } else { a = ri(rng, 10, 120); b = rng() < 0.5 ? nrClamp(a + ri(rng, -12, 12), 10, 120) : ri(rng, 10, 120); }
+    } else if (L === 2) {
+      a = ri(rng, 100, 1200); b = rng() < 0.7 ? nrClamp(nrNear(rng, a), 100, 1200) : ri(rng, 100, 1200);
+      if (rng() < 0.2) { a = ri(rng, 900, 999); b = ri(rng, 1000, 1200); }
+    } else {
+      a = ri(rng, 10000, 99999); b = rng() < 0.75 ? nrNear(rng, a) : ri(rng, 10000, 99999);
+      if (rng() < 0.12) { a = 100000; b = ri(rng, 99000, 99999); }
+    }
+    if (rng() < 0.1) b = a;
+    if (a !== b || rng() < 0.1) break;
+  }
+  if (rng() < 0.5) { const t = a; a = b; b = t; }
+  return { mod: 'ns', type: 'compare', prompt: 'Write <, > or =.', a: cnum(a), b: cnum(b), ans: sgn(a, b), sig: `cr${a}|${b}`, ew: (cnum(a).length + cnum(b).length) * 0.62 + 4.6, eh: 1.1 + 1.8 };
+}
+
+function nsOrdRng(rng, L) {
+  const cnt = L === 1 ? 3 : 4, set = new Set(), vals = [], d = L === 3 ? ri(rng, 6, 9) : 0;
+  const lo = L === 1 ? 100 : L === 2 ? 10000 : Math.pow(10, d - 1), hi = L === 1 ? 1200 : L === 2 ? 99999 : Math.pow(10, d) - 1;
+  let base = ri(rng, lo, hi);
+  for (let g = 0; vals.length < cnt && g < 300; g++) {
+    const n = vals.length === 0 ? base : (rng() < 0.65 ? nrClamp(base + ri(rng, -Math.pow(10, Math.max(2, String(base).length - 3)), Math.pow(10, Math.max(2, String(base).length - 3))), lo, hi) : ri(rng, lo, hi));
+    if (!set.has(n)) { set.add(n); vals.push(n); }
+  }
+  if (L === 2 && rng() < 0.15) vals[vals.length - 1] = 100000;
+  const asc = rng() < 0.6, sorted = vals.slice().sort((x, y) => asc ? x - y : y - x), shown = vals.map(cnum), ans = sorted.map(cnum);
+  return { mod: 'ns', type: 'ordrng', prompt: asc ? 'Order least to greatest:' : 'Order greatest to least:', shown, ans, sig: `oq${vals.join(',')}${asc}`,
+    ew: Math.min(22, Math.max(shown.reduce((a, s) => a + s.length * 0.62 + 1.3, 0), ans.reduce((a, s) => a + s.length * 0.62 + 2.4, 0), 12)),
+    eh: 1.1 + 1.45 * (nrLines(shown) + nrLines(ans)) + 0.8 };
+}
+/* Lines needed when numbers wrap in a cell about 20 characters wide; measured wide so that wider fonts still fit. */
+function nrLines(list) { const per = Math.max(1, Math.floor(20 / (Math.max(...list.map(s => s.length)) * 0.7 + 1.6))); return Math.ceil(list.length / per); }
+const nsOrdRngHtml = (p, key, x) => `<div style="display:flex;flex-wrap:wrap;gap:.1em .8em">${p.shown.map(v => `<span style="white-space:nowrap">${v}</span>`).join('')}</div><div style="display:flex;flex-wrap:wrap;gap:.35em .6em;max-width:100%">${p.ans.map(a => `<span class="blank" style="min-width:${(a.length * 0.58 + 1.2).toFixed(1)}em;max-width:100%">${key ? esc(a) : '&nbsp;'}</span>`).join('')}</div>`;
+
+/* Read and write numbers to 1,200. L1 100 to 999 in words and numerals; L2 adds expanded form and 1,000 to 1,200; L3 adds zeros in the tens or ones place. */
+function nsNumrw12(rng, L) {
+  let v = pick(rng, L === 1 ? ['w2n', 'n2w'] : ['w2n', 'n2w', 'e2s', 's2e']), n = ri(rng, 100, 999);
+  if (L >= 2 && rng() < 0.45) n = ri(rng, 1000, 1200);
+  if (L < 3) { while (n % 10 === 0 || Math.floor(n / 10) % 10 === 0) n = L === 1 ? ri(rng, 100, 999) : (rng() < 0.45 ? ri(rng, 1000, 1200) : ri(rng, 100, 999)); }
+  else { const r = rng(); if (r < 0.5) n = pick(rng, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]) * 100 + (rng() < 0.5 ? 0 : ri(rng, 1, 9) * 10) + (rng() < 0.5 ? 0 : ri(rng, 1, 9)); if (n > 1200) n = 1200; }
+  const base = { mod: 'ns', type: 'numrw3', variant: v, n, sig: `n12${v}${n}` }, w = nrW(n), e = nrExp(n);
+  if (v === 'w2n') return Object.assign(base, { prompt: 'Write the number.', word: w, ans: cnum(n), ew: w.length * 0.6 + BW + 2, eh: 1.1 + 1.6 + (w.length > 30 ? 1.6 : 0) });
+  if (v === 'n2w') return Object.assign(base, { prompt: 'Write the number in words.', ans: w, ew: Math.max(14, w.length * 0.6 + 2), eh: 1.1 + 1.6 * 2 });
+  if (v === 'e2s') return Object.assign(base, { prompt: 'Write the number.', exp: e, ans: cnum(n), ew: e.length * 0.62 + BW + 2, eh: 1.1 + 1.6 });
+  return Object.assign(base, { prompt: 'Write the number in expanded form.', ans: e, ew: Math.max(14, e.length * 0.62 + 2), eh: 1.1 + 1.6 * 2 });
+}
+
+/* Six to nine digits: compare, value of a digit, digit in a place, expanded form. Level sets the size: 6 to 7 digits, 8, 9 (and 1,000,000,000 in comparisons). */
+function nsBign(rng, L) {
+  const d = L === 1 ? ri(rng, 6, 7) : L === 2 ? 8 : 9, v = pick(rng, ['cmp', 'cmp', 'digit', 'which', 'expand']);
+  if (v === 'cmp') {
+    let a = ri(rng, Math.pow(10, d - 1), Math.pow(10, d) - 1), b = rng() < 0.8 ? nrNear(rng, a) : ri(rng, Math.pow(10, d - 1), Math.pow(10, d) - 1);
+    if (L === 3 && rng() < 0.12) { a = 1000000000; b = ri(rng, 990000000, 999999999); }
+    if (rng() < 0.08) b = a; if (rng() < 0.5) { const t = a; a = b; b = t; }
+    return { mod: 'ns', type: 'compare', prompt: 'Write <, > or =.', a: cnum(a), b: cnum(b), ans: sgn(a, b), sig: `bc${a}|${b}`, ew: (cnum(a).length + cnum(b).length) * 0.62 + 4.6, eh: 1.1 + 1.8, big: true };
+  }
+  const ints = rdigits(rng, d, v === 'expand');
+  if (v === 'expand') {
+    const keep = [0].concat(shuffle(rng, ints.map((_, i) => i).slice(1)).slice(0, 3));
+    ints.forEach((dg, i) => { if (!keep.includes(i)) ints[i] = 0; else if (!dg) ints[i] = ri(rng, 1, 9); });
+    const terms = []; ints.forEach((dg, i) => { if (dg) terms.push(cnum(dg * Math.pow(10, d - 1 - i))); });
+    const expd = terms.join(' + '), shown = digitsHtml(ints.map(String), [], null);
+    return { mod: 'ns', type: 'place', prompt: 'Write in expanded form:', variant: 'expand', shown, expd, sig: `bp${v}${ints.join('')}`, ew: Math.max(14, expd.length * 0.55 + 2), eh: 1.1 + 1.6 + (expd.length > 22 ? (expd.length > 44 ? 4.8 : 3.2) : 2.2) };
+  }
+  const pool = []; ints.forEach((dg, i) => { if (dg) pool.push(i); });
+  const i = pick(rng, pool), dg = ints[i], place = NR_PLACES[d - 1 - i], val = cnum(dg * Math.pow(10, d - 1 - i));
+  const ul = digitsHtml(ints.map(String), [], { part: 'i', i }), plain = digitsHtml(ints.map(String), [], null);
+  return { mod: 'ns', type: 'place', prompt: v === 'digit' ? 'Value of the underlined digit:' : `Digit in the ${place} place:`, variant: v, shown: v === 'digit' ? ul : plain, ans: v === 'digit' ? val : String(dg),
+    sig: `bp${v}${ints.join('')}${i}`, ew: Math.max(12.5, (d + 4) * 0.62 + BW + 1.2), eh: 1.1 + 1.6 };
+}
+const nsBignHtml = (p, key, x) => p.type === 'compare' ? nsCompareHtml(p, key, x) : nsPlaceHtml(p, key, x);
+
+/* Odd and even to 40: a number, two equal addends, or pairs of counters (21 to 40 in rows of ten pairs). */
+function nsPar40(rng, L) {
+  const v = pick(rng, L === 1 ? ['one', 'pic'] : L === 2 ? ['one', 'eq', 'pic'] : ['one', 'eq', 'eq', 'pic']);
+  if (v === 'one') { const n = ri(rng, L === 1 ? 21 : 11, 40); return { mod: 'ns', type: 'parity', prompt: 'Circle even or odd:', single: true, n: String(n), ans: n % 2 ? 'odd' : 'even', sig: `p4${n}`, ew: 12, eh: 1.1 + 1.8 }; }
+  if (v === 'eq') { const n = 2 * ri(rng, 11, 20), tok = [`${n} = `, U(n / 2), ' + ', U(n / 2)]; return { mod: 'ns', type: 'par20', variant: 'eq', prompt: 'Write the number as two equal addends.', n, tok, sig: `p4e${n}`, ew: tokW(tok) + 1, eh: 1.1 + 1.6 }; }
+  const n = ri(rng, 21, 40);
+  return { mod: 'ns', type: 'par40', variant: 'pic40', prompt: 'Circle pairs. Even or odd?', n, ans: n % 2 ? 'odd' : 'even', sig: `p4p${n}`, win: 2.9, hin: 1.45 + 0.4, ew: 14, eh: 1 };
+}
+const nsPar40Html = (p, key, x) => {
+  if (p.variant !== 'pic40') return nsPar20Html(p, key, x);
+  let s = '';
+  for (let i = 0; i < p.n; i++) s += nkDot(18 + (Math.floor(i / 2) % 10) * 28, 18 + (i % 2) * 28 + Math.floor(i / 20) * 68, 1);
+  if (key) for (let c = 0; c < Math.floor(p.n / 2); c++) s += `<rect x="${6 + (c % 10) * 28}" y="${3 + Math.floor(c / 10) * 68}" width="24" height="58" rx="12" fill="none" stroke="var(--key)" stroke-width="2.5"/>`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="2.9in" height="1.45in" viewBox="0 0 290 145" role="img" aria-label="Counters" style="display:block">${s}</svg><div>${opts(['even', 'odd'], p.ans, key)}</div>`;
+};
+
+defTypes("ns", "Place value, comparing and rounding", [
+  { id: "cmprng", label: "Compare numbers, larger ranges", blurb: "Write <, > or = with numbers to 120, to 1,200 and to 100,000.", on: false, gen: nsCmpRng, html: nsCompareHtml },
+  { id: "ordrng", label: "Order numbers, larger ranges", blurb: "Order numbers to 1,200, to 100,000 and with six to nine digits.", on: false, gen: nsOrdRng, html: nsOrdRngHtml },
+  { id: "numrw12", label: "Read and write numbers to 1,200", blurb: "Standard form, word form and expanded form, 100 to 1,200.", on: false, gen: nsNumrw12, html: nsNumrw3Html },
+  { id: "bign", label: "Large numbers to 1,000,000,000", blurb: "Compare, value of a digit, digit in a place and expanded form with six to nine digits.", on: false, gen: nsBign, html: nsBignHtml }
+]);
+defTypes("ns", "Counting and number lines", [
+  { id: "par40", label: "Odd and even to 40", blurb: "Pair the objects, or write an even number as two equal addends.", on: false, gen: nsPar40, html: nsPar40Html }
+]);
+/* ---------- Number Sense: generate instead of read ----------
+   gen1   write a number that fits a rule: one more or one less to 20 (K.2F), greater or less than a number to 120 (1.2D),
+          to 1,200 and between two numbers (2.2C). Greater, less and between have many right answers, so the key shows one example.
+   story  write a story for a number sentence, then solve it: within 20 (1.3F), within 100, within 1,000 (2.4D).
+          The key shows one sample story; any story that fits the sentence is correct. */
+
+const NG_ITEMS = ['stickers', 'marbles', 'books', 'pencils', 'cards', 'shells', 'stamps', 'beads'];
+
+function nsGen1(rng, L) {
+  let kind, n, m = 0, ans, prompt;
+  if (L === 1) {
+    kind = rng() < 0.5 ? 'more' : 'less';
+    n = kind === 'more' ? ri(rng, 1, 19) : ri(rng, 2, 20);
+    ans = kind === 'more' ? n + 1 : n - 1;
+    prompt = rng() < 0.5 ? `What is one ${kind} than ${n}?` : `One ${kind} than ${n} is`;
+  } else {
+    const hi = L === 2 ? 120 : 1200, lo = L === 2 ? 10 : 100, k = rng();
+    kind = L === 3 && k < 0.34 ? 'between' : k < 0.67 ? 'greater' : 'less';
+    if (kind === 'between') {
+      n = ri(rng, lo, hi - 60); m = n + ri(rng, 30, 60);
+      ans = ri(rng, n + 1, m - 1); prompt = `Write a number between ${cnum(n)} and ${cnum(m)}.`;
+    } else if (kind === 'greater') {
+      n = ri(rng, lo, hi - 10); ans = ri(rng, n + 1, Math.min(hi, n + (L === 2 ? 25 : 150))); prompt = `Write a number greater than ${cnum(n)}.`;
+    } else {
+      n = ri(rng, lo + 10, hi); ans = ri(rng, Math.max(1, n - (L === 2 ? 25 : 150)), n - 1); prompt = `Write a number less than ${cnum(n)}.`;
+    }
+  }
+  return { mod: 'ns', type: 'gen1', prompt, kind, n, m, ans, sig: `g1${kind}${n}${m}`, ew: 15, eh: 2.4 };
+}
+const nsGen1Html = (p, key, x) => {
+  const vary = p.kind !== 'more' && p.kind !== 'less';
+  return `<div>Answer: ${x(cnum(p.ans), 3)}${vary && key ? ' <span style="color:var(--key);font-size:.85em">(answers vary)</span>' : ''}</div>`;
+};
+
+function nsStory(rng, L) {
+  const hi = L === 1 ? 20 : L === 2 ? 100 : 1000, form = pick(rng, L === 1 ? ['add', 'sub'] : ['add', 'sub', 'miss']);
+  const nm = pick(rng, NS_NAMES), it = pick(rng, NG_ITEMS), t = ri(rng, 0, 2);
+  let a, b, c, sentence, ans, sample;
+  if (form === 'add' || form === 'miss') {
+    const lo = L === 1 ? 2 : L === 2 ? 11 : 101;
+    a = ri(rng, lo, hi - lo); b = ri(rng, lo, hi - a); c = a + b;
+    if (form === 'add') {
+      sentence = `${cnum(a)} + ${cnum(b)} = ?`; ans = c;
+      sample = [`${nm} has ${cnum(a)} ${it}. A friend gives ${nm} ${cnum(b)} more. How many ${it} does ${nm} have now?`,
+        `There are ${cnum(a)} ${it} in a box and ${cnum(b)} ${it} on a shelf. How many ${it} are there in all?`,
+        `${nm} finds ${cnum(a)} ${it} on Monday and ${cnum(b)} ${it} on Tuesday. How many ${it} does ${nm} find in all?`][t];
+    } else {
+      sentence = `? + ${cnum(b)} = ${cnum(c)}`; ans = a;
+      sample = [`${nm} has some ${it}. A friend gives ${nm} ${cnum(b)} more. Now ${nm} has ${cnum(c)}. How many ${it} did ${nm} have at first?`,
+        `A box holds some ${it}. ${cnum(b)} more are put in. Now there are ${cnum(c)}. How many were in the box at first?`,
+        `${nm} had some ${it} and then found ${cnum(b)} more. Now ${nm} has ${cnum(c)}. How many did ${nm} start with?`][t];
+    }
+  } else {
+    const lo = L === 1 ? 2 : L === 2 ? 11 : 101;
+    a = ri(rng, lo * 2, hi); b = ri(rng, lo, a - lo); c = a - b; sentence = `${cnum(a)} − ${cnum(b)} = ?`; ans = c;
+    sample = [`${nm} has ${cnum(a)} ${it}. ${nm} gives away ${cnum(b)}. How many ${it} does ${nm} have left?`,
+      `There are ${cnum(a)} ${it} in a bag. ${cnum(b)} ${it} are taken out. How many ${it} are left in the bag?`,
+      `${nm} has ${cnum(a)} ${it} and loses ${cnum(b)} of them. How many ${it} does ${nm} have now?`][t];
+  }
+  return { mod: 'ns', type: 'story', prompt: 'Write a story for the number sentence. Then solve.', sentence, form, a, b, c, ans, sample, sig: `st${form}${a}${b}`, ew: 22, eh: 1.1 + 1.2 + 2 * 1.5 + 1.3 + (L === 3 ? 0.4 : 0) };
+}
+const nsStoryHtml = (p, key, x) => {
+  const ln = `<div style="border-bottom:1.5px solid currentColor;height:1.45em;margin-top:.15em">&nbsp;</div>`;
+  const body = key ? `<div style="color:var(--key);font-size:.85em;white-space:normal">Sample story: ${esc(p.sample)}</div>` : ln + ln;
+  return `<div style="font-weight:600;white-space:nowrap">${esc(p.sentence)}</div>${body}<div>Answer: ${x(cnum(p.ans), 3)}</div>`;
+};
+
+defTypes("ns", "Counting and number lines", [
+  { id: "gen1", label: "Write a number that fits", blurb: "One more or one less to 20, greater than or less than a number to 120 and to 1,200, and between two numbers.", on: false, gen: nsGen1, html: nsGen1Html }
+]);
+defTypes("ns", "Word problems", [
+  { id: "story", label: "Write a story for a number sentence", blurb: "Write a story that fits an addition or subtraction sentence within 20, 100 or 1,000, then solve it.", on: false, gen: nsStory, html: nsStoryHtml }
+]);
 /* ---------- Number Sense (module id: ns) ----------
    The problem types live in the ns-*.js family files and register themselves with defTypes (core/types.js). */
 
@@ -6167,6 +6362,138 @@ defTypes("vis", "Coordinate plane", [
   { id: "cpword", label: "Graphs of real-world tables", blurb: "Plot a table of ordered pairs, read the graph, and say what a point means.", on: false, gen: vCpword, html: vCpwordHtml },
   { id: "scatter", label: "Scatterplots of paired data", blurb: "Plot a table of paired data on a scatterplot, read a value, and say how one measure changes as the other goes up.", on: false, gen: vScatter, html: vScatterHtml }
 ]);
+/* ---------- Visual: frequency tables and stem-and-leaf plots ----------
+   Texas 3.8A/B, 4.9A/B, 5.9A/C. Both are text tables inside the cell (HTML, not SVG).
+   ftable  L1 count a list of answers into a frequency table, L2 read a table (total and how many more), L3 two-step questions on a table
+   stem    L1 read a stem-and-leaf plot (how many values, greatest value), L2 build the plot from a list, L3 solve (range, how many at least, most common) */
+
+const FT_CTX = [['Favorite fruit', ['Apples', 'Grapes', 'Pears', 'Plums']], ['Pets at home', ['Dogs', 'Cats', 'Fish', 'Birds']], ['Favorite sport', ['Soccer', 'Tennis', 'Swimming', 'Baseball']],
+  ['Lunch choices', ['Pizza', 'Salad', 'Soup', 'Tacos']], ['Favorite season', ['Spring', 'Summer', 'Fall', 'Winter']], ['Books checked out', ['Mystery', 'Science', 'Poems', 'Comics']]];
+const ST_CTX = [['Quiz scores', 'points'], ['Minutes spent reading', 'minutes'], ['Plant heights', 'centimeters'], ['Laps run', 'laps'], ['Jumps with a rope', 'jumps'], ['Pages read', 'pages']];
+const vtCell = 'border:1px solid #8d99ad;padding:.02in .08in';
+
+function visFtable(rng, L) {
+  const [title, all] = pick(rng, FT_CTX), n = L === 1 ? 3 : 4, cats = all.slice(0, n), tot = L === 1 ? ri(rng, 9, 12) : 0;
+  let cnt;
+  if (L === 1) { cnt = cats.map(() => 1); for (let i = cnt.length; i < tot; i++) cnt[ri(rng, 0, n - 1)]++; }
+  else { do { cnt = cats.map(() => ri(rng, 3, 15)); } while (new Set(cnt).size < n); }
+  if (L === 1) {
+    const data = shuffle(rng, cats.flatMap((c, i) => Array(cnt[i]).fill(c)));
+    return vp('ftable', 'Make a frequency table.', { mode: 'count', title, cats, cnt, data, tot: cnt.reduce((a, b) => a + b, 0), ans: cnt.join(' ') + ' ' + cnt.reduce((a, b) => a + b, 0), sig: `ft1${title}${data}` }, 3.2, 0.5 + vwrapH(data.join(', '), 3.1) + (n + 2) * 0.3, 0);
+  }
+  const hi = cnt.indexOf(Math.max(...cnt)), lo = cnt.indexOf(Math.min(...cnt));
+  if (L === 2) return vp('ftable', 'Read the frequency table.', { mode: 'read', title, cats, cnt, hi, lo, ans: `${cnt.reduce((a, b) => a + b, 0)} ${cnt[hi] - cnt[lo]}`, sig: `ft2${title}${cnt}` }, 3.2, 0.5 + (n + 1) * 0.3 + 1.2, 0);
+  const idx = shuffle(rng, [0, 1, 2, 3]), a = idx[0], b = idx[1], c = idx[2], kind = pick(rng, ['sum2', 'more2']);
+  if (kind === 'more2' && cnt[a] + cnt[b] <= cnt[c]) return visFtable(rng, L);
+  const val = kind === 'sum2' ? cnt[a] + cnt[b] : cnt[a] + cnt[b] - cnt[c];
+  return vp('ftable', 'Read the frequency table.', { mode: kind, title, cats, cnt, a, b, c, ans: String(val), sig: `ft3${title}${cnt}${kind}${a}${b}${c}` }, 3.2, 0.5 + (n + 1) * 0.3 + 1.4, 0);
+}
+function visFtableHtml(p, key, x) {
+  const th = `<tr><th style="${vtCell};background:#e8eef7">${esc(p.title)}</th><th style="${vtCell};background:#e8eef7">Number</th></tr>`;
+  const tbl = rows => `<table style="border-collapse:collapse;margin-top:.04in;width:2.6in">${th}${rows}</table>`, td = (c, v) => `<tr><td style="${vtCell}">${esc(c)}</td><td style="${vtCell};text-align:center">${v}</td></tr>`;
+  if (p.mode === 'count') return vwrap(p.data.join(', '), 3.1) + tbl(p.cats.map((c, i) => td(c, x(p.cnt[i], 1.6))).join('') + td('Total', x(p.tot, 1.6)));
+  const t = tbl(p.cats.map((c, i) => td(c, p.cnt[i])).join('')), nm = i => esc(p.cats[i]);
+  if (p.mode === 'read') return t + `<div>How many in all? ${x(p.cnt.reduce((a, b) => a + b, 0), 2)}</div>` + vwrap(`How many more ${p.cats[p.hi]} than ${p.cats[p.lo]}?`, 3.1) + `<div>${x(p.cnt[p.hi] - p.cnt[p.lo], 2)}</div>`;
+  if (p.mode === 'sum2') return t + vwrap(`How many in all chose ${p.cats[p.a]} or ${p.cats[p.b]}?`, 3.1) + `<div>${x(p.ans, 2)}</div>`;
+  return t + vwrap(`How many more chose ${p.cats[p.a]} and ${p.cats[p.b]} together than chose ${p.cats[p.c]}?`, 3.1) + `<div>${x(p.ans, 2)}</div>`;
+}
+
+function stSet(rng, n, lo, hi, repeat) {
+  const vals = [];
+  while (vals.length < n) { const v = ri(rng, lo, hi); if (repeat || !vals.includes(v)) vals.push(v); }
+  return vals;
+}
+const stLeaves = (vals, s) => vals.filter(v => Math.floor(v / 10) === s).map(v => v % 10).sort((a, b) => a - b);
+function visStem(rng, L) {
+  const [title, unit] = pick(rng, ST_CTX), lo = ri(rng, 1, 3) * 10, hiStem = lo / 10 + (L === 2 ? 2 : 3);
+  let vals;
+  for (let g = 0; g < 300; g++) {
+    vals = stSet(rng, L === 2 ? ri(rng, 8, 10) : ri(rng, 10, 13), lo, hiStem * 10 + 9, L === 3);
+    const stems = []; for (let s = lo / 10; s <= hiStem; s++) stems.push(s);
+    if (!stems.every(s => stLeaves(vals, s).length >= 1)) continue;
+    if (L === 3) { const f = {}; vals.forEach(v => { f[v] = (f[v] || 0) + 1; }); const m = Math.max(...Object.values(f)); if (m < 2 || Object.values(f).filter(c => c === m).length !== 1) continue; }
+    break;
+  }
+  const stems = []; for (let s = lo / 10; s <= hiStem; s++) stems.push(s);
+  const sorted = vals.slice().sort((a, b) => a - b), rows = stems.map(s => [s, stLeaves(vals, s)]), base = { title, unit, vals, rows, sorted };
+  if (L === 1) return vp('stem', 'Read the stem-and-leaf plot.', Object.assign(base, { mode: 'read', ans: `${vals.length} ${sorted[sorted.length - 1]}`, sig: `st1${title}${vals}` }), 3.2, 0.5 + (rows.length + 2) * 0.3 + 1.0, 0);
+  if (L === 2) return vp('stem', 'Make a stem-and-leaf plot.', Object.assign(base, { mode: 'make', ans: rows.map(r => r[1].join(' ')).join(' / '), sig: `st2${title}${vals}` }), 3.2, 0.5 + vwrapH(vals.join(', '), 3.1) + (rows.length + 1) * 0.3 + 0.9, 0);
+  const kind = pick(rng, ['range', 'least', 'mode']), t = pick(rng, sorted.slice(2, sorted.length - 2));
+  let q, ans;
+  if (kind === 'range') { q = `What is the range of the ${unit}?`; ans = sorted[sorted.length - 1] - sorted[0]; }
+  else if (kind === 'least') { q = `How many values are ${t} or more?`; ans = vals.filter(v => v >= t).length; }
+  else { q = `Which number of ${unit} shows up most often?`; const f = {}; vals.forEach(v => { f[v] = (f[v] || 0) + 1; }); ans = Number(Object.keys(f).sort((a, b) => f[b] - f[a])[0]); }
+  return vp('stem', 'Use the stem-and-leaf plot.', Object.assign(base, { mode: 'solve', kind, t, q, ans: String(ans), sig: `st3${title}${vals}${kind}${t}` }), 3.2, 0.5 + (rows.length + 2) * 0.3 + vwrapH(q, 3.1) + 0.75, 0);
+}
+function visStemHtml(p, key, x) {
+  const cs = 'padding:.01in .08in;font-variant-numeric:tabular-nums', leaves = r => r[1].join(' ');
+  const body = p.rows.map(r => `<tr><td style="${cs};text-align:right;border-right:2px solid #1b2b4a">${r[0]}</td><td style="${cs};letter-spacing:.08em">${p.mode === 'make' ? x(leaves(r), Math.max(4, r[1].length * 1.5 + 2)) : leaves(r)}</td></tr>`).join('');
+  const tbl = `<div style="font-size:.9em">${esc(p.title)}</div><table style="border-collapse:collapse"><tr><th style="${cs};text-align:right">Stem</th><th style="${cs};text-align:left">Leaves</th></tr>${body}</table>`;
+  const k = vwrap(`Key: ${p.rows[0][0]} | ${p.rows[0][1][0]} means ${p.rows[0][0] * 10 + p.rows[0][1][0]} ${p.unit}.`, 3.1);
+  if (p.mode === 'make') return vwrap(p.vals.join(', '), 3.1) + tbl + vwrap(`Key: 3 | 4 means 34 ${p.unit}. Write the leaves in order.`, 3.1);
+  if (p.mode === 'read') return tbl + k + `<div>How many values? ${x(p.vals.length, 2)}</div><div>Greatest value? ${x(p.sorted[p.sorted.length - 1], 2)}</div>`;
+  return tbl + k + vwrap(p.q, 3.1) + `<div>${x(p.ans, 2)}</div>`;
+}
+
+defTypes("vis", "Data displays", [
+  { id: "ftable", label: "Frequency tables", blurb: "Count answers into a table, read a table, and solve one- and two-step questions.", on: false, gen: visFtable, html: visFtableHtml },
+  { id: "stem", label: "Stem-and-leaf plots", blurb: "Read a plot, make one from a list, and answer questions about range and counts.", on: false, gen: visStem, html: visStemHtml }
+]);
+/* ---------- Shapes, Measures and Data: build instead of read ----------
+   genset    K.2E: a group of up to 20 counters is shown; the student draws a group with more, fewer or the same number. The key draws one example.
+   openline  2.2E: an open number line (only the ends and sometimes the middle are labeled); the student marks a given number, or reads a marked point. */
+
+function visGenset(rng, L) {
+  const rel = pick(rng, L === 1 ? ['more', 'fewer'] : ['more', 'fewer', 'same']), hiN = L === 1 ? 10 : 20;
+  const n = rel === 'more' ? ri(rng, 1, hiN - 2) : rel === 'fewer' ? ri(rng, 3, hiN) : ri(rng, 2, hiN);
+  const ex = rel === 'more' ? ri(rng, n + 1, Math.min(20, n + 3)) : rel === 'fewer' ? ri(rng, Math.max(1, n - 3), n - 1) : n;
+  const prompt = rel === 'same' ? 'Draw a group with the same number.' : `Draw a group with ${rel} counters.`;
+  return vp('genset', prompt, { rel, n, ex, ans: String(ex), sig: `gs${rel}${n}` }, 3.05, 1.6, 0);
+}
+function visGensetHtml(p, key, x) {
+  const dots = (cnt, y0, fill, stroke) => Array.from({ length: cnt }, (_, i) => vshape('circle', 22 + (i % 10) * 28, y0 + Math.floor(i / 10) * 28, 22, fill, 0, stroke)).join('');
+  let o = dots(p.n, 14, VFILL[1], VINK);
+  const top = 14 + Math.ceil(p.n / 10) * 28 + 2, bh = 70;
+  o += `<rect x="4" y="${top}" width="296" height="${bh}" rx="6" fill="none" stroke="${VINK}" stroke-width="1.5" stroke-dasharray="5 4"/>`;
+  if (key) o += dots(p.ex, top + 20, VKEY, VKEY);
+  return vsvg(3.05, (top + bh + 6) / 100, o, 'Group of counters and a drawing box');
+}
+
+function visOpenline(rng, L) {
+  const cfg = L === 1 ? [[0, 100, 50], [0, 20, 10]] : L === 2 ? [[0, 100, 50], [0, 500, 250], [0, 200, 100]] : [[0, 1000, 500], [0, 1000, 0], [0, 1200, 600], [100, 200, 150], [0, 500, 0]];
+  const [lo, hi, mid] = pick(rng, cfg), span = hi - lo, st = span >= 500 ? 10 : span >= 100 ? 5 : 1;
+  const mark = rng() < 0.65;
+  let n;
+  for (let g = 0; g < 100; g++) {
+    n = lo + st * ri(rng, Math.ceil(span * 0.08 / st), Math.floor(span * 0.92 / st));
+    if (n !== mid && (!mark ? Math.abs(n - mid) >= span * 0.2 : true)) break;
+  }
+  n = nrClampV(n, lo, hi);
+  if (mark) return vp('openline', `Mark ${cnum(n)} on the number line.`, { variant: 'mark', lo, hi, mid, n, ans: String(n), sig: `ol${lo}${hi}${mid}${n}m` }, 3.05, 0.9, 0);
+  const f = (n - lo) / span, near = [n], offs = [0.25, -0.25, 0.4, -0.4, 0.5, -0.5];
+  for (const o of offs) { const v = Math.round((n + o * span) / st) * st; if (v > lo && v < hi && !near.includes(v) && near.every(w => Math.abs(w - v) >= span * 0.15)) near.push(v); if (near.length === 3) break; }
+  if (near.length < 3) return visOpenline(rng, L);
+  const opts = shuffle(rng, near.slice()).map(cnum);
+  return vp('openline', 'Which number does the point show?', { variant: 'read', lo, hi, mid, n, opts, ans: cnum(n), sig: `ol${lo}${hi}${mid}${n}r` }, 3.05, 1.2, 0);
+}
+const nrClampV = (v, lo, hi) => Math.max(lo + 1, Math.min(hi - 1, v));
+function visOpenlineHtml(p, key, x) {
+  const x0 = 22, W = 260, y = 36, X = v => x0 + W * (v - p.lo) / (p.hi - p.lo);
+  let o = vline(x0 - 8, y, x0 + W + 8, y, VINK, 2);
+  const labs = [p.lo, p.hi].concat(p.mid ? [p.mid] : []);
+  for (const v of labs) { o += vline(X(v).toFixed(1), y - 9, X(v).toFixed(1), y + 9, VINK, 2); o += vtxt(X(v).toFixed(1), y + 28, cnum(v)); }
+  if (p.variant === 'read') o += `<circle cx="${X(p.n).toFixed(1)}" cy="${y}" r="6.5" fill="${VFILL[1]}" stroke="${VINK}" stroke-width="2"/>`;
+  if (p.variant === 'mark' && key) { o += `<circle cx="${X(p.n).toFixed(1)}" cy="${y}" r="6.5" fill="${VKEY}" stroke="${VKEY}" stroke-width="2"/>`; o += vtxt(X(p.n).toFixed(1), y - 16, cnum(p.n), { c: VKEY, b: 1 }); }
+  const g = vsvg(3.05, p.variant === 'mark' ? 0.9 : 0.75, o, 'Open number line');
+  return p.variant === 'mark' ? g : g + `<div style="white-space:normal">${vopts(p.opts, p.ans, key)}</div>`;
+}
+
+defTypes("vis", "Counting and arrays", [
+  { id: "genset", label: "Draw a group with more, fewer or the same", blurb: "Draw a group that has more, fewer or the same number of counters as the one shown, up to 20.", on: false, gen: visGenset, html: visGensetHtml }
+]);
+defTypes("vis", "Number lines", [
+  { id: "openline", label: "Open number lines", blurb: "Mark a number on an open line, or read a point, with only the ends and middle labeled.", on: false, gen: visOpenline, html: visOpenlineHtml }
+]);
 /* ---------- Shapes, Measures and Data: angles, protractors, points, lines and rays ----------
    Generators take (rng, level) and return a problem with `sig` and size hints; cell bodies are (p, key, x) functions.
    angc: an angle as a fraction of a circle and as a count of one-degree angles. protr: measure an angle with a protractor and draw an angle of a given measure.
@@ -7013,7 +7340,29 @@ const STANDARDS = [
   { id: 'time.sort-fixed-variable', t: 'Sort fixed and variable expenses', m: 'time', time: { types: ['ns.flsortfv'], level: 2 } },
   { id: 'time.sort-income-gifts', t: 'Sort income and gifts', m: 'time', time: { types: ['ns.flsortig'], level: 2 } },
   { id: 'time.budget-table', t: 'Fill in a budget table', m: 'time', time: { types: ['ns.flbtab'], level: 2 } },
-  { id: 'time.complete-money-sentences', t: 'Complete sentences about money ideas', m: 'time', time: { types: ['ns.flexplain'], level: 2 } }
+  { id: 'time.complete-money-sentences', t: 'Complete sentences about money ideas', m: 'time', time: { types: ['ns.flexplain'], level: 2 } },
+  { id: 'num.compare-numbers-to-120', t: 'Compare numbers to 120', m: 'num', num: { types: ['ns.cmprng'], level: 1 } },
+  { id: 'num.compare-numbers-to-1200', t: 'Compare numbers to 1,200', m: 'num', num: { types: ['ns.cmprng'], level: 2 } },
+  { id: 'num.compare-numbers-to-100000', t: 'Compare numbers to 100,000', m: 'num', num: { types: ['ns.cmprng'], level: 3 } },
+  { id: 'num.order-numbers-to-1200', t: 'Order numbers to 1,200', m: 'num', num: { types: ['ns.ordrng'], level: 1 } },
+  { id: 'num.order-numbers-to-100000', t: 'Order numbers to 100,000', m: 'num', num: { types: ['ns.ordrng'], level: 2 } },
+  { id: 'num.order-numbers-to-1000000000', t: 'Order numbers to 1,000,000,000', m: 'num', num: { types: ['ns.ordrng'], level: 3 } },
+  { id: 'num.read-write-numbers-1200', t: 'Read and write numbers to 1,200', m: 'num', num: { types: ['ns.numrw12'], level: 2 } },
+  { id: 'num.large-numbers', t: 'Compare and use place value with numbers to 1,000,000,000', m: 'num', num: { types: ['ns.bign'], level: 3 } },
+  { id: 'num.odd-even-to-40', t: 'Odd and even to 40', m: 'num', num: { types: ['ns.par40'], level: 2 } },
+  { id: 'meas.frequency-tables', t: 'Frequency tables', m: 'meas', meas: { types: ['vis.ftable'], level: 2 } },
+  { id: 'meas.frequency-tables-two-step', t: 'Two-step problems with frequency tables', m: 'meas', meas: { types: ['vis.ftable'], level: 3 } },
+  { id: 'meas.stem-and-leaf-plots', t: 'Stem-and-leaf plots', m: 'meas', meas: { types: ['vis.stem'], level: 2 } },
+  { id: 'meas.stem-and-leaf-problems', t: 'Problems with stem-and-leaf plots', m: 'meas', meas: { types: ['vis.stem'], level: 3 } },
+  { id: 'num.one-more-one-less', t: 'One more and one less to 20', m: 'num', num: { types: ['ns.gen1'], level: 1 } },
+  { id: 'num.greater-less-than-to-120', t: 'Write a number greater or less than, to 120', m: 'num', num: { types: ['ns.gen1'], level: 2 } },
+  { id: 'num.greater-less-between-to-1200', t: 'Write a number greater than, less than or between, to 1,200', m: 'num', num: { types: ['ns.gen1'], level: 3 } },
+  { id: 'num.draw-more-fewer-same', t: 'Draw a group with more, fewer or the same', m: 'num', num: { types: ['vis.genset'], level: 2 } },
+  { id: 'num.open-number-line', t: 'Mark a number on an open number line', m: 'num', num: { types: ['vis.openline'], level: 2 } },
+  { id: 'num.open-number-line-to-1000', t: 'Open number lines to 1,200', m: 'num', num: { types: ['vis.openline'], level: 3 } },
+  { id: 'oa.write-story-within-20', t: 'Write a story for a number sentence within 20', m: 'oa', oa: { types: ['ns.story'], level: 1 } },
+  { id: 'oa.write-story-within-100', t: 'Write a story for a number sentence within 100', m: 'oa', oa: { types: ['ns.story'], level: 2 } },
+  { id: 'oa.write-story-within-1000', t: 'Write a story for a number sentence within 1,000', m: 'oa', oa: { types: ['ns.story'], level: 3 } }
 ];
 const STD_BY_ID = {}; STANDARDS.forEach(s => { STD_BY_ID[s.id] = s; });
 /* Framework data is in STD_FW (framework.js); fw defaults to the default framework. A framework that is not loaded yet has no rows. */
@@ -7429,6 +7778,15 @@ const TYPE_HOME = {
   "ns.flpay": ["tm", "Financial literacy"],
   "ns.flrec": ["tm", "Financial literacy"],
   "ns.flbud": ["tm", "Financial literacy"],
+  "ns.cmprng": ["ns", "Place value, comparing and rounding"],
+  "ns.ordrng": ["ns", "Place value, comparing and rounding"],
+  "ns.numrw12": ["ns", "Place value, comparing and rounding"],
+  "ns.bign": ["ns", "Place value, comparing and rounding"],
+  "ns.par40": ["ns", "Counting and number lines"],
+  "ns.gen1": ["ns", "Counting and number lines"],
+  "ns.story": ["oa", "Bonds, equations and properties"],
+  "vis.genset": ["ns", "Counting and number lines"],
+  "vis.openline": ["ns", "Counting and number lines"],
   "ns.flsortwn": ["tm", "Financial literacy"],
   "ns.flsortfv": ["tm", "Financial literacy"],
   "ns.flsortig": ["tm", "Financial literacy"],
@@ -7574,7 +7932,9 @@ const TYPE_HOME = {
   "vis.vcomp": ["geom", "Space and coordinates"],
   "vis.cplane": ["geom", "Space and coordinates"],
   "vis.cpword": ["geom", "Space and coordinates"],
-  "vis.scatter": ["geom", "Space and coordinates"]
+  "vis.scatter": ["geom", "Space and coordinates"],
+  "vis.ftable": ["meas", "Graphs and line plots"],
+  "vis.stem": ["meas", "Graphs and line plots"]
 };
 const WORD_IDS = ['wadd', 'wlen', 'wmul', 'wcmp', 'wstep', 'west', 'mword', 'fword6', 'cstory'];
 function typeTags(mod, d) {

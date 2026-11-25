@@ -219,7 +219,29 @@ const STANDARDS = [
   { id: 'time.sort-fixed-variable', t: 'Sort fixed and variable expenses', m: 'time', time: { types: ['ns.flsortfv'], level: 2 } },
   { id: 'time.sort-income-gifts', t: 'Sort income and gifts', m: 'time', time: { types: ['ns.flsortig'], level: 2 } },
   { id: 'time.budget-table', t: 'Fill in a budget table', m: 'time', time: { types: ['ns.flbtab'], level: 2 } },
-  { id: 'time.complete-money-sentences', t: 'Complete sentences about money ideas', m: 'time', time: { types: ['ns.flexplain'], level: 2 } }
+  { id: 'time.complete-money-sentences', t: 'Complete sentences about money ideas', m: 'time', time: { types: ['ns.flexplain'], level: 2 } },
+  { id: 'num.compare-numbers-to-120', t: 'Compare numbers to 120', m: 'num', num: { types: ['ns.cmprng'], level: 1 } },
+  { id: 'num.compare-numbers-to-1200', t: 'Compare numbers to 1,200', m: 'num', num: { types: ['ns.cmprng'], level: 2 } },
+  { id: 'num.compare-numbers-to-100000', t: 'Compare numbers to 100,000', m: 'num', num: { types: ['ns.cmprng'], level: 3 } },
+  { id: 'num.order-numbers-to-1200', t: 'Order numbers to 1,200', m: 'num', num: { types: ['ns.ordrng'], level: 1 } },
+  { id: 'num.order-numbers-to-100000', t: 'Order numbers to 100,000', m: 'num', num: { types: ['ns.ordrng'], level: 2 } },
+  { id: 'num.order-numbers-to-1000000000', t: 'Order numbers to 1,000,000,000', m: 'num', num: { types: ['ns.ordrng'], level: 3 } },
+  { id: 'num.read-write-numbers-1200', t: 'Read and write numbers to 1,200', m: 'num', num: { types: ['ns.numrw12'], level: 2 } },
+  { id: 'num.large-numbers', t: 'Compare and use place value with numbers to 1,000,000,000', m: 'num', num: { types: ['ns.bign'], level: 3 } },
+  { id: 'num.odd-even-to-40', t: 'Odd and even to 40', m: 'num', num: { types: ['ns.par40'], level: 2 } },
+  { id: 'meas.frequency-tables', t: 'Frequency tables', m: 'meas', meas: { types: ['vis.ftable'], level: 2 } },
+  { id: 'meas.frequency-tables-two-step', t: 'Two-step problems with frequency tables', m: 'meas', meas: { types: ['vis.ftable'], level: 3 } },
+  { id: 'meas.stem-and-leaf-plots', t: 'Stem-and-leaf plots', m: 'meas', meas: { types: ['vis.stem'], level: 2 } },
+  { id: 'meas.stem-and-leaf-problems', t: 'Problems with stem-and-leaf plots', m: 'meas', meas: { types: ['vis.stem'], level: 3 } },
+  { id: 'num.one-more-one-less', t: 'One more and one less to 20', m: 'num', num: { types: ['ns.gen1'], level: 1 } },
+  { id: 'num.greater-less-than-to-120', t: 'Write a number greater or less than, to 120', m: 'num', num: { types: ['ns.gen1'], level: 2 } },
+  { id: 'num.greater-less-between-to-1200', t: 'Write a number greater than, less than or between, to 1,200', m: 'num', num: { types: ['ns.gen1'], level: 3 } },
+  { id: 'num.draw-more-fewer-same', t: 'Draw a group with more, fewer or the same', m: 'num', num: { types: ['vis.genset'], level: 2 } },
+  { id: 'num.open-number-line', t: 'Mark a number on an open number line', m: 'num', num: { types: ['vis.openline'], level: 2 } },
+  { id: 'num.open-number-line-to-1000', t: 'Open number lines to 1,200', m: 'num', num: { types: ['vis.openline'], level: 3 } },
+  { id: 'oa.write-story-within-20', t: 'Write a story for a number sentence within 20', m: 'oa', oa: { types: ['ns.story'], level: 1 } },
+  { id: 'oa.write-story-within-100', t: 'Write a story for a number sentence within 100', m: 'oa', oa: { types: ['ns.story'], level: 2 } },
+  { id: 'oa.write-story-within-1000', t: 'Write a story for a number sentence within 1,000', m: 'oa', oa: { types: ['ns.story'], level: 3 } }
 ];
 const STD_BY_ID = {}; STANDARDS.forEach(s => { STD_BY_ID[s.id] = s; });
 /* Framework data is in STD_FW (framework.js); fw defaults to the default framework. A framework that is not loaded yet has no rows. */

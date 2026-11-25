@@ -29,6 +29,8 @@ node tests/logic-g5m.js
 node tests/logic-g5g.js
 node tests/logic-ns-extra.js
 node tests/logic-finance.js
+node tests/logic-range.js
+node tests/logic-generate.js || exit 1
 node tests/logic-newmath.js
 node tests/logic-commas.js
 node tests/logic-bugreport.js
